@@ -1,0 +1,6 @@
+strusAnalyzer
+=============
+
+Analyzer for feeding the IR engine.
+Currently processing XML documents for german.
+

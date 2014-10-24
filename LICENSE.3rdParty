@@ -1,0 +1,24 @@
+3rd party licenses of strusAnalyzer
+===================================
+
+Table of Contents
+-----------------
+
+  boost
+  textwolf
+  snowball C++
+
+
+boost
+-----
+  http://www.boost.org/LICENSE_1_0.txt
+
+textwolf
+--------
+   LGPL
+
+snowball
+--------
+   BSD License
+
+
