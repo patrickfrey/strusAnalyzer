@@ -26,35 +26,19 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
-#include <vector>
+/// \brief Exported functions of the strus token miner library (part of analyzer)
+#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
 #include <string>
-#include <utility>
-#include <iostream>
-#include <sstream>
 
-namespace strus
-{
+namespace strus {
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
-{
-public:
-	Analyzer(
-		const std::string& source);
+/// \brief Forward declaration analyze processor
+class TokenMiner;
 
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
-
-private:
-	class DocumentParser;
-	DocumentParser* m_parser;
-};
+/// \brief Get a const reference to a token miner object that implements the extraction of tokens from the document
+/// \return the token miner reference or NULL if undefined
+const TokenMiner* getTokenMiner( const std::string& name);
 
 }//namespace
 #endif

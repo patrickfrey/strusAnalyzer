@@ -26,14 +26,19 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
 #include "analyzer.hpp"
+#include "strus/tokenMinerLib.hpp"
+#include "strus/tokenMiner.hpp"
+#include "strus/normalizerInterface.hpp"
+#include "strus/tokenizerInterface.hpp"
 #include "parser/lexems.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
+#include "textwolf/xmlpathselect.hpp"
+#include "textwolf/charset.hpp"
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <sstream>
+#include <set>
 
 using namespace strus;
 using namespace strus::parser;
@@ -60,42 +65,35 @@ static std::string errorPosition( const char* base, const char* itr)
 	return msg.str();
 }
 
-class Tokenizer
-{
-public:
-	virtual ~Tokenizer(){}
-	struct Position
-	{
-		unsigned int pos;
-		unsigned int size;
-
-		Position( unsigned int pos_, unsigned int size_)
-			:pos(pos_),size(size_){}
-		Position( const Position& o)
-			:pos(o.pos),size(o.size){}
-	};
-
-	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const=0;
-};
-
-class Normalizer
-{
-public:
-	virtual ~Normalizer(){}
-	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
-};
-
 
 class Analyzer::DocumentParser
 {
 public:
 	DocumentParser(){}
 
-	void addExpression( const std::string& featurename, const std::string& expression, const Tokenizer* tokenizer, const Normalizer* normalizer)
+	void addExpression( const std::string& featurename, const std::string& expression, const std::string& type)
 	{
-		int featidx = createFeatureDef( featurename, tokenizer, normalizer);
+		int featidx = createFeatureDef( featurename, type);
 		m_automaton.addExpression( featidx, expression.c_str(), expression.size());
 	}
+
+	class FeatureDef
+	{
+	public:
+		FeatureDef( const std::string& name_,
+				const TokenizerInterface* tokenizer_,
+				const NormalizerInterface* normalizer_)
+			:m_name(name_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
+	
+		const std::string& name() const			{return m_name;}
+		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
+		const NormalizerInterface* normalizer() const	{return m_normalizer;}
+	
+	private:
+		std::string m_name;
+		const TokenizerInterface* m_tokenizer;
+		const NormalizerInterface* m_normalizer;
+	};
 
 	struct Instance
 	{
@@ -119,7 +117,7 @@ public:
 		}
 
 		typedef textwolf::XMLPathSelect<
-				charset::UTF8
+				textwolf::charset::UTF8
 			> XMLPathSelect;
 		typedef textwolf::XMLScanner<
 				char const*,
@@ -138,7 +136,7 @@ public:
 		XMLPathSelect::iterator m_selend;
 		std::size_t m_position;
 
-		bool getNext( const char*& elem, const std::size_t& elemsize, int& featidx)
+		bool getNext( const char*& elem, std::size_t& elemsize, int& featidx)
 		{
 			if (m_itr == m_end) return false;
 			while (m_selitr == m_selend)
@@ -161,27 +159,9 @@ public:
 		}
 	};
 
-	class FeatureDef
-	{
-	public:
-		FeatureDef( const std::string& name_,
-				const Tokenizer* tokenizer_,
-				const Normalizer* normalizer_)
-			:m_name(name_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
-
-		const std::string& name() const		{return m_name;}
-		const Tokenizer* tokenizer() const	{return m_tokenizer;}
-		const Normalizer* normalizer() const	{return m_normalizer;}
-
-	private:
-		std::string m_name;
-		const Tokenizer* m_tokenizer;
-		const Normalizer* m_normalizer;
-	};
-
 	const FeatureDef& featureDef( int featidx) const
 	{
-		if (featidx <= 0 || featidx > m_featuredefar.size())
+		if (featidx <= 0 || (std::size_t)featidx > m_featuredefar.size())
 		{
 			throw std::runtime_error( "internal: unknown index of feature");
 		}
@@ -189,17 +169,21 @@ public:
 	}
 
 	int createFeatureDef( const std::string& name_,
-				const Tokenizer* tokenizer_,
-				const Normalizer* normalizer_)
+				const std::string& type_)
 	{
-		m_featuredefar.push_back( FeatureDef( name_, tokenizer_, normalizer_));
+		const TokenMiner* miner = getTokenMiner( type_);
+		if (!miner) throw std::runtime_error( std::string( "unknown token type '") + type_ + "'");
+		m_featuredefar.push_back( FeatureDef( name_, miner->tokenizer(), miner->normalizer()));
 		return m_featuredefar.size();
 	}
 
-	const Automaton* automaton() const	{return m_automaton;}
+	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
+	const Automaton* automaton() const	
+	{
+		return &m_automaton;
+	}
 
 private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	Automaton m_automaton;
 	std::vector<FeatureDef> m_featuredefar;
 };
@@ -210,7 +194,8 @@ Analyzer::~Analyzer()
 	if (m_parser) delete m_parser;
 }
 
-Analyzer::Analyzer( const std::string& source)
+Analyzer::Analyzer(
+		const std::string& source)
 	:m_parser(0)
 {
 	char const* src = source.c_str();
@@ -230,9 +215,18 @@ Analyzer::Analyzer( const std::string& source)
 
 			if (!isAssign( *src))
 			{
-				throw std::runtime_error( "assign '=' expected after feature set identifier in a term declaration");
+				throw std::runtime_error( "assignment operator '=' expected after feature set identifier in a term declaration");
 			}
 			parse_OPERATOR(src);
+			
+			if (isAlpha(*src))
+			{
+				method = parse_IDENTIFIER( src);
+			}
+			else
+			{
+				throw std::runtime_error( "identifier (token miner type) expected after assignment operator in a term declaration");
+			}
 			if (isStringQuote(*src))
 			{
 				xpathexpr = parse_STRING( src);
@@ -243,17 +237,13 @@ Analyzer::Analyzer( const std::string& source)
 				while (*src && !isSpace(*src) && *src != ';') ++src;
 				xpathexpr.append( start, src-start);
 			}
-			if (isAlpha(*src))
-			{
-				method = parse_IDENTIFIER( src);
-			}
 			if (!isSemiColon(*src))
 			{
-				throw std::runtime_error( "semicolon '=' expected at end of feature declaration");
+				throw std::runtime_error( "semicolon ';' expected at end of feature declaration");
 			}
 			parse_OPERATOR(src);
 
-			m_parser->addExpression( featurename, xpathexpr);
+			m_parser->addExpression( featurename, xpathexpr, method);
 		}
 	}
 	catch (const std::runtime_error& e)
@@ -265,52 +255,86 @@ Analyzer::Analyzer( const std::string& source)
 	}
 }
 
-
-std::vector<AnalyzerInterface::Term> Analyzer::analyze( const std::string& content) const
+/// \brief Map byte offset positions to token occurrence positions:
+static void mapPositions( std::vector<AnalyzerInterface::Term>& ar, std::size_t last_idx, std::size_t position, unsigned int& pcnt)
 {
-	std::vector<Term> rt;
-	DocumentParser::Instance scanner( content.c_str(), m_parser->automaton());
-	const char* elem = 0;
-	const std::size_t elemsize = 0;
-	int featidx = 0;
-
-	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (scanner.getNext( elem, elemsize, featidx))
-	{
-		const Analyzer::DocumentParser::FeatureDef& feat
-			= m_parser->featureDef( featidx);
-
-		std::vector<Tokenizer::Position> pos
-			= feat.tokenizer()->tokenize( elem, elemsize);
-		std::vector<Tokenizer::Position>::const_iterator pi = pos.begin(), pe = pos.end();
-
-		for (; pi != pe; ++pi)
-		{
-			rt.push_back(
-				Term( feat.name(),
-					feat.normalizer()->normalize( elem + pi->pos, pi->size),
-					scanner.position()));
-		}
-	}
-
-	// [2] Map byte offset positions to token occurrence positions:
 	std::set<unsigned int> pset;
-	std::vector<Term>::iterator ri = rt.begin(), re = rt.end();
+	std::vector<AnalyzerInterface::Term>::iterator ri = ar.begin() + last_idx, re = ar.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
 	}
 	std::map<unsigned int, unsigned int> posmap;
-	unsigned int pcnt = 0;
 	std::set<unsigned int>::const_reverse_iterator pi = pset.rbegin(), pe = pset.rend();
 	for (; pi != pe; ++pi)
 	{
 		posmap[ *pi] = ++pcnt;
 	}
-	for (ri = rt.begin(); ri != re; ++ri)
+	for (ri = ar.begin() + last_idx; ri != re; ++ri)
 	{
 		ri->setPos( posmap[ ri->pos()]);
 	}
+}
+
+std::vector<AnalyzerInterface::Term>
+	Analyzer::analyze(
+		const std::string& content) const
+{
+	std::vector<Term> rt;
+	DocumentParser::Instance scanner( content.c_str(), m_parser->automaton());
+	const char* elem = 0;
+	std::size_t elemsize = 0;
+	int featidx = 0;
+	std::size_t last_position_idx = 0;
+	std::size_t last_position = 0;
+	std::size_t curr_position = 0;
+	unsigned int pcnt = 0;
+
+	// [1] Scan the document and push the normalized tokenization of the elements to the result:
+	while (scanner.getNext( elem, elemsize, featidx))
+	{
+		curr_position = scanner.position();
+		if (last_position != curr_position)
+		{
+			mapPositions( rt, last_position_idx, last_position, pcnt);
+			curr_position = last_position;
+			last_position_idx = rt.size();
+		}
+		const Analyzer::DocumentParser::FeatureDef& feat
+			= m_parser->featureDef( featidx);
+
+		std::vector<TokenizerInterface::Position> pos;
+		if (feat.tokenizer())
+		{
+			pos = feat.tokenizer()->tokenize( elem, elemsize);
+		}
+		else
+		{
+			pos.push_back( TokenizerInterface::Position( 0, elemsize));
+		}
+		std::vector<TokenizerInterface::Position>::const_iterator
+			pi = pos.begin(), pe = pos.end();
+		for (; pi != pe; ++pi)
+		{
+			if (feat.normalizer())
+			{
+				rt.push_back(
+					Term( feat.name(),
+						feat.normalizer()->normalize( elem + pi->pos, pi->size),
+						curr_position + pi->pos));
+			}
+			else
+			{
+				rt.push_back(
+					Term( feat.name(),
+						std::string( elem + pi->pos, pi->size),
+						curr_position + pi->pos));
+			}
+		}
+	}
+	curr_position = scanner.position();
+	mapPositions( rt, last_position_idx, last_position, pcnt);
+	return rt;
 }
 
 

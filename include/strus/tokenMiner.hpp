@@ -26,34 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
-#include <vector>
+#ifndef _STRUS_ANALYZER_TOKEN_MINER_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MINER_HPP_INCLUDED
 #include <string>
-#include <utility>
-#include <iostream>
-#include <sstream>
 
 namespace strus
 {
+/// \brief Forward declaration
+class TokenizerInterface;
+/// \brief Forward declaration
+class NormalizerInterface;
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
+class TokenMiner
 {
 public:
-	Analyzer(
-		const std::string& source);
+	TokenMiner( const TokenizerInterface* tokenizer_,
+			const NormalizerInterface* normalizer_)
+		:m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
 
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
+	const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
+	const NormalizerInterface* normalizer() const	{return m_normalizer;}
 
 private:
-	class DocumentParser;
-	DocumentParser* m_parser;
+	const TokenizerInterface* m_tokenizer;
+	const NormalizerInterface* m_normalizer;
 };
 
 }//namespace

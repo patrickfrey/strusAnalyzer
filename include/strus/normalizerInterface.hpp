@@ -26,34 +26,20 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
+#ifndef _STRUS_NORMALIZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_NORMALIZER_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
-#include <utility>
-#include <iostream>
-#include <sstream>
+#include <ostream>
 
 namespace strus
 {
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
+class NormalizerInterface
 {
 public:
-	Analyzer(
-		const std::string& source);
-
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
-
-private:
-	class DocumentParser;
-	DocumentParser* m_parser;
+	virtual ~NormalizerInterface(){}
+	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
 };
 
 }//namespace

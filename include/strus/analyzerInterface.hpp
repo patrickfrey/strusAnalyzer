@@ -30,7 +30,6 @@
 #define _STRUS_ANALYZER_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
-#include <ostream>
 
 namespace strus
 {
@@ -66,9 +65,9 @@ public:
 	virtual ~AnalyzerInterface(){}
 
 	/// \brief Tokenize a document, assign types to tokens and normalize their values
-	/// \param[in] language language of the document (multilingual documents have to be splitted into separate parts for a proper analysis)
 	/// \param[in] content content string to analyze
-	virtual std::vector<Term> analyze( const std::string& content) const=0;
+	virtual std::vector<Term> analyze(
+			const std::string& content) const=0;
 };
 
 }//namespace

@@ -33,12 +33,13 @@
 
 namespace strus {
 
-class AnalyzerInterface;
 /// \brief Forward declaration analyzer program
+class AnalyzerInterface;
 
 /// \brief Create a program for analyzing a document
 /// \param[in] programSource the source of the document analyzer procedure
 /// \return the program reference
+/// \note the processor life time is assumed to cover the lifetime of the analyzer returned
 AnalyzerInterface*
 	createAnalyzer(
 		const std::string& programSource);

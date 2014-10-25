@@ -4,12 +4,12 @@ CPP_OBJS=\
 	analyzer.o \
 	analyzerLib.o
 
-CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I/usr/include -I.
+CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I$(TOPDIR)/3rdParty/textwolf/include/ -I/usr/include -I.
 CXXFLAGS=-g -Werror -Wall -pedantic -std=c++98
-LDFLAGS=-L/usr/lib
-LIBS=
+LDFLAGS=-L/usr/lib -L$(TOPDIR)/src/tokenminer
+LIBS=-lstrus_tokenminer
 
-all: libstrus_queryeval.so
+all: libstrus_analyzer.so
 
 -include $(CPP_OBJS:.o=.d)
 
@@ -17,11 +17,11 @@ all: libstrus_queryeval.so
 	g++ -fPIC -fvisibility=hidden -c -o $@ $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp
 	g++ -MM $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp > $*.d
 
-libstrus_queryeval.so: $(CPP_OBJS)
+libstrus_analyzer.so: $(CPP_OBJS)
 	g++  -shared -o $@ $(CPP_OBJS) $(LDFLAGS) $(LIBS)
 
 .PHONY: clean
 clean:
-	rm -f $(CPP_OBJS) $(CPP_OBJS:.o=.d) libstrus_queryeval.so
+	rm -f $(CPP_OBJS) $(CPP_OBJS:.o=.d) libstrus_analyzer.so
 
 

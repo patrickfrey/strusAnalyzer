@@ -26,35 +26,24 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
-#include <vector>
-#include <string>
-#include <utility>
-#include <iostream>
-#include <sstream>
+#ifndef _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
+#define _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
+#include "strus/normalizerInterface.hpp"
 
 namespace strus
 {
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
-{
-public:
-	Analyzer(
-		const std::string& source);
-
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
-
-private:
-	class DocumentParser;
-	DocumentParser* m_parser;
-};
+const NormalizerInterface* snowball_stemmer_de();
+const NormalizerInterface* snowball_stemmer_dk();
+const NormalizerInterface* snowball_stemmer_nl();
+const NormalizerInterface* snowball_stemmer_en();
+const NormalizerInterface* snowball_stemmer_fi();
+const NormalizerInterface* snowball_stemmer_fr();
+const NormalizerInterface* snowball_stemmer_it();
+const NormalizerInterface* snowball_stemmer_no();
+const NormalizerInterface* snowball_stemmer_pt();
+const NormalizerInterface* snowball_stemmer_es();
+const NormalizerInterface* snowball_stemmer_se();
 
 }//namespace
 #endif
