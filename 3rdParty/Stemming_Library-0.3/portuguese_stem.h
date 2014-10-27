@@ -23,18 +23,18 @@ namespace stemming
 	{
 	/**Letters in Portuguese include the following accented forms,
 
-		-á é í ó ú â ê ô ç ã õ ü ñ
+		-Ã¡ Ã© Ã­ Ã³ Ãº Ã¢ Ãª Ã´ Ã§ Ã£ Ãµ Ã¼ Ã±
 
 	The following letters are vowels: 
-		-a e i o u á é í ó ú â ê ô
+		-a e i o u Ã¡ Ã© Ã­ Ã³ Ãº Ã¢ Ãª Ã´
 
 	And the two nasalised vowel forms
 	
-		-ã õ
+		-Ã£ Ãµ
 
 	should be treated as a vowel followed by a consonant. 
 
-	ã and õ are therefore replaced by a~ and o~ in the word, where ~ is a separate character to be treated as a consonant.
+	Ã£ and Ãµ are therefore replaced by a~ and o~ in the word, where ~ is a separate character to be treated as a consonant.
 	And then R2 and RV have the same definition as in the Spanish stemmer.*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
@@ -60,14 +60,14 @@ namespace stemming
 			m_step1_step2_altered = false;
 			Parent::m_r1 = Parent::m_r2 = Parent::m_rv =0;
 
-			string_util::replace_all(text, "ã", "a~");
-			string_util::replace_all(text, "Ã", "A~");
-			string_util::replace_all(text, "õ", "o~");
-			string_util::replace_all(text, "Õ", "O~");
+			string_util::replace_all(text, "Ã£", "a~");
+			string_util::replace_all(text, "Ãƒ", "A~");
+			string_util::replace_all(text, "Ãµ", "o~");
+			string_util::replace_all(text, "Ã•", "O~");
 
-			find_r1(text, "aeiouáéíóúâêôEIOUÁÉÍÓÚÂÊÔ");
-			find_r2(text, "aeiouáéíóúâêôEIOUÁÉÍÓÚÂÊÔ");
-			find_spanish_rv(text, "aeiouáéíóúâêôAEIOUÁÉÍÓÚÂÊÔ");
+			find_r1(text, "aeiouÃ¡Ã©Ã­Ã³ÃºÃ¢ÃªÃ´EIOUÃÃ‰ÃÃ“ÃšÃ‚ÃŠÃ”");
+			find_r2(text, "aeiouÃ¡Ã©Ã­Ã³ÃºÃ¢ÃªÃ´EIOUÃÃ‰ÃÃ“ÃšÃ‚ÃŠÃ”");
+			find_spanish_rv(text, "aeiouÃ¡Ã©Ã­Ã³ÃºÃ¢ÃªÃ´AEIOUÃÃ‰ÃÃ“ÃšÃ‚ÃŠÃ”");
 
 			step_1(text);
 			//intermediate steps handled by step 1
@@ -77,25 +77,25 @@ namespace stemming
 				}
 			step_5(text);
 
-			///Turn a~, o~ back into ã, õ 
-			string_util::replace_all(text, "a~", "ã");
-			string_util::replace_all(text, "A~", "Ã");
-			string_util::replace_all(text, "o~", "õ");
-			string_util::replace_all(text, "O~", "Õ");
+			///Turn a~, o~ back into Ã£, Ãµ 
+			string_util::replace_all(text, "a~", "Ã£");
+			string_util::replace_all(text, "A~", "Ãƒ");
+			string_util::replace_all(text, "o~", "Ãµ");
+			string_util::replace_all(text, "O~", "Ã•");
 			}
 	private:
 		/**Search for the longest among the following suffixes, and perform the action indicated. 
 
-			-eza ezas ico ica icos icas ismo ismos ável ível ista istas oso osa osos osas amento amentos imento imentos adora ador aça~o adoras adores aço~es 
+			-eza ezas ico ica icos icas ismo ismos Ã¡vel Ã­vel ista istas oso osa osos osas amento amentos imento imentos adora ador aÃ§a~o adoras adores aÃ§o~es 
 				-delete if in R2 
 
-			-logía logías 
+			-logÃ­a logÃ­as 
 				-replace with log if in R2 
 
-			-ución uciones 
+			-uciÃ³n uciones 
 				-replace with u if in R2 
 
-			-ência ências 
+			-Ãªncia Ãªncias 
 				-replace with ente if in R2 
 
 			-amente 
@@ -105,7 +105,7 @@ namespace stemming
 
 			-mente 
 				-delete if in R2 
-				-if preceded by avel or ível, delete if in R2 
+				-if preceded by avel or Ã­vel, delete if in R2 
 
 			-idade idades 
 				-delete if in R2 
@@ -152,11 +152,11 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_r2(text,/*aço~es*/'a', 'A', 'ç', 'Ç', 'o', 'O', '~', '~', 'e', 'E', 's', 'S') )
+			else if (delete_if_is_in_r2(text,/*aÃ§o~es*/'a', 'A', 'Ã§', 'Ã‡', 'o', 'O', '~', '~', 'e', 'E', 's', 'S') )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (is_suffix_in_r2(text,/*ências*/'ê', 'Ê', 'n', 'N', 'c', 'C', 'i', 'I', 'a', 'A', 's', 'S') )
+			else if (is_suffix_in_r2(text,/*Ãªncias*/'Ãª', 'ÃŠ', 'n', 'N', 'c', 'C', 'i', 'I', 'a', 'A', 's', 'S') )
 				{
 				///todo make more case sensitive
 				text.replace(text.end()-6, text.end(), "ente");
@@ -164,7 +164,7 @@ namespace stemming
 				update_r_sections(text);
 				//NOOP (fall through to branching statement)
 				}
-			else if (is_suffix_in_r2(text,/*logías*/'l', 'L', 'o', 'O', 'g', 'G', 'í', 'Í', 'a', 'A', 's', 'S') )
+			else if (is_suffix_in_r2(text,/*logÃ­as*/'l', 'L', 'o', 'O', 'g', 'G', 'Ã­', 'Ã', 'a', 'A', 's', 'S') )
 				{
 				text.erase(text.end()-3, text.end() );
 				m_altered_suffix_index = text.length()-3;
@@ -198,21 +198,21 @@ namespace stemming
 					}
 				//NOOP (fall through to branching statement)
 				}	
-			else if (is_suffix_in_r2(text,/*logía*/'l', 'L', 'o', 'O', 'g', 'G', 'í', 'Í', 'a', 'A') )
+			else if (is_suffix_in_r2(text,/*logÃ­a*/'l', 'L', 'o', 'O', 'g', 'G', 'Ã­', 'Ã', 'a', 'A') )
 				{
 				text.erase(text.end()-2, text.end() );
 				m_altered_suffix_index = text.length()-3;
 				update_r_sections(text);
 				//NOOP (fall through to branching statement)
 				}	
-			else if (is_suffix_in_r2(text,/*ución*/'u', 'U', 'c', 'C', 'i', 'I', 'ó', 'Ó', 'n', 'N') )
+			else if (is_suffix_in_r2(text,/*uciÃ³n*/'u', 'U', 'c', 'C', 'i', 'I', 'Ã³', 'Ã“', 'n', 'N') )
 				{
 				text.erase(text.end()-4, text.end() );
 				m_altered_suffix_index = text.length()-1;
 				update_r_sections(text);
 				//NOOP (fall through to branching statement)
 				}
-			else if (is_suffix_in_r2(text,/*ência*/'ê', 'Ê', 'n', 'N', 'c', 'C', 'i', 'I', 'a', 'A') )
+			else if (is_suffix_in_r2(text,/*Ãªncia*/'Ãª', 'ÃŠ', 'n', 'N', 'c', 'C', 'i', 'I', 'a', 'A') )
 				{
 				///make more case sensitive
 				text.replace(text.end()-5, text.end(), "ente");
@@ -223,7 +223,7 @@ namespace stemming
 			else if (delete_if_is_in_r2(text,/*mente*/'m', 'M', 'e', 'E', 'n', 'N', 't', 'T', 'e', 'E') )
 				{
 				if (delete_if_is_in_r2(text,/*avel*/'a', 'A', 'v', 'V', 'e', 'E', 'l', 'L') ||
-					delete_if_is_in_r2(text,/*ível*/'í', 'Í', 'v', 'V', 'e', 'E', 'l', 'L') )
+					delete_if_is_in_r2(text,/*Ã­vel*/'Ã­', 'Ã', 'v', 'V', 'e', 'E', 'l', 'L') )
 					{
 					//NOOP (fall through to branching statement)
 					}
@@ -261,7 +261,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_r2(text,/*aça~o*/'a', 'A', 'ç', 'Ç', 'a', 'A', '~', '~', 'o', 'O') )
+			else if (delete_if_is_in_r2(text,/*aÃ§a~o*/'a', 'A', 'Ã§', 'Ã‡', 'a', 'A', '~', '~', 'o', 'O') )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -281,11 +281,11 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_r2(text,/*ável*/'á', 'Á', 'v', 'V', 'e', 'E', 'l', 'L') )
+			else if (delete_if_is_in_r2(text,/*Ã¡vel*/'Ã¡', 'Ã', 'v', 'V', 'e', 'E', 'l', 'L') )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_r2(text,/*ível*/'í', 'Í', 'v', 'V', 'e', 'E', 'l', 'L') )
+			else if (delete_if_is_in_r2(text,/*Ã­vel*/'Ã­', 'Ã', 'v', 'V', 'e', 'E', 'l', 'L') )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -381,14 +381,14 @@ namespace stemming
 		/**Do step 2 if no ending was removed by step 1.
 		Search for the longest among the following suffixes in RV, and if found, delete. 
 
-			-ada ida ia aria eria iria ará ara erá era irá ava asse esse isse aste este iste
+			-ada ida ia aria eria iria arÃ¡ ara erÃ¡ era irÃ¡ ava asse esse isse aste este iste
 			ei arei erei irei am iam ariam eriam iriam aram eram iram avam em arem erem irem
 			assem essem issem ado ido ando endo indo ara~o era~o ira~o ar er ir as adas idas
-			ias arias erias irias arás aras erás eras irás avas es ardes erdes irdes ares eres
-			ires asses esses isses astes estes istes is ais eis íeis aríeis eríeis iríeis áreis
-			areis éreis ereis íreis ireis ásseis ésseis ísseis áveis ados idos ámos amos íamos
-			aríamos eríamos iríamos áramos éramos íramos ávamos emos aremos eremos iremos ássemos
-			êssemos íssemos imos armos ermos irmos eu iu ou ira iras
+			ias arias erias irias arÃ¡s aras erÃ¡s eras irÃ¡s avas es ardes erdes irdes ares eres
+			ires asses esses isses astes estes istes is ais eis Ã­eis arÃ­eis erÃ­eis irÃ­eis Ã¡reis
+			areis Ã©reis ereis Ã­reis ireis Ã¡sseis Ã©sseis Ã­sseis Ã¡veis ados idos Ã¡mos amos Ã­amos
+			arÃ­amos erÃ­amos irÃ­amos Ã¡ramos Ã©ramos Ã­ramos Ã¡vamos emos aremos eremos iremos Ã¡ssemos
+			Ãªssemos Ã­ssemos imos armos ermos irmos eu iu ou ira iras
 
 		If the last step to be obeyed - either step 1 or 2 - altered the word, do step 3*/
 		//---------------------------------------------
@@ -396,67 +396,67 @@ namespace stemming
 			{
 			size_t original_length = text.length();
 			
-			if (delete_if_is_in_rv(text,/*aríamos*/'a', 'A', 'r', 'R', 'í', 'Í', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			if (delete_if_is_in_rv(text,/*arÃ­amos*/'a', 'A', 'r', 'R', 'Ã­', 'Ã', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*eríamos*/'e', 'E', 'r', 'R', 'í', 'Í', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ­amos*/'e', 'E', 'r', 'R', 'Ã­', 'Ã', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*iríamos*/'i', 'I', 'r', 'R', 'í', 'Í', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ­amos*/'i', 'I', 'r', 'R', 'Ã­', 'Ã', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ássemos*/'á', 'Á', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡ssemos*/'Ã¡', 'Ã', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*êssemos*/'ê', 'Ê', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ãªssemos*/'Ãª', 'ÃŠ', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*íssemos*/'í', 'Í', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã­ssemos*/'Ã­', 'Ã', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*aríeis*/'a', 'A', 'r', 'R', 'í', 'Í', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*arÃ­eis*/'a', 'A', 'r', 'R', 'Ã­', 'Ã', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*eríeis*/'e', 'E', 'r', 'R', 'í', 'Í', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ­eis*/'e', 'E', 'r', 'R', 'Ã­', 'Ã', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*iríeis*/'i', 'I', 'r', 'R', 'í', 'Í', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ­eis*/'i', 'I', 'r', 'R', 'Ã­', 'Ã', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ásseis*/'á', 'Á', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡sseis*/'Ã¡', 'Ã', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ésseis*/'é', 'É', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©sseis*/'Ã©', 'Ã‰', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ísseis*/'í', 'Í', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã­sseis*/'Ã­', 'Ã', 's', 'S', 's', 'S', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*áramos*/'á', 'Á', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡ramos*/'Ã¡', 'Ã', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*éramos*/'é', 'É', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©ramos*/'Ã©', 'Ã‰', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*íramos*/'í', 'Í', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã­ramos*/'Ã­', 'Ã', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ávamos*/'á', 'Á', 'v', 'V', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡vamos*/'Ã¡', 'Ã', 'v', 'V', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -556,7 +556,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*áreis*/'á', 'Á', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡reis*/'Ã¡', 'Ã', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -564,7 +564,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*éreis*/'é', 'É', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
+			else if (delete_if_is_in_rv(text,/*Ã©reis*/'Ã©', 'Ã‰', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -572,7 +572,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*íreis*/'í', 'Í', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
+			else if (delete_if_is_in_rv(text,/*Ã­reis*/'Ã­', 'Ã', 'r', 'R', 'e', 'E', 'i', 'I', 's', 'S',false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -580,11 +580,11 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*áveis*/'á', 'Á', 'v', 'V', 'e', 'E', 'i', 'I', 's', 'S',false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡veis*/'Ã¡', 'Ã', 'v', 'V', 'e', 'E', 'i', 'I', 's', 'S',false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*íamos*/'í', 'Í', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S',false) )
+			else if (delete_if_is_in_rv(text,/*Ã­amos*/'Ã­', 'Ã', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S',false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -696,7 +696,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*arás*/'a', 'A', 'r', 'R', 'á', 'Á', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*arÃ¡s*/'a', 'A', 'r', 'R', 'Ã¡', 'Ã', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -704,7 +704,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*erás*/'e', 'E', 'r', 'R', 'á', 'Á', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ¡s*/'e', 'E', 'r', 'R', 'Ã¡', 'Ã', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -712,7 +712,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*irás*/'i', 'I', 'r', 'R', 'á', 'Á', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ¡s*/'i', 'I', 'r', 'R', 'Ã¡', 'Ã', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -732,7 +732,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*íeis*/'í', 'Í', 'e', 'E', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã­eis*/'Ã­', 'Ã', 'e', 'E', 'i', 'I', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -744,7 +744,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ámos*/'á', 'Á', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¡mos*/'Ã¡', 'Ã', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -772,7 +772,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*ará*/'a', 'A', 'r', 'R', 'á', 'Á', false) )
+			else if (delete_if_is_in_rv(text,/*arÃ¡*/'a', 'A', 'r', 'R', 'Ã¡', 'Ã', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -780,7 +780,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*erá*/'e', 'E', 'r', 'R', 'á', 'Á', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ¡*/'e', 'E', 'r', 'R', 'Ã¡', 'Ã', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -788,7 +788,7 @@ namespace stemming
 				{
 				//NOOP (fall through to branching statement)
 				}
-			else if (delete_if_is_in_rv(text,/*irá*/'i', 'I', 'r', 'R', 'á', 'Á', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ¡*/'i', 'I', 'r', 'R', 'Ã¡', 'Ã', false) )
 				{
 				//NOOP (fall through to branching statement)
 				}
@@ -906,7 +906,7 @@ namespace stemming
 		/**Alternatively, if neither steps 1 nor 2 altered the word, do step 4.
 		If the word ends with one of the suffixes 
 
-			-os a i o á í ó 
+			-os a i o Ã¡ Ã­ Ã³ 
 
 		in RV, delete it*/
 		//---------------------------------------------
@@ -928,15 +928,15 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,'á', 'Á') )
+			else if (delete_if_is_in_rv(text,'Ã¡', 'Ã') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,'í', 'Í') )
+			else if (delete_if_is_in_rv(text,'Ã­', 'Ã') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,'ó', 'Ó') )
+			else if (delete_if_is_in_rv(text,'Ã³', 'Ã“') )
 				{
 				return;
 				}
@@ -944,10 +944,10 @@ namespace stemming
 		/**Always do step 5.
 		If the word ends with one of 
 
-			-e é ê 
+			-e Ã© Ãª 
 
 		in RV, delete it, and if preceded by gu (or ci) with the u (or i) in RV, delete the u (or i). 
-		Or if the word ends ç remove the cedilla*/
+		Or if the word ends Ã§ remove the cedilla*/
 		//---------------------------------------------
 		void step_5(std::basic_string<Tchar_type, Tchar_traits>& text) 
 			{
@@ -962,7 +962,7 @@ namespace stemming
 					}
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*é*/'é', 'É', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©*/'Ã©', 'Ã‰', false) )
 				{
 				if (Parent::m_rv <= text.length()-1 &&
 					(is_suffix(text,/*gu*/'g', 'G', 'u', 'U') ||
@@ -973,7 +973,7 @@ namespace stemming
 					}
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ê*/'ê', 'Ê', false) )
+			else if (delete_if_is_in_rv(text,/*Ãª*/'Ãª', 'ÃŠ', false) )
 				{
 				if (Parent::m_rv <= text.length()-1 &&
 					(is_suffix(text,/*gu*/'g', 'G', 'u', 'U') ||
@@ -984,11 +984,11 @@ namespace stemming
 					}
 				return;
 				}
-			else if (text[text.length()-1] == 'Ç')
+			else if (text[text.length()-1] == 'Ã‡')
 				{
 				text[text.length()-1] = 'C';
 				}
-			else if (text[text.length()-1] == 'ç')
+			else if (text[text.length()-1] == 'Ã§')
 				{
 				text[text.length()-1] = 'c';
 				}

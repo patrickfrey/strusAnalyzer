@@ -22,9 +22,9 @@
 namespace stemming
 	{
 	/**The Norwegian alphabet includes the following additional letters, 
-		-æ   å   ø
+		-Ã¦   Ã¥   Ã¸
 	The following letters are vowels: 
-		-a   e   i   o   u   y   æ   å   ø
+		-a   e   i   o   u   y   Ã¦   Ã¥   Ã¸
 	R2 is not used: R1 is defined in the same way as in the German stemmer.*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
@@ -46,7 +46,7 @@ namespace stemming
 			//reset internal data
 			Parent::m_r1 = Parent::m_r2 = Parent::m_rv =0;
 
-			find_r1(text, "aeioøuyåæÅAÆEIOØUY");
+			find_r1(text, "aeioÃ¸uyÃ¥Ã¦Ã…AÃ†EIOÃ˜UY");
 			if (Parent::m_r1 == static_cast<unsigned int>(text.length() ) )
 				{
 				return;

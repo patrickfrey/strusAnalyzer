@@ -22,9 +22,9 @@
 namespace stemming
 	{
 	/**The Danish alphabet includes the following additional letters, 
-		-æ   å   ø 
+		-Ã¦   Ã¥   Ã¸ 
 	The following letters are vowels: 
-		-a   e   i   o   u   y   æ   å   ø 
+		-a   e   i   o   u   y   Ã¦   Ã¥   Ã¸ 
 	A consonant is defined as a non-vowel. 
 
 	R2 is not used: R1 is defined in the same way as in the German stemmer.*/
@@ -50,7 +50,7 @@ namespace stemming
 
 			//see where the R1section begins
 			//R1 is the first consanant after the first vowel
-			find_r1(text, "aeiouyæåøAEIOUYÆÅØ");
+			find_r1(text, "aeiouyÃ¦Ã¥Ã¸AEIOUYÃ†Ã…Ã˜");
 			if (Parent::m_r1 == text.length() )
 				{
 				return;
@@ -210,10 +210,10 @@ namespace stemming
 				return;
 				}
 			/**Define a valid s-ending as one of 
-				-a b c d f g h j k l m n o p r t v y z å*/
+				-a b c d f g h j k l m n o p r t v y z Ã¥*/
 			else if (is_suffix_in_r1(text,'s', 'S') )
 				{
-				if (string_util::is_one_of(text[text.length()-2], "abcdfghjklmnoprtvyzåABCDFGHJKLMNOPRTVYZÅ") )
+				if (string_util::is_one_of(text[text.length()-2], "abcdfghjklmnoprtvyzÃ¥ABCDFGHJKLMNOPRTVYZÃ…") )
 					{
 					text.erase(text.end()-1, text.end() );
 					update_r_sections(text);
@@ -259,8 +259,8 @@ namespace stemming
 			-#ig   lig   elig   els 
 				-delete, and then repeat step 2 
 
-			-#løst 
-				-replace with løs*/
+			-#lÃ¸st 
+				-replace with lÃ¸s*/
 		//---------------------------------------------
 		void step_3(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
@@ -276,7 +276,7 @@ namespace stemming
 				step_2(text);
 				return;
 				}
-			else if (is_suffix_in_r1(text,/*løst*/'l', 'L', 'ø', 'Ø', 's', 'S', 't', 'T') )
+			else if (is_suffix_in_r1(text,/*lÃ¸st*/'l', 'L', 'Ã¸', 'Ã˜', 's', 'S', 't', 'T') )
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
@@ -308,7 +308,7 @@ namespace stemming
 			if (Parent::m_r1 <= text.length()-1 &&
 				string_util::tolower_western(text[text.length()-2]) == string_util::tolower_western(text[text.length()-1]) )
 				{
-				if (!string_util::is_one_of(text[text.length()-2], "aeiouyæåøAEIOUYÆÅØ") )
+				if (!string_util::is_one_of(text[text.length()-2], "aeiouyÃ¦Ã¥Ã¸AEIOUYÃ†Ã…Ã˜") )
 					{
 					text.erase(text.end()-1, text.end() );
 					update_r_sections(text);

@@ -37,6 +37,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class TokenMinerFactory;
 
 /// \brief Analyzer implementation based on textwolf
 class Analyzer
@@ -44,6 +46,7 @@ class Analyzer
 {
 public:
 	Analyzer(
+		const TokenMinerFactory& tokenMinerFactory,
 		const std::string& source);
 
 	virtual ~Analyzer();

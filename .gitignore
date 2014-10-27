@@ -25,3 +25,4 @@
 setenv.sh
 
 # Compiled Programs
+src/strusAnalyzer/strusAnalyzer

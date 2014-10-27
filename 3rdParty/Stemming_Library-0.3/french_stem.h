@@ -23,11 +23,11 @@ namespace stemming
 	{
 	/**Letters in French include the following accented forms:
 
-		-â à ç ë é ê è ï î ô û ù 
+		-Ã¢ Ã  Ã§ Ã« Ã© Ãª Ã¨ Ã¯ Ã® Ã´ Ã» Ã¹ 
 
 	The following letters are vowels:
 	
-		-a e i o u y â à ë é ê è ï î ô û ù*/
+		-a e i o u y Ã¢ Ã  Ã« Ã© Ãª Ã¨ Ã¯ Ã® Ã´ Ã» Ã¹*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
 			typename Tchar_traits = std::char_traits<Tchar_type> >
@@ -50,11 +50,11 @@ namespace stemming
 			Parent::m_r1 = Parent::m_r2 = Parent::m_rv =0;
 
 			trim_western_punctuation(text);
-			hash_french_yui(text, "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
+			hash_french_yui(text, "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
 
-			find_r1(text, "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
-			find_r2(text, "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
-			find_french_rv(text, "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
+			find_r1(text, "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
+			find_r2(text, "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
+			find_french_rv(text, "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
 
 			size_t length = text.length();
 			step_1(text);
@@ -121,9 +121,9 @@ namespace stemming
 				-if preceded by iv, delete if in R2 (and if further preceded by at, delete if in R2), otherwise, 
 				-if preceded by eus, delete if in R2, else replace by eux if in R1, otherwise, 
 				-if preceded by abl or iqU, delete if in R2, otherwise, 
-				-if preceded by ièr or Ièr, replace by i if in RV 
+				-if preceded by iÃ¨r or IÃ¨r, replace by i if in RV 
 
-			-ité ités 
+			-itÃ© itÃ©s 
 				-delete if in R2 
 				-if preceded by abil, delete if in R2, else replace by abl, otherwise, 
 				-if preceded by ic, delete if in R2, else replace by iqU, otherwise, 
@@ -160,7 +160,7 @@ namespace stemming
 			if (is_suffix(text,/*issements*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'e', 'E', 'n', 'N', 't', 'T', 's', 'S') )
 				{
 				if (Parent::m_r1 <= static_cast<unsigned int>(text.length()-9) &&
-					!string_util::is_one_of(text[text.length()-10], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-10], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-9, text.end() );
 					m_step_1_successful = true;
@@ -170,7 +170,7 @@ namespace stemming
 			else if (is_suffix(text,/*issement*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E', 'm', 'M', 'e', 'E', 'n', 'N', 't', 'T') )
 				{
 				if (Parent::m_r1 <= static_cast<unsigned int>(text.length()-8) &&
-					!string_util::is_one_of(text[text.length()-9], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-9], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-8, text.end() );
 					m_step_1_successful = true;
@@ -274,13 +274,13 @@ namespace stemming
 						update_r_sections(text);
 						}
 					}
-				else if (is_suffix_in_r2(text,/*ièr*/'i', 'I', 'è', 'È', 'r', 'R') )
+				else if (is_suffix_in_r2(text,/*iÃ¨r*/'i', 'I', 'Ã¨', 'Ãˆ', 'r', 'R') )
 					{
 					text.erase(text.end()-2, text.end() );
 					update_r_sections(text);
 					}
 				else if (Parent::m_r2 <= static_cast<int>(text.length()-3) &&
-					(text[text.length()-2] == 'è' || text[text.length()-2] == 'È') &&
+					(text[text.length()-2] == 'Ã¨' || text[text.length()-2] == 'Ãˆ') &&
 					(text[text.length()-1] == 'r' || text[text.length()-1] == 'R') &&
 					is_either(text[text.length()-3], LOWER_I_HASH, UPPER_I_HASH) )
 					{
@@ -399,13 +399,13 @@ namespace stemming
 						update_r_sections(text);
 						}
 					}
-				else if (is_suffix_in_rv(text,/*ièr*/'i', 'I', 'è', 'È', 'r', 'R') )
+				else if (is_suffix_in_rv(text,/*iÃ¨r*/'i', 'I', 'Ã¨', 'Ãˆ', 'r', 'R') )
 					{
 					text.erase(text.end()-2, text.end() );
 					update_r_sections(text);
 					}
 				else if (Parent::m_rv <= static_cast<int>(text.length()-3) &&
-					(text[text.length()-2] == 'è' || text[text.length()-2] == 'È') &&
+					(text[text.length()-2] == 'Ã¨' || text[text.length()-2] == 'Ãˆ') &&
 					(text[text.length()-1] == 'r' || text[text.length()-1] == 'R') &&
 					is_either(text[text.length()-3], LOWER_I_HASH, UPPER_I_HASH) )
 					{
@@ -421,7 +421,7 @@ namespace stemming
 				{
 				//the proceeding vowel must also be n RV
 				if (Parent::m_rv <= text.length()-6 &&
-					string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					update_r_sections(text);	
@@ -463,7 +463,7 @@ namespace stemming
 				{
 				//the proceeding vowel must also be n RV
 				if (Parent::m_rv <= text.length()-5 &&
-					string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					update_r_sections(text);	
@@ -516,7 +516,7 @@ namespace stemming
 				m_step_1_successful = true;
 				return;
 				}
-			else if (delete_if_is_in_r2(text,/*ités*/'i', 'I', 't', 'T', 'é', 'É', 's', 'S', false) )
+			else if (delete_if_is_in_r2(text,/*itÃ©s*/'i', 'I', 't', 'T', 'Ã©', 'Ã‰', 's', 'S', false) )
 				{
 				if (is_suffix(text,/*abil*/'a', 'A', 'b', 'B', 'i', 'I', 'l', 'L') )
 					{
@@ -569,7 +569,7 @@ namespace stemming
 				return;
 				}
 			//3
-			else if (delete_if_is_in_r2(text,/*ité*/'i', 'I', 't', 'T', 'é', 'É', false) )
+			else if (delete_if_is_in_r2(text,/*itÃ©*/'i', 'I', 't', 'T', 'Ã©', 'Ã‰', false) )
 				{
 				if (is_suffix(text,/*abil*/'a', 'A', 'b', 'B', 'i', 'I', 'l', 'L') )
 					{
@@ -661,7 +661,7 @@ namespace stemming
 
 		Search for the longest among the following suffixes and if found, delete if preceded by a non-vowel. 
 
-			-îmes ît îtes i ie ies ir ira irai iraIent irais irait iras irent irez iriez irions irons iront is issaIent
+			-Ã®mes Ã®t Ã®tes i ie ies ir ira irai iraIent irais irait iras irent irez iriez irions irons iront is issaIent
 			issais issait issant issante issantes issants isse issent isses issez issiez issions issons it 
 
 		(Note that the non-vowel itself must also be in RV.)*/
@@ -679,7 +679,7 @@ namespace stemming
 				is_either(text[text.length()-4], LOWER_I_HASH, UPPER_I_HASH) )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-9], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-9], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-8, text.end() );
 					return;
@@ -688,7 +688,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issantes*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'n', 'N', 't', 'T', 'e', 'E', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-9) &&
-					!string_util::is_one_of(text[text.length()-9], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-9], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-8, text.end() );
 					return;
@@ -704,7 +704,7 @@ namespace stemming
 				is_either(text[text.length()-4], LOWER_I_HASH, UPPER_I_HASH) )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-8) &&
-					!string_util::is_one_of(text[text.length()-8], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-8], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-7, text.end() );
 					return;
@@ -713,7 +713,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issante*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'n', 'N', 't', 'T', 'e', 'E') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-8) &&
-					!string_util::is_one_of(text[text.length()-8], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-8], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-7, text.end() );
 					return;
@@ -722,7 +722,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issants*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'n', 'N', 't', 'T', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-8) &&
-					!string_util::is_one_of(text[text.length()-8], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-8], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-7, text.end() );
 					return;
@@ -731,7 +731,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issions*/'i', 'I', 's', 'S', 's', 'S', 'i', 'I', 'o', 'O', 'n', 'N', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-8) &&
-					!string_util::is_one_of(text[text.length()-8], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-8], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-7, text.end() );
 					return;
@@ -740,7 +740,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irions*/'i', 'I', 'r', 'R', 'i', 'I', 'o', 'O', 'n', 'N', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -749,7 +749,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issais*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'i', 'I', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -758,7 +758,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issait*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'i', 'I', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -767,7 +767,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issant*/'i', 'I', 's', 'S', 's', 'S', 'a', 'A', 'n', 'N', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -776,7 +776,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issent*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E', 'n', 'N', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -785,7 +785,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issiez*/'i', 'I', 's', 'S', 's', 'S', 'i', 'I', 'e', 'E', 'z', 'Z') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -794,7 +794,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issons*/'i', 'I', 's', 'S', 's', 'S', 'o', 'O', 'n', 'N', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-7) &&
-					!string_util::is_one_of(text[text.length()-7], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-7], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-6, text.end() );
 					return;
@@ -803,7 +803,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irais*/'i', 'I', 'r', 'R', 'a', 'A', 'i', 'I', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -812,7 +812,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irait*/'i', 'I', 'r', 'R', 'a', 'A', 'i', 'I', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -821,7 +821,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irent*/'i', 'I', 'r', 'R', 'e', 'E', 'n', 'N', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -830,7 +830,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*iriez*/'i', 'I', 'r', 'R', 'i', 'I', 'e', 'E', 'z', 'Z') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -839,7 +839,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irons*/'i', 'I', 'r', 'R', 'o', 'O', 'n', 'N', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -848,7 +848,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*iront*/'i', 'I', 'r', 'R', 'o', 'O', 'n', 'N', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -857,7 +857,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*isses*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6) &&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
@@ -866,25 +866,25 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*issez*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E', 'z', 'Z') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-6)&&
-					!string_util::is_one_of(text[text.length()-6], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-6], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-5, text.end() );
 					return;
 					}
 				}
-			else if (is_suffix_in_rv(text,/*îmes*/'î', 'Î', 'm', 'M', 'e', 'E', 's', 'S') )
+			else if (is_suffix_in_rv(text,/*Ã®mes*/'Ã®', 'Ã', 'm', 'M', 'e', 'E', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
 					}
 				}
-			else if (is_suffix_in_rv(text,/*îtes*/'î', 'Î', 't', 'T', 'e', 'E', 's', 'S') )
+			else if (is_suffix_in_rv(text,/*Ã®tes*/'Ã®', 'Ã', 't', 'T', 'e', 'E', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
@@ -893,7 +893,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irai*/'i', 'I', 'r', 'R', 'a', 'A', 'i', 'I') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
@@ -902,7 +902,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*iras*/'i', 'I', 'r', 'R', 'a', 'A', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
@@ -911,7 +911,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*irez*/'i', 'I', 'r', 'R', 'e', 'E', 'z', 'Z') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
@@ -920,7 +920,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*isse*/'i', 'I', 's', 'S', 's', 'S', 'e', 'E') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-5) &&
-					!string_util::is_one_of(text[text.length()-5], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-5], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-4, text.end() );
 					return;
@@ -929,7 +929,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*ies*/'i', 'I', 'e', 'E', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-4) &&
-					!string_util::is_one_of(text[text.length()-4], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-4], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-3, text.end() );
 					return;
@@ -938,16 +938,16 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*ira*/'i', 'I', 'r', 'R', 'a', 'A') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-4) &&
-					!string_util::is_one_of(text[text.length()-4], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-4], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-3, text.end() );
 					return;
 					}
 				}
-			else if (is_suffix_in_rv(text,/*ît*/'î', 'Î', 't', 'T') )
+			else if (is_suffix_in_rv(text,/*Ã®t*/'Ã®', 'Ã', 't', 'T') )
 				{
 				if (Parent::m_rv <= text.length()-3 &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-2, text.end() );
 					return;
@@ -956,7 +956,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*ie*/'i', 'I', 'e', 'E') )
 				{
 				if (Parent::m_rv <= text.length()-3 &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-2, text.end() );
 					return;
@@ -965,7 +965,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*ir*/'i', 'I', 'r', 'R') )
 				{
 				if (Parent::m_rv <= text.length()-3 &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-2, text.end() );
 					return;
@@ -974,7 +974,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*is*/'i', 'I', 's', 'S') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-3) &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-2, text.end() );
 					return;
@@ -983,7 +983,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text,/*it*/'i', 'I', 't', 'T') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-3) &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-2, text.end() );
 					return;
@@ -992,7 +992,7 @@ namespace stemming
 			else if (is_suffix_in_rv(text, 'i', 'I') )
 				{
 				if (Parent::m_rv <= static_cast<int>(text.length()-2) &&
-					!string_util::is_one_of(text[text.length()-2], "aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ") )
+					!string_util::is_one_of(text[text.length()-2], "aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™") )
 					{
 					text.erase(text.end()-1, text.end() );
 					return;
@@ -1007,10 +1007,10 @@ namespace stemming
 			-ions 
 				-delete if in R2 
 
-			-é ée ées és èrent er era erai eraIent erais erait eras erez eriez erions erons eront ez iez 
+			-Ã© Ã©e Ã©es Ã©s Ã¨rent er era erai eraIent erais erait eras erez eriez erions erons eront ez iez 
 				-delete 
 
-			-âmes ât âtes a ai aIent ais ait ant ante antes ants as asse assent asses assiez assions 
+			-Ã¢mes Ã¢t Ã¢tes a ai aIent ais ait ant ante antes ants as asse assent asses assiez assions 
 				-delete 
 				-if preceded by e, delete 
 
@@ -1070,7 +1070,7 @@ namespace stemming
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*èrent*/'è', 'È', 'r', 'R', 'e', 'E', 'n', 'N', 't', 'T', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¨rent*/'Ã¨', 'Ãˆ', 'r', 'R', 'e', 'E', 'n', 'N', 't', 'T', false) )
 				{
 				return;
 				}
@@ -1099,12 +1099,12 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*âmes*/'â', 'Â', 'm', 'M', 'e', 'E', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¢mes*/'Ã¢', 'Ã‚', 'm', 'M', 'e', 'E', 's', 'S', false) )
 				{
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*âtes*/'â', 'Â', 't', 'T', 'e', 'E', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¢tes*/'Ã¢', 'Ã‚', 't', 'T', 'e', 'E', 's', 'S', false) )
 				{
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
@@ -1151,7 +1151,7 @@ namespace stemming
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ées*/'é', 'É', 'e', 'E', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©es*/'Ã©', 'Ã‰', 'e', 'E', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1163,7 +1163,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ât*/'â', 'Â', 't', 'T', false) )
+			else if (delete_if_is_in_rv(text,/*Ã¢t*/'Ã¢', 'Ã‚', 't', 'T', false) )
 				{
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
@@ -1178,11 +1178,11 @@ namespace stemming
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ée*/'é', 'É', 'e', 'E', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©e*/'Ã©', 'Ã‰', 'e', 'E', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*és*/'é', 'É', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©s*/'Ã©', 'Ã‰', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1199,13 +1199,13 @@ namespace stemming
 				delete_if_is_in_rv(text, 'e', 'E');
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*é*/'é', 'É', false) )
+			else if (delete_if_is_in_rv(text,/*Ã©*/'Ã©', 'Ã‰', false) )
 				{
 				return;
 				}
 			}
 		/**If the last step to be obeyed - either step 1, 2a or 2b - altered the word, do step 3 
-		Replace final Y with i or final ç with c */
+		Replace final Y with i or final Ã§ with c */
 		//---------------------------------------------
 		void step_3(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
@@ -1228,7 +1228,7 @@ namespace stemming
 			}
 		/**Alternatively, if the last step to be obeyed did not alter the word, do step 4
 
-		If the word ends s, not preceded by a, i, o, u, è or s, delete it. 
+		If the word ends s, not preceded by a, i, o, u, Ã¨ or s, delete it. 
 
 		In the rest of step 4, all tests are confined to the RV region. 
 
@@ -1237,13 +1237,13 @@ namespace stemming
 			-ion 
 				-delete if in R2 and preceded by s or t 
 
-			-ier ière Ier Ière 
+			-ier iÃ¨re Ier IÃ¨re 
 				-replace with i 
 
 			-e 
 				-delete 
 
-			-ë 
+			-Ã« 
 				-if preceded by gu, delete 
 
 		(So note that ion is removed only when it is in R2 - as well as being in RV -
@@ -1252,13 +1252,13 @@ namespace stemming
 		void step_4(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if ((text[text.length()-1] == 's' || text[text.length()-1] == 'S') &&
-				!string_util::is_one_of(text[text.length()-2], "aiouèsAIOUÈS") )
+				!string_util::is_one_of(text[text.length()-2], "aiouÃ¨sAIOUÃˆS") )
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
 				}
 
-			if (is_suffix_in_rv(text,/*ière*/'i', 'I', 'è', 'È', 'r', 'R', 'e', 'E') )
+			if (is_suffix_in_rv(text,/*iÃ¨re*/'i', 'I', 'Ã¨', 'Ãˆ', 'r', 'R', 'e', 'E') )
 				{
 				text.erase(text.end()-3, text.end() );
 				text[text.length()-1] = 'i';
@@ -1266,7 +1266,7 @@ namespace stemming
 				return;
 				}
 			else if (Parent::m_rv <= static_cast<int>(text.length()-4) &&
-				(text[text.length()-3] == 'è' || text[text.length()-3] == 'È') &&
+				(text[text.length()-3] == 'Ã¨' || text[text.length()-3] == 'Ãˆ') &&
 				(text[text.length()-2] == 'r' || text[text.length()-2] == 'R') &&
 				(text[text.length()-1] == 'e' || text[text.length()-1] == 'E') &&
 				is_either(text[text.length()-4], LOWER_I_HASH, UPPER_I_HASH) )
@@ -1303,7 +1303,7 @@ namespace stemming
 					}
 				return;
 				}
-			else if (is_suffix_in_rv(text,/*ë*/'ë', 'Ë') )
+			else if (is_suffix_in_rv(text,/*Ã«*/'Ã«', 'Ã‹') )
 				{
 				if (text.length() >= 3 &&
 					(is_either(text[text.length()-3], 'g', 'G') &&
@@ -1332,13 +1332,13 @@ namespace stemming
 				update_r_sections(text);
 				}
 			}
-		///If the words ends é or è followed by at least one non-vowel, remove the accent from the e. 
+		///If the words ends Ã© or Ã¨ followed by at least one non-vowel, remove the accent from the e. 
 		//---------------------------------------------
 		void step_6(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
-			size_t last_e = text.find_last_of("éèÉÈ");
-			size_t last_vowel = text.find_last_of("aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
-			size_t last_consonant = text.find_last_not_of("aeiouyâàëéêèïîôûùAEIOUYÂÀËÉÊÈÏÎÔÛÙ");
+			size_t last_e = text.find_last_of("Ã©Ã¨Ã‰Ãˆ");
+			size_t last_vowel = text.find_last_of("aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
+			size_t last_consonant = text.find_last_not_of("aeiouyÃ¢Ã Ã«Ã©ÃªÃ¨Ã¯Ã®Ã´Ã»Ã¹AEIOUYÃ‚Ã€Ã‹Ã‰ÃŠÃˆÃÃÃ”Ã›Ã™");
 			if (last_e == std::basic_string<Tchar_type, Tchar_traits>::npos ||
 				last_consonant == std::basic_string<Tchar_type, Tchar_traits>::npos)
 				{

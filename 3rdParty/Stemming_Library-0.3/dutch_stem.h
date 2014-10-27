@@ -22,7 +22,7 @@
 namespace stemming
 	{
 	/**Dutch includes the following accented forms 
-		-ä   ë   ï   ö   ü   á   é   í   ó   ú   è*/
+		-Ã¤   Ã«   Ã¯   Ã¶   Ã¼   Ã¡   Ã©   Ã­   Ã³   Ãº   Ã¨*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
 			typename Tchar_traits = std::char_traits<Tchar_type> >
@@ -51,10 +51,10 @@ namespace stemming
 			trim_western_punctuation(text);
 
 			///Hash initial y, y after a vowel, and i between vowels
-			hash_dutch_yi(text, "aeiouyèAEIOUYÈ");
+			hash_dutch_yi(text, "aeiouyÃ¨AEIOUYÃˆ");
 
-			find_r1(text, "aeiouyèAEIOUYÈ");
-			find_r2(text, "aeiouyèAEIOUYÈ");
+			find_r1(text, "aeiouyÃ¨AEIOUYÃˆ");
+			find_r2(text, "aeiouyÃ¨AEIOUYÃˆ");
 			///R1 must have at least 3 characters in front of it
 			if (Parent::m_r1 < 3)
 				{
@@ -103,7 +103,7 @@ namespace stemming
 			else if (is_suffix(text,/*ene*/'e', 'E', 'n', 'N', 'e', 'E')	)
 				{
 				if (Parent::m_r1 <= text.length()-3 &&
-					!string_util::is_one_of(text[text.length()-4], "aeiouyèAEIOUYÈ") &&
+					!string_util::is_one_of(text[text.length()-4], "aeiouyÃ¨AEIOUYÃˆ") &&
 					(text.length() < 6 ||
 					//"gem" in front of "en" ending
 					!(is_either(text[text.length()-6], 'g', 'G') &&
@@ -124,7 +124,7 @@ namespace stemming
 			else if (is_suffix(text,/*en*/'e', 'E', 'n', 'N') )
 				{
 				if (Parent::m_r1 <= text.length()-2 &&
-					!string_util::is_one_of(text[text.length()-3], "aeiouyèAEIOUYÈ") &&
+					!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¨AEIOUYÃˆ") &&
 					(text.length() < 5 ||
 					!(is_either(text[text.length()-5], 'g', 'G') &&
 					is_either(text[text.length()-4], 'e', 'E') &&
@@ -142,7 +142,7 @@ namespace stemming
 				return;
 				}
 			else if (is_suffix(text,/*se*/'s', 'S', 'e', 'E') &&
-				!string_util::is_one_of(text[text.length()-3], "aeèiouyjAEÈIOUYJ"))
+				!string_util::is_one_of(text[text.length()-3], "aeÃ¨iouyjAEÃˆIOUYJ"))
 				{
 				if (Parent::m_r1 <= text.length()-2)
 					{
@@ -153,7 +153,7 @@ namespace stemming
 				}
 			///Define a valid s-ending as a non-vowel other than j
 			else if (is_suffix(text, 's', 'S') &&
-				!string_util::is_one_of(text[text.length()-2], "aeèiouyjAEÈIOUYJ"))
+				!string_util::is_one_of(text[text.length()-2], "aeÃ¨iouyjAEÃˆIOUYJ"))
 				{
 				if (Parent::m_r1 <= text.length()-1)
 					{
@@ -172,11 +172,11 @@ namespace stemming
 			if (is_suffix(text, 'e', 'E') )
 				{
 				if (Parent::m_r1 <= text.length()-1 &&
-					!string_util::is_one_of(text[text.length()-2], "aeiouyèAEIOUYUÈ") )
+					!string_util::is_one_of(text[text.length()-2], "aeiouyÃ¨AEIOUYUÃˆ") )
 					{
 					//watch out for vowel I/Y vowel
 					if (string_util::is_one_of(text[text.length()-2], "iyIY") &&
-						string_util::is_one_of(text[text.length()-3], "aeiouyèAEIOUYÈ") )
+						string_util::is_one_of(text[text.length()-3], "aeiouyÃ¨AEIOUYÃˆ") )
 						{
 						return;
 						}
@@ -211,9 +211,9 @@ namespace stemming
 					if (Parent::m_r1 <= text.length()-2 &&
 						is_suffix(text, 'e', 'E', 'n', 'N') )
 						{
-						if ((!string_util::is_one_of(text[text.length()-3], "aeiouyèAEIOUYÈ") ||
+						if ((!string_util::is_one_of(text[text.length()-3], "aeiouyÃ¨AEIOUYÃˆ") ||
 							(string_util::is_one_of(text[text.length()-3], "iyYI") &&
-							string_util::is_one_of(text[text.length()-4], "aeiouyèAEIOUYÈ"))) &&
+							string_util::is_one_of(text[text.length()-4], "aeiouyÃ¨AEIOUYÃˆ"))) &&
 							(text.length() < 5 ||
 							!(is_either(text[text.length()-5], 'g', 'G') &&
 							is_either(text[text.length()-4], 'e', 'E') &&
@@ -309,8 +309,8 @@ namespace stemming
 			{
 			//undouble consecutive (same) consanants
 			if (text.length() >= 4 &&
-				!string_util::is_one_of(text[text.length()-4], "aeiouyèAEIOUYÈ") &&
-				!string_util::is_one_of(text[text.length()-1], "aeiouyèAEIOUYÈ") &&
+				!string_util::is_one_of(text[text.length()-4], "aeiouyÃ¨AEIOUYÃˆ") &&
+				!string_util::is_one_of(text[text.length()-1], "aeiouyÃ¨AEIOUYÃˆ") &&
 				text[text.length()-1] != LOWER_I_HASH &&
 				text[text.length()-1] != UPPER_I_HASH &&
 				string_util::is_one_of(text[text.length()-2], "aeouAEOU") &&

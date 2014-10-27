@@ -46,7 +46,7 @@ namespace stemming
 
 	But it is hardly surprising that after twenty years of use of the Porter stemmer, certain
 	improvements do suggest themselves, and a new algorithm for English is therefore offered
-	here. (It could be called the ‘Porter2’ stemmer to distinguish it from the Porter stemmer,
+	here. (It could be called the Â‘Porter2Â’ stemmer to distinguish it from the Porter stemmer,
 	from which it derives.) The changes are not so very extensive: (1) terminating y is changed
 	to i rather less often, (2) suffix us does not lose its s, (3) a few additional suffixes
 	are included for removal, including (4) suffix ly. In addition, a small list of exceptional

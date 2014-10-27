@@ -22,9 +22,9 @@
 namespace stemming
 	{
 	/**The Swedish alphabet includes the following additional letters, 
-		-ä   å   ö 
+		-Ã¤   Ã¥   Ã¶ 
 	The following letters are vowels: 
-		-a   e   i   o   u   y   ä   å   ö 
+		-a   e   i   o   u   y   Ã¤   Ã¥   Ã¶ 
 	R2 is not used: R1 is defined in the same way as in the German stemmer.*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
@@ -49,7 +49,7 @@ namespace stemming
 
 			//see where the R1 section begins
 			//R1 is the first consanant after the first vowel
-			find_r1(text, "aeiouyåäöAEIOUYÅÄÖ");
+			find_r1(text, "aeiouyÃ¥Ã¤Ã¶AEIOUYÃ…Ã„Ã–");
 			if (Parent::m_r1 == static_cast<unsigned int>(text.length() ) )
 				{
 				return;
@@ -242,7 +242,7 @@ namespace stemming
 
 			-dd   gd   nn   dt   gt   kt   tt 
 
-		(For example, friskt -> frisk, fröknarnn -> fröknarn)*/
+		(For example, friskt -> frisk, frÃ¶knarnn -> frÃ¶knarn)*/
 		//---------------------------------------------
 		void step_2(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{			
@@ -286,8 +286,8 @@ namespace stemming
 			-lig   ig   els 
 				-delete 
 
-			-löst 
-				-replace with lös 
+			-lÃ¶st 
+				-replace with lÃ¶s 
 
 			-fullt 
 				-replace with full*/
@@ -299,7 +299,7 @@ namespace stemming
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
 				}
-			else if (is_suffix_in_r1(text,/*löst*/'l', 'L', 'ö', 'Ö', 's', 'S', 't', 'T') )
+			else if (is_suffix_in_r1(text,/*lÃ¶st*/'l', 'L', 'Ã¶', 'Ã–', 's', 'S', 't', 'T') )
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);

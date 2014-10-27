@@ -29,6 +29,7 @@
 #include "analyzer.hpp"
 #include "strus/tokenMinerLib.hpp"
 #include "strus/tokenMiner.hpp"
+#include "strus/tokenMinerFactory.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include "parser/lexems.hpp"
@@ -69,12 +70,36 @@ static std::string errorPosition( const char* base, const char* itr)
 class Analyzer::DocumentParser
 {
 public:
-	DocumentParser(){}
+	DocumentParser()
+	{}
 
-	void addExpression( const std::string& featurename, const std::string& expression, const std::string& type)
+	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner)
 	{
-		int featidx = createFeatureDef( featurename, type);
-		m_automaton.addExpression( featidx, expression.c_str(), expression.size());
+		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer()));
+		int featidx = m_featuredefar.size();
+		int errorpos = m_automaton.addExpression( featidx, expression.c_str(), expression.size());
+		if (errorpos)
+		{
+			int errorsize = expression.size() - errorpos;
+			std::string locstr;
+			if (errorsize <= 0)
+			{
+				locstr = "end of expression";
+			}
+			else
+			{
+				if (errorsize > 10) errorsize = 10;
+				if (errorpos == 1)
+				{
+					locstr = "start of expression";
+				}
+				else
+				{
+					locstr = std::string("'...") + std::string( expression.c_str() + (errorpos - 1), errorsize) + "'";
+				}
+			}
+			throw std::runtime_error( std::string( "error in selection expression '") + expression + "' at " + locstr);
+		}
 	}
 
 	class FeatureDef
@@ -148,6 +173,7 @@ public:
 				m_position = m_scanner.getPosition() - m_itr->size();
 			}
 			featidx = *m_selitr;
+			++m_selitr;
 			elem = m_itr->content();
 			elemsize = m_itr->size();
 			return true;
@@ -168,15 +194,6 @@ public:
 		return m_featuredefar[ featidx-1];
 	}
 
-	int createFeatureDef( const std::string& name_,
-				const std::string& type_)
-	{
-		const TokenMiner* miner = getTokenMiner( type_);
-		if (!miner) throw std::runtime_error( std::string( "unknown token type '") + type_ + "'");
-		m_featuredefar.push_back( FeatureDef( name_, miner->tokenizer(), miner->normalizer()));
-		return m_featuredefar.size();
-	}
-
 	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	const Automaton* automaton() const	
 	{
@@ -195,6 +212,7 @@ Analyzer::~Analyzer()
 }
 
 Analyzer::Analyzer(
+		const TokenMinerFactory& tokenMinerFactory,
 		const std::string& source)
 	:m_parser(0)
 {
@@ -243,7 +261,10 @@ Analyzer::Analyzer(
 			}
 			parse_OPERATOR(src);
 
-			m_parser->addExpression( featurename, xpathexpr, method);
+			const TokenMiner* miner = tokenMinerFactory.get( method);
+			if (!miner) throw std::runtime_error( std::string( "unknown token type '") + method + "'");
+
+			m_parser->addExpression( featurename, xpathexpr, miner);
 		}
 	}
 	catch (const std::runtime_error& e)
@@ -265,7 +286,7 @@ static void mapPositions( std::vector<AnalyzerInterface::Term>& ar, std::size_t 
 		pset.insert( ri->pos());
 	}
 	std::map<unsigned int, unsigned int> posmap;
-	std::set<unsigned int>::const_reverse_iterator pi = pset.rbegin(), pe = pset.rend();
+	std::set<unsigned int>::const_iterator pi = pset.begin(), pe = pset.end();
 	for (; pi != pe; ++pi)
 	{
 		posmap[ *pi] = ++pcnt;

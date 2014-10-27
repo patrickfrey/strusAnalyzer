@@ -1,0 +1,18 @@
+0.3 Release
+----------------------------------
+1. Fixed index bug in Dutch stemmer (wasn't checking size of string when it should have been).
+2. Fixed a compiler bug where a few inclusions were missing.
+3. Added "round" function to utility library for doing accurate integer rounding.
+4. Removed unused variable in English stemmer.
+5. Fixed compiler cast warning in "find_r2" function.
+6. Fixed access violation in "hash_german_yu", "hash_french_yui", and "hash_italian_ui" caused by one letter words.
+7. Fixed compiler error in stricmp function.
+8. Added "strstr" and "strcspn" char/wchar_t wrappers to string_util.h.
+9. Added "size_of_array" macro to utilities.h.
+10. Removed debugging hack code in "is_either" function in utilities.h.
+
+
+0.2 Release
+----------------------------------
+1. Fixed a couple of syntax errors in Finnish and French stemmers that GCC picked up.
+2. Added support for German variant algorithm, where umlauted words are expanded to English equivalent.

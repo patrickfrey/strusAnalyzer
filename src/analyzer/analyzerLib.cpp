@@ -34,10 +34,11 @@
 using namespace strus;
 
 DLL_PUBLIC AnalyzerInterface*
-	createAnalyzer(
+	strus::createAnalyzer(
+		const TokenMinerFactory& tokenMinerFactory,
 		const std::string& programSource)
 {
-	return new Analyzer( programSource);
+	return new Analyzer( tokenMinerFactory, programSource);
 }
 
 

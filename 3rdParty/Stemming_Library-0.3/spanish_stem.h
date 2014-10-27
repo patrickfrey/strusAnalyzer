@@ -22,10 +22,10 @@
 namespace stemming
 	{
 	/**Letters in Spanish include the following accented forms, 
-		-· È Ì Û ˙ ¸ Ò 
+		-√° √© √≠ √≥ √∫ √º √± 
 	
 	The following letters are vowels: 
-		-a e i o u · È Ì Û ˙ ¸ 
+		-a e i o u √° √© √≠ √≥ √∫ √º 
 	
 	R2 is defined in the usual way - see the note on R1 and R2. 
 
@@ -38,7 +38,7 @@ namespace stemming
 
 	For example, 
 
-		m a c h o     o l i v a     t r a b a j o     · u r e o
+		m a c h o     o l i v a     t r a b a j o     √° u r e o
 			|...|         |...|         |.......|         |...|*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
@@ -62,9 +62,9 @@ namespace stemming
 
 			trim_western_punctuation(text);
 
-			find_r1(text, "aeiou·ÈÌÛ˙¸AEIOU¡…Õ”⁄‹");
-			find_r2(text, "aeiou·ÈÌÛ˙¸AEIOU¡…Õ”⁄‹");
-			find_spanish_rv(text, "aeiou·ÈÌÛ˙¸AEIOU¡…Õ”⁄‹");
+			find_r1(text, "aeiou√°√©√≠√≥√∫√ºAEIOU√Å√â√ç√ì√ö√ú");
+			find_r2(text, "aeiou√°√©√≠√≥√∫√ºAEIOU√Å√â√ç√ì√ö√ú");
+			find_spanish_rv(text, "aeiou√°√©√≠√≥√∫√ºAEIOU√Å√â√ç√ì√ö√ú");
 
 			step_0(text);
 			step_1(text);
@@ -81,14 +81,14 @@ namespace stemming
 
 			and delete it, if comes after one of 
 
-			-#iÈndo ·ndo ·r Èr Ìr
+			-#i√©ndo √°ndo √°r √©r √≠r
 			-#ando iendo ar er ir
 			-#yendo following u 
 
 		in RV. In the case of (c), yendo must lie in RV, but the preceding u can be outside it. 
 
 		In the case of (a), deletion is followed by removing the acute accent
-		(for example, haciÈndola -> haciendo).*/
+		(for example, haci√©ndola -> haciendo).*/
 		//---------------------------------------------
 		void step_0(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
@@ -190,9 +190,9 @@ namespace stemming
 			{
 			if ((text.length() >= suffix_length + 5) &&
 				Parent::m_rv <= static_cast<int>(text.length()-5-suffix_length) &&
-				/*iÈndo*/
+				/*i√©ndo*/
 				(is_either(text[text.length()-5-suffix_length], 'i', 'I') &&
-					is_either(text[text.length()-4-suffix_length], 'È', '…') &&
+					is_either(text[text.length()-4-suffix_length], '√©', '√â') &&
 					is_either(text[text.length()-3-suffix_length], 'n', 'N') &&
 					is_either(text[text.length()-2-suffix_length], 'd', 'D') &&
 					is_either(text[text.length()-1-suffix_length], 'o', 'O') ) )
@@ -203,8 +203,8 @@ namespace stemming
 				}
 			else if ((text.length() >= suffix_length + 4) &&
 				Parent::m_rv <= static_cast<int>(text.length()-4-suffix_length) &&
-				/*·ndo*/
-				(is_either(text[text.length()-4-suffix_length], '·', '¡') &&
+				/*√°ndo*/
+				(is_either(text[text.length()-4-suffix_length], '√°', '√Å') &&
 					is_either(text[text.length()-3-suffix_length], 'n', 'N') &&
 					is_either(text[text.length()-2-suffix_length], 'd', 'D') &&
 					is_either(text[text.length()-1-suffix_length], 'o', 'O') ) )
@@ -215,8 +215,8 @@ namespace stemming
 				}
 			else if ((text.length() >= suffix_length + 2) &&
 				Parent::m_rv <= static_cast<int>(text.length()-2-suffix_length) &&
-				/*·r*/
-				(is_either(text[text.length()-2-suffix_length], '·', '¡') &&
+				/*√°r*/
+				(is_either(text[text.length()-2-suffix_length], '√°', '√Å') &&
 					is_either(text[text.length()-1-suffix_length], 'r', 'R') ) )
 				{
 				text.erase(text.end()-suffix_length, text.end() );
@@ -225,8 +225,8 @@ namespace stemming
 				}
 			else if ((text.length() >= suffix_length + 2) &&
 				Parent::m_rv <= static_cast<int>(text.length()-2-suffix_length) &&
-				/*Èr*/
-				(is_either(text[text.length()-2-suffix_length], 'È', '…') &&
+				/*√©r*/
+				(is_either(text[text.length()-2-suffix_length], '√©', '√â') &&
 					is_either(text[text.length()-1-suffix_length], 'r', 'R') ) )
 				{
 				text.erase(text.end()-suffix_length, text.end() );
@@ -235,8 +235,8 @@ namespace stemming
 				}
 			else if ((text.length() >= suffix_length + 2) &&
 				Parent::m_rv <= static_cast<int>(text.length()-2-suffix_length) &&
-				/*Ìr*/
-				(is_either(text[text.length()-2-suffix_length], 'Ì', 'Õ') &&
+				/*√≠r*/
+				(is_either(text[text.length()-2-suffix_length], '√≠', '√ç') &&
 					is_either(text[text.length()-1-suffix_length], 'r', 'R') ) )
 				{
 				text.erase(text.end()-suffix_length, text.end() );
@@ -322,14 +322,14 @@ namespace stemming
 			-anza anzas ico ica icos icas ismo ismos able ables ible ibles ista istas oso osa osos osas amiento amientos imiento imientos 
 				-delete if in R2 
 
-			-adora ador aciÛn adoras adores aciones 
+			-adora ador aci√≥n adoras adores aciones 
 				-delete if in R2 
 				-if preceded by ic, delete if in R2 
 
-			-logÌa logÌas 
+			-log√≠a log√≠as 
 				-replace with log if in R2 
 
-			-uciÛn uciones 
+			-uci√≥n uciones 
 				-replace with u if in R2 
 
 			-encia encias 
@@ -402,7 +402,7 @@ namespace stemming
 					}
 				step_2a(text);
 				}
-			else if (is_suffix_in_r2(text,/*logÌas*/'l', 'L', 'o', 'O', 'g', 'G', 'Ì', 'Õ', 'a', 'A', 's', 'S') )
+			else if (is_suffix_in_r2(text,/*log√≠as*/'l', 'L', 'o', 'O', 'g', 'G', '√≠', '√ç', 'a', 'A', 's', 'S') )
 				{
 				text.erase(text.end()-3, text.end() );
 				update_r_sections(text);
@@ -479,7 +479,7 @@ namespace stemming
 					}
 				step_2a(text);
 				}
-			else if (delete_if_is_in_r2(text,/*aciÛn*/'a', 'A', 'c', 'C', 'i', 'I', 'Û', '”', 'n', 'N') )
+			else if (delete_if_is_in_r2(text,/*aci√≥n*/'a', 'A', 'c', 'C', 'i', 'I', '√≥', '√ì', 'n', 'N') )
 				{
 				if (original_length > text.length() )
 					{
@@ -528,13 +528,13 @@ namespace stemming
 					}
 				step_2a(text);
 				}
-			else if (is_suffix_in_r2(text,/*logÌa*/'l', 'L', 'o', 'O', 'g', 'G', 'Ì', 'Õ', 'a', 'A') )
+			else if (is_suffix_in_r2(text,/*log√≠a*/'l', 'L', 'o', 'O', 'g', 'G', '√≠', '√ç', 'a', 'A') )
 				{
 				text.erase(text.end()-2, text.end() );
 				update_r_sections(text);
 				return;
 				}
-			else if (is_suffix_in_r2(text,/*uciÛn*/'u', 'U', 'c', 'C', 'i', 'I', 'Û', '”', 'n', 'N') )
+			else if (is_suffix_in_r2(text,/*uci√≥n*/'u', 'U', 'c', 'C', 'i', 'I', '√≥', '√ì', 'n', 'N') )
 				{
 				text.erase(text.end()-4, text.end() );
 				update_r_sections(text);
@@ -733,7 +733,7 @@ namespace stemming
 		///Do step 2a if no ending was removed by step 1.
 		/**Search for the longest among the following suffixes in RV, and if found, delete if preceded by u. 
 
-			-ya ye yan yen yeron yendo yo yÛ yas yes yais yamos 
+			-ya ye yan yen yeron yendo yo y√≥ yas yes yais yamos 
 
 		(Note that the preceding u need not be in RV.)*/
 		//---------------------------------------------
@@ -850,7 +850,7 @@ namespace stemming
 					}
 				step_2b(text);
 				}
-			else if (is_suffix_in_rv(text,/*yÛ*/'y', 'Y', 'Û', '”'))
+			else if (is_suffix_in_rv(text,/*y√≥*/'y', 'Y', '√≥', '√ì'))
 				{
 				if (is_either(text[text.length()-3], 'u', 'U') )
 					{
@@ -869,40 +869,40 @@ namespace stemming
 		///Do Step 2b if step 2a was done, but failed to remove a suffix.
 		/**Search for the longest among the following suffixes in RV, and perform the action indicated. 
 
-			-en es Èis emos 
+			-en es √©is emos 
 				-delete, and if preceded by gu delete the u (the gu need not be in RV) 
 
-			-arÌan arÌas ar·n ar·s arÌais arÌa arÈis arÌamos aremos ar· arÈ erÌan erÌas
-			er·n er·s erÌais erÌa erÈis erÌamos eremos er· erÈ irÌan irÌas ir·n ir·s irÌais
-			irÌa irÈis irÌamos iremos ir· irÈ aba ada ida Ìa ara iera ad ed id ase iese aste
-			iste an aban Ìan aran ieran asen iesen aron ieron ado ido ando iendo iÛ ar er ir
-			as abas adas idas Ìas aras ieras ases ieses Ìs ·is abais Ìais arais ierais
-			aseis ieseis asteis isteis ados idos amos ·bamos Ìamos imos ·ramos iÈramos iÈsemos ·semos 
+			-ar√≠an ar√≠as ar√°n ar√°s ar√≠ais ar√≠a ar√©is ar√≠amos aremos ar√° ar√© er√≠an er√≠as
+			er√°n er√°s er√≠ais er√≠a er√©is er√≠amos eremos er√° er√© ir√≠an ir√≠as ir√°n ir√°s ir√≠ais
+			ir√≠a ir√©is ir√≠amos iremos ir√° ir√© aba ada ida √≠a ara iera ad ed id ase iese aste
+			iste an aban √≠an aran ieran asen iesen aron ieron ado ido ando iendo i√≥ ar er ir
+			as abas adas idas √≠as aras ieras ases ieses √≠s √°is abais √≠ais arais ierais
+			aseis ieseis asteis isteis ados idos amos √°bamos √≠amos imos √°ramos i√©ramos i√©semos √°semos 
 				-delete*/
 		//---------------------------------------------
 		void step_2b(std::basic_string<Tchar_type, Tchar_traits>& text) 
 			{
-			if (delete_if_is_in_rv(text,/*arÌamos*/'a', 'A', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			if (delete_if_is_in_rv(text,/*ar√≠amos*/'a', 'A', 'r', 'R', '√≠', '√ç', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÌamos*/'e', 'E', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*er√≠amos*/'e', 'E', 'r', 'R', '√≠', '√ç', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÌamos*/'i', 'I', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ir√≠amos*/'i', 'I', 'r', 'R', '√≠', '√ç', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*iÈramos*/'i', 'I', 'È', '…', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*i√©ramos*/'i', 'I', '√©', '√â', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*iÈsemos*/'i', 'I', 'È', '…', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*i√©semos*/'i', 'I', '√©', '√â', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÌais*/'a', 'A', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ar√≠ais*/'a', 'A', 'r', 'R', '√≠', '√ç', 'a', 'A', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
@@ -910,7 +910,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÌais*/'e', 'E', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*er√≠ais*/'e', 'E', 'r', 'R', '√≠', '√ç', 'a', 'A', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
@@ -918,7 +918,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÌais*/'i', 'I', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ir√≠ais*/'i', 'I', 'r', 'R', '√≠', '√ç', 'a', 'A', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
@@ -942,51 +942,51 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*·bamos*/'·', '¡', 'b', 'B', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√°bamos*/'√°', '√Å', 'b', 'B', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*·ramos*/'·', '¡', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√°ramos*/'√°', '√Å', 'r', 'R', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*·semos*/'·', '¡', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√°semos*/'√°', '√Å', 's', 'S', 'e', 'E', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÌan*/'a', 'A', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*ar√≠an*/'a', 'A', 'r', 'R', '√≠', '√ç', 'a', 'A', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÌas*/'a', 'A', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ar√≠as*/'a', 'A', 'r', 'R', '√≠', '√ç', 'a', 'A', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÈis*/'a', 'A', 'r', 'R', 'È', '…', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ar√©is*/'a', 'A', 'r', 'R', '√©', '√â', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÌan*/'e', 'E', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*er√≠an*/'e', 'E', 'r', 'R', '√≠', '√ç', 'a', 'A', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÌas*/'e', 'E', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*er√≠as*/'e', 'E', 'r', 'R', '√≠', '√ç', 'a', 'A', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÈis*/'e', 'E', 'r', 'R', 'È', '…', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*er√©is*/'e', 'E', 'r', 'R', '√©', '√â', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÌan*/'i', 'I', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*ir√≠an*/'i', 'I', 'r', 'R', '√≠', '√ç', 'a', 'A', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÌas*/'i', 'I', 'r', 'R', 'Ì', 'Õ', 'a', 'A', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ir√≠as*/'i', 'I', 'r', 'R', '√≠', '√ç', 'a', 'A', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÈis*/'i', 'I', 'r', 'R', 'È', '…', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ir√©is*/'i', 'I', 'r', 'R', '√©', '√â', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1026,7 +1026,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìamos*/'Ì', 'Õ', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√≠amos*/'√≠', '√ç', 'a', 'A', 'm', 'M', 'o', 'O', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1039,39 +1039,39 @@ namespace stemming
 					}
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ar·n*/'a', 'A', 'r', 'R', '·', '¡', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*ar√°n*/'a', 'A', 'r', 'R', '√°', '√Å', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ar·s*/'a', 'A', 'r', 'R', '·', '¡', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ar√°s*/'a', 'A', 'r', 'R', '√°', '√Å', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÌa*/'a', 'A', 'r', 'R', 'Ì', 'Õ', 'a', 'A', false) )
+			else if (delete_if_is_in_rv(text,/*ar√≠a*/'a', 'A', 'r', 'R', '√≠', '√ç', 'a', 'A', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*er·n*/'e', 'E', 'r', 'R', '·', '¡', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*er√°n*/'e', 'E', 'r', 'R', '√°', '√Å', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*er·s*/'e', 'E', 'r', 'R', '·', '¡', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*er√°s*/'e', 'E', 'r', 'R', '√°', '√Å', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÌa*/'e', 'E', 'r', 'R', 'Ì', 'Õ', 'a', 'A', false) )
+			else if (delete_if_is_in_rv(text,/*er√≠a*/'e', 'E', 'r', 'R', '√≠', '√ç', 'a', 'A', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ir·n*/'i', 'I', 'r', 'R', '·', '¡', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*ir√°n*/'i', 'I', 'r', 'R', '√°', '√Å', 'n', 'N', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ir·s*/'i', 'I', 'r', 'R', '·', '¡', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*ir√°s*/'i', 'I', 'r', 'R', '√°', '√Å', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÌa*/'i', 'I', 'r', 'R', 'Ì', 'Õ', 'a', 'A', false) )
+			else if (delete_if_is_in_rv(text,/*ir√≠a*/'i', 'I', 'r', 'R', '√≠', '√ç', 'a', 'A', false) )
 				{
 				return;
 				}
@@ -1131,7 +1131,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìais*/'Ì', 'Õ', 'a', 'A', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√≠ais*/'√≠', '√ç', 'a', 'A', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1151,27 +1151,27 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ar·*/'a', 'A', 'r', 'R', '·', '¡', false) )
+			else if (delete_if_is_in_rv(text,/*ar√°*/'a', 'A', 'r', 'R', '√°', '√Å', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*arÈ*/'a', 'A', 'r', 'R', 'È', '…', false) )
+			else if (delete_if_is_in_rv(text,/*ar√©*/'a', 'A', 'r', 'R', '√©', '√â', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*er·*/'e', 'E', 'r', 'R', '·', '¡', false) )
+			else if (delete_if_is_in_rv(text,/*er√°*/'e', 'E', 'r', 'R', '√°', '√Å', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erÈ*/'e', 'E', 'r', 'R', 'È', '…', false) )
+			else if (delete_if_is_in_rv(text,/*er√©*/'e', 'E', 'r', 'R', '√©', '√â', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*ir·*/'i', 'I', 'r', 'R', '·', '¡', false) )
+			else if (delete_if_is_in_rv(text,/*ir√°*/'i', 'I', 'r', 'R', '√°', '√Å', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irÈ*/'i', 'I', 'r', 'R', 'È', '…', false) )
+			else if (delete_if_is_in_rv(text,/*ir√©*/'i', 'I', 'r', 'R', '√©', '√â', false) )
 				{
 				return;
 				}
@@ -1195,7 +1195,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìan*/'Ì', 'Õ', 'a', 'A', 'n', 'N', false) )
+			else if (delete_if_is_in_rv(text,/*√≠an*/'√≠', '√ç', 'a', 'A', 'n', 'N', false) )
 				{
 				return;
 				}
@@ -1207,15 +1207,15 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìas*/'Ì', 'Õ', 'a', 'A', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√≠as*/'√≠', '√ç', 'a', 'A', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*·is*/'·', '¡', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√°is*/'√°', '√Å', 'i', 'I', 's', 'S', false) )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Èis*/'È', '…', 'i', 'I', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√©is*/'√©', '√â', 'i', 'I', 's', 'S', false) )
 				{
 				if (is_suffix(text,/*gu*/'g', 'G', 'u', 'U') )
 					{
@@ -1224,7 +1224,7 @@ namespace stemming
 					}
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìa*/'Ì', 'Õ', 'a', 'A', false) )
+			else if (delete_if_is_in_rv(text,/*√≠a*/'√≠', '√ç', 'a', 'A', false) )
 				{
 				return;
 				}
@@ -1244,7 +1244,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*iÛ*/'i', 'I', 'Û', '”', false) )
+			else if (delete_if_is_in_rv(text,/*i√≥*/'i', 'I', '√≥', '√ì', false) )
 				{
 				return;
 				}
@@ -1264,7 +1264,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ìs*/'Ì', 'Õ', 's', 'S', false) )
+			else if (delete_if_is_in_rv(text,/*√≠s*/'√≠', '√ç', 's', 'S', false) )
 				{
 				return;
 				}
@@ -1290,10 +1290,10 @@ namespace stemming
 		///Always do step 3.
 		/**Search for the longest among the following suffixes in RV, and perform the action indicated. 
 
-			-os a o · Ì Û 
+			-os a o √° √≠ √≥ 
 				-delete if in RV 
 
-			-e È 
+			-e √© 
 				-delete if in RV, and if preceded by gu with the u in RV delete the u*/
 		//---------------------------------------------
 		void step_3(std::basic_string<Tchar_type, Tchar_traits>& text) 
@@ -1310,20 +1310,20 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*·*/'·', '¡') )
+			else if (delete_if_is_in_rv(text,/*√°*/'√°', '√Å') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Ì*/'Ì', 'Õ') )
+			else if (delete_if_is_in_rv(text,/*√≠*/'√≠', '√ç') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*Û*/'Û', '”') )
+			else if (delete_if_is_in_rv(text,/*√≥*/'√≥', '√ì') )
 				{
 				return;
 				}
 
-			else if (delete_if_is_in_rv(text,/*È*/'È', '…') ||
+			else if (delete_if_is_in_rv(text,/*√©*/'√©', '√â') ||
 					delete_if_is_in_rv(text,/*e*/'e', 'E') )
 				{
 				if (is_suffix_in_rv(text,/*u*/'u', 'U'))

@@ -37,9 +37,9 @@ namespace stemming
 	a final consonant can be dealt with. 
 
 	Finnish includes the following accented forms, 
-		-‰   ˆ 
+		-√§   √∂ 
 	The following letters are vowels: 
-		-a   e   i   o   u   y   ‰   ˆ
+		-a   e   i   o   u   y   √§   √∂
 
 	R1 and R2 are then defined in the usual way.*/
 	//------------------------------------------------------
@@ -65,8 +65,8 @@ namespace stemming
 
 			trim_western_punctuation(text);
 
-			find_r1(text, "aeiouy‰ˆAEIOUYƒ÷");
-			find_r2(text, "aeiouy‰ˆAEIOUYƒ÷");
+			find_r1(text, "aeiouy√§√∂AEIOUY√Ñ√ñ");
+			find_r2(text, "aeiouy√§√∂AEIOUY√Ñ√ñ");
 
 			step_1(text);
 			step_2(text);
@@ -79,7 +79,7 @@ namespace stemming
 		/**Step 1: particles etc 
 		Search for the longest among the following suffixes in R1, and perform the action indicated 
 
-			-# kin   kaan   k‰‰n   ko   kˆ   han   h‰n   pa   p‰
+			-# kin   kaan   k√§√§n   ko   k√∂   han   h√§n   pa   p√§
 				- delete if preceded by n, t or a vowel
 			-# sti
 				- delete if in R2
@@ -89,10 +89,10 @@ namespace stemming
 		void step_1(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (is_suffix_in_r1(text,/*kaan*/'k', 'K', 'a', 'A', 'a', 'A', 'n', 'N') ||
-				is_suffix_in_r1(text,/*k‰‰n*/'k', 'K', '‰', 'ƒ', '‰', 'ƒ', 'n', 'N') )
+				is_suffix_in_r1(text,/*k√§√§n*/'k', 'K', '√§', '√Ñ', '√§', '√Ñ', 'n', 'N') )
 				{
 				if (text.length() >= 5 &&
-					string_util::is_one_of(text[text.length()-5], "ntaeiouy‰ˆNTAEIOUYƒ÷") )
+					string_util::is_one_of(text[text.length()-5], "ntaeiouy√§√∂NTAEIOUY√Ñ√ñ") )
 					{
 					text.erase(text.end()-4, text.end() );
 					update_r_sections(text);
@@ -101,10 +101,10 @@ namespace stemming
 				}
 			else if (is_suffix_in_r1(text,/*kin*/'k', 'K', 'i', 'I', 'n', 'N') ||
 				is_suffix_in_r1(text,/*han*/'h', 'H', 'a', 'A', 'n', 'N') ||
-				is_suffix_in_r1(text,/*h‰n*/'h', 'H', '‰', 'ƒ', 'n', 'N') )
+				is_suffix_in_r1(text,/*h√§n*/'h', 'H', '√§', '√Ñ', 'n', 'N') )
 				{
 				if (text.length() >= 4 &&
-					string_util::is_one_of(text[text.length()-4], "ntaeiouy‰ˆNTAEIOUYƒ÷") )
+					string_util::is_one_of(text[text.length()-4], "ntaeiouy√§√∂NTAEIOUY√Ñ√ñ") )
 					{
 					text.erase(text.end()-3, text.end() );
 					update_r_sections(text);
@@ -117,12 +117,12 @@ namespace stemming
 				return;
 				}
 			else if (is_suffix_in_r1(text,/*ko*/'k', 'K', 'o', 'O') ||
-				is_suffix_in_r1(text,/*kˆ*/'k', 'K', 'ˆ', '÷') ||
+				is_suffix_in_r1(text,/*k√∂*/'k', 'K', '√∂', '√ñ') ||
 				is_suffix_in_r1(text,/*pa*/'p', 'P', 'a', 'A') ||
-				is_suffix_in_r1(text,/*p‰*/'p', 'P', '‰', 'ƒ') )
+				is_suffix_in_r1(text,/*p√§*/'p', 'P', '√§', '√Ñ') )
 				{
 				if (text.length() >= 3 &&
-					string_util::is_one_of(text[text.length()-3], "ntaeiouy‰ˆNTAEIOUYƒ÷") )
+					string_util::is_one_of(text[text.length()-3], "ntaeiouy√§√∂NTAEIOUY√Ñ√ñ") )
 					{
 					text.erase(text.end()-2, text.end() );
 					update_r_sections(text);
@@ -138,19 +138,19 @@ namespace stemming
 			- ni 
 				- delete 
 				- if preceded by kse, replace with ksi 
-			- nsa   ns‰   mme   nne 
+			- nsa   ns√§   mme   nne 
 				- delete 
 			- an 
 				- delete if preceded by one of   ta   ssa   sta   lla   lta   na 
-			- ‰n 
-				- delete if preceded by one of   t‰   ss‰   st‰   ll‰   lt‰   n‰ 
+			- √§n 
+				- delete if preceded by one of   t√§   ss√§   st√§   ll√§   lt√§   n√§ 
 			- en 
 				- delete if preceded by one of   lle   ine*/
 		//---------------------------------------------
 		void step_2(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (delete_if_is_in_r1(text,/*nsa*/'n', 'N', 's', 'S', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*ns‰*/'n', 'N', 's', 'S', '‰', 'ƒ', false) ||
+				delete_if_is_in_r1(text,/*ns√§*/'n', 'N', 's', 'S', '√§', '√Ñ', false) ||
 				delete_if_is_in_r1(text,/*mme*/'m', 'M', 'm', 'M', 'e', 'E', false) ||
 				delete_if_is_in_r1(text,/*nne*/'n', 'N', 'n', 'N', 'e', 'E', false) )
 				{
@@ -190,16 +190,16 @@ namespace stemming
 					}
 				return;
 				}
-			else if (is_suffix_in_r1(text,/*‰n*/'‰', 'ƒ', 'n', 'N') )
+			else if (is_suffix_in_r1(text,/*√§n*/'√§', '√Ñ', 'n', 'N') )
 				{
 				if ((text.length() >= 4 &&
-					(text.compare(text.length()-4, 2, "t‰", 2) == 0 ||
-					text.compare(text.length()-4, 2, "n‰", 2) == 0) ) ||
+					(text.compare(text.length()-4, 2, "t√§", 2) == 0 ||
+					text.compare(text.length()-4, 2, "n√§", 2) == 0) ) ||
 					(text.length() >= 5 &&
-					(text.compare(text.length()-5, 3, "ss‰", 3) == 0 ||
-					text.compare(text.length()-5, 3, "st‰", 3) == 0 ||
-					text.compare(text.length()-5, 3, "ll‰", 3) == 0 ||
-					text.compare(text.length()-5, 3, "lt‰", 3) == 0) ) )
+					(text.compare(text.length()-5, 3, "ss√§", 3) == 0 ||
+					text.compare(text.length()-5, 3, "st√§", 3) == 0 ||
+					text.compare(text.length()-5, 3, "ll√§", 3) == 0 ||
+					text.compare(text.length()-5, 3, "lt√§", 3) == 0) ) )
 					{
 					text.erase(text.end()-2, text.end() );
 					update_r_sections(text);
@@ -220,10 +220,10 @@ namespace stemming
 			}
 
 		//////////////////////////////////////////////////////////////////////////
-		// Define a v (vowel) as one of   a   e   i   o   u   y   ‰   ˆ.        //
-		// Define a V (restricted vowel) as one of   a   e   i   o   u   ‰   ˆ. //
+		// Define a v (vowel) as one of   a   e   i   o   u   y   √§   √∂.        //
+		// Define a V (restricted vowel) as one of   a   e   i   o   u   √§   √∂. //
 		// So Vi means a V followed by letter i.                                //
-		// Define LV (long vowel) as one of   aa   ee   ii   oo   uu   ‰‰   ˆˆ. // 
+		// Define LV (long vowel) as one of   aa   ee   ii   oo   uu   √§√§   √∂√∂. // 
 		// Define a c (consonant) as a character other than a v.                //
 		// So cv means a c followed by a v.                                     //
 		//////////////////////////////////////////////////////////////////////////
@@ -234,9 +234,9 @@ namespace stemming
 			- hXn   preceded by X, where X is a V other than u (a/han, e/hen etc) 
 			- siin   den   tten   preceded by Vi
 			- seen   preceded by LV
-			- a   ‰   preceded by cv
-			- tta   tt‰   preceded by e
-			- ta   t‰   ssa   ss‰   sta   st‰   lla   ll‰   lta   lt‰   lle   na   n‰   ksi   ine 
+			- a   √§   preceded by cv
+			- tta   tt√§   preceded by e
+			- ta   t√§   ssa   ss√§   sta   st√§   lla   ll√§   lta   lt√§   lle   na   n√§   ksi   ine 
 				- delete 
 			- n
 				- delete, and if preceded by LV or ie, delete the last vowel*/
@@ -245,7 +245,7 @@ namespace stemming
 			{
 			//seen followed by LV
 			if (is_suffix_in_r1(text,/*seen*/'s', 'S', 'e', 'E', 'e', 'E', 'n', 'N') &&
-				string_util::is_one_of(text[text.length()-5], "aeiou‰ˆAEIOUƒ÷") &&
+				string_util::is_one_of(text[text.length()-5], "aeiou√§√∂AEIOU√Ñ√ñ") &&
 				string_util::tolower_western(text[text.length()-5]) == string_util::tolower_western(text[text.length()-6]) )
 				{
 				text.erase(text.end()-4, text.end() );
@@ -257,7 +257,7 @@ namespace stemming
 			else if (is_either(text[text.length()-5], 'i', 'I') &&
 					(is_suffix_in_r1(text,/*siin*/'s', 'S', 'i', 'I', 'i', 'I', 'n', 'N') ||
 					is_suffix_in_r1(text,/*tten*/'t', 'T', 't', 'T', 'e', 'E', 'n', 'N') ) &&
-					string_util::is_one_of(text[text.length()-6], "aeiou‰ˆAEIOUƒ÷") )
+					string_util::is_one_of(text[text.length()-6], "aeiou√§√∂AEIOU√Ñ√ñ") )
 				{
 				text.erase(text.end()-4, text.end() );
 				update_r_sections(text);
@@ -267,7 +267,7 @@ namespace stemming
 			//suffix followed by Vi
 			else if (is_either(text[text.length()-4], 'i', 'I') &&
 					is_suffix_in_r1(text,/*den*/'d', 'D', 'e', 'E', 'n', 'N') &&
-					string_util::is_one_of(text[text.length()-5], "aeiou‰ˆAEIOUƒ÷") )
+					string_util::is_one_of(text[text.length()-5], "aeiou√§√∂AEIOU√Ñ√ñ") )
 				{
 				text.erase(text.end()-3, text.end() );
 				update_r_sections(text);
@@ -275,7 +275,7 @@ namespace stemming
 				return;
 				}
 			else if ((is_suffix_in_r1(text,/*tta*/'t', 'T', 't', 'T', 'a', 'A') ||
-				is_suffix_in_r1(text,/*tt‰*/'t', 'T', 't', 'T', '‰', 'ƒ')) &&
+				is_suffix_in_r1(text,/*tt√§*/'t', 'T', 't', 'T', '√§', '√Ñ')) &&
 				is_either(text[text.length()-4], 'e', 'E') )
 				{
 				text.erase(text.end()-3, text.end() );
@@ -289,8 +289,8 @@ namespace stemming
 				is_suffix_in_r1(text,/*hen*/'h', 'H', 'e', 'E', 'n', 'N') ||
 				is_suffix_in_r1(text,/*hin*/'h', 'H', 'i', 'I', 'n', 'N') ||
 				is_suffix_in_r1(text,/*hon*/'h', 'H', 'o', 'O', 'n', 'N') ||
-				is_suffix_in_r1(text,/*h‰n*/'h', 'H', '‰', 'ƒ', 'n', 'N') ||
-				is_suffix_in_r1(text,/*hˆn*/'h', 'H', 'ˆ', '÷', 'n', 'N') ) )
+				is_suffix_in_r1(text,/*h√§n*/'h', 'H', '√§', '√Ñ', 'n', 'N') ||
+				is_suffix_in_r1(text,/*h√∂n*/'h', 'H', '√∂', '√ñ', 'n', 'N') ) )
 				{
 				if (string_util::tolower_western(text[text.length()-2]) == string_util::tolower_western(text[text.length()-4]) )
 					{
@@ -301,32 +301,32 @@ namespace stemming
 				return;
 				}
 			else if (delete_if_is_in_r1(text,/*ssa*/'s', 'S', 's', 'S', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*ss‰*/'s', 'S', 's', 'S', '‰', 'ƒ', false) ||
+				delete_if_is_in_r1(text,/*ss√§*/'s', 'S', 's', 'S', '√§', '√Ñ', false) ||
 				delete_if_is_in_r1(text,/*sta*/'s', 'S', 't', 'T', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*st‰*/'s', 'S', 't', 'T', '‰', 'ƒ', false) ||
+				delete_if_is_in_r1(text,/*st√§*/'s', 'S', 't', 'T', '√§', '√Ñ', false) ||
 				delete_if_is_in_r1(text,/*lla*/'l', 'L', 'l', 'L', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*ll‰*/'l', 'L', 'l', 'L', '‰', 'ƒ', false) ||
+				delete_if_is_in_r1(text,/*ll√§*/'l', 'L', 'l', 'L', '√§', '√Ñ', false) ||
 				delete_if_is_in_r1(text,/*lta*/'l', 'L', 't', 'T', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*lt‰*/'l', 'L', 't', 'T', '‰', 'ƒ', false) ||
+				delete_if_is_in_r1(text,/*lt√§*/'l', 'L', 't', 'T', '√§', '√Ñ', false) ||
 				delete_if_is_in_r1(text,/*lle*/'l', 'L', 'l', 'L', 'e', 'E', false) ||
 				delete_if_is_in_r1(text,/*ksi*/'k', 'K', 's', 'S', 'i', 'I', false) ||
 				delete_if_is_in_r1(text,/*ine*/'i', 'I', 'n', 'N', 'e', 'E', false) ||
 				delete_if_is_in_r1(text,/*na*/'n', 'N', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*n‰*/'n', 'N', '‰', 'ƒ', false) )
+				delete_if_is_in_r1(text,/*n√§*/'n', 'N', '√§', '√Ñ', false) )
 				{
 				m_step_3_successful = true;
 				return;
 				}
 			else if (delete_if_is_in_r1(text,/*ta*/'t', 'T', 'a', 'A', false) ||
-				delete_if_is_in_r1(text,/*t‰*/'t', 'T', '‰', 'ƒ', false) )
+				delete_if_is_in_r1(text,/*t√§*/'t', 'T', '√§', '√Ñ', false) )
 				{
 				m_step_3_successful = true;
 				return;
 				}
 			//suffix followed by cv
-			else if ((is_suffix_in_r1(text, 'a', 'A') || is_suffix_in_r1(text, '‰', 'ƒ') )&&
-					!string_util::is_one_of(text[text.length()-3], "aeiouy‰ˆAEIOUYƒ÷") &&
-					string_util::is_one_of(text[text.length()-2], "aeiouy‰ˆAEIOUYƒ÷") )
+			else if ((is_suffix_in_r1(text, 'a', 'A') || is_suffix_in_r1(text, '√§', '√Ñ') )&&
+					!string_util::is_one_of(text[text.length()-3], "aeiouy√§√∂AEIOUY√Ñ√ñ") &&
+					string_util::is_one_of(text[text.length()-2], "aeiouy√§√∂AEIOUY√Ñ√ñ") )
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
@@ -338,7 +338,7 @@ namespace stemming
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
-				if ((string_util::is_one_of(text[text.length()-1], "aeiou‰ˆAEIOUƒ÷") &&
+				if ((string_util::is_one_of(text[text.length()-1], "aeiou√§√∂AEIOU√Ñ√ñ") &&
 					string_util::tolower_western(text[text.length()-1]) == string_util::tolower_western(text[text.length()-2])) ||
 					is_suffix_in_r1(text,/*ie*/'i', 'I', 'e', 'E') ) 
 					{
@@ -352,31 +352,31 @@ namespace stemming
 		/**Step 4: other endings 
 		Search for the longest among the following suffixes in R2, and perform the action indicated 
 
-			- mpi   mpa   mp‰   mmi   mma   mm‰ 
+			- mpi   mpa   mp√§   mmi   mma   mm√§ 
 				- delete if not preceded by po 
-			- impi   impa   imp‰   immi   imma   imm‰   eja   ej‰ 
+			- impi   impa   imp√§   immi   imma   imm√§   eja   ej√§ 
 				- delete*/
 		//---------------------------------------------
 		void step_4(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (delete_if_is_in_r2(text,/*impi*/'i', 'I', 'm', 'M', 'p', 'P', 'i', 'I', false) ||
 				delete_if_is_in_r2(text,/*impa*/'i', 'I', 'm', 'M', 'p', 'P', 'a', 'A', false) ||
-				delete_if_is_in_r2(text,/*imp‰*/'i', 'I', 'm', 'M', 'p', 'P', '‰', 'ƒ', false) ||
+				delete_if_is_in_r2(text,/*imp√§*/'i', 'I', 'm', 'M', 'p', 'P', '√§', '√Ñ', false) ||
 				delete_if_is_in_r2(text,/*immi*/'i', 'I', 'm', 'M', 'm', 'M', 'i', 'I', false) ||
 				delete_if_is_in_r2(text,/*imma*/'i', 'I', 'm', 'M', 'm', 'M', 'a', 'A', false) ||
-				delete_if_is_in_r2(text,/*imm‰*/'i', 'I', 'm', 'M', 'm', 'M', '‰', 'ƒ', false) ||
+				delete_if_is_in_r2(text,/*imm√§*/'i', 'I', 'm', 'M', 'm', 'M', '√§', '√Ñ', false) ||
 				delete_if_is_in_r2(text,/*eja*/'e', 'E', 'j', 'J', 'a', 'A', false) ||
-				delete_if_is_in_r2(text,/*ej‰*/'e', 'E', 'j', 'J', '‰', 'ƒ', false) )
+				delete_if_is_in_r2(text,/*ej√§*/'e', 'E', 'j', 'J', '√§', '√Ñ', false) )
 				{
 				return;
 				}
 			else if (text.length() >= 5 &&
 					(is_suffix_in_r2(text,/*mpi*/'m', 'M', 'p', 'P', 'i', 'I') ||
 					is_suffix_in_r2(text,/*mpa*/'m', 'M', 'p', 'P', 'a', 'A') ||
-					is_suffix_in_r2(text,/*mp‰*/'m', 'M', 'p', 'P', '‰', 'ƒ') ||
+					is_suffix_in_r2(text,/*mp√§*/'m', 'M', 'p', 'P', '√§', '√Ñ') ||
 					is_suffix_in_r2(text,/*mmi*/'m', 'M', 'm', 'M', 'i', 'I') ||
 					is_suffix_in_r2(text,/*mma*/'m', 'M', 'm', 'M', 'a', 'A') ||
-					is_suffix_in_r2(text,/*mm‰*/'m', 'M', 'm', 'M', '‰', 'ƒ') ) )
+					is_suffix_in_r2(text,/*mm√§*/'m', 'M', 'm', 'M', '√§', '√Ñ') ) )
 				{
 				if (!(is_either(text[text.length()-5], 'p', 'P') &&
 					is_either(text[text.length()-4], 'o', 'O') ) )
@@ -406,7 +406,7 @@ namespace stemming
 				}
 			else
 				{
-				if (string_util::is_one_of(text[text.length()-2], "aeiouy‰ˆAEIOUYƒ÷") )
+				if (string_util::is_one_of(text[text.length()-2], "aeiouy√§√∂AEIOUY√Ñ√ñ") )
 					{
 					if (delete_if_is_in_r1(text, 't', 'T') )
 						{
@@ -441,20 +441,20 @@ namespace stemming
 		void step_6a(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (Parent::m_r1 <= text.length()-2 &&
-				string_util::is_one_of(text[text.length()-1], "aeiou‰ˆAEIOUƒ÷") &&
+				string_util::is_one_of(text[text.length()-1], "aeiou√§√∂AEIOU√Ñ√ñ") &&
 				string_util::tolower_western(text[text.length()-1]) == string_util::tolower_western(text[text.length()-2]))
 				{
 				text.erase(text.end()-1);
 				update_r_sections(text);
 				}
 			}
-		///Step b) If R1 ends with cX, c a consonant and X one of   a   ‰   e   i, then delete the last letter
+		///Step b) If R1 ends with cX, c a consonant and X one of   a   √§   e   i, then delete the last letter
 		//---------------------------------------------
 		void step_6b(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (Parent::m_r1 <= text.length()-2 &&
-				!string_util::is_one_of(text[text.length()-2], "aeiouy‰ˆAEIOUYƒ÷") &&
-				string_util::is_one_of(text[text.length()-1], "aei‰AEIƒ") )
+				!string_util::is_one_of(text[text.length()-2], "aeiouy√§√∂AEIOUY√Ñ√ñ") &&
+				string_util::is_one_of(text[text.length()-1], "aei√§AEI√Ñ") )
 				{
 				text.erase(text.end()-1);
 				update_r_sections(text);
@@ -483,12 +483,12 @@ namespace stemming
 			}
 		/**Do step (e), which is not restricted to R1.
 		Step e) If the word ends with a double consonant followed by zero or more vowels,
-		then remove the last consonant (so el‰kk -> el‰k, aatonaatto -> aatonaato)*/
+		then remove the last consonant (so el√§kk -> el√§k, aatonaatto -> aatonaato)*/
 		//---------------------------------------------
 		void step_6e(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			//find the last consanant
-			size_t index = text.find_last_not_of("aeiouy‰ˆAEIOUYƒ÷");
+			size_t index = text.find_last_not_of("aeiouy√§√∂AEIOUY√Ñ√ñ");
 			if (index == std::basic_string<Tchar_type, Tchar_traits>::npos ||
 				index < 1)
 				{

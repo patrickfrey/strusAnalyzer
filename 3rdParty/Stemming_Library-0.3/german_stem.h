@@ -23,11 +23,11 @@ namespace stemming
 	{
 	///todo add umlaut variant support
 	/**German includes the following accented forms,
-		-ä ö ü 
-	and a special letter, ß, equivalent to double s. 
+		-Ã¤ Ã¶ Ã¼ 
+	and a special letter, ÃŸ, equivalent to double s. 
 
 	The following letters are vowels:
-		-a e i o u y ä ö ü*.*/
+		-a e i o u y Ã¤ Ã¶ Ã¼*.*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
 			typename Tchar_traits = std::char_traits<Tchar_type> >
@@ -39,7 +39,7 @@ namespace stemming
 		//---------------------------------------------
 		///@param text: string to stem
 		///@param contract_transliterated_umlauts: apply variant algorithm
-		///that contracts "ä" to "ae", ect...
+		///that contracts "Ã¤" to "ae", ect...
 		void operator()(std::basic_string<Tchar_type, Tchar_traits>& text,
 						bool contract_transliterated_umlauts = false)
 			{
@@ -54,15 +54,15 @@ namespace stemming
 
 			trim_western_punctuation(text);
 
-			hash_german_yu(text, "aeiouüyäöAÄEIOÖUÜY");
-			///change 'ß' to "ss"
-			string_util::replace_all(text, "ß", "ss");
+			hash_german_yu(text, "aeiouÃ¼yÃ¤Ã¶AÃ„EIOÃ–UÃœY");
+			///change 'ÃŸ' to "ss"
+			string_util::replace_all(text, "ÃŸ", "ss");
 			///German variant addition
 			if (contract_transliterated_umlauts)
 				{
-				string_util::replace_all(text, "ae", "ä");
-				string_util::replace_all(text, "oe", "ö");
-				///ue to ü, if not in front of 'q'
+				string_util::replace_all(text, "ae", "Ã¤");
+				string_util::replace_all(text, "oe", "Ã¶");
+				///ue to Ã¼, if not in front of 'q'
 				size_t start = 1;
 				while (start != std::basic_string<Tchar_type, Tchar_traits>::npos)
 					{
@@ -72,18 +72,18 @@ namespace stemming
 						{
 						break;
 						}
-					text.replace(start, 2, "ü");
+					text.replace(start, 2, "Ã¼");
 					}
 				}
 
-			find_r1(text, "aeiouüyäöAÄEIOÖUÜY");
+			find_r1(text, "aeiouÃ¼yÃ¤Ã¶AÃ„EIOÃ–UÃœY");
 			if (Parent::m_r1 == text.length() )
 				{
 				remove_german_umlauts(text);
 				unhash_german_yu(text);
 				return;
 				}
-			find_r2(text, "aeiouüyäöAÄEIOÖUÜY");
+			find_r2(text, "aeiouÃ¼yÃ¤Ã¶AÃ„EIOÃ–UÃœY");
 			///R1 must have at least 3 characters in front of it
 			if (Parent::m_r1 < 3)
 				{
@@ -107,7 +107,7 @@ namespace stemming
 			-#s (preceded by a valid s-ending) 
 		and delete if in R1. (Of course the letter of the valid s-ending is not necessarily in R1) 
 
-		(For example, äckern -> äck, ackers -> acker, armes -> arm) */
+		(For example, Ã¤ckern -> Ã¤ck, ackers -> acker, armes -> arm) */
 		//---------------------------------------------
 		void step_1(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{

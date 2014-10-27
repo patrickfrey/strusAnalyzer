@@ -27,6 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "strus/tokenMinerLib.hpp"
+#include "strus/tokenMinerFactory.hpp"
 #include "strus/tokenMiner.hpp"
 #include "strus/analyzerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
@@ -77,22 +78,37 @@ static const TokenMiner stem_no( &whiteSpaceTokenizer, snowball_stemmer_no());
 static const TokenMiner stem_pt( &whiteSpaceTokenizer, snowball_stemmer_pt());
 static const TokenMiner stem_es( &whiteSpaceTokenizer, snowball_stemmer_es());
 static const TokenMiner stem_se( &whiteSpaceTokenizer, snowball_stemmer_se());
+static const TokenMiner origword( &whiteSpaceTokenizer, 0);
 
 
-DLL_PUBLIC const TokenMiner* strus::getTokenMiner( const std::string& name)
+class TokenMinerFactoryImpl
+	:public TokenMinerFactory
 {
-	if (boost::iequals( name, "stem_de")) return &stem_de;
-	else if (boost::iequals( name, "stem_dk")) return &stem_dk;
-	else if (boost::iequals( name, "stem_nl")) return &stem_nl;
-	else if (boost::iequals( name, "stem_en")) return &stem_en;
-	else if (boost::iequals( name, "stem_fi")) return &stem_fi;
-	else if (boost::iequals( name, "stem_fr")) return &stem_fr;
-	else if (boost::iequals( name, "stem_it")) return &stem_it;
-	else if (boost::iequals( name, "stem_no")) return &stem_no;
-	else if (boost::iequals( name, "stem_pt")) return &stem_pt;
-	else if (boost::iequals( name, "stem_es")) return &stem_es;
-	else if (boost::iequals( name, "stem_se")) return &stem_se;
-	return 0;
+public:
+	TokenMinerFactoryImpl( const std::string&){}
+
+	virtual const TokenMiner* get( const std::string& name) const
+	{
+		if (boost::iequals( name, "stem_de")) return &stem_de;
+		else if (boost::iequals( name, "stem_dk")) return &stem_dk;
+		else if (boost::iequals( name, "stem_nl")) return &stem_nl;
+		else if (boost::iequals( name, "stem_en")) return &stem_en;
+		else if (boost::iequals( name, "stem_fi")) return &stem_fi;
+		else if (boost::iequals( name, "stem_fr")) return &stem_fr;
+		else if (boost::iequals( name, "stem_it")) return &stem_it;
+		else if (boost::iequals( name, "stem_no")) return &stem_no;
+		else if (boost::iequals( name, "stem_pt")) return &stem_pt;
+		else if (boost::iequals( name, "stem_es")) return &stem_es;
+		else if (boost::iequals( name, "stem_se")) return &stem_se;
+		else if (boost::iequals( name, "origword")) return &origword;
+		return 0;
+	}
+};
+
+DLL_PUBLIC strus::TokenMinerFactory*
+	strus::createTokenMinerFactory( const std::string& source)
+{
+	return new TokenMinerFactoryImpl( source);
 }
 
 

@@ -20,10 +20,10 @@
 namespace stemming
 	{
 	/**Italian can include the following accented forms: 
-		-á é í ó ú à è ì ò ù 
+		-Ã¡ Ã© Ã­ Ã³ Ãº Ã  Ã¨ Ã¬ Ã² Ã¹ 
 	First, replace all acute accents by grave accents.
 	And, as in French, put u after q, and u, i between vowels into upper case. The vowels are then 
-		-a e i o u à è ì ò ù 
+		-a e i o u Ã  Ã¨ Ã¬ Ã² Ã¹ 
 	R2 and RV have the same definition as in the Spanish stemmer.*/
 	//------------------------------------------------------
 	template<typename Tchar_type = char,
@@ -47,11 +47,11 @@ namespace stemming
 
 			trim_western_punctuation(text);
 			italian_acutes_to_graves(text);
-			hash_italian_ui(text, "aeiouàèìòùAEIOUÀÈÌÒÙ");
+			hash_italian_ui(text, "aeiouÃ Ã¨Ã¬Ã²Ã¹AEIOUÃ€ÃˆÃŒÃ’Ã™");
 
-			find_r1(text, "aeiouàèìòùAEIOUÀÈÌÒÙ");
-			find_r2(text, "aeiouàèìòùAEIOUÀÈÌÒÙ");
-			find_spanish_rv(text, "aeiouàèìòùAEIOUÀÈÌÒÙ");
+			find_r1(text, "aeiouÃ Ã¨Ã¬Ã²Ã¹AEIOUÃ€ÃˆÃŒÃ’Ã™");
+			find_r2(text, "aeiouÃ Ã¨Ã¬Ã²Ã¹AEIOUÃ€ÃˆÃŒÃ’Ã™");
+			find_spanish_rv(text, "aeiouÃ Ã¨Ã¬Ã²Ã¹AEIOUÃ€ÃˆÃŒÃ’Ã™");
 
 			//step 0:
 			step_0(text);
@@ -317,7 +317,7 @@ namespace stemming
 			}
 		/**Search for the longest among the following suffixes, and perform the action indicated. 
 
-			-anza   anze   ico   ici   ica   ice   iche   ichi   ismo   ismi   abile   abili   ibile   ibili   ista   iste   isti   istà   istè   istì   oso   osi   osa   ose   mente   atrice   atrici 
+			-anza   anze   ico   ici   ica   ice   iche   ichi   ismo   ismi   abile   abili   ibile   ibili   ista   iste   isti   istÃ    istÃ¨   istÃ¬   oso   osi   osa   ose   mente   atrice   atrici 
 				-delete if in R2
 
 			-azione   azioni   atore   atori delete if in R2 
@@ -340,7 +340,7 @@ namespace stemming
 				-if preceded by iv, delete if in R2 (and if further preceded by at, delete if in R2), otherwise, 
 				-if preceded by os, ic or abil, delete if in R2
 
-			-ità 
+			-itÃ  
 				-delete if in R2 
 				-if preceded by abil, ic or iv, delete if in R2
 
@@ -476,15 +476,15 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_r2(text,/*istà*/'i', 'I', 's', 'S', 't', 'T', 'à', 'À') )
+			else if (delete_if_is_in_r2(text,/*istÃ */'i', 'I', 's', 'S', 't', 'T', 'Ã ', 'Ã€') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_r2(text,/*istè*/'i', 'I', 's', 'S', 't', 'T', 'è', 'È') )
+			else if (delete_if_is_in_r2(text,/*istÃ¨*/'i', 'I', 's', 'S', 't', 'T', 'Ã¨', 'Ãˆ') )
 				{
 				return;
 				}
-			else if (delete_if_is_in_r2(text,/*istì*/'i', 'I', 's', 'S', 't', 'T', 'ì', 'Ì') )
+			else if (delete_if_is_in_r2(text,/*istÃ¬*/'i', 'I', 's', 'S', 't', 'T', 'Ã¬', 'ÃŒ') )
 				{
 				return;
 				}
@@ -520,7 +520,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_r2(text,/*ità*/'i', 'I', 't', 'T', 'à', 'À') )
+			else if (delete_if_is_in_r2(text,/*itÃ */'i', 'I', 't', 'T', 'Ã ', 'Ã€') )
 				{
 				if (delete_if_is_in_r2(text,/*abil*/'a', 'A', 'b', 'B', 'i', 'I', 'l', 'L') ||
 					delete_if_is_in_r2(text,/*ic*/'i', 'I', 'c', 'C') ||
@@ -544,11 +544,11 @@ namespace stemming
 		Search for the longest among the following suffixes in RV, and if found, delete. 
 
 			-ammo ando ano are arono asse assero assi assimo ata ate ati ato
-			ava avamo avano avate avi avo emmo enda ende endi endo erà erai
+			ava avamo avano avate avi avo emmo enda ende endi endo erÃ  erai
 			eranno ere erebbe erebbero erei eremmo eremo ereste eresti erete
-			erò erono essero ete eva evamo evano evate evi evo Yamo iamo immo 
-			irà irai iranno ire irebbe irebbero irei iremmo iremo ireste iresti
-			irete irò irono isca iscano isce isci isco iscono issero ita ite iti
+			erÃ² erono essero ete eva evamo evano evate evi evo Yamo iamo immo 
+			irÃ  irai iranno ire irebbe irebbero irei iremmo iremo ireste iresti
+			irete irÃ² irono isca iscano isce isci isco iscono issero ita ite iti
 			ito iva ivamo ivano ivate ivi ivo ono uta ute uti uto ar ir 
 
 		Always do steps 3a and 3b. */
@@ -807,7 +807,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erà*/'e', 'E', 'r', 'R', 'à', 'À', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ */'e', 'E', 'r', 'R', 'Ã ', 'Ã€', false) )
 				{
 				return;
 				}
@@ -815,7 +815,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*erò*/'e', 'E', 'r', 'R', 'ò', 'Ò', false) )
+			else if (delete_if_is_in_rv(text,/*erÃ²*/'e', 'E', 'r', 'R', 'Ã²', 'Ã’', false) )
 				{
 				return;
 				}
@@ -835,7 +835,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irà*/'i', 'I', 'r', 'R', 'à', 'À', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ */'i', 'I', 'r', 'R', 'Ã ', 'Ã€', false) )
 				{
 				return;
 				}
@@ -843,7 +843,7 @@ namespace stemming
 				{
 				return;
 				}
-			else if (delete_if_is_in_rv(text,/*irò*/'i', 'I', 'r', 'R', 'ò', 'Ò', false) )
+			else if (delete_if_is_in_rv(text,/*irÃ²*/'i', 'I', 'r', 'R', 'Ã²', 'Ã’', false) )
 				{
 				return;
 				}
@@ -907,13 +907,13 @@ namespace stemming
 			/**deletion or 'er' from rv is considered problematic,
 			but part of the standard*/
 			}
-		/**Delete a final a, e, i, o, à, è, ì or ò if it is in RV,
+		/**Delete a final a, e, i, o, Ã , Ã¨, Ã¬ or Ã² if it is in RV,
 		and a preceding i if it is in RV (crocchi -> crocch, crocchio -> crocch)*/
 		//---------------------------------------------
 		void step_3a(std::basic_string<Tchar_type, Tchar_traits>& text)
 			{
 			if (Parent::m_rv <= text.length()-1 &&
-				string_util::is_one_of(text[text.length()-1], "aeioàèìòAEIOÀÈÌÒ") )
+				string_util::is_one_of(text[text.length()-1], "aeioÃ Ã¨Ã¬Ã²AEIOÃ€ÃˆÃŒÃ’") )
 				{
 				text.erase(text.end()-1, text.end() );
 				update_r_sections(text);
