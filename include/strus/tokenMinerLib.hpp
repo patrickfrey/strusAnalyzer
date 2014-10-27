@@ -34,11 +34,12 @@
 namespace strus {
 
 /// \brief Forward declaration analyze processor
-class TokenMiner;
+class TokenMinerFactory;
 
-/// \brief Get a const reference to a token miner object that implements the extraction of tokens from the document
-/// \return the token miner reference or NULL if undefined
-const TokenMiner* getTokenMiner( const std::string& name);
+/// \brief Create a token miner factory
+/// \param[in] source token description source
+/// \return the constructed token miner factory
+TokenMinerFactory* createTokenMinerFactory( const std::string& source);
 
 }//namespace
 #endif

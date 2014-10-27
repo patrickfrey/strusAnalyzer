@@ -26,27 +26,24 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus query evaluation library
-#ifndef _STRUS_ANALYZER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKEN_MINER_FACTORY_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MINER_FACTORY_HPP_INCLUDED
 #include <string>
 
-namespace strus {
+namespace strus
+{
+/// \brief Forward declaration
+class TokenMiner;
 
-/// \brief Forward declaration analyzer program
-class AnalyzerInterface;
-/// \brief Forward declaration token miner factory
-class TokenMinerFactory;
+class TokenMinerFactory
+{
+public:
+	virtual ~TokenMinerFactory(){}
 
-/// \brief Create a program for analyzing a document
-/// \param[in] tokenMinerFactory defines the set of token type definitions that can be used in the program
-/// \param[in] programSource the source of the document analyzer procedure
-/// \return the program reference
-/// \note the processor life time is assumed to cover the lifetime of the analyzer returned
-AnalyzerInterface*
-	createAnalyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& programSource);
+	/// \brief Get a const reference to a token miner object that implements the extraction of tokens from the document
+	/// \return the token miner reference
+	virtual const TokenMiner* get( const std::string& name) const=0;
+};
 
 }//namespace
 #endif

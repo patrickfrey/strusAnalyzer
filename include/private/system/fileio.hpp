@@ -26,28 +26,21 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus query evaluation library
-#ifndef _STRUS_ANALYZER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_LIB_HPP_INCLUDED
+#ifndef _STRUS_FILE_IO_HPP_INCLUDED
+#define _STRUS_FILE_IO_HPP_INCLUDED
+#include <vector>
 #include <string>
 
-namespace strus {
+namespace strus
+{
 
-/// \brief Forward declaration analyzer program
-class AnalyzerInterface;
-/// \brief Forward declaration token miner factory
-class TokenMinerFactory;
+unsigned int readFile( const std::string& filename, std::string& res);
+unsigned int writeFile( const std::string& filename, const std::string& content);
+unsigned int readDir( const std::string& path, const std::string& ext, std::vector<std::string>& res);
+bool isFile( const std::string& path);
+bool isDir( const std::string& path);
+char dirSeparator();
 
-/// \brief Create a program for analyzing a document
-/// \param[in] tokenMinerFactory defines the set of token type definitions that can be used in the program
-/// \param[in] programSource the source of the document analyzer procedure
-/// \return the program reference
-/// \note the processor life time is assumed to cover the lifetime of the analyzer returned
-AnalyzerInterface*
-	createAnalyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& programSource);
-
-}//namespace
+}
 #endif
 
