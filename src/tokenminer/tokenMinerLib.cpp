@@ -41,11 +41,11 @@
 using namespace strus;
 
 
-class WhiteSpaceTokenizer
+class WordSeparationTokenizer
 	:public TokenizerInterface
 {
 public:
-	WhiteSpaceTokenizer(){}
+	WordSeparationTokenizer(){}
 
 	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const
 	{
@@ -72,7 +72,41 @@ public:
 	}
 };
 
+static const WordSeparationTokenizer wordSeparationTokenizer;
+
+
+class WhiteSpaceTokenizer
+	:public TokenizerInterface
+{
+public:
+	WhiteSpaceTokenizer(){}
+
+	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const
+	{
+		std::vector<Position> rt;
+		std::size_t lastPos=0;
+		std::size_t ii=0;
+		for (;ii<srcsize; ++ii)
+		{
+			if ((unsigned char)src[ii] <= 32)
+			{
+				if (ii > lastPos)
+				{
+					rt.push_back( Position( lastPos, ii-lastPos));
+				}
+				lastPos = ii+1;
+			}
+		}
+		if (ii > lastPos)
+		{
+			rt.push_back( Position( lastPos, ii-lastPos));
+		}
+		return rt;
+	}
+};
+
 static const WhiteSpaceTokenizer whiteSpaceTokenizer;
+
 
 
 class EmptyNormalizer
@@ -91,22 +125,23 @@ EmptyNormalizer emptyNormalizer;
 
 
 
-static const TokenMiner stem_de( &whiteSpaceTokenizer, snowball_stemmer_de());
-static const TokenMiner stem_dk( &whiteSpaceTokenizer, snowball_stemmer_dk());
-static const TokenMiner stem_nl( &whiteSpaceTokenizer, snowball_stemmer_nl());
-static const TokenMiner stem_en( &whiteSpaceTokenizer, snowball_stemmer_en());
-static const TokenMiner stem_fi( &whiteSpaceTokenizer, snowball_stemmer_fi());
-static const TokenMiner stem_fr( &whiteSpaceTokenizer, snowball_stemmer_fr());
-static const TokenMiner stem_hu( &whiteSpaceTokenizer, snowball_stemmer_hu());
-static const TokenMiner stem_it( &whiteSpaceTokenizer, snowball_stemmer_it());
-static const TokenMiner stem_no( &whiteSpaceTokenizer, snowball_stemmer_no());
-static const TokenMiner stem_ro( &whiteSpaceTokenizer, snowball_stemmer_ro());
-static const TokenMiner stem_ru( &whiteSpaceTokenizer, snowball_stemmer_ru());
-static const TokenMiner stem_pt( &whiteSpaceTokenizer, snowball_stemmer_pt());
-static const TokenMiner stem_es( &whiteSpaceTokenizer, snowball_stemmer_es());
-static const TokenMiner stem_se( &whiteSpaceTokenizer, snowball_stemmer_se());
-static const TokenMiner stem_tr( &whiteSpaceTokenizer, snowball_stemmer_tr());
+static const TokenMiner stem_de( &wordSeparationTokenizer, snowball_stemmer_de());
+static const TokenMiner stem_dk( &wordSeparationTokenizer, snowball_stemmer_dk());
+static const TokenMiner stem_nl( &wordSeparationTokenizer, snowball_stemmer_nl());
+static const TokenMiner stem_en( &wordSeparationTokenizer, snowball_stemmer_en());
+static const TokenMiner stem_fi( &wordSeparationTokenizer, snowball_stemmer_fi());
+static const TokenMiner stem_fr( &wordSeparationTokenizer, snowball_stemmer_fr());
+static const TokenMiner stem_hu( &wordSeparationTokenizer, snowball_stemmer_hu());
+static const TokenMiner stem_it( &wordSeparationTokenizer, snowball_stemmer_it());
+static const TokenMiner stem_no( &wordSeparationTokenizer, snowball_stemmer_no());
+static const TokenMiner stem_ro( &wordSeparationTokenizer, snowball_stemmer_ro());
+static const TokenMiner stem_ru( &wordSeparationTokenizer, snowball_stemmer_ru());
+static const TokenMiner stem_pt( &wordSeparationTokenizer, snowball_stemmer_pt());
+static const TokenMiner stem_es( &wordSeparationTokenizer, snowball_stemmer_es());
+static const TokenMiner stem_se( &wordSeparationTokenizer, snowball_stemmer_se());
+static const TokenMiner stem_tr( &wordSeparationTokenizer, snowball_stemmer_tr());
 static const TokenMiner origword( &whiteSpaceTokenizer, 0);
+static const TokenMiner origcontent( 0, 0);
 static const TokenMiner punctuation_de( punctuationTokenizer_de(), 0);
 static const TokenMiner emptyword( 0, &emptyNormalizer);
 
@@ -135,6 +170,7 @@ public:
 		else if (boost::iequals( name, "stem_se")) return &stem_se;
 		else if (boost::iequals( name, "stem_tr")) return &stem_tr;
 		else if (boost::iequals( name, "origword")) return &origword;
+		else if (boost::iequals( name, "origcontent")) return &origcontent;
 		else if (boost::iequals( name, "punctuation_de")) return &punctuation_de;
 		else if (boost::iequals( name, "empty")) return &emptyword;
 		return 0;
