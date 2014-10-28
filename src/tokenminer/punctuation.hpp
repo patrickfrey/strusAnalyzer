@@ -26,40 +26,14 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
-#include <vector>
-#include <string>
-#include <utility>
-#include <iostream>
-#include <sstream>
+#ifndef _STRUS_ANALYZER_PUNCTUATION_HPP_INCLUDED
+#define _STRUS_ANALYZER_PUNCTUATION_HPP_INCLUDED
+#include "strus/tokenizerInterface.hpp"
 
 namespace strus
 {
-/// \brief Forward declaration
-class TokenMinerFactory;
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
-{
-public:
-	Analyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& source);
-
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
-
-	virtual void print( std::ostream& out) const;
-
-private:
-	class DocumentParser;
-	DocumentParser* m_parser;
-};
+const TokenizerInterface* punctuationTokenizer_de();
 
 }//namespace
 #endif

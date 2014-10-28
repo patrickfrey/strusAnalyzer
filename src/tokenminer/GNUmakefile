@@ -1,6 +1,8 @@
 TOPDIR=../..
 CPP_OBJS=\
+	chartable.o \
 	snowball.o \
+	punctuation.o \
 	tokenMinerLib.o
 
 CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I$(TOPDIR)/3rdParty/snowball/libstemmer_c/include/ -I$(TOPDIR)/3rdParty/textwolf/include -I/usr/include -I.

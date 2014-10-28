@@ -33,46 +33,12 @@
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include "snowball.hpp"
+#include "punctuation.hpp"
+#include "chartable.hpp"
 #include "dll_tags.hpp"
 #include <boost/algorithm/string.hpp>
 
 using namespace strus;
-
-class CharTable
-{
-public:
-	CharTable( const char* op="", bool isInverse=false);
-	bool operator[]( char ch) const		{return m_ar[ (unsigned char)ch];}
-private:
-	bool m_ar[256];
-};
-
-CharTable::CharTable( const char* op, bool isInverse)
-{
-	std::size_t ii;
-	for (ii=0; ii<=32; ++ii) m_ar[ii] = false;
-	for (ii=33; ii<sizeof(m_ar); ++ii) m_ar[ii] = isInverse;
-	for (ii=0; op[ii]; ++ii)
-	{
-		if (op[ii] == '.' && op[ii+1] == '.')
-		{
-			unsigned char hi = op[ii+2]?(unsigned char)op[ii+2]:255;
-			unsigned char lo = (ii>0)?(unsigned char)op[ii-1]:1;
-			if (hi < lo)
-			{
-				unsigned char tmp = hi;
-				hi = lo;
-				lo = tmp; //... swapped 'hi' and 'lo'
-			}
-			for (++lo; lo<=hi; ++lo)
-			{
-				m_ar[ lo] = !isInverse;
-			}
-			ii += 2;
-		}
-		m_ar[(unsigned char)(op[ii])] = !isInverse;
-	}
-}
 
 
 class WhiteSpaceTokenizer
@@ -98,11 +64,31 @@ public:
 				lastPos = ii+1;
 			}
 		}
+		if (ii > lastPos)
+		{
+			rt.push_back( Position( lastPos, ii-lastPos));
+		}
 		return rt;
 	}
 };
 
 static const WhiteSpaceTokenizer whiteSpaceTokenizer;
+
+
+class EmptyNormalizer
+	:public NormalizerInterface
+{
+public:
+	EmptyNormalizer(){}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	{
+		return std::string();
+	}
+};
+
+EmptyNormalizer emptyNormalizer;
+
 
 
 static const TokenMiner stem_de( &whiteSpaceTokenizer, snowball_stemmer_de());
@@ -121,6 +107,8 @@ static const TokenMiner stem_es( &whiteSpaceTokenizer, snowball_stemmer_es());
 static const TokenMiner stem_se( &whiteSpaceTokenizer, snowball_stemmer_se());
 static const TokenMiner stem_tr( &whiteSpaceTokenizer, snowball_stemmer_tr());
 static const TokenMiner origword( &whiteSpaceTokenizer, 0);
+static const TokenMiner punctuation_de( punctuationTokenizer_de(), 0);
+static const TokenMiner emptyword( 0, &emptyNormalizer);
 
 
 class TokenMinerFactoryImpl
@@ -147,6 +135,8 @@ public:
 		else if (boost::iequals( name, "stem_se")) return &stem_se;
 		else if (boost::iequals( name, "stem_tr")) return &stem_tr;
 		else if (boost::iequals( name, "origword")) return &origword;
+		else if (boost::iequals( name, "punctuation_de")) return &punctuation_de;
+		else if (boost::iequals( name, "empty")) return &emptyword;
 		return 0;
 	}
 };

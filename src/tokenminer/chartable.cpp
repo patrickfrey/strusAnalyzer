@@ -26,41 +26,35 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
-#include <vector>
-#include <string>
+#include "chartable.hpp"
 #include <utility>
-#include <iostream>
-#include <sstream>
 
-namespace strus
+using namespace strus;
+
+CharTable::CharTable( const char* op, bool isInverse)
 {
-/// \brief Forward declaration
-class TokenMinerFactory;
-
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
-{
-public:
-	Analyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& source);
-
-	virtual ~Analyzer();
-
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
-
-	virtual void print( std::ostream& out) const;
-
-private:
-	class DocumentParser;
-	DocumentParser* m_parser;
-};
-
-}//namespace
-#endif
+	std::size_t ii;
+	for (ii=0; ii<=32; ++ii) m_ar[ii] = false;
+	for (ii=33; ii<sizeof(m_ar); ++ii) m_ar[ii] = isInverse;
+	for (ii=0; op[ii]; ++ii)
+	{
+		if (op[ii] == '.' && op[ii+1] == '.')
+		{
+			unsigned char hi = op[ii+2]?(unsigned char)op[ii+2]:255;
+			unsigned char lo = (ii>0)?(unsigned char)op[ii-1]:1;
+			if (hi < lo)
+			{
+				unsigned char tmp = hi;
+				hi = lo;
+				lo = tmp; //... swapped 'hi' and 'lo'
+			}
+			for (++lo; lo<=hi; ++lo)
+			{
+				m_ar[ lo] = !isInverse;
+			}
+			ii += 2;
+		}
+		m_ar[(unsigned char)(op[ii])] = !isInverse;
+	}
+}
 

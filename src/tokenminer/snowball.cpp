@@ -57,7 +57,13 @@ public:
 				= sb_stemmer_stem( m_stemmer, (const sb_symbol*)src, srcsize);
 			if (!res) throw std::bad_alloc();
 			std::size_t len = (std::size_t)sb_stemmer_length( m_stemmer);
-			return std::string( (const char*)res, len);
+			std::string rt( (const char*)res, len);
+			std::string::iterator ri = rt.begin(), re = rt.end();
+			for (; ri != re; ++ri)
+			{
+				if (*ri >= 'A' && *ri <= 'Z') *ri |= 32;
+			}
+			return rt;
 		}
 		else
 		{

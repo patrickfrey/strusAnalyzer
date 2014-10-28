@@ -200,6 +200,18 @@ public:
 		return &m_automaton;
 	}
 
+	void print( std::ostream& out) const
+	{
+		out << "Automaton:" << std::endl;
+		out << m_automaton.tostring() << std::endl;
+		out << "Features:" << std::endl;
+		std::vector<FeatureDef>::const_iterator fi = m_featuredefar.begin(), fe = m_featuredefar.end();
+		for (int fidx=1; fi != fe; ++fi,++fidx)
+		{
+			out << "[" << fidx << "] " << fi->name() << std::endl;
+		}
+	}
+
 private:
 	Automaton m_automaton;
 	std::vector<FeatureDef> m_featuredefar;
@@ -318,7 +330,7 @@ std::vector<AnalyzerInterface::Term>
 		if (last_position != curr_position)
 		{
 			mapPositions( rt, last_position_idx, last_position, pcnt);
-			curr_position = last_position;
+			last_position = curr_position;
 			last_position_idx = rt.size();
 		}
 		const Analyzer::DocumentParser::FeatureDef& feat
@@ -358,4 +370,8 @@ std::vector<AnalyzerInterface::Term>
 	return rt;
 }
 
+void Analyzer::print( std::ostream& out) const
+{
+	m_parser->print( out);
+}
 
