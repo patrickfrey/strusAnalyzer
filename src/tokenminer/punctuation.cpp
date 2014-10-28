@@ -87,6 +87,7 @@ public:
 			:m_itr( textwolf::CStringIterator( src, srcsize))
 			,m_idx(0)
 			,m_wordlen(0)
+			,m_pos(0)
 		{
 			std::memset( m_prev_ch, 0, sizeof(m_prev_ch));
 			m_prev_ch[ 0] = *m_itr;
@@ -98,6 +99,7 @@ public:
 
 		void skip()
 		{
+			m_pos = m_itr.getPosition();
 			++m_itr;
 			++m_idx;
 			textwolf::UChar ch = *m_itr;
@@ -119,7 +121,7 @@ public:
 
 		unsigned int pos() const
 		{
-			return m_itr.getPosition();
+			return m_pos;
 		}
 
 		unsigned int wordlen() const
@@ -131,6 +133,7 @@ public:
 		Scanner m_itr;
 		unsigned int m_idx;
 		unsigned int m_wordlen;
+		unsigned int m_pos;
 		textwolf::UChar m_prev_ch[ NofPrevChar];
 	};
 
@@ -144,7 +147,12 @@ public:
 
 		for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
 		{
-			if (ch0 == '.')
+			if (ch0 == '-')
+			{
+				textwolf::UChar ch1 = scanner.chr(1);
+				if (isAlpha( ch1)) continue;
+			}
+			else if (ch0 == '.')
 			{
 				textwolf::UChar ch1 = scanner.chr(1);
 				if (isDigit( ch1))
@@ -183,9 +191,9 @@ public:
 							continue;
 						}
 					}
-					if (ch1 != 'f' || ch2 != 'o' || ch3 != 'r')
+					if (ch1 == 'f' && ch2 == 'o' && ch3 == 'r')
 					{
-						// special case "Prof."
+						// special case for "Prof."
 						continue;
 					}
 					if (ch1 == 'c' && wordlen <= 4)

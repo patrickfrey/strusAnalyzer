@@ -73,8 +73,6 @@ int main( int argc, const char* argv[])
 		boost::scoped_ptr<strus::AnalyzerInterface> analyzer(
 			strus::createAnalyzer( *minerfac, analyzerProgramSource));
 
-		/*[-]*/analyzer->print( std::cout);
-
 		std::vector<strus::AnalyzerInterface::Term> termar
 			= analyzer->analyze( documentContent);
 
