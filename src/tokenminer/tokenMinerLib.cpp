@@ -38,6 +38,43 @@
 
 using namespace strus;
 
+class CharTable
+{
+public:
+	CharTable( const char* op="", bool isInverse=false);
+	bool operator[]( char ch) const		{return m_ar[ (unsigned char)ch];}
+private:
+	bool m_ar[256];
+};
+
+CharTable::CharTable( const char* op, bool isInverse)
+{
+	std::size_t ii;
+	for (ii=0; ii<=32; ++ii) m_ar[ii] = false;
+	for (ii=33; ii<sizeof(m_ar); ++ii) m_ar[ii] = isInverse;
+	for (ii=0; op[ii]; ++ii)
+	{
+		if (op[ii] == '.' && op[ii+1] == '.')
+		{
+			unsigned char hi = op[ii+2]?(unsigned char)op[ii+2]:255;
+			unsigned char lo = (ii>0)?(unsigned char)op[ii-1]:1;
+			if (hi < lo)
+			{
+				unsigned char tmp = hi;
+				hi = lo;
+				lo = tmp; //... swapped 'hi' and 'lo'
+			}
+			for (++lo; lo<=hi; ++lo)
+			{
+				m_ar[ lo] = !isInverse;
+			}
+			ii += 2;
+		}
+		m_ar[(unsigned char)(op[ii])] = !isInverse;
+	}
+}
+
+
 class WhiteSpaceTokenizer
 	:public TokenizerInterface
 {
@@ -46,12 +83,13 @@ public:
 
 	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const
 	{
+		static const CharTable delimiter(":.;,!?%/()+-'\"`=");
 		std::vector<Position> rt;
 		std::size_t lastPos=0;
 		std::size_t ii=0;
 		for (;ii<srcsize; ++ii)
 		{
-			if ((unsigned char)src[ii] <= 32)
+			if ((unsigned char)src[ii] <= 32 || delimiter[ src[ii]])
 			{
 				if (ii > lastPos)
 				{
@@ -73,11 +111,15 @@ static const TokenMiner stem_nl( &whiteSpaceTokenizer, snowball_stemmer_nl());
 static const TokenMiner stem_en( &whiteSpaceTokenizer, snowball_stemmer_en());
 static const TokenMiner stem_fi( &whiteSpaceTokenizer, snowball_stemmer_fi());
 static const TokenMiner stem_fr( &whiteSpaceTokenizer, snowball_stemmer_fr());
+static const TokenMiner stem_hu( &whiteSpaceTokenizer, snowball_stemmer_hu());
 static const TokenMiner stem_it( &whiteSpaceTokenizer, snowball_stemmer_it());
 static const TokenMiner stem_no( &whiteSpaceTokenizer, snowball_stemmer_no());
+static const TokenMiner stem_ro( &whiteSpaceTokenizer, snowball_stemmer_ro());
+static const TokenMiner stem_ru( &whiteSpaceTokenizer, snowball_stemmer_ru());
 static const TokenMiner stem_pt( &whiteSpaceTokenizer, snowball_stemmer_pt());
 static const TokenMiner stem_es( &whiteSpaceTokenizer, snowball_stemmer_es());
 static const TokenMiner stem_se( &whiteSpaceTokenizer, snowball_stemmer_se());
+static const TokenMiner stem_tr( &whiteSpaceTokenizer, snowball_stemmer_tr());
 static const TokenMiner origword( &whiteSpaceTokenizer, 0);
 
 
@@ -95,11 +137,15 @@ public:
 		else if (boost::iequals( name, "stem_en")) return &stem_en;
 		else if (boost::iequals( name, "stem_fi")) return &stem_fi;
 		else if (boost::iequals( name, "stem_fr")) return &stem_fr;
+		else if (boost::iequals( name, "stem_hu")) return &stem_hu;
 		else if (boost::iequals( name, "stem_it")) return &stem_it;
 		else if (boost::iequals( name, "stem_no")) return &stem_no;
+		else if (boost::iequals( name, "stem_ro")) return &stem_ro;
+		else if (boost::iequals( name, "stem_ru")) return &stem_ru;
 		else if (boost::iequals( name, "stem_pt")) return &stem_pt;
 		else if (boost::iequals( name, "stem_es")) return &stem_es;
 		else if (boost::iequals( name, "stem_se")) return &stem_se;
+		else if (boost::iequals( name, "stem_tr")) return &stem_tr;
 		else if (boost::iequals( name, "origword")) return &origword;
 		return 0;
 	}

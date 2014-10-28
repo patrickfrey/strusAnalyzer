@@ -27,55 +27,77 @@
 --------------------------------------------------------------------
 */
 #include "snowball.hpp"
+#include "libstemmer.h"
+#include <stdexcept>
 
 using namespace strus;
-#include "danish_stem.h"
-#include "dutch_stem.h"
-#include "english_stem.h"
-#include "finnish_stem.h"
-#include "french_stem.h"
-#include "german_stem.h"
-#include "italian_stem.h"
-#include "norwegian_stem.h"
-#include "portuguese_stem.h"
-#include "spanish_stem.h"
-#include "swedish_stem.h"
 
-
-template <class snowball_stemmer>
 class StemNormalizer
 	:public NormalizerInterface
 {
 public:
+	explicit StemNormalizer( const char* language)
+	{
+		m_stemmer = sb_stemmer_new( language, "UTF_8");
+	}
+
+	~StemNormalizer()
+	{
+		if (m_stemmer)
+		{
+			sb_stemmer_delete( m_stemmer);
+		}
+	}
+
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
-		std::string rt = std::string( src, srcsize);
-		snowball_stemmer()( rt);
-		return rt;
+		if (m_stemmer)
+		{
+			const sb_symbol* res
+				= sb_stemmer_stem( m_stemmer, (const sb_symbol*)src, srcsize);
+			if (!res) throw std::bad_alloc();
+			std::size_t len = (std::size_t)sb_stemmer_length( m_stemmer);
+			return std::string( (const char*)res, len);
+		}
+		else
+		{
+			throw std::runtime_error( "stemmer for this language not defined");
+		}
 	}
+
+private:
+	struct sb_stemmer* m_stemmer;
 };
 
-static const StemNormalizer<stemming::danish_stem<> > stemNormalizer_dk;
-static const StemNormalizer<stemming::dutch_stem<> > stemNormalizer_nl;
-static const StemNormalizer<stemming::english_stem<> > stemNormalizer_en;
-static const StemNormalizer<stemming::finnish_stem<> > stemNormalizer_fi;
-static const StemNormalizer<stemming::french_stem<> > stemNormalizer_fr;
-static const StemNormalizer<stemming::german_stem<> > stemNormalizer_de;
-static const StemNormalizer<stemming::italian_stem<> > stemNormalizer_it;
-static const StemNormalizer<stemming::norwegian_stem<> > stemNormalizer_no;
-static const StemNormalizer<stemming::portuguese_stem<> > stemNormalizer_pt;
-static const StemNormalizer<stemming::spanish_stem<> > stemNormalizer_es;
-static const StemNormalizer<stemming::swedish_stem<> > stemNormalizer_se;
+static const StemNormalizer stemNormalizer_dk("da");
+static const StemNormalizer stemNormalizer_nl("nl");
+static const StemNormalizer stemNormalizer_en("en");
+static const StemNormalizer stemNormalizer_fi("fi");
+static const StemNormalizer stemNormalizer_fr("fr");
+static const StemNormalizer stemNormalizer_hu("hu");
+static const StemNormalizer stemNormalizer_de("de");
+static const StemNormalizer stemNormalizer_it("it");
+static const StemNormalizer stemNormalizer_no("no");
+static const StemNormalizer stemNormalizer_ro("ro");
+static const StemNormalizer stemNormalizer_ru("ru");
+static const StemNormalizer stemNormalizer_pt("pt");
+static const StemNormalizer stemNormalizer_es("es");
+static const StemNormalizer stemNormalizer_se("sv");
+static const StemNormalizer stemNormalizer_tr("tr");
 
 const NormalizerInterface* strus::snowball_stemmer_de()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_dk()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_nl()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_en()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_fi()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_fr()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_it()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_no()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_pt()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_es()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_se()	{return &stemNormalizer_de;}
+const NormalizerInterface* strus::snowball_stemmer_dk()	{return &stemNormalizer_dk;}
+const NormalizerInterface* strus::snowball_stemmer_nl()	{return &stemNormalizer_nl;}
+const NormalizerInterface* strus::snowball_stemmer_en()	{return &stemNormalizer_en;}
+const NormalizerInterface* strus::snowball_stemmer_fi()	{return &stemNormalizer_fi;}
+const NormalizerInterface* strus::snowball_stemmer_fr()	{return &stemNormalizer_fr;}
+const NormalizerInterface* strus::snowball_stemmer_hu()	{return &stemNormalizer_hu;}
+const NormalizerInterface* strus::snowball_stemmer_it()	{return &stemNormalizer_it;}
+const NormalizerInterface* strus::snowball_stemmer_no()	{return &stemNormalizer_no;}
+const NormalizerInterface* strus::snowball_stemmer_ro()	{return &stemNormalizer_ro;}
+const NormalizerInterface* strus::snowball_stemmer_ru()	{return &stemNormalizer_ru;}
+const NormalizerInterface* strus::snowball_stemmer_pt()	{return &stemNormalizer_pt;}
+const NormalizerInterface* strus::snowball_stemmer_es()	{return &stemNormalizer_es;}
+const NormalizerInterface* strus::snowball_stemmer_se()	{return &stemNormalizer_se;}
+const NormalizerInterface* strus::snowball_stemmer_tr()	{return &stemNormalizer_tr;}
 

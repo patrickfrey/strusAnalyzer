@@ -3,10 +3,10 @@ CPP_OBJS=\
 	snowball.o \
 	tokenMinerLib.o
 
-CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I$(TOPDIR)/3rdParty/Stemming_Library-0.3/ -I/usr/include -I.
+CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I$(TOPDIR)/3rdParty/snowball/libstemmer_c/include/ -I$(TOPDIR)/3rdParty/textwolf/include -I/usr/include -I.
 CXXFLAGS=-g -Werror -Wall -pedantic -std=c++98
-LDFLAGS=-L/usr/lib
-LIBS=
+LDFLAGS=-L/usr/lib -L$(TOPDIR)/3rdParty/snowball/libstemmer_c/
+LIBS=-lstemmer
 
 all: libstrus_tokenminer.so
 

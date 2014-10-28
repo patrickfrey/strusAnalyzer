@@ -39,11 +39,15 @@ const NormalizerInterface* snowball_stemmer_nl();
 const NormalizerInterface* snowball_stemmer_en();
 const NormalizerInterface* snowball_stemmer_fi();
 const NormalizerInterface* snowball_stemmer_fr();
+const NormalizerInterface* snowball_stemmer_hu();
 const NormalizerInterface* snowball_stemmer_it();
 const NormalizerInterface* snowball_stemmer_no();
+const NormalizerInterface* snowball_stemmer_ro();
+const NormalizerInterface* snowball_stemmer_ru();
 const NormalizerInterface* snowball_stemmer_pt();
 const NormalizerInterface* snowball_stemmer_es();
 const NormalizerInterface* snowball_stemmer_se();
+const NormalizerInterface* snowball_stemmer_tr();
 
 }//namespace
 #endif

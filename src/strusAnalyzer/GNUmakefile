@@ -4,8 +4,8 @@ CPP_OBJS=
 
 CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private
 CXXFLAGS=-g -Werror -Wall -pedantic -std=c++98
-LDFLAGS=-L$(TOPDIR)/src/analyzer -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/src/system -L/usr/lib
-LIBS=-lstrus_analyzer -lstrus_tokenminer -lstrus_system -lboost_system
+LDFLAGS=-L$(TOPDIR)/src/analyzer -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/3rdParty/snowball/libstemmer_c -L$(TOPDIR)/src/system -L/usr/lib
+LIBS=-lstrus_analyzer -lstrus_tokenminer -lstemmer -lstrus_system -lboost_system
 
 all: strusAnalyzer
 
