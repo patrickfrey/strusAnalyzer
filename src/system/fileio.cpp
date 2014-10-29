@@ -90,6 +90,10 @@ DLL_PUBLIC unsigned int strus::readFile( const std::string& filename, std::strin
 		::fclose( fh);
 		return ec;
 	}
+	else
+	{
+		::fclose( fh);
+	}
 	return 0;
 }
 

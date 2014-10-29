@@ -115,7 +115,7 @@ static bool processDirectory(
 	ec = strus::readDir( path, "", subdirsToProcess);
 	if (ec)
 	{
-		std::cerr << "ERROR could not read subdirectories to process '" << path << "' (file system error '" << ec << ")" << std::endl;
+		std::cerr << "ERROR could not read subdirectories to process '" << path << "' (file system error " << ec << ")" << std::endl;
 		return false;
 	}
 	std::vector<std::string>::const_iterator di = subdirsToProcess.begin(), de = subdirsToProcess.end();
@@ -162,7 +162,7 @@ int main( int argc, const char* argv[])
 		if (ec)
 		{
 			std::ostringstream msg;
-			std::cerr << "ERROR failed to load analyzer program " << argv[1] << " (file system error '" << ec << ")" << std::endl;
+			std::cerr << "ERROR failed to load analyzer program " << argv[1] << " (file system error " << ec << ")" << std::endl;
 			return 2;
 		}
 		std::string tokenMinerSource;
