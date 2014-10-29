@@ -43,24 +43,15 @@
 static int failedOperations = 0;
 static int succeededOperations = 0;
 
-static bool processDocument( 
+static bool processQuery( 
 	strus::StorageInterface* storage,
 	const strus::AnalyzerInterface* analyzer,
-	const std::string& path)
+	const std::string& querystring)
 {
 	try
 	{
-		std::string documentContent;
-		unsigned int ec = strus::readFile( path, documentContent);
-		if (ec)
-		{
-			std::ostringstream msg;
-			std::cerr << "ERROR failed to load document to analyze " << path << " (file system error " << ec << ")" << std::endl;
-			return false;
-		}
-
 		std::vector<strus::AnalyzerInterface::Term> termar
-			= analyzer->analyze( documentContent);
+			= analyzer->analyze( querystring);
 
 		std::vector<strus::AnalyzerInterface::Term>::const_iterator
 			ti = termar.begin(), te = termar.end();
@@ -86,55 +77,6 @@ static bool processDocument(
 	}
 }
 
-static bool processDirectory( 
-	strus::StorageInterface* storage,
-	const strus::AnalyzerInterface* analyzer,
-	const std::string& path)
-{
-	std::vector<std::string> filesToProcess;
-	unsigned int ec = strus::readDir( path, ".xml", filesToProcess);
-	if (ec)
-	{
-		std::cerr << "ERROR could not read directory to process '" << path << "' (file system error '" << ec << ")" << std::endl;
-		return false;
-	}
-	std::vector<std::string>::const_iterator pi = filesToProcess.begin(), pe = filesToProcess.end();
-	for (; pi != pe; ++pi)
-	{
-		std::string file( path + strus::dirSeparator() + *pi);
-		if (processDocument( storage, analyzer, file))
-		{
-			++succeededOperations;
-		}
-		else
-		{
-			++failedOperations;
-		}
-	}
-	std::vector<std::string> subdirsToProcess;
-	ec = strus::readDir( path, "", subdirsToProcess);
-	if (ec)
-	{
-		std::cerr << "ERROR could not read subdirectories to process '" << path << "' (file system error " << ec << ")" << std::endl;
-		return false;
-	}
-	std::vector<std::string>::const_iterator di = subdirsToProcess.begin(), de = subdirsToProcess.end();
-	for (; di != de; ++di)
-	{
-		std::string subdir( path + strus::dirSeparator() + *di);
-		if (strus::isDir( subdir))
-		{
-			if (!processDirectory( storage, analyzer, subdir))
-			{
-				std::cerr << "ERROR failed to process subdirectory '" << subdir << "'" << std::endl;
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
-
 int main( int argc, const char* argv[])
 {
 
@@ -148,10 +90,10 @@ int main( int argc, const char* argv[])
 	}
 	if (argc != 4 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
-		std::cerr << "usage: strusInsert <program> <config> <docpath>" << std::endl;
-		std::cerr << "<program>     = path of analyzer program" << std::endl;
+		std::cerr << "usage: strusQuery <program> <config> <qrypath>" << std::endl;
+		std::cerr << "<program>     = path of query analyzer program" << std::endl;
 		std::cerr << "<config>      = storage configuration string as used for strusCreate" << std::endl;
-		std::cerr << "<docpath>     = path of document or directory to insert";
+		std::cerr << "<qrypath>     = path of query or '-' for stdin";
 		return 0;
 	}
 	try
@@ -175,38 +117,29 @@ int main( int argc, const char* argv[])
 		boost::scoped_ptr<strus::StorageInterface> storage(
 					strus::createStorageClient( argv[2]));
 
-		std::string path( argv[3]);
-		if (strus::isDir( path))
+		std::string querystring;
+		if (path == "-")
 		{
-			if (!processDirectory( storage.get(), analyzer.get(), path))
+			ec = strus::readStdin( querystring);
+			if (ec)
 			{
-				std::cerr << "ERROR failed processing of directory '" << path << "'" << std::endl;
+				std::cerr << "ERROR failed to read query string from stdin" << std::endl;
 				return 3;
 			}
 		}
-		else if (strus::isFile( path))
-		{
-			if (processDocument( storage.get(), analyzer.get(), path))
-			{
-				++succeededOperations;
-			}
-			else
-			{
-				++failedOperations;
-			}
-		}
 		else
 		{
-			std::cerr << "ERROR item '" << path << "' to process is neither a file nor a directory" << std::endl;
-			return 4;
+			ec = strus::readFile( path, querystring);
+			if (ec)
+			{
+				std::cerr << "ERROR failed to read query string from file '" << path << "'" << std::endl;
+				return 4;
+			}
 		}
-		if (failedOperations > 0)
+		if (!processQuery( storage.get(), analyzer.get(), querystring))
 		{
-			std::cerr << "total " << failedOperations << " inserts failed out of " << (succeededOperations + failedOperations) << std::endl;
-		}
-		else
-		{
-			std::cerr << "successfully inserted " << (succeededOperations + failedOperations) << " documents" << std::endl;
+			std::cerr << "ERROR query evaluation failed" << std::endl;
+			return 5;
 		}
 	}
 	catch (const std::runtime_error& e)

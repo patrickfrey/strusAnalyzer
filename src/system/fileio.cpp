@@ -97,6 +97,23 @@ DLL_PUBLIC unsigned int strus::readFile( const std::string& filename, std::strin
 	return 0;
 }
 
+DLL_PUBLIC unsigned int strus::readStdin( std::string& res)
+{
+	unsigned char ch;
+	while (1 == ::fread( &ch, 1, 1, stdin))
+	{
+		try
+		{
+			res.push_back( ch);
+		}
+		catch (const std::bad_alloc&)
+		{
+			return 12/*ENOMEM*/;
+		}
+	}
+	return 0;
+}
+
 DLL_PUBLIC unsigned int strus::readDir( const std::string& path, const std::string& ext, std::vector<std::string>& res)
 {
 	DIR *dir = ::opendir( path.c_str());
