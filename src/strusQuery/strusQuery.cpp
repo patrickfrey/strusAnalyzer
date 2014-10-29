@@ -26,21 +26,35 @@
 
 --------------------------------------------------------------------
 */
+#include "strus/tokenMinerFactory.hpp"
+#include "strus/tokenMinerLib.hpp"
 #include "strus/analyzerInterface.hpp"
 #include "strus/analyzerLib.hpp"
 #include "strus/storageInterface.hpp"
 #include "strus/storageLib.hpp"
 #include "strus/queryEvalInterface.hpp"
 #include "strus/queryEvalLib.hpp"
+#include "strus/queryProcessorInterface.hpp"
+#include "strus/queryProcessorLib.hpp"
 #include "system/fileio.hpp"
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <algorithm>
 #include <stdexcept>
 #include <boost/scoped_ptr.hpp>
 
-static int failedOperations = 0;
-static int succeededOperations = 0;
+namespace {
+class TermPosComparator
+{
+public:
+	typedef strus::AnalyzerInterface::Term Term;
+	bool operator() (Term const& aa, Term const& bb) const
+	{
+		return (aa.pos() < bb.pos());
+	}
+};
+}//anonymous namespace
 
 static bool processQuery( 
 	const strus::AnalyzerInterface* analyzer,
@@ -50,22 +64,24 @@ static bool processQuery(
 {
 	try
 	{
-		QueryEvalInterface::Query query;
+		strus::QueryEvalInterface::Query query;
 		typedef strus::AnalyzerInterface::Term Term;
 
 		std::vector<Term> termar = analyzer->analyze( querystring);
 
-		struct TermPosComparator
-		{
-			bool operator() (const Term& aa, const Term& bb)
-			{
-				return (aa.pos() < bb.pos());
-			}
-		};
-		TermPosComparator termComp;
-		std::sort( termar.begin(), termar.end(), termComp);
+		std::sort( termar.begin(), termar.end(), TermPosComparator());
 
+		std::cerr << "analyzed query:" << std::endl;
 		std::vector<Term>::const_iterator ti = termar.begin(), tv = termar.begin(), te = termar.end();
+		for (; ti!=te; tv=ti,++ti)
+		{
+			std::cerr << ti->pos()
+				  << " " << ti->type()
+				  << " '" << ti->value() << "'"
+				  << std::endl;
+		}
+
+		ti = termar.begin(), tv = termar.begin(), te = termar.end();
 		for (; ti!=te; tv=ti,++ti)
 		{
 			query.addTerm( ti->type()/*set*/, ti->type(), ti->value());
@@ -77,15 +93,12 @@ static bool processQuery(
 				}
 				query.joinTerms( ti->type()/*set*/, "union", 0, 2);
 			}
-			else
-			{
-				prevpos = ti->pos();
-			}
 		}
 		
 		std::vector<strus::WeightedDocument> ranklist
 			= qeval->getRankedDocumentList( *qproc, query, 20);
 
+		std::cerr << "ranked list (maximum 20 matches):" << std::endl;
 		std::vector<strus::WeightedDocument>::const_iterator wi = ranklist.begin(), we = ranklist.end();
 		for (int widx=1; wi != we; ++wi,++widx)
 		{
@@ -95,7 +108,7 @@ static bool processQuery(
 	}
 	catch (const std::runtime_error& err)
 	{
-		std::cerr << "ERROR failed to insert document '" << path << "': " << err.what() << std::endl;
+		std::cerr << "ERROR failed to evaluate query: " << err.what() << std::endl;
 		return false;
 	}
 }
@@ -171,7 +184,7 @@ int main( int argc, const char* argv[])
 			ec = strus::readFile( querypath, querystring);
 			if (ec)
 			{
-				std::cerr << "ERROR failed to read query string from file '" << path << "'" << std::endl;
+				std::cerr << "ERROR failed to read query string from file '" << querypath << "'" << std::endl;
 				return 4;
 			}
 		}

@@ -12,6 +12,7 @@ subdirs:
 	cd analyzer; make all; cd -
 	cd strusAnalyze; make all; cd -
 	cd strusInsert; make all; cd -
+	cd strusQuery; make all; cd -
 
 .PHONY: clean
 clean:
@@ -20,6 +21,7 @@ clean:
 	cd analyzer; make clean; cd -
 	cd strusAnalyze; make clean; cd -
 	cd strusInsert; make clean; cd -
+	cd strusQuery; make clean; cd -
 
 .PHONY: install
 install:
@@ -28,6 +30,7 @@ install:
 	cd analyzer; make install; cd -
 	cd strusAnalyze; make install; cd -
 	cd strusInsert; make install; cd -
+	cd strusQuery; make install; cd -
 
 .PHONY: uninstall
 uninstall:
@@ -36,6 +39,7 @@ uninstall:
 	cd analyzer; make uninstall; cd -
 	cd strusAnalyze; make uninstall; cd -
 	cd strusInsert; make uninstall; cd -
+	cd strusQuery; make uninstall; cd -
 
 
 
