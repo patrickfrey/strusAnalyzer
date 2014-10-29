@@ -3,14 +3,11 @@ include variables.mk
 all:
 	cd 3rdParty; make all; cd -
 	cd src; make all; cd ..
-	cd tests; make all; cd ..
 
 test: all
-	cd tests; make test; cd ..
 
 clean:
 	cd 3rdParty; make clean; cd -
-	cd tests; make clean; cd ..
 	cd src; make clean; cd ..
 
 install:
