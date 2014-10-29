@@ -42,6 +42,7 @@
 
 static int failedOperations = 0;
 static int succeededOperations = 0;
+static int loopCount = 0;
 
 static bool processDocument( 
 	strus::StorageInterface* storage,
@@ -76,7 +77,11 @@ static bool processDocument(
 				ti->type(), ti->value(), ti->pos());
 		}
 		transaction->commit();
-		std::cerr << "inserted document '" << path << "'" << std::endl;
+		if (++loopCount == 10000)
+		{
+			loopCount = 0;
+			std::cerr << "inserted " << succeededOperations << " documents" << std::endl;
+		}
 		return true;
 	}
 	catch (const std::runtime_error& err)
@@ -151,7 +156,7 @@ int main( int argc, const char* argv[])
 		std::cerr << "usage: strusInsert <program> <config> <docpath>" << std::endl;
 		std::cerr << "<program>     = path of analyzer program" << std::endl;
 		std::cerr << "<config>      = storage configuration string as used for strusCreate" << std::endl;
-		std::cerr << "<docpath>     = path of document or directory to insert";
+		std::cerr << "<docpath>     = path of document or directory to insert" << std::endl;
 		return 0;
 	}
 	try

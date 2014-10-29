@@ -93,7 +93,7 @@ int main( int argc, const char* argv[])
 		std::cerr << "usage: strusQuery <program> <config> <qrypath>" << std::endl;
 		std::cerr << "<program>     = path of query analyzer program" << std::endl;
 		std::cerr << "<config>      = storage configuration string as used for strusCreate" << std::endl;
-		std::cerr << "<qrypath>     = path of query or '-' for stdin";
+		std::cerr << "<qrypath>     = path of query or '-' for stdin" << std::endl;
 		return 0;
 	}
 	try
