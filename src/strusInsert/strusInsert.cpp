@@ -97,7 +97,7 @@ int main( int argc, const char* argv[])
 	}
 	if (argc != 3 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
-		std::cerr << "usage: strusInserter <program> <config> <docpath>" << std::endl;
+		std::cerr << "usage: strusInsert <program> <config> <docpath>" << std::endl;
 		std::cerr << "<program>     = path of analyzer program" << std::endl;
 		std::cerr << "<config>      = storage configuration string" << std::endl;
 		std::cerr << "<docpath>     = path of document or directory to insert: ";

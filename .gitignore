@@ -25,6 +25,6 @@
 setenv.sh
 
 # Compiled Programs
-src/strusAnalyzer/strusAnalyzer
+src/strusAnalyze/strusAnalyze
+src/strusInsert/strusInsert
 3rdParty/snowball/libstemmer_c/stemwords
-src/strusInserter/strusInserter

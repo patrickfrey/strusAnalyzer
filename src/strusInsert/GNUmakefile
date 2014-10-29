@@ -8,7 +8,7 @@ CXXFLAGS=-g -Werror -Wall -pedantic -std=c++98
 LDFLAGS=-L$(TOPDIR)/src/analyzer -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/3rdParty/snowball/libstemmer_c -L$(TOPDIR)/src/system -L/usr/lib -L/usr/local/lib -L$(INSTALL_LIBDIR)
 LIBS=-lstrus_analyzer -lstrus_tokenminer -lstemmer -lstrus_system -lstrus_lvdbstorage -lboost_system
 
-all: strusInserter
+all: strusInsert
 
 -include $(CPP_OBJS:.o=.d)
 
@@ -16,21 +16,21 @@ all: strusInserter
 	g++ -c -o $@ $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp
 	g++ -MM $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp > $*.d
 
-strusInserter: $(CPP_OBJS) strusInserter.o
-	g++ -o $@ strusInserter.o $(CPP_OBJS) $(LDFLAGS) $(LIBS)
+strusInsert: $(CPP_OBJS) strusInsert.o
+	g++ -o $@ strusInsert.o $(CPP_OBJS) $(LDFLAGS) $(LIBS)
 
 .PHONY: clean
 clean:
-	rm -f ${CPP_OBJS} ${CPP_OBJS:.o=.d} strusInserter strusInserter.o strusInserter.d
+	rm -f ${CPP_OBJS} ${CPP_OBJS:.o=.d} strusInsert strusInsert.o strusInsert.d
 
 .PHONY: install
 install:
 	@mkdir -p $(INSTALL_BINDIR)
-	@cp strusInserter $(INSTALL_BINDIR)
+	@cp strusInsert $(INSTALL_BINDIR)
 
 .PHONY: uninstall
 uninstall:
-	@rm $(INSTALL_BINDIR)/strusInserter
+	@rm $(INSTALL_BINDIR)/strusInsert
 
 
 

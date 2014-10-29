@@ -42,7 +42,7 @@ int main( int argc, const char* argv[])
 {
 	if (argc <= 2 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
-		std::cerr << "usage: strusAnalyzer <program> <document>" << std::endl;
+		std::cerr << "usage: strusAnalyze <program> <document>" << std::endl;
 		std::cerr << "<program>     = path of analyzer program" << std::endl;
 		std::cerr << "<document>    = path of document to analyze: ";
 		return 0;
