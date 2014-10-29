@@ -40,6 +40,9 @@
 #include <stdexcept>
 #include <boost/scoped_ptr.hpp>
 
+static int failedOperations = 0;
+static int succeededOperations = 0;
+
 static bool processDocument( 
 	strus::StorageInterface* storage,
 	const strus::AnalyzerInterface* analyzer,
@@ -83,10 +86,57 @@ static bool processDocument(
 	}
 }
 
+static bool processDirectory( 
+	strus::StorageInterface* storage,
+	const strus::AnalyzerInterface* analyzer,
+	const std::string& path)
+{
+	std::vector<std::string> filesToProcess;
+	unsigned int ec = strus::readDir( path, ".xml", filesToProcess);
+	if (ec)
+	{
+		std::cerr << "ERROR could not read directory to process '" << path << "' (file system error '" << ec << ")" << std::endl;
+		return false;
+	}
+	std::vector<std::string>::const_iterator pi = filesToProcess.begin(), pe = filesToProcess.end();
+	for (; pi != pe; ++pi)
+	{
+		std::string file( path + strus::dirSeparator() + *pi);
+		if (processDocument( storage, analyzer, file))
+		{
+			++succeededOperations;
+		}
+		else
+		{
+			++failedOperations;
+		}
+	}
+	std::vector<std::string> subdirsToProcess;
+	ec = strus::readDir( path, "", subdirsToProcess);
+	if (ec)
+	{
+		std::cerr << "ERROR could not read subdirectories to process '" << path << "' (file system error '" << ec << ")" << std::endl;
+		return false;
+	}
+	std::vector<std::string>::const_iterator di = subdirsToProcess.begin(), de = subdirsToProcess.end();
+	for (; di != de; ++di)
+	{
+		std::string subdir( path + strus::dirSeparator() + *di);
+		if (strus::isDir( subdir))
+		{
+			if (!processDirectory( storage, analyzer, subdir))
+			{
+				std::cerr << "ERROR failed to process subdirectory '" << subdir << "'" << std::endl;
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
 int main( int argc, const char* argv[])
 {
-	int failedOperations = 0;
-	int succeededOperations = 0;
 
 	if (argc > 4)
 	{
@@ -126,27 +176,12 @@ int main( int argc, const char* argv[])
 					strus::createStorageClient( argv[2]));
 
 		std::string path( argv[3]);
-		std::vector<std::string> filesToProcess;
 		if (strus::isDir( path))
 		{
-			unsigned int ec = strus::readDir( path, ".xml", filesToProcess);
-			if (ec)
+			if (!processDirectory( storage.get(), analyzer.get(), path))
 			{
-				std::cerr << "ERROR could not read directory to process '" << path << "' (file system error '" << ec << ")" << std::endl;
+				std::cerr << "ERROR failed processing of directory '" << path << "'" << std::endl;
 				return 3;
-			}
-			std::vector<std::string>::const_iterator pi = filesToProcess.begin(), pe = filesToProcess.end();
-			for (; pi != pe; ++pi)
-			{
-				std::string file( path + strus::dirSeparator() + *pi);
-				if (processDocument( storage.get(), analyzer.get(), file))
-				{
-					++succeededOperations;
-				}
-				else
-				{
-					++failedOperations;
-				}
 			}
 		}
 		else if (strus::isFile( path))
@@ -168,6 +203,10 @@ int main( int argc, const char* argv[])
 		if (failedOperations > 0)
 		{
 			std::cerr << "total " << failedOperations << " inserts failed out of " << (succeededOperations + failedOperations) << std::endl;
+		}
+		else
+		{
+			std::cerr << "successfully inserted " << (succeededOperations + failedOperations) << " documents" << std::endl;
 		}
 	}
 	catch (const std::runtime_error& e)
