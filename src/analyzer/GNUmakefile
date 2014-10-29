@@ -1,4 +1,6 @@
 TOPDIR=../..
+include $(TOPDIR)/variables.mk
+
 CPP_OBJS=\
 	parser/lexems.o \
 	analyzer.o \
@@ -24,4 +26,12 @@ libstrus_analyzer.so: $(CPP_OBJS)
 clean:
 	rm -f $(CPP_OBJS) $(CPP_OBJS:.o=.d) libstrus_analyzer.so
 
+.PHONY: install
+install:
+	@mkdir -p $(INSTALL_LIBDIR)
+	@cp libstrus_analyzer.so $(INSTALL_LIBDIR)
+
+.PHONY: uninstall
+uninstall:
+	@rm $(INSTALL_LIBDIR)/libstrus_analyzer.so
 

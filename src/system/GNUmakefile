@@ -1,4 +1,6 @@
 TOPDIR=../..
+include $(TOPDIR)/variables.mk
+
 CPP_OBJS=\
 	fileio.o
 
@@ -22,4 +24,12 @@ libstrus_system.so: $(CPP_OBJS)
 clean:
 	rm -f $(CPP_OBJS) $(CPP_OBJS:.o=.d) libstrus_system.so
 
+.PHONY: install
+install:
+	@mkdir -p $(INSTALL_LIBDIR)
+	@cp libstrus_system.so $(INSTALL_LIBDIR)
+
+.PHONY: uninstall
+uninstall:
+	@rm $(INSTALL_LIBDIR)/libstrus_system.so
 

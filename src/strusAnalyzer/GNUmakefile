@@ -1,4 +1,5 @@
 TOPDIR=../..
+include $(TOPDIR)/variables.mk
 
 CPP_OBJS=
 
@@ -21,6 +22,16 @@ strusAnalyzer: $(CPP_OBJS) strusAnalyzer.o
 .PHONY: clean
 clean:
 	rm -f ${CPP_OBJS} ${CPP_OBJS:.o=.d} strusAnalyzer strusAnalyzer.o strusAnalyzer.d
+
+
+.PHONY: install
+install:
+	@mkdir -p $(INSTALL_BINDIR)
+	@cp strusAnalyzer $(INSTALL_BINDIR)
+
+.PHONY: uninstall
+uninstall:
+	@rm $(INSTALL_BINDIR)/strusAnalyzer
 
 
 
