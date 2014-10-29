@@ -80,7 +80,7 @@ static bool processDocument(
 		if (++loopCount == 10000)
 		{
 			loopCount = 0;
-			std::cerr << "inserted " << succeededOperations << " documents" << std::endl;
+			std::cerr << "inserted " << (succeededOperations+1) << " documents" << std::endl;
 		}
 		return true;
 	}
