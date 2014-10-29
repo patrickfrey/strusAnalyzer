@@ -52,7 +52,7 @@ static bool processDocument(
 		if (ec)
 		{
 			std::ostringstream msg;
-			std::cerr << "failed to load document to analyze " << path << " (file system error '" << ec << ")" << std::endl;
+			std::cerr << "ERROR failed to load document to analyze " << path << " (file system error " << ec << ")" << std::endl;
 			return false;
 		}
 
@@ -73,11 +73,12 @@ static bool processDocument(
 				ti->type(), ti->value(), ti->pos());
 		}
 		transaction->commit();
+		std::cerr << "inserted document '" << path << "'" << std::endl;
 		return true;
 	}
 	catch (const std::runtime_error& err)
 	{
-		std::cerr << "Failed to insert document '" << path << "': " << err.what() << std::endl;
+		std::cerr << "ERROR failed to insert document '" << path << "': " << err.what() << std::endl;
 		return false;
 	}
 }
@@ -87,15 +88,15 @@ int main( int argc, const char* argv[])
 	int failedOperations = 0;
 	int succeededOperations = 0;
 
-	if (argc > 3)
+	if (argc > 4)
 	{
 		std::cerr << "ERROR too many arguments" << std::endl;
 	}
-	if (argc < 3)
+	if (argc < 4)
 	{
 		std::cerr << "ERROR too few arguments" << std::endl;
 	}
-	if (argc != 3 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
+	if (argc != 4 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
 		std::cerr << "usage: strusInsert <program> <config> <docpath>" << std::endl;
 		std::cerr << "<program>     = path of analyzer program" << std::endl;
@@ -138,7 +139,7 @@ int main( int argc, const char* argv[])
 			for (; pi != pe; ++pi)
 			{
 				std::string file( path + strus::dirSeparator() + *pi);
-				if (processDocument( storage.get(), analyzer.get(), path))
+				if (processDocument( storage.get(), analyzer.get(), file))
 				{
 					++succeededOperations;
 				}
@@ -158,6 +159,11 @@ int main( int argc, const char* argv[])
 			{
 				++failedOperations;
 			}
+		}
+		else
+		{
+			std::cerr << "ERROR item '" << path << "' to process is neither a file nor a directory" << std::endl;
+			return 4;
 		}
 		if (failedOperations > 0)
 		{
