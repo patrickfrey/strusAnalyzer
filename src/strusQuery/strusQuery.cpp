@@ -56,18 +56,7 @@ static bool processQuery(
 		std::vector<strus::AnalyzerInterface::Term>::const_iterator
 			ti = termar.begin(), te = termar.end();
 
-		boost::scoped_ptr<strus::StorageInterface::TransactionInterface>
-			transaction( storage->createTransaction( path));
-
-		transaction->setDocumentAttribute( 'D', path);
-
-		for (; ti != te; ++ti)
-		{
-			transaction->addTermOccurrence(
-				ti->type(), ti->value(), ti->pos());
-		}
-		transaction->commit();
-		std::cerr << "inserted document '" << path << "'" << std::endl;
+		
 		return true;
 	}
 	catch (const std::runtime_error& err)
@@ -90,10 +79,10 @@ int main( int argc, const char* argv[])
 	}
 	if (argc != 4 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
-		std::cerr << "usage: strusQuery <program> <config> <qrypath>" << std::endl;
+		std::cerr << "usage: strusQuery <program> <storage> <query>" << std::endl;
 		std::cerr << "<program>     = path of query analyzer program" << std::endl;
-		std::cerr << "<config>      = storage configuration string as used for strusCreate" << std::endl;
-		std::cerr << "<qrypath>     = path of query or '-' for stdin" << std::endl;
+		std::cerr << "<storage>     = storage configuration string as used for strusCreate" << std::endl;
+		std::cerr << "<query>       = path of query or '-' for stdin" << std::endl;
 		return 0;
 	}
 	try
