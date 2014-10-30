@@ -4,7 +4,7 @@ include $(TOPDIR)/variables.mk
 CPP_OBJS=
 
 CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private
-CXXFLAGS=-g -Werror -Wall -pedantic -O3 -std=c++98
+CXXFLAGS=-g -Werror -Wall -pedantic $(OPTIMIZE) -std=c++98
 LDFLAGS=-L$(TOPDIR)/src/analyzer -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/3rdParty/snowball/libstemmer_c -L$(TOPDIR)/src/system -L/usr/lib
 LIBS=-lstrus_analyzer -lstrus_tokenminer -lstemmer -lstrus_system -lboost_system
 

@@ -11,46 +11,46 @@ TERM sect      "":sect;
 # no operator at start of [..] expression forms a scalar product of the elements within
 
 # [0a] any query stem at the start of the title
-INTO title FOREACH [title stem] DO intersect(succ(_1), _2);
+INTO tstruct FOREACH [title stem] DO intersect(succ(_1), _2);
 
 # [0b] any query stem in the title
-INTO title FOREACH [sect title stem] DO within_struct[-50]( _1, succ(_2), _3);
+INTO tstruct FOREACH [sect title stem] DO within_struct[-50]( _1, succ(_2), _3);
 
 # [1a2] any sequence of two terms forming also a sequence in the query
-INTO struct FOREACH [(S 2) stem] DO sequence[2] (_1, _2);
+INTO cstruct FOREACH [(S 2) stem] DO sequence[2] (_1, _2);
 # [1a3] any sequence of three terms forming also a sequence in the query
-INTO struct FOREACH [(S 3) stem] DO sequence[5] (_1, _2, _3);
+INTO cstruct FOREACH [(S 3) stem] DO sequence[5] (_1, _2, _3);
 # [1a4] any sequence of four terms forming also a sequence in the query
-INTO struct FOREACH [(S 4) stem] DO sequence[8] (_1, _2, _3, _4);
+INTO cstruct FOREACH [(S 4) stem] DO sequence[8] (_1, _2, _3, _4);
 
 # [1b] same as [1a2] but at the begin of a sentence
-INTO struct FOREACH [sentence [(S 2) stem]] DO intersect( succ(_1), sequence[2](_2, _3));
+INTO cstruct FOREACH [sentence [(S 2) stem]] DO intersect( succ(_1), sequence[2](_2, _3));
 
 # [1c] same as [1a2] but at the begin of the title
-INTO title FOREACH [title [(S 2) stem]] DO intersect( succ(_1), sequence[2](_2, _3));
+INTO tstruct FOREACH [title [(S 2) stem]] DO intersect( succ(_1), sequence[2](_2, _3));
 
 # [1d] same as [1a2] but at the somewhere in the title
-INTO title FOREACH [sect title [(S 2) stem]] DO within_struct[-50]( _1, succ(_2), sequence[2] (_3, _4));
+INTO tstruct FOREACH [sect title [(S 2) stem]] DO within_struct[-50]( _1, succ(_2), sequence[2] (_3, _4));
 
 # [2a] any sentence containing in any order two terms forming a sequence in the query
-INTO struct FOREACH [sect sentence [(S 2) stem]] DO within_struct[-50] (union( _1, _2), _3, _4);
+INTO cstruct FOREACH [sect sentence [(S 2) stem]] DO within_struct[-50] (union( _1, _2), _3, _4);
 
 # [2b] same as [2a] but one term of the two at the begin of a sentence
-INTO struct FOREACH [sect sentence [(S 2) stem]] DO intersect( succ(union( _1, _2)), within_struct[-50] (union( _1, _2), _3, _4));
+INTO cstruct FOREACH [sect sentence [(S 2) stem]] DO intersect( succ(union( _1, _2)), within_struct[-50] (union( _1, _2), _3, _4));
 
 # [3] any sentence containing any two query terms and another different term in the same paragraph
-INTO struct FOREACH [sect sentence [(D) stem [(A 2) stem]]] DO within_struct[-500]( _1, _3, within_struct[-50] (union( _1, _2), _4, _5));
+INTO cstruct FOREACH [sect sentence [(D) stem [(A 2) stem]]] DO within_struct[-500]( _1, _3, within_struct[-50] (union( _1, _2), _4, _5));
 
 # [4a] any sentence containing three terms
-INTO struct FOREACH [sect sentence [(S 3) stem]] DO within_struct[-50] (union(_1, _2), _3, _4, _5);
+INTO cstruct FOREACH [sect sentence [(S 3) stem]] DO within_struct[-50] (union(_1, _2), _3, _4, _5);
 
 # [4b] same as [4a] but one term of the three at the begin of a sentence
-INTO struct FOREACH [sect sentence [(S 3) stem]] DO intersect( succ(union(_1, _2)), within_struct[-50] (union(_1, _2), _3, _4, _5));
+INTO cstruct FOREACH [sect sentence [(S 3) stem]] DO intersect( succ(union(_1, _2)), within_struct[-50] (union(_1, _2), _3, _4, _5));
 
 # [4c] title containing three terms
-INTO struct FOREACH [sect title [(S 3) stem]] DO within_struct[-50] (_1, _2, _3, _4);
+INTO cstruct FOREACH [sect title [(S 3) stem]] DO within_struct[-50] (_1, _2, _3, _4);
 
-EVAL idfPriority ( bm15<title,1.5> * 0.3 , bm25<struct,0.75,2.1,10000> );
+EVAL idfPriority ( bm15<tstruct,1.5> * 0.3 , bm25<cstruct,0.75,2.1,10000> );
 
 
 
