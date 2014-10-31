@@ -73,9 +73,9 @@ public:
 	DocumentParser()
 	{}
 
-	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner)
+	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, bool isMetaData)
 	{
-		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer()));
+		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer(), isMetaData));
 		int featidx = m_featuredefar.size();
 		int errorpos = m_automaton.addExpression( featidx, expression.c_str(), expression.size());
 		if (errorpos)
@@ -107,17 +107,23 @@ public:
 	public:
 		FeatureDef( const std::string& name_,
 				const TokenizerInterface* tokenizer_,
-				const NormalizerInterface* normalizer_)
-			:m_name(name_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
+				const NormalizerInterface* normalizer_,
+				bool isMetaData_)
+			:m_name(name_)
+			,m_tokenizer(tokenizer_)
+			,m_normalizer(normalizer_)
+			,m_isMetaData(isMetaData_){}
 	
 		const std::string& name() const			{return m_name;}
 		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
 		const NormalizerInterface* normalizer() const	{return m_normalizer;}
+		bool isMetaData() const				{return m_isMetaData;}
 	
 	private:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
 		const NormalizerInterface* m_normalizer;
+		bool m_isMetaData;
 	};
 
 	struct Instance
@@ -208,6 +214,7 @@ public:
 		std::vector<FeatureDef>::const_iterator fi = m_featuredefar.begin(), fe = m_featuredefar.end();
 		for (int fidx=1; fi != fe; ++fi,++fidx)
 		{
+			if (fi->isMetaData()) out << "Metadata ";
 			out << "[" << fidx << "] " << fi->name() << std::endl;
 		}
 	}
@@ -223,6 +230,46 @@ Analyzer::~Analyzer()
 	if (m_parser) delete m_parser;
 }
 
+void Analyzer::parseFeatureDef(
+	const TokenMinerFactory& tokenMinerFactory,
+	const std::string& featurename,
+	char const* src,
+	bool isMetaData)
+{
+	std::string xpathexpr;
+	std::string method;
+
+	if (isMetaData)
+	{
+		if (featurename.size() > 1)
+		{
+			throw std::runtime_error( "using identifier for metadata with length > 1 not allowed (metadata identifiers have to be a single alpha numeric character)");
+		}
+	}
+	if (isAlpha(*src))
+	{
+		method = parse_IDENTIFIER( src);
+	}
+	else
+	{
+		throw std::runtime_error( "identifier (token miner type) expected after assignment operator in a term declaration");
+	}
+	if (isStringQuote(*src))
+	{
+		xpathexpr = parse_STRING( src);
+	}
+	else
+	{
+		char const* start = src;
+		while (*src && !isSpace(*src) && *src != ';') ++src;
+		xpathexpr.append( start, src-start);
+	}
+	const TokenMiner* miner = tokenMinerFactory.get( method);
+	if (!miner) throw std::runtime_error( std::string( "unknown token type '") + method + "'");
+
+	m_parser->addExpression( featurename, xpathexpr, miner, isMetaData);
+}
+
 Analyzer::Analyzer(
 		const TokenMinerFactory& tokenMinerFactory,
 		const std::string& source)
@@ -235,48 +282,30 @@ Analyzer::Analyzer(
 		m_parser = new DocumentParser();
 		while (*src)
 		{
-			if (!isAlpha(*src))
+			if (!isAlnum(*src))
 			{
-				throw std::runtime_error( "identifier (feature set) expected at start of a term declaration");
+				throw std::runtime_error( "alphanumeric identifier (feature set) expected at start of a term declaration");
 			}
-			std::string featurename = parse_IDENTIFIER( src);
-			std::string xpathexpr;
-			std::string method;
-
-			if (!isAssign( *src))
+			std::string name = parse_IDENTIFIER( src);
+			if (isAssign( *src))
 			{
-				throw std::runtime_error( "assignment operator '=' expected after feature set identifier in a term declaration");
+				parse_OPERATOR(src);
+				parseFeatureDef( tokenMinerFactory, name, src, false);
 			}
-			parse_OPERATOR(src);
-			
-			if (isAlpha(*src))
+			else if (isColon( *src))
 			{
-				method = parse_IDENTIFIER( src);
+				parse_OPERATOR(src);
+				parseFeatureDef( tokenMinerFactory, name, src, true);
 			}
 			else
 			{
-				throw std::runtime_error( "identifier (token miner type) expected after assignment operator in a term declaration");
-			}
-			if (isStringQuote(*src))
-			{
-				xpathexpr = parse_STRING( src);
-			}
-			else
-			{
-				char const* start = src;
-				while (*src && !isSpace(*src) && *src != ';') ++src;
-				xpathexpr.append( start, src-start);
+				throw std::runtime_error( "assignment operator '=' or colon ':' expected after feature set identifier in a term or metadata declaration");
 			}
 			if (!isSemiColon(*src))
 			{
 				throw std::runtime_error( "semicolon ';' expected at end of feature declaration");
 			}
 			parse_OPERATOR(src);
-
-			const TokenMiner* miner = tokenMinerFactory.get( method);
-			if (!miner) throw std::runtime_error( std::string( "unknown token type '") + method + "'");
-
-			m_parser->addExpression( featurename, xpathexpr, miner);
 		}
 	}
 	catch (const std::runtime_error& e)
@@ -309,11 +338,10 @@ static void mapPositions( std::vector<AnalyzerInterface::Term>& ar, std::size_t 
 	}
 }
 
-std::vector<AnalyzerInterface::Term>
-	Analyzer::analyze(
-		const std::string& content) const
+AnalyzerInterface::Document
+	Analyzer::analyze( const std::string& content) const
 {
-	std::vector<Term> rt;
+	Document rt;
 	DocumentParser::Instance scanner( content.c_str(), m_parser->automaton());
 	const char* elem = 0;
 	std::size_t elemsize = 0;
@@ -329,9 +357,9 @@ std::vector<AnalyzerInterface::Term>
 		curr_position = scanner.position();
 		if (last_position != curr_position)
 		{
-			mapPositions( rt, last_position_idx, last_position, pcnt);
+			mapPositions( rt.m_terms, last_position_idx, last_position, pcnt);
 			last_position = curr_position;
-			last_position_idx = rt.size();
+			last_position_idx = rt.m_terms.size();
 		}
 		const Analyzer::DocumentParser::FeatureDef& feat
 			= m_parser->featureDef( featidx);
@@ -351,22 +379,40 @@ std::vector<AnalyzerInterface::Term>
 		{
 			if (feat.normalizer())
 			{
-				rt.push_back(
-					Term( feat.name(),
-						feat.normalizer()->normalize( elem + pi->pos, pi->size),
-						curr_position + pi->pos));
+				if (feat.isMetaData())
+				{
+					rt.m_metadata.push_back(
+						MetaData( feat.name()[0],
+							feat.normalizer()->normalize( elem + pi->pos, pi->size)));
+				}
+				else
+				{
+					rt.m_terms.push_back(
+						Term( feat.name(),
+							feat.normalizer()->normalize( elem + pi->pos, pi->size),
+							curr_position + pi->pos));
+				}
 			}
 			else
 			{
-				rt.push_back(
-					Term( feat.name(),
-						std::string( elem + pi->pos, pi->size),
-						curr_position + pi->pos));
+				if (feat.isMetaData())
+				{
+					rt.m_metadata.push_back(
+						MetaData( feat.name()[0],
+							std::string( elem + pi->pos, pi->size)));
+				}
+				else
+				{
+					rt.m_terms.push_back(
+						Term( feat.name(),
+							std::string( elem + pi->pos, pi->size),
+							curr_position + pi->pos));
+				}
 			}
 		}
 	}
 	curr_position = scanner.position();
-	mapPositions( rt, last_position_idx, last_position, pcnt);
+	mapPositions( rt.m_terms, last_position_idx, last_position, pcnt);
 	return rt;
 }
 

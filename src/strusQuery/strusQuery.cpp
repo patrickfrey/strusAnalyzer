@@ -67,7 +67,14 @@ static bool processQuery(
 		strus::QueryEvalInterface::Query query;
 		typedef strus::AnalyzerInterface::Term Term;
 
-		std::vector<Term> termar = analyzer->analyze( querystring);
+		strus::AnalyzerInterface::Document doc
+			= analyzer->analyze( querystring);
+
+		if (doc.metadata().size())
+		{
+			std::cerr << "unexpected meta data definitions in the query (ignored)" << std::endl;
+		}
+		std::vector<Term> termar = doc.terms();
 
 		std::sort( termar.begin(), termar.end(), TermPosComparator());
 

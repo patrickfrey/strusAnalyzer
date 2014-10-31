@@ -60,21 +60,26 @@ static bool processDocument(
 			return false;
 		}
 
-		std::vector<strus::AnalyzerInterface::Term> termar
+		strus::AnalyzerInterface::Document doc
 			= analyzer->analyze( documentContent);
-
-		std::vector<strus::AnalyzerInterface::Term>::const_iterator
-			ti = termar.begin(), te = termar.end();
 
 		boost::scoped_ptr<strus::StorageInterface::TransactionInterface>
 			transaction( storage->createTransaction( path));
 
-		transaction->setDocumentAttribute( 'D', path);
+		transaction->setDocumentAttribute( '@', path);
 
+		std::vector<strus::AnalyzerInterface::Term>::const_iterator
+			ti = doc.terms().begin(), te = doc.terms().end();
 		for (; ti != te; ++ti)
 		{
 			transaction->addTermOccurrence(
 				ti->type(), ti->value(), ti->pos());
+		}
+		std::vector<strus::AnalyzerInterface::MetaData>::const_iterator
+			mi = doc.metadata().begin(), me = doc.metadata().end();
+		for (; mi != me; ++mi)
+		{
+			transaction->setDocumentAttribute( mi->type(), mi->value());
 		}
 		transaction->commit();
 		if (++loopCount == 10000)

@@ -60,14 +60,49 @@ public:
 		unsigned int m_pos;
 	};
 
+	class MetaData
+	{
+	public:
+		MetaData()
+			:m_type(0){}
+		MetaData( const MetaData& o)
+			:m_type(o.m_type),m_value(o.m_value){}
+		MetaData( char t, const std::string& v)
+			:m_type(t),m_value(v){}
+
+		char type() const			{return m_type;}
+		const std::string& value() const	{return m_value;}
+
+	private:
+		char m_type;
+		std::string m_value;
+	};
+
+	class Document
+	{
+	public:
+		Document()
+			:m_metadata(0){}
+		Document( const Document& o)
+			:m_metadata(o.m_metadata),m_terms(o.m_terms){}
+
+		const std::vector<MetaData>& metadata() const	{return m_metadata;}
+		const std::vector<Term>& terms() const		{return m_terms;}
+
+	private:
+		friend class AnalyzerInterface;
+		friend class Analyzer;
+		std::vector<MetaData> m_metadata;
+		std::vector<Term> m_terms;
+	};
+
 public:
 	/// \brief Destructor
 	virtual ~AnalyzerInterface(){}
 
-	/// \brief Tokenize a document, assign types to tokens and normalize their values
+	/// \brief Tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content content string to analyze
-	virtual std::vector<Term> analyze(
-			const std::string& content) const=0;
+	virtual Document analyze( const std::string& content) const=0;
 
 	/// \brief Print the internal representation of the program to 'out'
 	/// \param[out] out stream to print the program to

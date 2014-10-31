@@ -73,16 +73,27 @@ int main( int argc, const char* argv[])
 		boost::scoped_ptr<strus::AnalyzerInterface> analyzer(
 			strus::createAnalyzer( *minerfac, analyzerProgramSource));
 
-		std::vector<strus::AnalyzerInterface::Term> termar
+		strus::AnalyzerInterface::Document doc
 			= analyzer->analyze( documentContent);
 
 		std::vector<strus::AnalyzerInterface::Term>::const_iterator
-			ti = termar.begin(), te = termar.end();
+			ti = doc.terms().begin(), te = doc.terms().end();
 
+		std::cout << "terms:" << std::endl;
 		for (; ti != te; ++ti)
 		{
 			std::cout << ti->pos()
 				  << " " << ti->type()
+				  << " '" << ti->value() << "'"
+				  << std::endl;
+		}
+		std::vector<strus::AnalyzerInterface::MetaData>::const_iterator
+			mi = doc.metadata().begin(), me = doc.metadata().end();
+
+		std::cout << std::endl << "metadata:" << std::endl;
+		for (; mi != me; ++mi)
+		{
+			std::cout << ti->type()
 				  << " '" << ti->value() << "'"
 				  << std::endl;
 		}

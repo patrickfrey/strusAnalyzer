@@ -51,10 +51,16 @@ public:
 
 	virtual ~Analyzer();
 
-	virtual std::vector<Term> analyze(
-			const std::string& content) const;
+	virtual Document analyze( const std::string& content) const;
 
 	virtual void print( std::ostream& out) const;
+
+private:
+	void parseFeatureDef(
+		const TokenMinerFactory& tokenMinerFactory,
+		const std::string& name,
+		char const* src,
+		bool isMetaData);
 
 private:
 	class DocumentParser;
