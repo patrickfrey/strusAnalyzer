@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+#include "strus/index.hpp"
+#include "strus/constants.hpp"
 #include "strus/analyzerInterface.hpp"
 #include "strus/analyzerLib.hpp"
 #include "strus/tokenMiner.hpp"
@@ -33,6 +35,7 @@
 #include "strus/tokenMinerLib.hpp"
 #include "strus/storageLib.hpp"
 #include "strus/storageInterface.hpp"
+#include "strus/constants.hpp"
 #include "system/fileio.hpp"
 #include <iostream>
 #include <sstream>
@@ -51,6 +54,7 @@ static bool processDocument(
 {
 	try
 	{
+		// Read the input file to analyze:
 		std::string documentContent;
 		unsigned int ec = strus::readFile( path, documentContent);
 		if (ec)
@@ -60,14 +64,22 @@ static bool processDocument(
 			return false;
 		}
 
+		// Call the analyzer and open the insert transaction:
 		strus::AnalyzerInterface::Document doc
 			= analyzer->analyze( documentContent);
 
 		boost::scoped_ptr<strus::StorageInterface::TransactionInterface>
 			transaction( storage->createTransaction( path));
 
-		transaction->setDocumentAttribute( '@', path);
+		strus::Index lastPos = (doc.terms().empty())?0:doc.terms()[ doc.terms().size()-1].pos();
 
+		// Define hardcoded document meta data:
+		transaction->setDocumentAttribute(
+			strus::Constants::DOC_ATTRIBUTE_DOCID, path);
+		transaction->setDocumentAttribute(
+			strus::Constants::DOC_ATTRIBUTE_DOCLEN, lastPos);
+
+		// Define all term occurrencies:
 		std::vector<strus::AnalyzerInterface::Term>::const_iterator
 			ti = doc.terms().begin(), te = doc.terms().end();
 		for (; ti != te; ++ti)
@@ -75,6 +87,8 @@ static bool processDocument(
 			transaction->addTermOccurrence(
 				ti->type(), ti->value(), ti->pos());
 		}
+
+		// Define all metadata elements extracted from the document analysis:
 		std::vector<strus::AnalyzerInterface::MetaData>::const_iterator
 			mi = doc.metadata().begin(), me = doc.metadata().end();
 		for (; mi != me; ++mi)
@@ -82,6 +96,8 @@ static bool processDocument(
 			transaction->setDocumentAttribute( mi->type(), mi->value());
 		}
 		transaction->commit();
+
+		// Notify progress:
 		if (++loopCount == 10000)
 		{
 			loopCount = 0;

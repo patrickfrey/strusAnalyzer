@@ -233,7 +233,7 @@ Analyzer::~Analyzer()
 void Analyzer::parseFeatureDef(
 	const TokenMinerFactory& tokenMinerFactory,
 	const std::string& featurename,
-	char const* src,
+	char const*& src,
 	bool isMetaData)
 {
 	std::string xpathexpr;

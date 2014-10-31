@@ -59,7 +59,7 @@ private:
 	void parseFeatureDef(
 		const TokenMinerFactory& tokenMinerFactory,
 		const std::string& name,
-		char const* src,
+		char const*& src,
 		bool isMetaData);
 
 private:
