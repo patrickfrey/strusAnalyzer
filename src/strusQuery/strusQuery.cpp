@@ -102,14 +102,19 @@ static bool processQuery(
 			}
 		}
 		
-		std::vector<strus::WeightedDocument> ranklist
-			= qeval->getRankedDocumentList( *qproc, query, 20);
+		std::vector<strus::ResultDocument> ranklist
+			= qeval->getRankedDocumentList( *qproc, query, 0, 20);
 
 		std::cerr << "ranked list (maximum 20 matches):" << std::endl;
-		std::vector<strus::WeightedDocument>::const_iterator wi = ranklist.begin(), we = ranklist.end();
+		std::vector<strus::ResultDocument>::const_iterator wi = ranklist.begin(), we = ranklist.end();
 		for (int widx=1; wi != we; ++wi,++widx)
 		{
-			std::cout << "[" << widx << "] " << wi->docno << " score " << wi->weight << std::endl;
+			std::cout << "[" << widx << "] " << wi->docno() << " score " << wi->weight() << std::endl;
+			std::vector<strus::ResultDocument::Attribute>::const_iterator ai = wi->attributes().begin(), ae = wi->attributes().end();
+			for (; ai != ae; ++ai)
+			{
+				std::cout << "\t" << ai->name() << "='" << ai->value() << "'" << std::endl;
+			}
 		}
 		return true;
 	}
