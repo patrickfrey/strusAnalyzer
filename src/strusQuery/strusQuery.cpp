@@ -44,6 +44,7 @@
 #include <stdexcept>
 #include <boost/scoped_ptr.hpp>
 
+#undef STRUS_LOWLEVEL_DEBUG
 namespace {
 class TermPosComparator
 {
@@ -57,6 +58,7 @@ public:
 }//anonymous namespace
 
 static bool processQuery( 
+	const strus::StorageInterface* storage,
 	const strus::AnalyzerInterface* analyzer,
 	const strus::QueryProcessorInterface* qproc,
 	const strus::QueryEvalInterface* qeval,
@@ -78,17 +80,18 @@ static bool processQuery(
 
 		std::sort( termar.begin(), termar.end(), TermPosComparator());
 
+#ifdef STRUS_LOWLEVEL_DEBUG
 		std::cerr << "analyzed query:" << std::endl;
-		std::vector<Term>::const_iterator ti = termar.begin(), tv = termar.begin(), te = termar.end();
-		for (; ti!=te; tv=ti,++ti)
+		std::vector<Term>::const_iterator ati = termar.begin(), ate = termar.end();
+		for (; ati!=ate; ++ati)
 		{
-			std::cerr << ti->pos()
-				  << " " << ti->type()
-				  << " '" << ti->value() << "'"
+			std::cerr << ati->pos()
+				  << " " << ati->type()
+				  << " '" << ati->value() << "'"
 				  << std::endl;
 		}
-
-		ti = termar.begin(), tv = termar.begin(), te = termar.end();
+#endif
+		std::vector<Term>::const_iterator ti = termar.begin(), tv = termar.begin(), te = termar.end();
 		for (; ti!=te; tv=ti,++ti)
 		{
 			query.addTerm( ti->type()/*set*/, ti->type(), ti->value());
@@ -103,7 +106,7 @@ static bool processQuery(
 		}
 		
 		std::vector<strus::ResultDocument> ranklist
-			= qeval->getRankedDocumentList( *qproc, query, 0, 20);
+			= qeval->getRankedDocumentList( *storage, *qproc, query, 0, 20);
 
 		std::cerr << "ranked list (maximum 20 matches):" << std::endl;
 		std::vector<strus::ResultDocument>::const_iterator wi = ranklist.begin(), we = ranklist.end();
@@ -200,7 +203,7 @@ int main( int argc, const char* argv[])
 				return 4;
 			}
 		}
-		if (!processQuery( analyzer.get(), qproc.get(), qeval.get(), querystring))
+		if (!processQuery( storage.get(), analyzer.get(), qproc.get(), qeval.get(), querystring))
 		{
 			std::cerr << "ERROR query evaluation failed" << std::endl;
 			return 5;
