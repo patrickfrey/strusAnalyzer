@@ -93,8 +93,8 @@ int main( int argc, const char* argv[])
 		std::cout << std::endl << "metadata:" << std::endl;
 		for (; mi != me; ++mi)
 		{
-			std::cout << ti->type()
-				  << " '" << ti->value() << "'"
+			std::cout << mi->type()
+				  << " '" << mi->value() << "'"
 				  << std::endl;
 		}
 		return 0;

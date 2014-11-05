@@ -116,7 +116,7 @@ static bool processQuery(
 			std::vector<strus::ResultDocument::Attribute>::const_iterator ai = wi->attributes().begin(), ae = wi->attributes().end();
 			for (; ai != ae; ++ai)
 			{
-				std::cout << "\t" << ai->name() << "='" << ai->value() << "'" << std::endl;
+				std::cout << "\t" << ai->name() << " (" << ai->value() << ")" << std::endl;
 			}
 		}
 		return true;

@@ -127,7 +127,12 @@ static bool processDirectory(
 	std::vector<std::string>::const_iterator pi = filesToProcess.begin(), pe = filesToProcess.end();
 	for (; pi != pe; ++pi)
 	{
-		std::string file( path + strus::dirSeparator() + *pi);
+		std::string file( path);
+		if (file.size() && file[ file.size()-1] != strus::dirSeparator())
+		{
+			file.push_back( strus::dirSeparator());
+		}
+		file.append( *pi);
 		if (processDocument( storage, analyzer, file))
 		{
 			++succeededOperations;
