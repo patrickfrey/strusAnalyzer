@@ -152,6 +152,11 @@ public:
 		textwolf::UChar m_prev_ch[ NofPrevChar];
 	};
 
+	virtual bool concatBeforeTokenize() const
+	{
+		return true;
+	}
+
 	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const
 	{
 		std::vector<Position> rt;

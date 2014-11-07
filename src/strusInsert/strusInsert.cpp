@@ -74,9 +74,9 @@ static bool processDocument(
 		strus::Index lastPos = (doc.terms().empty())?0:doc.terms()[ doc.terms().size()-1].pos();
 
 		// Define hardcoded document meta data:
-		transaction->setDocumentAttribute(
+		transaction->setAttribute(
 			strus::Constants::DOC_ATTRIBUTE_DOCID, path);
-		transaction->setDocumentAttribute(
+		transaction->setMetaData(
 			strus::Constants::DOC_ATTRIBUTE_DOCLEN, lastPos);
 
 		// Define all term occurrencies:
@@ -88,13 +88,22 @@ static bool processDocument(
 				ti->type(), ti->value(), ti->pos());
 		}
 
+		// Define all attributes extracted from the document analysis:
+		std::vector<strus::AnalyzerInterface::Attribute>::const_iterator
+			ai = doc.attributes().begin(), ae = doc.attributes().end();
+		for (; ai != ae; ++ai)
+		{
+			transaction->setAttribute( ai->type(), ai->value());
+		}
+
 		// Define all metadata elements extracted from the document analysis:
 		std::vector<strus::AnalyzerInterface::MetaData>::const_iterator
 			mi = doc.metadata().begin(), me = doc.metadata().end();
 		for (; mi != me; ++mi)
 		{
-			transaction->setDocumentAttribute( mi->type(), mi->value());
+			transaction->setMetaData( mi->type(), mi->value());
 		}
+
 		transaction->commit();
 
 		// Notify progress:

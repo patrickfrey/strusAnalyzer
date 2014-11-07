@@ -60,14 +60,14 @@ public:
 		unsigned int m_pos;
 	};
 
-	class MetaData
+	class Attribute
 	{
 	public:
-		MetaData()
+		Attribute()
 			:m_type(0){}
-		MetaData( const MetaData& o)
+		Attribute( const Attribute& o)
 			:m_type(o.m_type),m_value(o.m_value){}
-		MetaData( char t, const std::string& v)
+		Attribute( char t, const std::string& v)
 			:m_type(t),m_value(v){}
 
 		char type() const			{return m_type;}
@@ -78,6 +78,24 @@ public:
 		std::string m_value;
 	};
 
+	class MetaData
+	{
+	public:
+		MetaData()
+			:m_type(0){}
+		MetaData( const MetaData& o)
+			:m_type(o.m_type),m_value(o.m_value){}
+		MetaData( char t, float v)
+			:m_type(t),m_value(v){}
+
+		char type() const		{return m_type;}
+		const float value() const	{return m_value;}
+
+	private:
+		char m_type;
+		float m_value;
+	};
+
 	class Document
 	{
 	public:
@@ -86,13 +104,28 @@ public:
 		Document( const Document& o)
 			:m_metadata(o.m_metadata),m_terms(o.m_terms){}
 
-		const std::vector<MetaData>& metadata() const	{return m_metadata;}
-		const std::vector<Term>& terms() const		{return m_terms;}
+		const std::vector<Attribute>& attributes() const	{return m_attributes;}
+		const std::vector<MetaData>& metadata() const		{return m_metadata;}
+		const std::vector<Term>& terms() const			{return m_terms;}
+
+		void addAttribute( char t, const std::string& v)
+		{
+			m_attributes.push_back( Attribute( t,v));
+		}
+		void addMetaData( char t, float v)
+		{
+			m_metadata.push_back( MetaData( t,v));
+		}
+		void addTerm( const std::string& t, const std::string& v, unsigned int p)
+		{
+			m_terms.push_back( Term( t, v, p));
+		}
 
 	private:
 		friend class AnalyzerInterface;
 		friend class Analyzer;
 		std::vector<MetaData> m_metadata;
+		std::vector<Attribute> m_attributes;
 		std::vector<Term> m_terms;
 	};
 

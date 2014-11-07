@@ -55,15 +55,9 @@ public:
 
 	virtual void print( std::ostream& out) const;
 
-private:
-	void parseFeatureDef(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& name,
-		char const*& src,
-		bool isMetaData);
-
-private:
+public:
 	class DocumentParser;
+private:
 	DocumentParser* m_parser;
 };
 

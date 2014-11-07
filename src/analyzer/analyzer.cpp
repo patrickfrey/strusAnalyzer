@@ -73,9 +73,22 @@ public:
 	DocumentParser()
 	{}
 
-	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, bool isMetaData)
+	enum FeatureClass
 	{
-		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer(), isMetaData));
+		FeatMetaData,
+		FeatAttribute,
+		FeatTerm
+	};
+	static const char* featureClassName( FeatureClass i)
+	{
+		static const char* ar[] = {"MetaData", "Attribute", "Term"};
+		return  ar[i];
+	}
+
+	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, FeatureClass featureClass_)
+	{
+		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer(), featureClass_));
+
 		int featidx = m_featuredefar.size();
 		int errorpos = m_automaton.addExpression( featidx, expression.c_str(), expression.size());
 		if (errorpos)
@@ -108,22 +121,37 @@ public:
 		FeatureDef( const std::string& name_,
 				const TokenizerInterface* tokenizer_,
 				const NormalizerInterface* normalizer_,
-				bool isMetaData_)
+				FeatureClass featureClass_)
 			:m_name(name_)
 			,m_tokenizer(tokenizer_)
 			,m_normalizer(normalizer_)
-			,m_isMetaData(isMetaData_){}
+			,m_featureClass(featureClass_){}
 	
 		const std::string& name() const			{return m_name;}
 		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
 		const NormalizerInterface* normalizer() const	{return m_normalizer;}
-		bool isMetaData() const				{return m_isMetaData;}
-	
+		FeatureClass featureClass() const		{return m_featureClass;}
+
+		std::vector<TokenizerInterface::Position>
+			tokenize( const char* elem, std::size_t elemsize) const
+		{
+			std::vector<TokenizerInterface::Position> pos;
+			if (tokenizer())
+			{
+				pos = tokenizer()->tokenize( elem, elemsize);
+			}
+			else
+			{
+				pos.push_back( TokenizerInterface::Position( 0, elemsize));
+			}
+			return pos;
+		}
+
 	private:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
 		const NormalizerInterface* m_normalizer;
-		bool m_isMetaData;
+		FeatureClass m_featureClass;
 	};
 
 	struct Instance
@@ -214,7 +242,7 @@ public:
 		std::vector<FeatureDef>::const_iterator fi = m_featuredefar.begin(), fe = m_featuredefar.end();
 		for (int fidx=1; fi != fe; ++fi,++fidx)
 		{
-			if (fi->isMetaData()) out << "Metadata ";
+			out << " " << featureClassName( fi->featureClass());
 			out << "[" << fidx << "] " << fi->name() << std::endl;
 		}
 	}
@@ -230,16 +258,17 @@ Analyzer::~Analyzer()
 	if (m_parser) delete m_parser;
 }
 
-void Analyzer::parseFeatureDef(
+static void parseFeatureDef(
+	Analyzer::DocumentParser* parser,
 	const TokenMinerFactory& tokenMinerFactory,
 	const std::string& featurename,
 	char const*& src,
-	bool isMetaData)
+	Analyzer::DocumentParser::FeatureClass featureClass)
 {
 	std::string xpathexpr;
 	std::string method;
 
-	if (isMetaData)
+	if (featureClass != Analyzer::DocumentParser::FeatTerm)
 	{
 		if (featurename.size() > 1)
 		{
@@ -267,7 +296,7 @@ void Analyzer::parseFeatureDef(
 	const TokenMiner* miner = tokenMinerFactory.get( method);
 	if (!miner) throw std::runtime_error( std::string( "unknown token type '") + method + "'");
 
-	m_parser->addExpression( featurename, xpathexpr, miner, isMetaData);
+	parser->addExpression( featurename, xpathexpr, miner, featureClass);
 }
 
 Analyzer::Analyzer(
@@ -290,12 +319,26 @@ Analyzer::Analyzer(
 			if (isAssign( *src))
 			{
 				parse_OPERATOR(src);
-				parseFeatureDef( tokenMinerFactory, name, src, false);
+				parseFeatureDef(
+					m_parser, tokenMinerFactory, name, src,
+					DocumentParser::FeatTerm);
 			}
 			else if (isColon( *src))
 			{
 				parse_OPERATOR(src);
-				parseFeatureDef( tokenMinerFactory, name, src, true);
+				if (isAssign( *src))
+				{
+					parse_OPERATOR(src);
+					parseFeatureDef( 
+						m_parser, tokenMinerFactory, name, src,
+						DocumentParser::FeatMetaData);
+				}
+				else
+				{
+					parseFeatureDef(
+						m_parser, tokenMinerFactory, name, src,
+						DocumentParser::FeatAttribute);
+				}
 			}
 			else
 			{
@@ -318,25 +361,109 @@ Analyzer::Analyzer(
 }
 
 /// \brief Map byte offset positions to token occurrence positions:
-static void mapPositions( std::vector<AnalyzerInterface::Term>& ar, std::size_t last_idx, std::size_t position, unsigned int& pcnt)
+static void mapPositions( std::vector<AnalyzerInterface::Term>& ar)
 {
 	std::set<unsigned int> pset;
-	std::vector<AnalyzerInterface::Term>::iterator ri = ar.begin() + last_idx, re = ar.end();
+	std::vector<AnalyzerInterface::Term>::iterator ri = ar.begin(), re = ar.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
 	}
 	std::map<unsigned int, unsigned int> posmap;
 	std::set<unsigned int>::const_iterator pi = pset.begin(), pe = pset.end();
-	for (; pi != pe; ++pi)
+	for (unsigned int pcnt=0; pi != pe; ++pi)
 	{
 		posmap[ *pi] = ++pcnt;
 	}
-	for (ri = ar.begin() + last_idx; ri != re; ++ri)
+	for (ri = ar.begin(); ri != re; ++ri)
 	{
 		ri->setPos( posmap[ ri->pos()]);
 	}
 }
+
+
+static void normalize(
+		AnalyzerInterface::Document& res,
+		const Analyzer::DocumentParser::FeatureDef& feat,
+		const char* elem,
+		std::size_t elemsize,
+		const std::vector<TokenizerInterface::Position>& pos,
+		std::size_t curr_position)
+{
+	std::vector<TokenizerInterface::Position>::const_iterator
+		pi = pos.begin(), pe = pos.end();
+	for (; pi != pe; ++pi)
+	{
+		if (feat.normalizer())
+		{
+			switch (feat.featureClass())
+			{
+				case Analyzer::DocumentParser::FeatMetaData:
+				{
+					std::string valstr( feat.normalizer()->normalize( elem + pi->pos, pi->size));
+					char const* vv = valstr.c_str();
+
+					res.addMetaData(
+						feat.name()[0],
+						parse_FLOAT( vv));
+					break;
+				}
+				case Analyzer::DocumentParser::FeatAttribute:
+					res.addAttribute(
+						feat.name()[0],
+						feat.normalizer()->normalize( elem + pi->pos, pi->size));
+					break;
+				case Analyzer::DocumentParser::FeatTerm:
+					res.addTerm(
+						feat.name(),
+						feat.normalizer()->normalize( elem + pi->pos, pi->size),
+						curr_position + pi->pos);
+					break;
+			}
+		}
+		else
+		{
+			switch (feat.featureClass())
+			{
+				case Analyzer::DocumentParser::FeatMetaData:
+				{
+					std::string valstr( feat.normalizer()->normalize( elem + pi->pos, pi->size));
+					char const* vv = valstr.c_str();
+
+					res.addMetaData(
+						feat.name()[0], parse_FLOAT( vv));
+					break;
+				}
+				case Analyzer::DocumentParser::FeatAttribute:
+					res.addAttribute(
+						feat.name()[0],
+						std::string( elem + pi->pos, pi->size));
+					break;
+				case Analyzer::DocumentParser::FeatTerm:
+					res.addTerm(
+						feat.name(),
+						std::string( elem + pi->pos, pi->size),
+						curr_position + pi->pos);
+					break;
+			}
+		}
+	}
+}
+
+
+struct Chunk
+{
+	Chunk()
+		:position(0){}
+	Chunk( std::size_t position_, const std::string& content_)
+		:position(position_),content(content_){}
+	Chunk( const Chunk& o)
+		:position(o.position),content(o.content){}
+
+	std::size_t position;
+	std::string content;
+};
+
 
 AnalyzerInterface::Document
 	Analyzer::analyze( const std::string& content) const
@@ -346,73 +473,68 @@ AnalyzerInterface::Document
 	const char* elem = 0;
 	std::size_t elemsize = 0;
 	int featidx = 0;
-	std::size_t last_position_idx = 0;
-	std::size_t last_position = 0;
 	std::size_t curr_position = 0;
-	unsigned int pcnt = 0;
+	typedef std::map<int,Chunk> ConcatenatedMap;
+	ConcatenatedMap concatenatedMap;
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
 	while (scanner.getNext( elem, elemsize, featidx))
 	{
-		curr_position = scanner.position();
-		if (last_position != curr_position)
+		try
 		{
-			mapPositions( rt.m_terms, last_position_idx, last_position, pcnt);
-			last_position = curr_position;
-			last_position_idx = rt.m_terms.size();
-		}
-		const Analyzer::DocumentParser::FeatureDef& feat
-			= m_parser->featureDef( featidx);
-
-		std::vector<TokenizerInterface::Position> pos;
-		if (feat.tokenizer())
-		{
-			pos = feat.tokenizer()->tokenize( elem, elemsize);
-		}
-		else
-		{
-			pos.push_back( TokenizerInterface::Position( 0, elemsize));
-		}
-		std::vector<TokenizerInterface::Position>::const_iterator
-			pi = pos.begin(), pe = pos.end();
-		for (; pi != pe; ++pi)
-		{
-			if (feat.normalizer())
+			curr_position = scanner.position();
+			const Analyzer::DocumentParser::FeatureDef& feat
+				= m_parser->featureDef( featidx);
+	
+			if (feat.tokenizer() && feat.tokenizer()->concatBeforeTokenize())
 			{
-				if (feat.isMetaData())
+				ConcatenatedMap::iterator ci
+					= concatenatedMap.find( featidx);
+				if (ci == concatenatedMap.end())
 				{
-					rt.m_metadata.push_back(
-						MetaData( feat.name()[0],
-							feat.normalizer()->normalize( elem + pi->pos, pi->size)));
+					concatenatedMap[ featidx]
+						= Chunk( curr_position,
+							 std::string( elem, elemsize));
 				}
 				else
 				{
-					rt.m_terms.push_back(
-						Term( feat.name(),
-							feat.normalizer()->normalize( elem + pi->pos, pi->size),
-							curr_position + pi->pos));
+					Chunk& cm = concatenatedMap[ featidx];
+					std::size_t newlen
+						= curr_position - cm.position;
+					cm.content.resize( newlen, ' ');
+					cm.content.append( elem, elemsize);
 				}
+				continue;
 			}
-			else
-			{
-				if (feat.isMetaData())
-				{
-					rt.m_metadata.push_back(
-						MetaData( feat.name()[0],
-							std::string( elem + pi->pos, pi->size)));
-				}
-				else
-				{
-					rt.m_terms.push_back(
-						Term( feat.name(),
-							std::string( elem + pi->pos, pi->size),
-							curr_position + pi->pos));
-				}
-			}
+			std::vector<TokenizerInterface::Position>
+				pos = feat.tokenize( elem, elemsize);
+			
+			normalize( rt, feat, elem, elemsize, pos, curr_position);
+		}
+		catch (const std::runtime_error& err)
+		{
+			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
 		}
 	}
-	curr_position = scanner.position();
-	mapPositions( rt.m_terms, last_position_idx, last_position, pcnt);
+	ConcatenatedMap::const_iterator
+		ci = concatenatedMap.begin(),
+		ce = concatenatedMap.end();
+
+	for (; ci != ce; ++ci)
+	{
+		curr_position = ci->second.position;
+		const Analyzer::DocumentParser::FeatureDef& feat
+			= m_parser->featureDef( ci->first);
+
+		std::vector<TokenizerInterface::Position>
+			pos = feat.tokenize(
+				ci->second.content.c_str(),
+				ci->second.content.size());
+
+		normalize( rt, feat, ci->second.content.c_str(),
+				ci->second.content.size(), pos, curr_position);
+	}
+	mapPositions( rt.m_terms);
 	return rt;
 }
 

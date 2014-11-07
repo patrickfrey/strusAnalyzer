@@ -50,7 +50,10 @@ public:
 			:pos(o.pos),size(o.size){}
 	};
 
-	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const=0;
+	virtual bool concatBeforeTokenize() const	{return false;}
+
+	virtual std::vector<Position>
+			tokenize( const char* src, std::size_t srcsize) const=0;
 };
 
 }//namespace
