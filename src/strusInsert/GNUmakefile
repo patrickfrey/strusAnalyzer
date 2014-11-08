@@ -13,11 +13,11 @@ all: strusInsert
 -include $(CPP_OBJS:.o=.d)
 
 %.o : %.cpp GNUmakefile
-	g++ -c -o $@ $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp
-	g++ -MM $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp > $*.d
+	$(CXX) -c -o $@ $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp
+	$(CXX) -MM $(CXXFLAGS) $(CPP_INCLUDE) $*.cpp > $*.d
 
 strusInsert: $(CPP_OBJS) strusInsert.o
-	g++ -o $@ strusInsert.o $(CPP_OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -o $@ strusInsert.o $(CPP_OBJS) $(LDFLAGS) $(LIBS)
 
 .PHONY: clean
 clean:

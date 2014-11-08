@@ -4,4 +4,6 @@ INSTALL_LIBDIR=$(INSTALL_DIR)/lib/strus/
 INSTALL_BINDIR=$(INSTALL_DIR)/bin
 OPTIMIZE=-O3
 VISIBILITY=-fvisibility=hidden
+CC=gcc
+CXX=g++
 

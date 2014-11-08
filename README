@@ -1,6 +1,16 @@
 strusAnalyzer
 =============
 
-Analyzer for feeding the IR engine.
-Currently processing XML documents for german.
+Library for document analysis that splits a document into normalized atomic terms that
+can be insterted into a strus storage for retrieval.
+
+
+For using it you have to include "strus/strusAnalyzer.hpp"
+
+
+And link against at the libraries:
+
+  libstrus_analyzer.so
+  libstrus_tokenminer.so
+  libstrus_system.so
 

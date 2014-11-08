@@ -188,9 +188,9 @@ int main( int argc, const char* argv[])
 	}
 	if (argc != 4 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
-		std::cerr << "usage: strusInsert <program> <config> <docpath>" << std::endl;
-		std::cerr << "<program>     = path of analyzer program" << std::endl;
+		std::cerr << "usage: strusInsert <config> <program> <docpath>" << std::endl;
 		std::cerr << "<config>      = storage configuration string as used for strusCreate" << std::endl;
+		std::cerr << "<program>     = path of analyzer program" << std::endl;
 		std::cerr << "<docpath>     = path of document or directory to insert" << std::endl;
 		return 0;
 	}
@@ -198,22 +198,22 @@ int main( int argc, const char* argv[])
 	{
 		unsigned int ec;
 		std::string analyzerProgramSource;
-		ec = strus::readFile( argv[1], analyzerProgramSource);
+		ec = strus::readFile( argv[2], analyzerProgramSource);
 		if (ec)
 		{
 			std::ostringstream msg;
 			std::cerr << "ERROR failed to load analyzer program " << argv[1] << " (file system error " << ec << ")" << std::endl;
 			return 2;
 		}
+		boost::scoped_ptr<strus::StorageInterface> storage(
+					strus::createStorageClient( argv[1]));
+
 		std::string tokenMinerSource;
 		boost::scoped_ptr<strus::TokenMinerFactory> minerfac(
 			strus::createTokenMinerFactory( tokenMinerSource));
 
 		boost::scoped_ptr<strus::AnalyzerInterface> analyzer(
 			strus::createAnalyzer( *minerfac, analyzerProgramSource));
-
-		boost::scoped_ptr<strus::StorageInterface> storage(
-					strus::createStorageClient( argv[2]));
 
 		std::string path( argv[3]);
 		if (strus::isDir( path))
