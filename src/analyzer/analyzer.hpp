@@ -51,7 +51,7 @@ public:
 
 	virtual ~Analyzer();
 
-	virtual Document analyze( const std::string& content) const;
+	virtual analyzer::Document analyze( const std::string& content) const;
 
 	virtual void print( std::ostream& out) const;
 

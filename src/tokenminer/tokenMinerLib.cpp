@@ -39,7 +39,7 @@
 #include <boost/algorithm/string.hpp>
 
 using namespace strus;
-
+using namespace strus::tokenizer;
 
 class WordSeparationTokenizer
 	:public TokenizerInterface

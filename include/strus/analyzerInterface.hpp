@@ -28,6 +28,10 @@
 */
 #ifndef _STRUS_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/term.hpp"
+#include "strus/analyzer/attribute.hpp"
+#include "strus/analyzer/metaData.hpp"
+#include "strus/analyzer/document.hpp"
 #include <vector>
 #include <string>
 
@@ -38,104 +42,12 @@ namespace strus
 class AnalyzerInterface
 {
 public:
-	class Term
-	{
-	public:
-		Term()
-			:m_pos(0){}
-		Term( const Term& o)
-			:m_type(o.m_type),m_value(o.m_value),m_pos(o.m_pos){}
-		Term( const std::string& t, const std::string& v, unsigned int p)
-			:m_type(t),m_value(v),m_pos(p){}
-
-		const std::string& type() const		{return m_type;}
-		const std::string& value() const	{return m_value;}
-		unsigned int pos() const		{return m_pos;}
-
-		void setPos( unsigned int pos_)		{m_pos = pos_;}
-
-	private:
-		std::string m_type;
-		std::string m_value;
-		unsigned int m_pos;
-	};
-
-	class Attribute
-	{
-	public:
-		Attribute()
-			:m_type(0){}
-		Attribute( const Attribute& o)
-			:m_type(o.m_type),m_value(o.m_value){}
-		Attribute( char t, const std::string& v)
-			:m_type(t),m_value(v){}
-
-		char type() const			{return m_type;}
-		const std::string& value() const	{return m_value;}
-
-	private:
-		char m_type;
-		std::string m_value;
-	};
-
-	class MetaData
-	{
-	public:
-		MetaData()
-			:m_type(0){}
-		MetaData( const MetaData& o)
-			:m_type(o.m_type),m_value(o.m_value){}
-		MetaData( char t, float v)
-			:m_type(t),m_value(v){}
-
-		char type() const		{return m_type;}
-		const float value() const	{return m_value;}
-
-	private:
-		char m_type;
-		float m_value;
-	};
-
-	class Document
-	{
-	public:
-		Document()
-			:m_metadata(0){}
-		Document( const Document& o)
-			:m_metadata(o.m_metadata),m_terms(o.m_terms){}
-
-		const std::vector<Attribute>& attributes() const	{return m_attributes;}
-		const std::vector<MetaData>& metadata() const		{return m_metadata;}
-		const std::vector<Term>& terms() const			{return m_terms;}
-
-		void addAttribute( char t, const std::string& v)
-		{
-			m_attributes.push_back( Attribute( t,v));
-		}
-		void addMetaData( char t, float v)
-		{
-			m_metadata.push_back( MetaData( t,v));
-		}
-		void addTerm( const std::string& t, const std::string& v, unsigned int p)
-		{
-			m_terms.push_back( Term( t, v, p));
-		}
-
-	private:
-		friend class AnalyzerInterface;
-		friend class Analyzer;
-		std::vector<MetaData> m_metadata;
-		std::vector<Attribute> m_attributes;
-		std::vector<Term> m_terms;
-	};
-
-public:
 	/// \brief Destructor
 	virtual ~AnalyzerInterface(){}
 
 	/// \brief Tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content content string to analyze
-	virtual Document analyze( const std::string& content) const=0;
+	virtual analyzer::Document analyze( const std::string& content) const=0;
 
 	/// \brief Print the internal representation of the program to 'out'
 	/// \param[out] out stream to print the program to

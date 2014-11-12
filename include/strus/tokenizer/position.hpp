@@ -26,27 +26,24 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#include "strus/tokenizer/position.hpp"
-#include <vector>
+#ifndef _STRUS_ANALYZER_POSITION_HPP_INCLUDED
+#define _STRUS_ANALYZER_POSITION_HPP_INCLUDED
 #include <string>
-#include <ostream>
 
 namespace strus {
+namespace tokenizer {
 
-class TokenizerInterface
+struct Position
 {
-public:
-	virtual ~TokenizerInterface(){}
+	unsigned int pos;
+	unsigned int size;
 
-	virtual bool concatBeforeTokenize() const	{return false;}
-
-	virtual std::vector<tokenizer::Position>
-			tokenize( const char* src, std::size_t srcsize) const=0;
+	Position( unsigned int pos_, unsigned int size_)
+		:pos(pos_),size(size_){}
+	Position( const Position& o)
+		:pos(o.pos),size(o.size){}
 };
 
-}//namespace
+}}//namespace
 #endif
-
 

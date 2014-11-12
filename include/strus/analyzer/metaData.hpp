@@ -26,27 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#include "strus/tokenizer/position.hpp"
-#include <vector>
-#include <string>
-#include <ostream>
+#ifndef _STRUS_ANALYZER_METADATA_HPP_INCLUDED
+#define _STRUS_ANALYZER_METADATA_HPP_INCLUDED
 
 namespace strus {
+namespace analyzer {
 
-class TokenizerInterface
+class MetaData
 {
 public:
-	virtual ~TokenizerInterface(){}
+	MetaData()
+		:m_type(0){}
+	MetaData( const MetaData& o)
+		:m_type(o.m_type),m_value(o.m_value){}
+	MetaData( char t, float v)
+		:m_type(t),m_value(v){}
 
-	virtual bool concatBeforeTokenize() const	{return false;}
+	char type() const		{return m_type;}
+	const float value() const	{return m_value;}
 
-	virtual std::vector<tokenizer::Position>
-			tokenize( const char* src, std::size_t srcsize) const=0;
+private:
+	char m_type;
+	float m_value;
 };
 
-}//namespace
+}}//namespace
 #endif
-
 

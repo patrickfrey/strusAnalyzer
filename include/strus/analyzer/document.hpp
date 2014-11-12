@@ -26,27 +26,57 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#include "strus/tokenizer/position.hpp"
-#include <vector>
+#ifndef _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #include <string>
-#include <ostream>
+#include <vector>
+#include "strus/analyzer/term.hpp"
+#include "strus/analyzer/attribute.hpp"
+#include "strus/analyzer/metaData.hpp"
 
 namespace strus {
+namespace analyzer {
 
-class TokenizerInterface
+class Document
 {
 public:
-	virtual ~TokenizerInterface(){}
+	Document()
+		:m_metadata(0){}
+	Document( const Document& o)
+		:m_metadata(o.m_metadata)
+		,m_attributes(o.m_attributes)
+		,m_terms(o.m_terms){}
+	Document(
+			const std::vector<MetaData>& metadata_,
+			const std::vector<Attribute>& attributes_,
+			const std::vector<Term>& terms_)
+		:m_metadata(metadata_)
+		,m_attributes(attributes_)
+		,m_terms(terms_){}
 
-	virtual bool concatBeforeTokenize() const	{return false;}
+	const std::vector<Attribute>& attributes() const	{return m_attributes;}
+	const std::vector<MetaData>& metadata() const		{return m_metadata;}
+	const std::vector<Term>& terms() const			{return m_terms;}
 
-	virtual std::vector<tokenizer::Position>
-			tokenize( const char* src, std::size_t srcsize) const=0;
+	void addAttribute( char t, const std::string& v)
+	{
+		m_attributes.push_back( Attribute( t,v));
+	}
+	void addMetaData( char t, float v)
+	{
+		m_metadata.push_back( MetaData( t,v));
+	}
+	void addTerm( const std::string& t, const std::string& v, unsigned int p)
+	{
+		m_terms.push_back( Term( t, v, p));
+	}
+
+private:
+	std::vector<MetaData> m_metadata;
+	std::vector<Attribute> m_attributes;
+	std::vector<Term> m_terms;
 };
 
-}//namespace
+}}//namespace
 #endif
-
 

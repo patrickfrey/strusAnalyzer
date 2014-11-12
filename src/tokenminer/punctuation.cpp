@@ -35,6 +35,7 @@
 #include <iostream>
 
 using namespace strus;
+using namespace strus::tokenizer;
 
 #undef STRUS_LOWLEVEL_DEBUG
 

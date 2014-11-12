@@ -132,17 +132,17 @@ public:
 		const NormalizerInterface* normalizer() const	{return m_normalizer;}
 		FeatureClass featureClass() const		{return m_featureClass;}
 
-		std::vector<TokenizerInterface::Position>
+		std::vector<tokenizer::Position>
 			tokenize( const char* elem, std::size_t elemsize) const
 		{
-			std::vector<TokenizerInterface::Position> pos;
+			std::vector<tokenizer::Position> pos;
 			if (tokenizer())
 			{
 				pos = tokenizer()->tokenize( elem, elemsize);
 			}
 			else
 			{
-				pos.push_back( TokenizerInterface::Position( 0, elemsize));
+				pos.push_back( tokenizer::Position( 0, elemsize));
 			}
 			return pos;
 		}
@@ -361,10 +361,11 @@ Analyzer::Analyzer(
 }
 
 /// \brief Map byte offset positions to token occurrence positions:
-static void mapPositions( std::vector<AnalyzerInterface::Term>& ar)
+static std::vector<analyzer::Term> mapPositions( const std::vector<analyzer::Term>& ar)
 {
+	std::vector<analyzer::Term> rt;
 	std::set<unsigned int> pset;
-	std::vector<AnalyzerInterface::Term>::iterator ri = ar.begin(), re = ar.end();
+	std::vector<analyzer::Term>::const_iterator ri = ar.begin(), re = ar.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
@@ -377,20 +378,22 @@ static void mapPositions( std::vector<AnalyzerInterface::Term>& ar)
 	}
 	for (ri = ar.begin(); ri != re; ++ri)
 	{
-		ri->setPos( posmap[ ri->pos()]);
+		unsigned int pos = posmap[ ri->pos()];
+		rt.push_back( analyzer::Term( ri->type(), ri->value(), pos));
 	}
+	return rt;
 }
 
 
 static void normalize(
-		AnalyzerInterface::Document& res,
+		analyzer::Document& res,
 		const Analyzer::DocumentParser::FeatureDef& feat,
 		const char* elem,
 		std::size_t elemsize,
-		const std::vector<TokenizerInterface::Position>& pos,
+		const std::vector<tokenizer::Position>& pos,
 		std::size_t curr_position)
 {
-	std::vector<TokenizerInterface::Position>::const_iterator
+	std::vector<tokenizer::Position>::const_iterator
 		pi = pos.begin(), pe = pos.end();
 	for (; pi != pe; ++pi)
 	{
@@ -465,10 +468,9 @@ struct Chunk
 };
 
 
-AnalyzerInterface::Document
-	Analyzer::analyze( const std::string& content) const
+analyzer::Document Analyzer::analyze( const std::string& content) const
 {
-	Document rt;
+	analyzer::Document rt;
 	DocumentParser::Instance scanner( content.c_str(), m_parser->automaton());
 	const char* elem = 0;
 	std::size_t elemsize = 0;
@@ -506,7 +508,7 @@ AnalyzerInterface::Document
 				}
 				continue;
 			}
-			std::vector<TokenizerInterface::Position>
+			std::vector<tokenizer::Position>
 				pos = feat.tokenize( elem, elemsize);
 			
 			normalize( rt, feat, elem, elemsize, pos, curr_position);
@@ -526,7 +528,7 @@ AnalyzerInterface::Document
 		const Analyzer::DocumentParser::FeatureDef& feat
 			= m_parser->featureDef( ci->first);
 
-		std::vector<TokenizerInterface::Position>
+		std::vector<tokenizer::Position>
 			pos = feat.tokenize(
 				ci->second.content.c_str(),
 				ci->second.content.size());
@@ -534,8 +536,10 @@ AnalyzerInterface::Document
 		normalize( rt, feat, ci->second.content.c_str(),
 				ci->second.content.size(), pos, curr_position);
 	}
-	mapPositions( rt.m_terms);
-	return rt;
+	return analyzer::Document(
+			rt.metadata(),
+			rt.attributes(),
+			mapPositions( rt.terms())); 
 }
 
 void Analyzer::print( std::ostream& out) const
