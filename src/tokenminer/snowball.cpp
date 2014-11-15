@@ -38,7 +38,7 @@ class StemNormalizer
 public:
 	explicit StemNormalizer( const char* language)
 	{
-		m_stemmer = sb_stemmer_new( language, "UTF_8");
+		m_stemmer = sb_stemmer_new( language, 0/*UTF-8 is default*/);
 	}
 
 	~StemNormalizer()
