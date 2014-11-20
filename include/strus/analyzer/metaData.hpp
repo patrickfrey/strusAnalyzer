@@ -36,17 +36,17 @@ class MetaData
 {
 public:
 	MetaData()
-		:m_type(0){}
+		:m_name(0){}
 	MetaData( const MetaData& o)
-		:m_type(o.m_type),m_value(o.m_value){}
-	MetaData( char t, float v)
-		:m_type(t),m_value(v){}
+		:m_name(o.m_name),m_value(o.m_value){}
+	MetaData( char n, float v)
+		:m_name(n),m_value(v){}
 
-	char type() const		{return m_type;}
+	char name() const		{return m_name;}
 	const float value() const	{return m_value;}
 
 private:
-	char m_type;
+	char m_name;
 	float m_value;
 };
 
