@@ -35,6 +35,8 @@ uninstall:
 	@-rm $(INSTALL_INCDIR)/tokenMinerFactory.hpp
 	@-rm $(INSTALL_INCDIR)/tokenMiner.hpp
 	@-rm $(INSTALL_INCDIR)/tokenMinerLib.hpp
+	@rmdir $(INSTALL_INCDIR)/analyzer
+	@rmdir $(INSTALL_INCDIR)/tokenizer
 	@rmdir $(INSTALL_INCDIR)
 	@rmdir $(INSTALL_LIBDIR)
 	@rmdir $(INSTALL_BINDIR)
