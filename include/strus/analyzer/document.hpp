@@ -58,11 +58,11 @@ public:
 	const std::vector<MetaData>& metadata() const		{return m_metadata;}
 	const std::vector<Term>& terms() const			{return m_terms;}
 
-	void addAttribute( char t, const std::string& v)
+	void addAttribute( const std::string& t, const std::string& v)
 	{
 		m_attributes.push_back( Attribute( t,v));
 	}
-	void addMetaData( char t, float v)
+	void addMetaData( const std::string& t, const std::string& v)
 	{
 		m_metadata.push_back( MetaData( t,v));
 	}

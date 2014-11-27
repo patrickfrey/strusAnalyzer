@@ -93,41 +93,6 @@ unsigned int parser::parse_UNSIGNED1( char const*& src)
 	return rt;
 }
 
-float parser::parse_FLOAT( char const*& src)
-{
-	unsigned int digitsAllowed = 9;
-	float rt = 0.0;
-	float div = 1.0;
-	if (*src == '-')
-	{
-		++src;
-		rt = -1.0;
-	}
-	while (isDigit( *src) && digitsAllowed)
-	{
-		rt = (rt * 10.0) + (*src - '0');
-		++src;
-		--digitsAllowed;
-	}
-	if (isDot( *src))
-	{
-		++src;
-		while (isDigit( *src) && digitsAllowed)
-		{
-			div /= 10.0;
-			rt = (rt * 10.0) + (*src - '0');
-			++src;
-			--digitsAllowed;
-		}
-	}
-	if (!digitsAllowed)
-	{
-		throw std::runtime_error( "floating point number out of range");
-	}
-	skipSpaces( src);
-	return rt * div;
-}
-
 char parser::parse_OPERATOR( char const*& src)
 {
 	char rt = *src++;

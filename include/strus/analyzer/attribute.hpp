@@ -40,14 +40,14 @@ public:
 		:m_name(0){}
 	Attribute( const Attribute& o)
 		:m_name(o.m_name),m_value(o.m_value){}
-	Attribute( char n, const std::string& v)
+	Attribute( const std::string& n, const std::string& v)
 		:m_name(n),m_value(v){}
 
-	char name() const			{return m_name;}
+	const std::string& name() const		{return m_name;}
 	const std::string& value() const	{return m_value;}
 
 private:
-	char m_name;
+	std::string m_name;
 	std::string m_value;
 };
 

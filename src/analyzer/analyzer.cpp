@@ -403,25 +403,30 @@ static void normalize(
 			{
 				case Analyzer::DocumentParser::FeatMetaData:
 				{
-					std::string valstr( feat.normalizer()->normalize( elem + pi->pos, pi->size));
-					char const* vv = valstr.c_str();
-
-					res.addMetaData(
-						feat.name()[0],
-						parse_FLOAT( vv));
+					std::string valstr(
+						feat.normalizer()->normalize(
+							elem + pi->pos, pi->size));
+					res.addMetaData( feat.name(), valstr);
 					break;
 				}
 				case Analyzer::DocumentParser::FeatAttribute:
-					res.addAttribute(
-						feat.name()[0],
-						feat.normalizer()->normalize( elem + pi->pos, pi->size));
+				{
+					std::string valstr(
+						feat.normalizer()->normalize(
+							elem + pi->pos, pi->size));
+					res.addAttribute( feat.name(), valstr);
 					break;
+				}
 				case Analyzer::DocumentParser::FeatTerm:
+				{
+					std::string valstr(
+						feat.normalizer()->normalize(
+							elem + pi->pos, pi->size));
 					res.addTerm(
-						feat.name(),
-						feat.normalizer()->normalize( elem + pi->pos, pi->size),
+						feat.name(), valstr,
 						curr_position + pi->pos);
 					break;
+				}
 			}
 		}
 		else
@@ -430,16 +435,14 @@ static void normalize(
 			{
 				case Analyzer::DocumentParser::FeatMetaData:
 				{
-					std::string valstr( feat.normalizer()->normalize( elem + pi->pos, pi->size));
-					char const* vv = valstr.c_str();
-
 					res.addMetaData(
-						feat.name()[0], parse_FLOAT( vv));
+						feat.name(),
+						std::string( elem + pi->pos, pi->size));
 					break;
 				}
 				case Analyzer::DocumentParser::FeatAttribute:
 					res.addAttribute(
-						feat.name()[0],
+						feat.name(),
 						std::string( elem + pi->pos, pi->size));
 					break;
 				case Analyzer::DocumentParser::FeatTerm:

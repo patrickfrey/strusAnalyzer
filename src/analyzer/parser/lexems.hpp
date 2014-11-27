@@ -131,7 +131,6 @@ std::string parse_IDENTIFIER( char const*& src);
 std::string parse_STRING( char const*& src);
 unsigned int parse_UNSIGNED( char const*& src);
 unsigned int parse_UNSIGNED1( char const*& src);
-float parse_FLOAT( char const*& src);
 char parse_OPERATOR( char const*& src);
 int parse_INTEGER( char const*& src);
 int parse_KEYWORD( char const*& src, unsigned int nof, ...);
