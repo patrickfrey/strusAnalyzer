@@ -35,8 +35,7 @@ namespace analyzer {
 class MetaData
 {
 public:
-	MetaData()
-		:m_name(0){}
+	MetaData(){}
 	MetaData( const MetaData& o)
 		:m_name(o.m_name),m_value(o.m_value){}
 	MetaData( const std::string& n, const std::string& v)

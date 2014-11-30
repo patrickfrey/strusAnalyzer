@@ -36,8 +36,7 @@ namespace analyzer {
 class Attribute
 {
 public:
-	Attribute()
-		:m_name(0){}
+	Attribute(){}
 	Attribute( const Attribute& o)
 		:m_name(o.m_name),m_value(o.m_value){}
 	Attribute( const std::string& n, const std::string& v)
