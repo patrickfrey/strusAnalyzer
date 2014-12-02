@@ -114,8 +114,11 @@ class EmptyNormalizer
 {
 public:
 	EmptyNormalizer(){}
-
-	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	virtual Context* createContext() const
+	{
+		return 0;
+	}
+	virtual std::string normalize( Context*, const char* src, std::size_t srcsize) const
 	{
 		return std::string();
 	}

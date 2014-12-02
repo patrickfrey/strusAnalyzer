@@ -32,15 +32,31 @@
 
 using namespace strus;
 
+class StemContext
+	:public NormalizerInterface::Context
+{
+public:
+	StemContext( struct sb_stemmer* stemmer)
+		:m_stemmer(stemmer),m_env(sb_stemmer_create_env(stemmer)){}
+	virtual ~StemContext()
+	{
+		sb_stemmer_delete_env( m_stemmer, m_env);
+	}
+
+private:
+	friend class StemNormalizer;
+	struct sb_stemmer* m_stemmer;
+	struct SN_env* m_env;
+};
+
 class StemNormalizer
 	:public NormalizerInterface
 {
 public:
 	explicit StemNormalizer( const char* language)
 	{
-		m_stemmer = sb_stemmer_new( language, 0/*UTF-8 is default*/);
+		m_stemmer = sb_stemmer_new_threadsafe( language, 0/*UTF-8 is default*/);
 	}
-
 	~StemNormalizer()
 	{
 		if (m_stemmer)
@@ -49,14 +65,20 @@ public:
 		}
 	}
 
-	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	Context* createContext() const
 	{
+		return new StemContext( m_stemmer);
+	}
+
+	virtual std::string normalize( Context* ctx_, const char* src, std::size_t srcsize) const
+	{
+		StemContext* ctx = reinterpret_cast<StemContext*>( ctx_);
 		if (m_stemmer)
 		{
 			const sb_symbol* res
-				= sb_stemmer_stem( m_stemmer, (const sb_symbol*)src, srcsize);
+				= sb_stemmer_stem_threadsafe( m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
 			if (!res) throw std::bad_alloc();
-			std::size_t len = (std::size_t)sb_stemmer_length( m_stemmer);
+			std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( ctx->m_env);
 			std::string rt( (const char*)res, len);
 			std::string::iterator ri = rt.begin(), re = rt.end();
 			for (; ri != re; ++ri)

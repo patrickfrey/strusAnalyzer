@@ -154,6 +154,52 @@ public:
 		FeatureClass m_featureClass;
 	};
 
+	class Context
+	{
+	public:
+		Context( const DocumentParser& docparser)
+		{
+			m_normctxsize = docparser.nofFeatureDefs();
+
+			m_normctxar = (NormalizerInterface::Context**)
+					std::calloc( m_normctxsize, sizeof( m_normctxar[0]));
+			if (!m_normctxar) throw std::bad_alloc();
+
+			for (std::size_t fidx=1; fidx <= m_normctxsize; ++fidx)
+			{
+				const FeatureDef& fdef = docparser.featureDef( fidx);
+				if (fdef.normalizer())
+				{
+					m_normctxar[ fidx-1] = fdef.normalizer()->createContext();
+				}
+			}
+		}
+		~Context()
+		{
+			if (m_normctxar)
+			{
+				for (std::size_t fidx=1; fidx <= m_normctxsize; ++fidx)
+				{
+					if (m_normctxar[ fidx-1]) delete m_normctxar[ fidx-1];
+				}
+				std::free( m_normctxar);
+			}
+		}
+
+		NormalizerInterface::Context* normalizerContext( std::size_t featidx)
+		{
+			if (featidx <= 0 || (std::size_t)featidx > m_normctxsize)
+			{
+				throw std::runtime_error( "internal: unknown index of feature");
+			}
+			return m_normctxar[ featidx-1];
+		}
+
+	private:
+		NormalizerInterface::Context** m_normctxar;
+		std::size_t m_normctxsize;
+	};
+
 	struct Instance
 	{
 		typedef textwolf::XMLPathSelectAutomaton<> Automaton;
@@ -202,6 +248,17 @@ public:
 			{
 				++m_itr;
 				if (m_itr == m_end) return false;
+				if (m_itr->type() == XMLScanner::ErrorOccurred)
+				{
+					if (m_itr->size())
+					{
+						throw std::runtime_error( std::string( "error in XML document: ") + std::string(m_itr->content(), m_itr->size()));
+					}
+					else
+					{
+						throw std::runtime_error( std::string( "input document is not valid XML"));
+					}
+				}
 				m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
 				m_selend = m_pathselect.end();
 				m_position = m_scanner.getPosition() - m_itr->size();
@@ -218,6 +275,11 @@ public:
 			return m_position;
 		}
 	};
+
+	std::size_t nofFeatureDefs() const
+	{
+		return m_featuredefar.size();
+	}
 
 	const FeatureDef& featureDef( int featidx) const
 	{
@@ -387,6 +449,7 @@ static std::vector<analyzer::Term> mapPositions( const std::vector<analyzer::Ter
 
 static void normalize(
 		analyzer::Document& res,
+		NormalizerInterface::Context* normctx,
 		const Analyzer::DocumentParser::FeatureDef& feat,
 		const char* elem,
 		std::size_t elemsize,
@@ -405,7 +468,7 @@ static void normalize(
 				{
 					std::string valstr(
 						feat.normalizer()->normalize(
-							elem + pi->pos, pi->size));
+							normctx, elem + pi->pos, pi->size));
 					res.addMetaData( feat.name(), valstr);
 					break;
 				}
@@ -413,7 +476,7 @@ static void normalize(
 				{
 					std::string valstr(
 						feat.normalizer()->normalize(
-							elem + pi->pos, pi->size));
+							normctx, elem + pi->pos, pi->size));
 					res.addAttribute( feat.name(), valstr);
 					break;
 				}
@@ -421,7 +484,7 @@ static void normalize(
 				{
 					std::string valstr(
 						feat.normalizer()->normalize(
-							elem + pi->pos, pi->size));
+							normctx, elem + pi->pos, pi->size));
 					res.addTerm(
 						feat.name(), valstr,
 						curr_position + pi->pos);
@@ -470,7 +533,6 @@ struct Chunk
 	std::string content;
 };
 
-
 analyzer::Document Analyzer::analyze( const std::string& content) const
 {
 	analyzer::Document rt;
@@ -481,6 +543,7 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 	std::size_t curr_position = 0;
 	typedef std::map<int,Chunk> ConcatenatedMap;
 	ConcatenatedMap concatenatedMap;
+	DocumentParser::Context ctx( *m_parser);
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
 	while (scanner.getNext( elem, elemsize, featidx))
@@ -490,6 +553,8 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 			curr_position = scanner.position();
 			const Analyzer::DocumentParser::FeatureDef& feat
 				= m_parser->featureDef( featidx);
+			NormalizerInterface::Context* normctx
+				= ctx.normalizerContext( featidx);
 	
 			if (feat.tokenizer() && feat.tokenizer()->concatBeforeTokenize())
 			{
@@ -514,7 +579,7 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 			std::vector<tokenizer::Position>
 				pos = feat.tokenize( elem, elemsize);
 			
-			normalize( rt, feat, elem, elemsize, pos, curr_position);
+			normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
 		}
 		catch (const std::runtime_error& err)
 		{
@@ -530,13 +595,15 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 		curr_position = ci->second.position;
 		const Analyzer::DocumentParser::FeatureDef& feat
 			= m_parser->featureDef( ci->first);
+		NormalizerInterface::Context* normctx
+			= ctx.normalizerContext( featidx);
 
 		std::vector<tokenizer::Position>
 			pos = feat.tokenize(
 				ci->second.content.c_str(),
 				ci->second.content.size());
 
-		normalize( rt, feat, ci->second.content.c_str(),
+		normalize( rt, normctx, feat, ci->second.content.c_str(),
 				ci->second.content.size(), pos, curr_position);
 	}
 	return analyzer::Document(

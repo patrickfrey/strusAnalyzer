@@ -34,12 +34,21 @@
 
 namespace strus
 {
-
 class NormalizerInterface
 {
 public:
+	class Context
+	{
+	public:
+		virtual ~Context(){}
+	};
+
 	virtual ~NormalizerInterface(){}
-	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
+	virtual Context* createContext() const=0;
+	virtual std::string normalize(
+			Context* ctx,
+			const char* src,
+			std::size_t srcsize) const=0;
 };
 
 }//namespace

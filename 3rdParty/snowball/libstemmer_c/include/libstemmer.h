@@ -6,6 +6,7 @@ extern "C" {
 
 struct sb_stemmer;
 typedef unsigned char sb_symbol;
+struct SN_env;
 
 /* FIXME - should be able to get a version number for each stemming
  * algorithm (which will be incremented each time the output changes). */
@@ -43,7 +44,9 @@ const char ** sb_stemmer_list(void);
  *
  *  @note NULL will also be returned if an out of memory error occurs.
  */
-struct sb_stemmer * sb_stemmer_new(const char * algorithm, const char * charenc);
+struct sb_stemmer * sb_stemmer_new( const char * algorithm, const char * charenc);
+
+struct sb_stemmer * sb_stemmer_new_threadsafe( const char * algorithm, const char * charenc);
 
 /** Delete a stemmer object.
  *
@@ -65,13 +68,33 @@ void                sb_stemmer_delete(struct sb_stemmer * stemmer);
  *
  *  If an out-of-memory error occurs, this will return NULL.
  */
-const sb_symbol *   sb_stemmer_stem(struct sb_stemmer * stemmer,
-				    const sb_symbol * word, int size);
+const sb_symbol *   sb_stemmer_stem(
+                                struct sb_stemmer * stemmer,
+                                const sb_symbol * word, int size);
+
+
+/** Create context for thread safe variant of stem a word. */
+struct SN_env* sb_stemmer_create_env( struct sb_stemmer * stemmer);
+/** Destroy context for thread safe variant of stem a word. */
+void sb_stemmer_delete_env( struct sb_stemmer * stemmer, struct SN_env* env);
+
+/** Thread safe variant of stem a word. */
+const sb_symbol *   sb_stemmer_stem_threadsafe( 
+                                struct sb_stemmer * stemmer,
+                                struct SN_env* env,
+                                const sb_symbol * word, int size);
+
 
 /** Get the length of the result of the last stemmed word.
  *  This should not be called before sb_stemmer_stem() has been called.
  */
-int                 sb_stemmer_length(struct sb_stemmer * stemmer);
+int                 sb_stemmer_length(
+                                struct sb_stemmer * stemmer);
+
+/** Threadsafe version of getting the length of the result of the last stemmed word.
+ */
+int                 sb_stemmer_length_threadsafe(
+                                struct SN_env* env);
 
 #ifdef __cplusplus
 }
