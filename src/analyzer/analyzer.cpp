@@ -77,12 +77,34 @@ public:
 	{
 		FeatMetaData,
 		FeatAttribute,
-		FeatTerm
+		FeatSearchIndexTerm,
+		FeatForwardIndexTerm
 	};
 	static const char* featureClassName( FeatureClass i)
 	{
-		static const char* ar[] = {"MetaData", "Attribute", "Term"};
+		static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm"};
 		return  ar[i];
+	}
+
+	static FeatureClass featureClassFromName( const std::string& name)
+	{
+		if (isEqual( name, "Search") || isEqual( name, "S"))
+		{
+			return FeatSearchIndexTerm;
+		}
+		if (isEqual( name, "Forward") || isEqual( name, "F"))
+		{
+			return FeatForwardIndexTerm;
+		}
+		if (isEqual( name, "Meta") || isEqual( name, "M"))
+		{
+			return FeatMetaData;
+		}
+		if (isEqual( name, "Attribute") || isEqual( name, "A"))
+		{
+			return FeatAttribute;
+		}
+		throw std::runtime_error( std::string( "illegal feature class name '") + name + " (expected one of {Search (S), Forward (F), Meta (M), Attribute (A)})");
 	}
 
 	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, FeatureClass featureClass_)
@@ -330,13 +352,6 @@ static void parseFeatureDef(
 	std::string xpathexpr;
 	std::string method;
 
-	if (featureClass != Analyzer::DocumentParser::FeatTerm)
-	{
-		if (featurename.size() > 1)
-		{
-			throw std::runtime_error( "using identifier for metadata with length > 1 not allowed (metadata identifiers have to be a single alpha numeric character)");
-		}
-	}
 	if (isAlpha(*src))
 	{
 		method = parse_IDENTIFIER( src);
@@ -375,36 +390,25 @@ Analyzer::Analyzer(
 		{
 			if (!isAlnum(*src))
 			{
-				throw std::runtime_error( "alphanumeric identifier (feature set) expected at start of a term declaration");
+				throw std::runtime_error( "alphanumeric identifier (feature class name) expected at start of a feature declaration");
+			}
+			std::string classname = parse_IDENTIFIER( src);
+			DocumentParser::FeatureClass featclass
+				= DocumentParser::featureClassFromName( classname);
+
+			if (!isAlnum(*src))
+			{
+				throw std::runtime_error( "alphanumeric identifier (feature set name) expected at start of a feature declaration after class name");
 			}
 			std::string name = parse_IDENTIFIER( src);
 			if (isAssign( *src))
 			{
 				parse_OPERATOR(src);
-				parseFeatureDef(
-					m_parser, tokenMinerFactory, name, src,
-					DocumentParser::FeatTerm);
-			}
-			else if (isColon( *src))
-			{
-				parse_OPERATOR(src);
-				if (isAssign( *src))
-				{
-					parse_OPERATOR(src);
-					parseFeatureDef( 
-						m_parser, tokenMinerFactory, name, src,
-						DocumentParser::FeatMetaData);
-				}
-				else
-				{
-					parseFeatureDef(
-						m_parser, tokenMinerFactory, name, src,
-						DocumentParser::FeatAttribute);
-				}
+				parseFeatureDef( m_parser, tokenMinerFactory, name, src, featclass);
 			}
 			else
 			{
-				throw std::runtime_error( "assignment operator '=' or colon ':' expected after feature set identifier in a term or metadata declaration");
+				throw std::runtime_error( "assignment operator '=' expected after set identifier in a feature declaration");
 			}
 			if (!isSemiColon(*src))
 			{
@@ -423,11 +427,15 @@ Analyzer::Analyzer(
 }
 
 /// \brief Map byte offset positions to token occurrence positions:
-static std::vector<analyzer::Term> mapPositions( const std::vector<analyzer::Term>& ar)
+static void mapPositions( const std::vector<analyzer::Term>& ar1, std::vector<analyzer::Term>& res1, const std::vector<analyzer::Term>& ar2, std::vector<analyzer::Term>& res2)
 {
-	std::vector<analyzer::Term> rt;
 	std::set<unsigned int> pset;
-	std::vector<analyzer::Term>::const_iterator ri = ar.begin(), re = ar.end();
+	std::vector<analyzer::Term>::const_iterator ri = ar1.begin(), re = ar1.end();
+	for (; ri != re; ++ri)
+	{
+		pset.insert( ri->pos());
+	}
+	ri = ar2.begin(), re = ar2.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
@@ -438,12 +446,16 @@ static std::vector<analyzer::Term> mapPositions( const std::vector<analyzer::Ter
 	{
 		posmap[ *pi] = ++pcnt;
 	}
-	for (ri = ar.begin(); ri != re; ++ri)
+	for (ri = ar1.begin(), re = ar1.end(); ri != re; ++ri)
 	{
 		unsigned int pos = posmap[ ri->pos()];
-		rt.push_back( analyzer::Term( ri->type(), ri->value(), pos));
+		res1.push_back( analyzer::Term( ri->type(), ri->value(), pos));
 	}
-	return rt;
+	for (ri = ar2.begin(), re = ar2.end(); ri != re; ++ri)
+	{
+		unsigned int pos = posmap[ ri->pos()];
+		res2.push_back( analyzer::Term( ri->type(), ri->value(), pos));
+	}
 }
 
 
@@ -458,62 +470,41 @@ static void normalize(
 {
 	std::vector<tokenizer::Position>::const_iterator
 		pi = pos.begin(), pe = pos.end();
+
 	for (; pi != pe; ++pi)
 	{
+		std::string valstr;
 		if (feat.normalizer())
 		{
-			switch (feat.featureClass())
-			{
-				case Analyzer::DocumentParser::FeatMetaData:
-				{
-					std::string valstr(
-						feat.normalizer()->normalize(
-							normctx, elem + pi->pos, pi->size));
-					res.addMetaData( feat.name(), valstr);
-					break;
-				}
-				case Analyzer::DocumentParser::FeatAttribute:
-				{
-					std::string valstr(
-						feat.normalizer()->normalize(
-							normctx, elem + pi->pos, pi->size));
-					res.addAttribute( feat.name(), valstr);
-					break;
-				}
-				case Analyzer::DocumentParser::FeatTerm:
-				{
-					std::string valstr(
-						feat.normalizer()->normalize(
-							normctx, elem + pi->pos, pi->size));
-					res.addTerm(
-						feat.name(), valstr,
-						curr_position + pi->pos);
-					break;
-				}
-			}
+			valstr = feat.normalizer()->normalize( normctx, elem + pi->pos, pi->size);
 		}
 		else
 		{
-			switch (feat.featureClass())
+			valstr = std::string( elem + pi->pos, pi->size);
+		}
+		switch (feat.featureClass())
+		{
+			case Analyzer::DocumentParser::FeatMetaData:
 			{
-				case Analyzer::DocumentParser::FeatMetaData:
-				{
-					res.addMetaData(
-						feat.name(),
-						std::string( elem + pi->pos, pi->size));
-					break;
-				}
-				case Analyzer::DocumentParser::FeatAttribute:
-					res.addAttribute(
-						feat.name(),
-						std::string( elem + pi->pos, pi->size));
-					break;
-				case Analyzer::DocumentParser::FeatTerm:
-					res.addTerm(
-						feat.name(),
-						std::string( elem + pi->pos, pi->size),
-						curr_position + pi->pos);
-					break;
+				res.addMetaData( feat.name(), valstr);
+				break;
+			}
+			case Analyzer::DocumentParser::FeatAttribute:
+			{
+				res.addAttribute( feat.name(), valstr);
+				break;
+			}
+			case Analyzer::DocumentParser::FeatSearchIndexTerm:
+			{
+				res.addSearchIndexTerm(
+					feat.name(), valstr, curr_position + pi->pos);
+				break;
+			}
+			case Analyzer::DocumentParser::FeatForwardIndexTerm:
+			{
+				res.addForwardIndexTerm(
+					feat.name(), valstr, curr_position + pi->pos);
+				break;
 			}
 		}
 	}
@@ -606,10 +597,11 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 		normalize( rt, normctx, feat, ci->second.content.c_str(),
 				ci->second.content.size(), pos, curr_position);
 	}
-	return analyzer::Document(
-			rt.metadata(),
-			rt.attributes(),
-			mapPositions( rt.terms())); 
+	std::vector<analyzer::Term> sterms;
+	std::vector<analyzer::Term> fterms;
+	mapPositions( rt.searchIndexTerms(), sterms, rt.forwardIndexTerms(), fterms);
+
+	return analyzer::Document( rt.metadata(), rt.attributes(), sterms, fterms);
 }
 
 void Analyzer::print( std::ostream& out) const

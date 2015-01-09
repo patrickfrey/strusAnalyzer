@@ -45,18 +45,22 @@ public:
 	Document( const Document& o)
 		:m_metadata(o.m_metadata)
 		,m_attributes(o.m_attributes)
-		,m_terms(o.m_terms){}
+		,m_searchIndexTerms(o.m_searchIndexTerms)
+		,m_forwardIndexTerms(o.m_forwardIndexTerms){}
 	Document(
 			const std::vector<MetaData>& metadata_,
 			const std::vector<Attribute>& attributes_,
-			const std::vector<Term>& terms_)
+			const std::vector<Term>& searchIndexTerms_,
+			const std::vector<Term>& forwardIndexTerms_)
 		:m_metadata(metadata_)
 		,m_attributes(attributes_)
-		,m_terms(terms_){}
+		,m_searchIndexTerms(searchIndexTerms_)
+		,m_forwardIndexTerms(forwardIndexTerms_){}
 
 	const std::vector<Attribute>& attributes() const	{return m_attributes;}
 	const std::vector<MetaData>& metadata() const		{return m_metadata;}
-	const std::vector<Term>& terms() const			{return m_terms;}
+	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
+	const std::vector<Term>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
 
 	void addAttribute( const std::string& t, const std::string& v)
 	{
@@ -66,15 +70,20 @@ public:
 	{
 		m_metadata.push_back( MetaData( t,v));
 	}
-	void addTerm( const std::string& t, const std::string& v, unsigned int p)
+	void addSearchIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
-		m_terms.push_back( Term( t, v, p));
+		m_searchIndexTerms.push_back( Term( t, v, p));
+	}
+	void addForwardIndexTerm( const std::string& t, const std::string& v, unsigned int p)
+	{
+		m_forwardIndexTerms.push_back( Term( t, v, p));
 	}
 
 private:
 	std::vector<MetaData> m_metadata;
 	std::vector<Attribute> m_attributes;
-	std::vector<Term> m_terms;
+	std::vector<Term> m_searchIndexTerms;
+	std::vector<Term> m_forwardIndexTerms;
 };
 
 }}//namespace
