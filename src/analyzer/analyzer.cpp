@@ -88,23 +88,23 @@ public:
 
 	static FeatureClass featureClassFromName( const std::string& name)
 	{
-		if (isEqual( name, "Search") || isEqual( name, "S"))
+		if (isEqual( name, "SearchIndex"))
 		{
 			return FeatSearchIndexTerm;
 		}
-		if (isEqual( name, "Forward") || isEqual( name, "F"))
+		if (isEqual( name, "ForwardIndex"))
 		{
 			return FeatForwardIndexTerm;
 		}
-		if (isEqual( name, "Meta") || isEqual( name, "M"))
+		if (isEqual( name, "MetaData"))
 		{
 			return FeatMetaData;
 		}
-		if (isEqual( name, "Attribute") || isEqual( name, "A"))
+		if (isEqual( name, "Attribute"))
 		{
 			return FeatAttribute;
 		}
-		throw std::runtime_error( std::string( "illegal feature class name '") + name + " (expected one of {Search (S), Forward (F), Meta (M), Attribute (A)})");
+		throw std::runtime_error( std::string( "illegal feature class name '") + name + " (expected one of {SearchIndex, ForwardIndex, MetaData, Attribute})");
 	}
 
 	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, FeatureClass featureClass_)
@@ -386,21 +386,26 @@ Analyzer::Analyzer(
 	try
 	{
 		m_parser = new DocumentParser();
+		DocumentParser::FeatureClass featclass = DocumentParser::FeatSearchIndexTerm;
+		
 		while (*src)
 		{
 			if (!isAlnum(*src))
 			{
-				throw std::runtime_error( "alphanumeric identifier (feature class name) expected at start of a feature declaration");
-			}
-			std::string classname = parse_IDENTIFIER( src);
-			DocumentParser::FeatureClass featclass
-				= DocumentParser::featureClassFromName( classname);
-
-			if (!isAlnum(*src))
-			{
-				throw std::runtime_error( "alphanumeric identifier (feature set name) expected at start of a feature declaration after class name");
+				throw std::runtime_error( "alphanumeric identifier (feature class name or feature name) expected at start of a feature declaration");
 			}
 			std::string name = parse_IDENTIFIER( src);
+			if (isColon( *src))
+			{
+				parse_OPERATOR(src);
+
+				featclass = DocumentParser::featureClassFromName( name);
+				if (!isAlnum(*src))
+				{
+					throw std::runtime_error( "alphanumeric identifier (feature set name) expected at start of a feature declaration after class name declaration");
+				}
+				name = parse_IDENTIFIER( src);
+			}
 			if (isAssign( *src))
 			{
 				parse_OPERATOR(src);
