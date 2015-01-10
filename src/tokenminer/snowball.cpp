@@ -225,6 +225,10 @@ public:
 				{
 					rt.push_back( 'n');
 				}
+				else if (value >= 0xF2 && value <= 0xF5)
+				{
+					rt.push_back( 'o');
+				}
 				else if (value == 0xF6)
 				{
 					if (m_diatype == DiaTypeGerman)
@@ -235,10 +239,6 @@ public:
 					{
 						rt.push_back( 'o');
 					}
-				}
-				else if (value >= 0xF2 && value <= 0xF5)
-				{
-					rt.push_back( 'o');
 				}
 				else if (value == 0xF7)
 				{
