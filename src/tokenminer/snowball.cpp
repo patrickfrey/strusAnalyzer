@@ -28,6 +28,8 @@
 */
 #include "snowball.hpp"
 #include "libstemmer.h"
+#include "textwolf/charset_utf8.hpp"
+#include "textwolf/cstringiterator.hpp"
 #include <stdexcept>
 
 using namespace strus;
@@ -53,9 +55,20 @@ class StemNormalizer
 	:public NormalizerInterface
 {
 public:
+	enum DiaType {DiaTypeUnknown, DiaTypeGerman};
+
+public:
 	explicit StemNormalizer( const char* language)
 	{
 		m_stemmer = sb_stemmer_new_threadsafe( language, 0/*UTF-8 is default*/);
+		if (std::strcmp( language, "de") == 0)
+		{
+			m_diatype = DiaTypeGerman;
+		}
+		else
+		{
+			m_diatype = DiaTypeUnknown;
+		}
 	}
 	~StemNormalizer()
 	{
@@ -63,6 +76,240 @@ public:
 		{
 			sb_stemmer_delete( m_stemmer);
 		}
+	}
+
+	std::string substDiaCriticalToLower( const std::string& src) const
+	{
+		std::string rt;
+		textwolf::charset::UTF8 utf8;
+		char buf[16];
+		unsigned int bufpos;
+		textwolf::CStringIterator itr( src.c_str(), src.size());
+
+		while (*itr)
+		{
+			bufpos = 0;
+			textwolf::UChar value = utf8.value( buf, bufpos, itr);
+	
+			if (value < 0x7F)
+			{
+				rt.push_back( (char)value | 32);
+			}
+			else if (value <= 0xFF)
+			{
+				if ((value >= 0xC0 && value <= 0xC3) || value == 0xC5)
+				{
+					rt.push_back( 'a');
+				}
+				else if (value == 0xC6)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "ae");
+					}
+					else
+					{
+						rt.push_back( 'a');
+					}
+				}
+				else if (value == 0xC4)
+				{
+					rt.append( "ae");
+				}
+				else if (value == 0xC7)
+				{
+					rt.push_back( 'c');
+				}
+				else if (value >= 0xC8 && value <= 0xCB)
+				{
+					rt.push_back( 'e');
+				}
+				else if (value >= 0xCC && value <= 0xCF)
+				{
+					rt.push_back( 'i');
+				}
+				else if (value == 0xD0)//CAPITAL ETH
+				{
+					rt.append( "th");
+				}
+				else if (value == 0xD1)
+				{
+					rt.push_back( 'n');
+				}
+				else if (value >= 0xD2 && value <= 0xD5)
+				{
+					rt.push_back( 'o');
+				}
+				else if (value == 0xD6)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "oe");
+					}
+					else
+					{
+						rt.push_back( 'o');
+					}
+				}
+				else if (value == 0xD7)
+				{
+					rt.push_back( '*');
+				}
+				else if (value == 0xD8)
+				{
+					rt.push_back( 'o');
+				}
+				else if (value == 0xDC)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "ue");
+					}
+					else
+					{
+						rt.push_back( 'u');
+					}
+				}
+				else if (value >= 0xD9 && value <= 0xDB)
+				{
+					rt.push_back( 'u');
+				}
+				else if (value == 0xDD)
+				{
+					rt.push_back( 'y');
+				}
+				else if (value == 0xDE)//CAPITAL THORN
+				{
+					rt.append( "th");
+				}
+				else if (value == 0xDF)
+				{
+					rt.append( "ss");
+				}
+				else if (value == 0xE4)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "ae");
+					}
+					else
+					{
+						rt.push_back( 'a');
+					}
+				}
+				else if ((value >= 0xE0 && value <= 0xE3) || value == 0xE4)
+				{
+					rt.push_back( 'a');
+				}
+				else if (value == 0xE6)
+				{
+					rt.append( "ae");
+				}
+				else if (value == 0xE7)
+				{
+					rt.push_back( 'c');
+				}
+				else if (value >= 0xE8 && value <= 0xEB)
+				{
+					rt.push_back( 'e');
+				}
+				else if (value >= 0xEC && value <= 0xEF)
+				{
+					rt.push_back( 'i');
+				}
+				else if (value == 0xF0)//SMALL ETH
+				{
+					rt.append( "th");
+				}
+				else if (value == 0xF1)
+				{
+					rt.push_back( 'n');
+				}
+				else if (value == 0xF6)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "oe");
+					}
+					else
+					{
+						rt.push_back( 'o');
+					}
+				}
+				else if (value >= 0xF2 && value <= 0xF5)
+				{
+					rt.push_back( 'o');
+				}
+				else if (value == 0xF7)
+				{
+					rt.push_back( '/');
+				}
+				else if (value == 0xF8)
+				{
+					rt.push_back( 'o');
+				}
+				else if (value == 0xFC)
+				{
+					if (m_diatype == DiaTypeGerman)
+					{
+						rt.append( "ue");
+					}
+					else
+					{
+						rt.push_back( 'u');
+					}
+				}
+				else if (value >= 0xF9 && value <= 0xFB)
+				{
+					rt.push_back( 'u');
+				}
+				else if (value == 0xFD)
+				{
+					rt.push_back( 'y');
+				}
+				else if (value == 0xFE)
+				{
+					rt.append( "th");
+				}
+				else if (value == 0xFF)
+				{
+					rt.push_back( 'y');
+				}
+			}
+			else if (value <= 0x2FF)
+			{
+				//romanian characters above 0xFF:
+				if (value == 0x102)
+				{
+					rt.push_back( 'a');
+				}
+				else if (value == 0x103)
+				{
+					rt.push_back( 'a');
+				}
+				else if (value == 0x218 || value == 0x15F)
+				{
+					rt.push_back( 's');
+				}
+				else if (value == 0x219 || value == 0x15E)
+				{
+					rt.push_back( 's');
+				}
+				else if (value == 0x21A || value == 0x162)
+				{
+					rt.push_back( 't');
+				}
+				else if (value == 0x21B || value == 0x163)
+				{
+					rt.push_back( 't');
+				}
+			}
+			else if (value == 0x1E9E)
+			{
+				rt.append( "ss");
+			}
+		}
+		return rt;
 	}
 
 	Context* createContext() const
@@ -79,13 +326,8 @@ public:
 				= sb_stemmer_stem_threadsafe( m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
 			if (!res) throw std::bad_alloc();
 			std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( ctx->m_env);
-			std::string rt( (const char*)res, len);
-			std::string::iterator ri = rt.begin(), re = rt.end();
-			for (; ri != re; ++ri)
-			{
-				if (*ri >= 'A' && *ri <= 'Z') *ri |= 32;
-			}
-			return rt;
+
+			return substDiaCriticalToLower( std::string( (const char*)res, len));
 		}
 		else
 		{
@@ -95,6 +337,7 @@ public:
 
 private:
 	struct sb_stemmer* m_stemmer;
+	DiaType m_diatype;
 };
 
 static const StemNormalizer stemNormalizer_dk("da");
