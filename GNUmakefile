@@ -29,7 +29,7 @@ uninstall:
 	@-rm $(INSTALL_INCDIR)/analyzerInterface.hpp
 	@-rm $(INSTALL_INCDIR)/analyzerLib.hpp
 	@-rm $(INSTALL_INCDIR)/normalizerInterface.hpp
-	@-rm $(INSTALL_INCDIR)/strusAnalyzer.hpp
+	@-rm $(INSTALL_INCDIR)/analyzer.hpp
 	@-rm $(INSTALL_INCDIR)/tokenizer/position.hpp
 	@-rm $(INSTALL_INCDIR)/tokenizerInterface.hpp
 	@-rm $(INSTALL_INCDIR)/tokenMinerFactory.hpp
