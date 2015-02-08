@@ -26,21 +26,44 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#include <string>
+#include "segmenter.hpp"
+#include "segmenterInstance.hpp"
+#include "textwolf/xmlpathautomatonparse.hpp"
+#include "textwolf/xmlpathselect.hpp"
+#include "textwolf/charset.hpp"
 
-namespace strus {
+using namespace strus;
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+void Segmenter::defineSelectorExpression( int id, const std::string& expression)
+{
+	int errorpos = m_automaton.addExpression( id, expression.c_str(), expression.size());
+	if (errorpos)
+	{
+		int errorsize = expression.size() - errorpos;
+		std::string locstr;
+		if (errorsize <= 0)
+		{
+			locstr = "end of expression";
+		}
+		else
+		{
+			if (errorsize > 10) errorsize = 10;
+			if (errorpos == 1)
+			{
+				locstr = "start of expression";
+			}
+			else
+			{
+				locstr = std::string("'...") + std::string( expression.c_str() + (errorpos - 1), errorsize) + "'";
+			}
+		}
+		throw std::runtime_error( std::string( "error in selection expression '") + expression + "' at " + locstr);
+	}
+}
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+SegmenterInstanceInterface* Segmenter::createInstance( const char* source)
+{
+	return new SegmenterInstance( &m_automaton, source);
+}
 
-}//namespace
-#endif
 

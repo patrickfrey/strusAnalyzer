@@ -26,20 +26,29 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#include <string>
+#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
+#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
+#include "strus/segmenterInterface.hpp"
+#include "textwolf/xmlpathautomatonparse.hpp"
 
-namespace strus {
+namespace strus
+{
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
+class Segmenter
+	:public SegmenterInterface
+{
+public:
+	Segmenter(){}
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+	virtual void defineSelectorExpression( int id, const std::string& expression);
+
+	virtual SegmenterInstanceInterface* createInstance( const char* source);
+
+private:
+	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
+	Automaton m_automaton;
+};
 
 }//namespace
 #endif

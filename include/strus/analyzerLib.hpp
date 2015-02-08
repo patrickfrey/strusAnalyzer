@@ -26,27 +26,28 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus query evaluation library
+/// \brief Exported functions of the strus analyzer library
 #ifndef _STRUS_ANALYZER_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_LIB_HPP_INCLUDED
 #include <string>
 
 namespace strus {
 
-/// \brief Forward declaration analyzer program
+/// \brief Forward declaration
 class AnalyzerInterface;
-/// \brief Forward declaration token miner factory
+/// \brief Forward declaration
 class TokenMinerFactory;
+/// \brief Forward declaration
+class SegmenterInterface;
 
-/// \brief Create a program for analyzing a document
-/// \param[in] tokenMinerFactory defines the set of token type definitions that can be used in the program
-/// \param[in] programSource the source of the document analyzer procedure
-/// \return the program reference
-/// \note the processor life time is assumed to cover the lifetime of the analyzer returned
+/// \brief Creates an analyzer program for analyzing a document
+/// \param[in] tokenMinerFactory static const reference to a token miner factory. It defines the set of token type definitions that can be used in the program.
+/// \param[in] segmenter empty segmenter instance to be used by the created analyzer (ownership transferred).
+/// \return the analyzer program reference to be disposed with delete by the caller
 AnalyzerInterface*
 	createAnalyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& programSource);
+		const TokenMinerFactory* tokenMinerFactory,
+		SegmenterInterface* segmenter);
 
 }//namespace
 #endif

@@ -26,21 +26,48 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#include <string>
+#ifndef _STRUS_SEGMENTER_INSTANCE_TEXTWOLF_HPP_INCLUDED
+#define _STRUS_SEGMENTER_INSTANCE_TEXTWOLF_HPP_INCLUDED
+#include "strus/segmenterInstanceInterface.hpp"
+#include "textwolf/xmlpathselect.hpp"
+#include "textwolf/charset.hpp"
 
-namespace strus {
+namespace strus
+{
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+class SegmenterInstance
+	:public SegmenterInstanceInterface
+{
+public:
+	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+public:
+	SegmenterInstance( const Automaton* automaton_, const char* src);
+
+	virtual bool getNext( int& id, std::size_t& pos, const char*& chunk, std::size_t& chunksize);
+
+private:
+	typedef textwolf::XMLPathSelect<
+			textwolf::charset::UTF8
+		> XMLPathSelect;
+	typedef textwolf::XMLScanner<
+			char const*,
+			textwolf::charset::UTF8,
+			textwolf::charset::UTF8,
+			std::string
+		> XMLScanner;
+
+	const Automaton* m_automaton;
+	char const* m_src;
+	XMLScanner m_scanner;
+	XMLPathSelect m_pathselect;
+	XMLScanner::iterator m_itr;
+	XMLScanner::iterator m_end;
+	XMLPathSelect::iterator m_selitr;
+	XMLPathSelect::iterator m_selend;
+};
 
 }//namespace
 #endif
+
 

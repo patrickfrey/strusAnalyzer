@@ -26,20 +26,33 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+#ifndef _STRUS_SEGMENTER_INTERFACE_HPP_INCLUDED
+#define _STRUS_SEGMENTER_INTERFACE_HPP_INCLUDED
+#include <utility>
 #include <string>
 
-namespace strus {
+namespace strus
+{
+/// \brief Forward declaration
+class SegmenterInstanceInterface;
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
+class SegmenterInterface
+{
+public:
+	/// \brief Destructor
+	virtual ~SegmenterInterface(){}
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+	/// \brief Defines an expression for selecting chunks from a document
+	/// \param[in] id identifier of the chunks that match to expression
+	/// \param[in] expression expression for selecting chunks
+	virtual void defineSelectorExpression( int id, const std::string& expression)=0;
+
+	/// \brief Creates an instance of the segmenter
+	/// \param[in] source pointer to source. Expected to be valid the whole life time of the instance created
+	/// \return the segmenter object to be desposed with delete by the caller
+	virtual SegmenterInstanceInterface* createInstance( const char* source)=0;
+};
 
 }//namespace
 #endif

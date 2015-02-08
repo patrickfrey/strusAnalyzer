@@ -6,10 +6,10 @@ CPP_OBJS=\
 	analyzer.o \
 	analyzerLib.o
 
-CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I$(TOPDIR)/3rdParty/textwolf/include/ -I.
+CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I.
 CXXFLAGS=-g -Werror -Wall -pedantic $(OPTIMIZE) -std=c++98
-LDFLAGS=-L/usr/lib -L$(TOPDIR)/src/tokenminer
-LIBS=-lstrus_tokenminer
+LDFLAGS=-L/usr/lib -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/src/segmenter_textwolf
+LIBS=-lstrus_tokenminer -lstrus_segmenter_textwolf
 
 all: libstrus_analyzer.so
 

@@ -34,17 +34,30 @@
 
 namespace strus
 {
+
 class NormalizerInterface
 {
 public:
+	/// \brief Normalizer context base class
 	class Context
 	{
 	public:
+		/// \brief Destructor
 		virtual ~Context(){}
 	};
 
+	/// \brief Destructor
 	virtual ~NormalizerInterface(){}
-	virtual Context* createContext() const=0;
+
+	/// \brief Create the context object needed for normalization
+	/// \param[in] src source describing the normalization (e.g. date format description)
+	/// \return the context object to be desposed by the caller with delete if not NULL
+	virtual Context* createContext( const std::string&) const		{return 0;}
+
+	/// \brief Normalization of a token, transforming it into the unit that is stored or retrieved as such in the storage
+	/// \param[in] ctx context object for normalization, if needed. created with createContext(const std::string&)const 
+	/// \param[in] src start of the source chunk
+	/// \param[in] srcsize size of the source chunk
 	virtual std::string normalize(
 			Context* ctx,
 			const char* src,

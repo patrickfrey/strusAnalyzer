@@ -26,20 +26,31 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+#ifndef _STRUS_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include <utility>
 #include <string>
 
-namespace strus {
+namespace strus
+{
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+/// \class SegmenterInstanceInterface
+/// \brief Defines an instance of a segmenter program
+class SegmenterInstanceInterface
+{
+public:
+	/// \brief Destructor
+	virtual ~SegmenterInstanceInterface(){}
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+	/// \brief Fetch the next chunk
+	/// \param[out] id identifier of the expression that addresses the chunk
+	/// \param[out] pos position of the chunk in the original source
+	/// \param[out] chunk pointer to the start of the chunk. Must remain a valid reference during the whole lifetime of this segmented instance.
+	/// \param[out] chunksize size of chunk in bytes
+	/// \return true, if a valid chunk could be returned, false in case of EOF (no chunks left)
+	/// \remark throws on error
+	virtual bool getNext( int& id, std::size_t& pos, const char*& chunk, std::size_t& chunksize)=0;
+};
 
 }//namespace
 #endif

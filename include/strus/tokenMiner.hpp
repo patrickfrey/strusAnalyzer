@@ -37,14 +37,19 @@ class TokenizerInterface;
 /// \brief Forward declaration
 class NormalizerInterface;
 
+/// \class TokenMiner
+/// \brief The unit defining the methods needed for producing the tokens of document analysis
 class TokenMiner
 {
 public:
+	/// \brief Constructor
 	TokenMiner( const TokenizerInterface* tokenizer_,
 			const NormalizerInterface* normalizer_)
 		:m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
 
+	/// \brief Get the tokenizer
 	const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
+	/// \brief Get the normalizer
 	const NormalizerInterface* normalizer() const	{return m_normalizer;}
 
 private:

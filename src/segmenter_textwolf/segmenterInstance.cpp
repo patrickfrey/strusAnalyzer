@@ -26,20 +26,54 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/analyzerLib.hpp"
-#include "strus/analyzerInterface.hpp"
-#include "strus/segmenterInterface.hpp"
-#include "analyzer.hpp"
-#include "dll_tags.hpp"
+#include "segmenterInstance.hpp"
+#include "segmenter.hpp"
 
 using namespace strus;
 
-DLL_PUBLIC AnalyzerInterface*
-	strus::createAnalyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		SegmenterInterface* segmenter)
+SegmenterInstance::SegmenterInstance( const Automaton* automaton_, const char* src_)
+	:m_automaton(automaton_),m_src(src_),m_scanner( src_),m_pathselect(automaton_)
 {
-	return new Analyzer( tokenMinerFactory, segmenter);
+	m_itr = m_scanner.begin();
+	m_end = m_scanner.end();
+	if (m_itr == m_end)
+	{
+		m_selitr = m_selend = m_pathselect.end();
+	}
+	else
+	{
+		m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
+		m_selend = m_pathselect.end();
+	}
+}
+
+bool SegmenterInstance::getNext( int& id, std::size_t& pos, const char*& chunk, std::size_t& chunksize)
+{
+	if (m_itr == m_end) return false;
+	while (m_selitr == m_selend)
+	{
+		++m_itr;
+		if (m_itr == m_end) return false;
+		if (m_itr->type() == XMLScanner::ErrorOccurred)
+		{
+			if (m_itr->size())
+			{
+				throw std::runtime_error( std::string( "error in XML document: ") + std::string(m_itr->content(), m_itr->size()));
+			}
+			else
+			{
+				throw std::runtime_error( std::string( "input document is not valid XML"));
+			}
+		}
+		m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
+		m_selend = m_pathselect.end();
+	}
+	id = *m_selitr;
+	++m_selitr;
+	pos = m_scanner.getPosition() - m_itr->size();
+	chunk = m_itr->content();
+	chunksize = m_itr->size();
+	return true;
 }
 
 

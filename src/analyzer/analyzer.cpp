@@ -32,404 +32,152 @@
 #include "strus/tokenMinerFactory.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
-#include "parser/lexems.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include "textwolf/xmlpathselect.hpp"
-#include "textwolf/charset.hpp"
+#include "strus/segmenterInterface.hpp"
 #include <boost/algorithm/string.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <stdexcept>
 #include <iostream>
 #include <sstream>
 #include <set>
 
 using namespace strus;
-using namespace strus::parser;
 
-static std::string errorPosition( const char* base, const char* itr)
+Analyzer(
+		const TokenMinerFactory* tokenMinerFactory,
+		SegmenterInterface* segmenter_)
+	:m_tokenMinerFactory(tokenMinerFactory_),m_segmenter(segmenter_){}
+
+
+std::vector<tokenizer::Position>
+	Analyzer::FeatureConfig::tokenize( const char* elem, std::size_t elemsize) const
 {
-	unsigned int line = 1;
-	unsigned int col = 1;
-	std::ostringstream msg;
-
-	for (unsigned int ii=0,nn=itr-base; ii < nn; ++ii)
+	std::vector<tokenizer::Position> pos;
+	if (tokenizer())
 	{
-		if (base[ii] == '\n')
-		{
-			col = 1;
-			++line;
-		}
-		else
-		{
-			++col;
-		}
+		pos = tokenizer()->tokenize( elem, elemsize);
 	}
-	msg << "at line " << line << " column " << col;
-	return msg.str();
+	else
+	{
+		pos.push_back( tokenizer::Position( 0, elemsize));
+	}
+	return pos;
 }
 
+void Analyzer::addExpression(
+	const std::string& name,
+	const std::string& expression,
+	const TokenizerInterface* tokenizer,
+	const NormalizerInterface* normalizer,
+	FeatureClass featureClass)
+{
+	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizer, featureClass));
+	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
+}
 
-class Analyzer::DocumentParser
+const FeatureConfig& Analyzer::featureConfig( int featidx) const
+{
+	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
+	{
+		throw std::runtime_error( "internal: unknown index of feature");
+	}
+	return m_featurear[ idx-1];
+}
+
+void Analyzer::defineFeature(
+	FeatureClass featureClass,
+	const std::string& name,
+	const std::string& expression,
+	const std::string& tokenizer,
+	const std::string& normalizer)
+{
+	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer);
+	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer);
+	addExpression( name, expression, tk, nm, featureClass);
+}
+
+class ParserContext
 {
 public:
-	DocumentParser()
-	{}
-
-	enum FeatureClass
+	ParserContext( const std::vector<FeatureConfig>& config)
 	{
-		FeatMetaData,
-		FeatAttribute,
-		FeatSearchIndexTerm,
-		FeatForwardIndexTerm
-	};
-	static const char* featureClassName( FeatureClass i)
-	{
-		static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm"};
-		return  ar[i];
-	}
-
-	static FeatureClass featureClassFromName( const std::string& name)
-	{
-		if (isEqual( name, "SearchIndex"))
+		try
 		{
-			return FeatSearchIndexTerm;
-		}
-		if (isEqual( name, "ForwardIndex"))
-		{
-			return FeatForwardIndexTerm;
-		}
-		if (isEqual( name, "MetaData"))
-		{
-			return FeatMetaData;
-		}
-		if (isEqual( name, "Attribute"))
-		{
-			return FeatAttribute;
-		}
-		throw std::runtime_error( std::string( "illegal feature class name '") + name + " (expected one of {SearchIndex, ForwardIndex, MetaData, Attribute})");
-	}
-
-	void addExpression( const std::string& featurename, const std::string& expression, const TokenMiner* miner, FeatureClass featureClass_)
-	{
-		m_featuredefar.push_back( FeatureDef( featurename, miner->tokenizer(), miner->normalizer(), featureClass_));
-
-		int featidx = m_featuredefar.size();
-		int errorpos = m_automaton.addExpression( featidx, expression.c_str(), expression.size());
-		if (errorpos)
-		{
-			int errorsize = expression.size() - errorpos;
-			std::string locstr;
-			if (errorsize <= 0)
-			{
-				locstr = "end of expression";
-			}
-			else
-			{
-				if (errorsize > 10) errorsize = 10;
-				if (errorpos == 1)
-				{
-					locstr = "start of expression";
-				}
-				else
-				{
-					locstr = std::string("'...") + std::string( expression.c_str() + (errorpos - 1), errorsize) + "'";
-				}
-			}
-			throw std::runtime_error( std::string( "error in selection expression '") + expression + "' at " + locstr);
-		}
-	}
-
-	class FeatureDef
-	{
-	public:
-		FeatureDef( const std::string& name_,
-				const TokenizerInterface* tokenizer_,
-				const NormalizerInterface* normalizer_,
-				FeatureClass featureClass_)
-			:m_name(name_)
-			,m_tokenizer(tokenizer_)
-			,m_normalizer(normalizer_)
-			,m_featureClass(featureClass_){}
+			m_size = config.size();
 	
-		const std::string& name() const			{return m_name;}
-		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
-		const NormalizerInterface* normalizer() const	{return m_normalizer;}
-		FeatureClass featureClass() const		{return m_featureClass;}
-
-		std::vector<tokenizer::Position>
-			tokenize( const char* elem, std::size_t elemsize) const
-		{
-			std::vector<tokenizer::Position> pos;
-			if (tokenizer())
+			m_tokenizerContextAr = (TokenizerInterface::Context**)
+					std::calloc( m_size, sizeof( m_tokenizerContextAr[0]));
+			m_normalizerContextAr = (NormalizerInterface::Context**)
+					std::calloc( m_size, sizeof( m_normalizerContextAr[0]));
+	
+			if (!m_tokenizerContextAr || !m_normalizerContextAr)
 			{
-				pos = tokenizer()->tokenize( elem, elemsize);
+				throw std::bad_alloc();
 			}
-			else
+	
+			std::vector<FeatureConfig>::const_iterator
+				ci = config.begin(), ce = config.end();
+			for (std::size_t fidx=0; fi != fe; ++fi,++fidx)
 			{
-				pos.push_back( tokenizer::Position( 0, elemsize));
-			}
-			return pos;
-		}
-
-	private:
-		std::string m_name;
-		const TokenizerInterface* m_tokenizer;
-		const NormalizerInterface* m_normalizer;
-		FeatureClass m_featureClass;
-	};
-
-	class Context
-	{
-	public:
-		Context( const DocumentParser& docparser)
-		{
-			m_normctxsize = docparser.nofFeatureDefs();
-
-			m_normctxar = (NormalizerInterface::Context**)
-					std::calloc( m_normctxsize, sizeof( m_normctxar[0]));
-			if (!m_normctxar) throw std::bad_alloc();
-
-			for (std::size_t fidx=1; fidx <= m_normctxsize; ++fidx)
-			{
-				const FeatureDef& fdef = docparser.featureDef( fidx);
-				if (fdef.normalizer())
-				{
-					m_normctxar[ fidx-1] = fdef.normalizer()->createContext();
-				}
+				m_tokenizerContextAr[ fidx] = fi->tokenizer()->createContext();
+				m_normalizerContextAr[ fidx] = fi->normalizer()->createContext();
 			}
 		}
-		~Context()
+		catch (const std::bad_alloc& err)
 		{
-			if (m_normctxar)
-			{
-				for (std::size_t fidx=1; fidx <= m_normctxsize; ++fidx)
-				{
-					if (m_normctxar[ fidx-1]) delete m_normctxar[ fidx-1];
-				}
-				std::free( m_normctxar);
-			}
+			cleanup();
+			throw err;
 		}
-
-		NormalizerInterface::Context* normalizerContext( std::size_t featidx)
-		{
-			if (featidx <= 0 || (std::size_t)featidx > m_normctxsize)
-			{
-				throw std::runtime_error( "internal: unknown index of feature");
-			}
-			return m_normctxar[ featidx-1];
-		}
-
-	private:
-		NormalizerInterface::Context** m_normctxar;
-		std::size_t m_normctxsize;
-	};
-
-	struct Instance
-	{
-		typedef textwolf::XMLPathSelectAutomaton<> Automaton;
-
-		Instance( char const* src_, const Automaton* atm_)
-			:m_src(src_),m_atm(atm_),m_scanner( src_),m_pathselect(atm_)
-		{
-			m_itr = m_scanner.begin();
-			m_end = m_scanner.end();
-			if (m_itr == m_end)
-			{
-				m_selitr = m_selend = m_pathselect.end();
-			}
-			else
-			{
-				m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
-				m_selend = m_pathselect.end();
-				m_position = m_scanner.getPosition() - m_itr->size();
-			}
-		}
-
-		typedef textwolf::XMLPathSelect<
-				textwolf::charset::UTF8
-			> XMLPathSelect;
-		typedef textwolf::XMLScanner<
-				char const*,
-				textwolf::charset::UTF8,
-				textwolf::charset::UTF8,
-				std::string
-			> XMLScanner;
-
-		char const* m_src;
-		const Automaton* m_atm;
-		XMLScanner m_scanner;
-		XMLPathSelect m_pathselect;
-		XMLScanner::iterator m_itr;
-		XMLScanner::iterator m_end;
-		XMLPathSelect::iterator m_selitr;
-		XMLPathSelect::iterator m_selend;
-		std::size_t m_position;
-
-		bool getNext( const char*& elem, std::size_t& elemsize, int& featidx)
-		{
-			if (m_itr == m_end) return false;
-			while (m_selitr == m_selend)
-			{
-				++m_itr;
-				if (m_itr == m_end) return false;
-				if (m_itr->type() == XMLScanner::ErrorOccurred)
-				{
-					if (m_itr->size())
-					{
-						throw std::runtime_error( std::string( "error in XML document: ") + std::string(m_itr->content(), m_itr->size()));
-					}
-					else
-					{
-						throw std::runtime_error( std::string( "input document is not valid XML"));
-					}
-				}
-				m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
-				m_selend = m_pathselect.end();
-				m_position = m_scanner.getPosition() - m_itr->size();
-			}
-			featidx = *m_selitr;
-			++m_selitr;
-			elem = m_itr->content();
-			elemsize = m_itr->size();
-			return true;
-		}
-
-		std::size_t position() const
-		{
-			return m_position;
-		}
-	};
-
-	std::size_t nofFeatureDefs() const
-	{
-		return m_featuredefar.size();
 	}
 
-	const FeatureDef& featureDef( int featidx) const
+	void cleanup()
 	{
-		if (featidx <= 0 || (std::size_t)featidx > m_featuredefar.size())
+		if (m_tokenizerContextAr)
+		{
+			for (std::size_t ii=0; ii <= m_size; ++ii)
+			{
+				if (m_tokenizerContextAr[ ii]) delete m_tokenizerContextAr[ ii];
+			}
+			std::free( m_tokenizerContextAr);
+		}
+		if (m_normalizerContextAr)
+		{
+			for (std::size_t ii=0; ii <= m_size; ++ii)
+			{
+				if (m_normalizerContextAr[ ii]) delete m_normalizerContextAr[ ii];
+			}
+			std::free( m_normalizerContextAr);
+		}
+	}
+
+	~ParserContext()
+	{
+		cleanup();
+	}
+
+	NormalizerInterface::Context* normalizerContext( int featidx)
+	{
+		if (featidx <= 0 || (std::size_t)featidx > m_size)
 		{
 			throw std::runtime_error( "internal: unknown index of feature");
 		}
-		return m_featuredefar[ featidx-1];
+		return m_normalizerContextAr[ featidx-1];
 	}
 
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	const Automaton* automaton() const	
+	NormalizerInterface::Context* tokenizerContext( int featidx)
 	{
-		return &m_automaton;
-	}
-
-	void print( std::ostream& out) const
-	{
-		out << "Automaton:" << std::endl;
-		out << m_automaton.tostring() << std::endl;
-		out << "Features:" << std::endl;
-		std::vector<FeatureDef>::const_iterator fi = m_featuredefar.begin(), fe = m_featuredefar.end();
-		for (int fidx=1; fi != fe; ++fi,++fidx)
+		if (featidx <= 0 || (std::size_t)featidx > m_size)
 		{
-			out << " " << featureClassName( fi->featureClass());
-			out << "[" << fidx << "] " << fi->name() << std::endl;
+			throw std::runtime_error( "internal: unknown index of feature");
 		}
+		return m_tokenizerContextAr[ featidx-1];
 	}
 
 private:
-	Automaton m_automaton;
-	std::vector<FeatureDef> m_featuredefar;
+	TokenizerInterface::Context** m_tokenizerContextAr;
+	NormalizerInterface::Context** m_normalizerContextAr;
+	std::size_t m_size;
 };
 
-
-Analyzer::~Analyzer()
-{
-	if (m_parser) delete m_parser;
-}
-
-static void parseFeatureDef(
-	Analyzer::DocumentParser* parser,
-	const TokenMinerFactory& tokenMinerFactory,
-	const std::string& featurename,
-	char const*& src,
-	Analyzer::DocumentParser::FeatureClass featureClass)
-{
-	std::string xpathexpr;
-	std::string method;
-
-	if (isAlpha(*src))
-	{
-		method = parse_IDENTIFIER( src);
-	}
-	else
-	{
-		throw std::runtime_error( "identifier (token miner type) expected after assignment operator in a term declaration");
-	}
-	if (isStringQuote(*src))
-	{
-		xpathexpr = parse_STRING( src);
-	}
-	else
-	{
-		char const* start = src;
-		while (*src && !isSpace(*src) && *src != ';') ++src;
-		xpathexpr.append( start, src-start);
-	}
-	const TokenMiner* miner = tokenMinerFactory.get( method);
-	if (!miner) throw std::runtime_error( std::string( "unknown token type '") + method + "'");
-
-	parser->addExpression( featurename, xpathexpr, miner, featureClass);
-}
-
-Analyzer::Analyzer(
-		const TokenMinerFactory& tokenMinerFactory,
-		const std::string& source)
-	:m_parser(0)
-{
-	char const* src = source.c_str();
-	skipSpaces(src);
-	try
-	{
-		m_parser = new DocumentParser();
-		DocumentParser::FeatureClass featclass = DocumentParser::FeatSearchIndexTerm;
-		
-		while (*src)
-		{
-			if (!isAlnum(*src))
-			{
-				throw std::runtime_error( "alphanumeric identifier (feature class name or feature name) expected at start of a feature declaration");
-			}
-			std::string name = parse_IDENTIFIER( src);
-			if (isColon( *src))
-			{
-				parse_OPERATOR(src);
-
-				featclass = DocumentParser::featureClassFromName( name);
-				if (!isAlnum(*src))
-				{
-					throw std::runtime_error( "alphanumeric identifier (feature set name) expected at start of a feature declaration after class name declaration");
-				}
-				name = parse_IDENTIFIER( src);
-			}
-			if (isAssign( *src))
-			{
-				parse_OPERATOR(src);
-				parseFeatureDef( m_parser, tokenMinerFactory, name, src, featclass);
-			}
-			else
-			{
-				throw std::runtime_error( "assignment operator '=' expected after set identifier in a feature declaration");
-			}
-			if (!isSemiColon(*src))
-			{
-				throw std::runtime_error( "semicolon ';' expected at end of feature declaration");
-			}
-			parse_OPERATOR(src);
-		}
-	}
-	catch (const std::runtime_error& e)
-	{
-		throw std::runtime_error(
-			std::string( "error in query evaluation program ")
-			+ errorPosition( source.c_str(), src)
-			+ ":" + e.what());
-	}
-}
 
 /// \brief Map byte offset positions to token occurrence positions:
 static void mapPositions( const std::vector<analyzer::Term>& ar1, std::vector<analyzer::Term>& res1, const std::vector<analyzer::Term>& ar2, std::vector<analyzer::Term>& res2)
@@ -467,7 +215,7 @@ static void mapPositions( const std::vector<analyzer::Term>& ar1, std::vector<an
 static void normalize(
 		analyzer::Document& res,
 		NormalizerInterface::Context* normctx,
-		const Analyzer::DocumentParser::FeatureDef& feat,
+		const Analyzer::FeatureConfig& feat,
 		const char* elem,
 		std::size_t elemsize,
 		const std::vector<tokenizer::Position>& pos,
@@ -478,15 +226,9 @@ static void normalize(
 
 	for (; pi != pe; ++pi)
 	{
-		std::string valstr;
-		if (feat.normalizer())
-		{
-			valstr = feat.normalizer()->normalize( normctx, elem + pi->pos, pi->size);
-		}
-		else
-		{
-			valstr = std::string( elem + pi->pos, pi->size);
-		}
+		std::string valstr(
+			feat.normalizer()->normalize( normctx, elem + pi->pos, pi->size));
+
 		switch (feat.featureClass())
 		{
 			case Analyzer::DocumentParser::FeatMetaData:
@@ -529,6 +271,7 @@ struct Chunk
 	std::string content;
 };
 
+
 analyzer::Document Analyzer::analyze( const std::string& content) const
 {
 	analyzer::Document rt;
@@ -542,20 +285,19 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 	DocumentParser::Context ctx( *m_parser);
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (scanner.getNext( elem, elemsize, featidx))
+	while (m_segmenter->getNext( featidx, curr_position, elem, elemsize))
 	{
 		try
 		{
 			curr_position = scanner.position();
-			const Analyzer::DocumentParser::FeatureDef& feat
-				= m_parser->featureDef( featidx);
-			NormalizerInterface::Context* normctx
-				= ctx.normalizerContext( featidx);
+			const Analyzer::DocumentParser::FeatureConfig& feat
+				= m_parser->featureConfig( featidx);
+			TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
+			NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
 	
-			if (feat.tokenizer() && feat.tokenizer()->concatBeforeTokenize())
+			if (feat.tokenizer()->concatBeforeTokenize())
 			{
-				ConcatenatedMap::iterator ci
-					= concatenatedMap.find( featidx);
+				ConcatenatedMap::iterator ci = concatenatedMap.find( featidx);
 				if (ci == concatenatedMap.end())
 				{
 					concatenatedMap[ featidx]
@@ -565,17 +307,19 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 				else
 				{
 					Chunk& cm = concatenatedMap[ featidx];
-					std::size_t newlen
-						= curr_position - cm.position;
+					std::size_t newlen = curr_position - cm.position;
 					cm.content.resize( newlen, ' ');
 					cm.content.append( elem, elemsize);
 				}
 				continue;
 			}
-			std::vector<tokenizer::Position>
-				pos = feat.tokenize( elem, elemsize);
-			
-			normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
+			else
+			{
+				std::vector<tokenizer::Position>
+					pos = feat.tokenize( tokctx, elem, elemsize);
+
+				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
+			}
 		}
 		catch (const std::runtime_error& err)
 		{
@@ -588,19 +332,19 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 
 	for (; ci != ce; ++ci)
 	{
-		curr_position = ci->second.position;
-		const Analyzer::DocumentParser::FeatureDef& feat
-			= m_parser->featureDef( ci->first);
-		NormalizerInterface::Context* normctx
-			= ctx.normalizerContext( featidx);
+		const Analyzer::DocumentParser::FeatureConfig&
+			feat = m_parser->FeatureConfig( ci->first);
+		TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
+		NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
 
 		std::vector<tokenizer::Position>
 			pos = feat.tokenize(
+				tokctx,
 				ci->second.content.c_str(),
 				ci->second.content.size());
 
 		normalize( rt, normctx, feat, ci->second.content.c_str(),
-				ci->second.content.size(), pos, curr_position);
+				ci->second.content.size(), pos, ci->second.position);
 	}
 	std::vector<analyzer::Term> sterms;
 	std::vector<analyzer::Term> fterms;
@@ -609,8 +353,17 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 	return analyzer::Document( rt.metadata(), rt.attributes(), sterms, fterms);
 }
 
-void Analyzer::print( std::ostream& out) const
+
+std::vector<Term> Analyzer::analyzeTextChunk(
+		const std::string& tokenizer,
+		const std::string& normalizer,
+		const std::string& content) const
 {
-	m_parser->print( out);
+	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer);
+	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer);
+
+	boost::scoped_ptr<TokenizerInterface::Context> tokctx( tk->createContext());
+	boost::scoped_ptr<NormalizerInterface::Context> normctx( ctx.normalizerContext( featidx));
 }
+
 

@@ -153,37 +153,57 @@ class TokenMinerFactoryImpl
 	:public TokenMinerFactory
 {
 public:
-	TokenMinerFactoryImpl( const std::string&){}
+	TokenMinerFactoryImpl()
+	{
+		init();
+	}
+
+	virtual void define( const std::string& name, const TokenMiner* tokenMiner)
+	{
+		m_map[ boost::algorithm::to_lower_copy( name)] = tokenMiner;
+	}
 
 	virtual const TokenMiner* get( const std::string& name) const
 	{
-		if (boost::iequals( name, "stem_de")) return &stem_de;
-		else if (boost::iequals( name, "stem_dk")) return &stem_dk;
-		else if (boost::iequals( name, "stem_nl")) return &stem_nl;
-		else if (boost::iequals( name, "stem_en")) return &stem_en;
-		else if (boost::iequals( name, "stem_fi")) return &stem_fi;
-		else if (boost::iequals( name, "stem_fr")) return &stem_fr;
-		else if (boost::iequals( name, "stem_hu")) return &stem_hu;
-		else if (boost::iequals( name, "stem_it")) return &stem_it;
-		else if (boost::iequals( name, "stem_no")) return &stem_no;
-		else if (boost::iequals( name, "stem_ro")) return &stem_ro;
-		else if (boost::iequals( name, "stem_ru")) return &stem_ru;
-		else if (boost::iequals( name, "stem_pt")) return &stem_pt;
-		else if (boost::iequals( name, "stem_es")) return &stem_es;
-		else if (boost::iequals( name, "stem_se")) return &stem_se;
-		else if (boost::iequals( name, "stem_tr")) return &stem_tr;
-		else if (boost::iequals( name, "origword")) return &origword;
-		else if (boost::iequals( name, "origcontent")) return &origcontent;
-		else if (boost::iequals( name, "punctuation_de")) return &punctuation_de;
-		else if (boost::iequals( name, "empty")) return &emptyword;
-		return 0;
+		std::map<std::string,const TokenMiner*>::const_iterator
+			mi = m_map.find( boost::algorithm::to_lower_copy( name));
+		if (mi == m_map.end()) return 0;
+		return mi->second;
 	}
+
+private:
+	void init()
+	{
+		define( "stem_de", &stem_de);
+		define( "stem_dk", &stem_dk);
+		define( "stem_nl", &stem_nl);
+		define( "stem_en", &stem_en);
+		define( "stem_fi", &stem_fi);
+		define( "stem_fr", &stem_fr);
+		define( "stem_hu", &stem_hu);
+		define( "stem_it", &stem_it);
+		define( "stem_no", &stem_no);
+		define( "stem_ro", &stem_ro);
+		define( "stem_ru", &stem_ru);
+		define( "stem_pt", &stem_pt);
+		define( "stem_es", &stem_es);
+		define( "stem_se", &stem_se);
+		define( "stem_tr", &stem_tr);
+		define( "origword", &origword);
+		define( "origcontent", &origcontent);
+		define( "punctuation_de", &punctuation_de);
+		define( "empty", &emptyword);
+	}
+
+private:
+	std::map<std::string,const TokenMiner*> m_map;
 };
 
+
 DLL_PUBLIC strus::TokenMinerFactory*
-	strus::createTokenMinerFactory( const std::string& source)
+	strus::createTokenMinerFactory()
 {
-	return new TokenMinerFactoryImpl( source);
+	return new TokenMinerFactoryImpl();
 }
 
 

@@ -33,16 +33,35 @@
 namespace strus
 {
 /// \brief Forward declaration
-class TokenMiner;
+class NormalizerInterface;
+/// \brief Forward declaration
+class TokenizerInterface;
 
+/// \class TokenMinerFactory
+/// \brief Factory for tokenizers and normalizers, the units producing the tokens of document analysis
 class TokenMinerFactory
 {
 public:
+	/// \brief Desructor
 	virtual ~TokenMinerFactory(){}
 
-	/// \brief Get a const reference to a token miner object that implements the extraction of tokens from the document
-	/// \return the token miner reference
-	virtual const TokenMiner* get( const std::string& name) const=0;
+	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text chunk into tokens
+	/// \return the tokenizer reference
+	virtual const TokenizerInterface* getTokenizer( const std::string& name) const=0;
+
+	/// \brief Get a const reference to a normalizer object that implements the transformation of a token into a term string
+	/// \return the normalizer reference
+	virtual const NormalizerInterface* getNormalizer( const std::string& name) const=0;
+
+	/// \brief Define a tokenizer by name
+	/// \param[in] name name of the normalizer to define
+	/// \param[in] tokenizer a static const reference to a tokenizer object
+	virtual void defineTokenizer( const std::string& name, const TokenizerInterface* tokenizer)=0;
+
+	/// \brief Define a normalizer by name
+	/// \param[in] name name of the normalizer to define
+	/// \param[in] normalizer a static const reference to a normalizer object
+	virtual void defineNormalizer( const std::string& name, const NormalizerInterface* normalizer)=0;
 };
 
 }//namespace
