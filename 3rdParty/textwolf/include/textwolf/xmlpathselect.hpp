@@ -116,9 +116,26 @@ private:
 			return m_ar[ idx];
 		}
 
+		/// \brief Access element by index
+		/// \param [in] idx index of the element starting with 0
+		/// \return element reference
+		const Element& operator[]( std::size_t idx) const
+		{
+			if (idx >= m_size) throw exception( ArrayBoundsReadWrite);
+			return m_ar[ idx];
+		}
+
 		/// \brief Get a reference of the element at the end of the array
 		/// \return element reference
 		Element& back()
+		{
+			if (m_size == 0) throw exception( ArrayBoundsReadWrite);
+			return m_ar[ m_size-1];
+		}
+
+		/// \brief Get a reference of the element at the end of the array
+		/// \return element reference
+		const Element& back() const
 		{
 			if (m_size == 0) throw exception( ArrayBoundsReadWrite);
 			return m_ar[ m_size-1];
@@ -131,7 +148,11 @@ private:
 			if (p_size > m_size) throw exception( ArrayBoundsReadWrite);
 			m_size = p_size;
 		}
+
+		/// \brief Get the number of elements in the array
 		std::size_t size() const  {return m_size;}
+
+		/// \brief Check if the array is empty
 		bool empty() const			{return m_size==0;}
 	};
 
@@ -364,6 +385,38 @@ private:
 			context.keysize = 0;
 		}
 		return type;
+	}
+
+public:
+	/// \brief Get the next states states that match to an element of a type
+	/// \tparam Buffer buffer type for the result (back insertion sequence)
+	/// \param[in] type element type to check
+	/// \param[out] buf where to append the result to
+	/// \remark This function works only if called after iterating through the result with the iterator created with XMLPathSelect::push(..)
+	/// \note This function is a helper function for inspecting follow states that match a given type with an arbitrary value
+	template <class Buffer>
+	void getTokenTypeMatchingStates( XMLScannerBase::ElementType type, bool withFollows, Buffer& buf) const
+	{
+		unsigned int ti = context.scope.range.tokenidx_to, te = tokens.size();
+		for (; ti<te; ++ti)
+		{
+			const Token& tk = tokens[ (std::size_t)ti];
+			if (tk.core.mask.matches( type))
+			{
+				buf.push_back( tokens[ti].stateidx);
+			}
+		}
+		if (withFollows)
+		{
+			ti=0; te = context.scope.range.followidx;
+			for (; ti<te; ++ti)
+			{
+				if (tokens[ follows[ ti]].core.mask.matches( type))
+				{
+					buf.push_back( tokens[ follows[ ti]].stateidx);
+				}
+			}
+		}
 	}
 
 public:

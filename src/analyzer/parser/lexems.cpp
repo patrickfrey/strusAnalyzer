@@ -35,6 +35,8 @@
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
+#error DEPRECATED
+
 using namespace strus;
 using namespace strus::parser;
 

@@ -158,7 +158,7 @@ public:
 		return true;
 	}
 
-	virtual std::vector<Position> tokenize( const char* src, std::size_t srcsize) const
+	virtual std::vector<Position> tokenize( Context*, const char* src, std::size_t srcsize) const
 	{
 		std::vector<Position> rt;
 

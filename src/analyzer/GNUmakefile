@@ -2,8 +2,8 @@ TOPDIR=../..
 include $(TOPDIR)/variables.mk
 
 CPP_OBJS=\
-	parser/lexems.o \
-	analyzer.o \
+	documentAnalyzer.o \
+	queryAnalyzer.o \
 	analyzerLib.o
 
 CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I.

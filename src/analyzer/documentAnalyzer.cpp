@@ -26,79 +26,70 @@
 
 --------------------------------------------------------------------
 */
-#include "analyzer.hpp"
+#include "documentAnalyzer.hpp"
 #include "strus/tokenMinerLib.hpp"
 #include "strus/tokenMiner.hpp"
 #include "strus/tokenMinerFactory.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/segmenterInstanceInterface.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
-#include <iostream>
-#include <sstream>
 #include <set>
+#include <map>
 
 using namespace strus;
 
-Analyzer(
-		const TokenMinerFactory* tokenMinerFactory,
+DocumentAnalyzer::DocumentAnalyzer(
+		const TokenMinerFactory* tokenMinerFactory_,
 		SegmenterInterface* segmenter_)
 	:m_tokenMinerFactory(tokenMinerFactory_),m_segmenter(segmenter_){}
 
 
-std::vector<tokenizer::Position>
-	Analyzer::FeatureConfig::tokenize( const char* elem, std::size_t elemsize) const
-{
-	std::vector<tokenizer::Position> pos;
-	if (tokenizer())
-	{
-		pos = tokenizer()->tokenize( elem, elemsize);
-	}
-	else
-	{
-		pos.push_back( tokenizer::Position( 0, elemsize));
-	}
-	return pos;
-}
-
-void Analyzer::addExpression(
+void DocumentAnalyzer::addExpression(
 	const std::string& name,
 	const std::string& expression,
 	const TokenizerInterface* tokenizer,
+	const std::string& tokenizerarg,
 	const NormalizerInterface* normalizer,
+	const std::string& normalizerarg,
 	FeatureClass featureClass)
 {
-	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizer, featureClass));
+	m_featurear.push_back( FeatureConfig( name, tokenizer, tokenizerarg, normalizer, normalizerarg, featureClass));
 	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
 }
 
-const FeatureConfig& Analyzer::featureConfig( int featidx) const
+const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
 	{
 		throw std::runtime_error( "internal: unknown index of feature");
 	}
-	return m_featurear[ idx-1];
+	return m_featurear[ featidx-1];
 }
 
-void Analyzer::defineFeature(
+void DocumentAnalyzer::defineFeature(
 	FeatureClass featureClass,
 	const std::string& name,
 	const std::string& expression,
-	const std::string& tokenizer,
-	const std::string& normalizer)
+	const TokenizerConfig& tokenizer,
+	const NormalizerConfig& normalizer)
 {
-	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer);
-	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer);
-	addExpression( name, expression, tk, nm, featureClass);
+	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer.name());
+	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer.name());
+	addExpression(
+		name, expression,
+		tk, tokenizer.argument(),
+		nm, normalizer.argument(),
+		featureClass);
 }
 
 class ParserContext
 {
 public:
-	ParserContext( const std::vector<FeatureConfig>& config)
+	ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config)
 	{
 		try
 		{
@@ -114,12 +105,12 @@ public:
 				throw std::bad_alloc();
 			}
 	
-			std::vector<FeatureConfig>::const_iterator
+			std::vector<DocumentAnalyzer::FeatureConfig>::const_iterator
 				ci = config.begin(), ce = config.end();
-			for (std::size_t fidx=0; fi != fe; ++fi,++fidx)
+			for (std::size_t cidx=0; ci != ce; ++ci,++cidx)
 			{
-				m_tokenizerContextAr[ fidx] = fi->tokenizer()->createContext();
-				m_normalizerContextAr[ fidx] = fi->normalizer()->createContext();
+				m_tokenizerContextAr[ cidx] = ci->tokenizer()->createContext( ci->tokenizerarg());
+				m_normalizerContextAr[ cidx] = ci->normalizer()->createContext( ci->normalizerarg());
 			}
 		}
 		catch (const std::bad_alloc& err)
@@ -163,7 +154,7 @@ public:
 		return m_normalizerContextAr[ featidx-1];
 	}
 
-	NormalizerInterface::Context* tokenizerContext( int featidx)
+	TokenizerInterface::Context* tokenizerContext( int featidx)
 	{
 		if (featidx <= 0 || (std::size_t)featidx > m_size)
 		{
@@ -215,7 +206,7 @@ static void mapPositions( const std::vector<analyzer::Term>& ar1, std::vector<an
 static void normalize(
 		analyzer::Document& res,
 		NormalizerInterface::Context* normctx,
-		const Analyzer::FeatureConfig& feat,
+		const DocumentAnalyzer::FeatureConfig& feat,
 		const char* elem,
 		std::size_t elemsize,
 		const std::vector<tokenizer::Position>& pos,
@@ -231,23 +222,23 @@ static void normalize(
 
 		switch (feat.featureClass())
 		{
-			case Analyzer::DocumentParser::FeatMetaData:
+			case DocumentAnalyzer::FeatMetaData:
 			{
 				res.addMetaData( feat.name(), valstr);
 				break;
 			}
-			case Analyzer::DocumentParser::FeatAttribute:
+			case DocumentAnalyzer::FeatAttribute:
 			{
 				res.addAttribute( feat.name(), valstr);
 				break;
 			}
-			case Analyzer::DocumentParser::FeatSearchIndexTerm:
+			case DocumentAnalyzer::FeatSearchIndexTerm:
 			{
 				res.addSearchIndexTerm(
 					feat.name(), valstr, curr_position + pi->pos);
 				break;
 			}
-			case Analyzer::DocumentParser::FeatForwardIndexTerm:
+			case DocumentAnalyzer::FeatForwardIndexTerm:
 			{
 				res.addForwardIndexTerm(
 					feat.name(), valstr, curr_position + pi->pos);
@@ -272,29 +263,28 @@ struct Chunk
 };
 
 
-analyzer::Document Analyzer::analyze( const std::string& content) const
+analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 {
 	analyzer::Document rt;
-	DocumentParser::Instance scanner( content.c_str(), m_parser->automaton());
+	boost::scoped_ptr<SegmenterInstanceInterface>
+		segmenter( m_segmenter->createInstance( content));
 	const char* elem = 0;
 	std::size_t elemsize = 0;
 	int featidx = 0;
 	std::size_t curr_position = 0;
 	typedef std::map<int,Chunk> ConcatenatedMap;
 	ConcatenatedMap concatenatedMap;
-	DocumentParser::Context ctx( *m_parser);
+	ParserContext ctx( m_featurear);
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (m_segmenter->getNext( featidx, curr_position, elem, elemsize))
+	while (segmenter->getNext( featidx, curr_position, elem, elemsize))
 	{
 		try
 		{
-			curr_position = scanner.position();
-			const Analyzer::DocumentParser::FeatureConfig& feat
-				= m_parser->featureConfig( featidx);
+			const DocumentAnalyzer::FeatureConfig& feat = featureConfig( featidx);
 			TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
 			NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
-	
+
 			if (feat.tokenizer()->concatBeforeTokenize())
 			{
 				ConcatenatedMap::iterator ci = concatenatedMap.find( featidx);
@@ -316,7 +306,7 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 			else
 			{
 				std::vector<tokenizer::Position>
-					pos = feat.tokenize( tokctx, elem, elemsize);
+					pos = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
 
 				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
 			}
@@ -332,13 +322,12 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 
 	for (; ci != ce; ++ci)
 	{
-		const Analyzer::DocumentParser::FeatureConfig&
-			feat = m_parser->FeatureConfig( ci->first);
+		const DocumentAnalyzer::FeatureConfig& feat = featureConfig( ci->first);
 		TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
 		NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
 
 		std::vector<tokenizer::Position>
-			pos = feat.tokenize(
+			pos = feat.tokenizer()->tokenize(
 				tokctx,
 				ci->second.content.c_str(),
 				ci->second.content.size());
@@ -351,19 +340,6 @@ analyzer::Document Analyzer::analyze( const std::string& content) const
 	mapPositions( rt.searchIndexTerms(), sterms, rt.forwardIndexTerms(), fterms);
 
 	return analyzer::Document( rt.metadata(), rt.attributes(), sterms, fterms);
-}
-
-
-std::vector<Term> Analyzer::analyzeTextChunk(
-		const std::string& tokenizer,
-		const std::string& normalizer,
-		const std::string& content) const
-{
-	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer);
-	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer);
-
-	boost::scoped_ptr<TokenizerInterface::Context> tokctx( tk->createContext());
-	boost::scoped_ptr<NormalizerInterface::Context> normctx( ctx.normalizerContext( featidx));
 }
 
 

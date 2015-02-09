@@ -34,7 +34,9 @@
 namespace strus {
 
 /// \brief Forward declaration
-class AnalyzerInterface;
+class DocumentAnalyzerInterface;
+/// \brief Forward declaration
+class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class TokenMinerFactory;
 /// \brief Forward declaration
@@ -44,10 +46,17 @@ class SegmenterInterface;
 /// \param[in] tokenMinerFactory static const reference to a token miner factory. It defines the set of token type definitions that can be used in the program.
 /// \param[in] segmenter empty segmenter instance to be used by the created analyzer (ownership transferred).
 /// \return the analyzer program reference to be disposed with delete by the caller
-AnalyzerInterface*
-	createAnalyzer(
+DocumentAnalyzerInterface*
+	createDocumentAnalyzer(
 		const TokenMinerFactory* tokenMinerFactory,
 		SegmenterInterface* segmenter);
+
+/// \brief Creates an analyzer program for analyzing a query
+/// \param[in] tokenMinerFactory static const reference to a token miner factory. It defines the set of token type definitions that can be used in the program.
+/// \return the analyzer program reference to be disposed with delete by the caller
+QueryAnalyzerInterface*
+	createQueryAnalyzer(
+		const TokenMinerFactory* tokenMinerFactory);
 
 }//namespace
 #endif

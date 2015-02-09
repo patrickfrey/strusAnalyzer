@@ -30,6 +30,7 @@
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
+#include <map>
 
 namespace strus
 {
@@ -43,11 +44,14 @@ public:
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 
-	virtual SegmenterInstanceInterface* createInstance( const char* source);
+	virtual SegmenterInstanceInterface* createInstance( const std::string& source) const;
+
+	virtual SelectorType getSelectorType( int id) const;
 
 private:
 	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	Automaton m_automaton;
+	std::map<int,SelectorType> m_selectorTypeMap;
 };
 
 }//namespace

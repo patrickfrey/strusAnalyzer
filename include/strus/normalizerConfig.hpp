@@ -26,34 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/analyzerLib.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
-#include "strus/segmenterInterface.hpp"
-#include "documentAnalyzer.hpp"
-#include "queryAnalyzer.hpp"
-#include "dll_tags.hpp"
+#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
+#include <string>
 
-using namespace strus;
+namespace strus {
 
-
-DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory,
-		SegmenterInterface* segmenter)
+class NormalizerConfig
 {
-	return new DocumentAnalyzer( tokenMinerFactory, segmenter);
-}
+public:
+	NormalizerConfig( const NormalizerConfig& o)
+		:m_name(o.m_name),m_argument(o.m_argument){}
+	NormalizerConfig( const std::string& name_, const std::string& argument_)
+		:m_name(name_),m_argument(argument_){}
+	/*implicit*/ NormalizerConfig( const std::string& name_)
+		:m_name(name_),m_argument(){}
 
+	const std::string& name() const		{return m_name;}
+	const std::string& argument() const	{return m_argument;}
 
-DLL_PUBLIC QueryAnalyzerInterface*
-	strus::createQueryAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory)
-{
-	return new QueryAnalyzer( tokenMinerFactory);
-}
+private:
+	std::string m_name;
+	std::string m_argument;
+};
 
-
-
-
+}//namespace
+#endif
 

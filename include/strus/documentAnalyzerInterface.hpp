@@ -26,24 +26,26 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
+#include "strus/normalizerConfig.hpp"
+#include "strus/tokenizerConfig.hpp"
 #include <vector>
 #include <string>
 
 namespace strus
 {
 
-/// \brief Defines a program for analyzing a source text, splitting it into normalized terms that can be fed to the strus IR engine
-class AnalyzerInterface
+/// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
+class DocumentAnalyzerInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~AnalyzerInterface(){}
+	virtual ~DocumentAnalyzerInterface(){}
 
 	/// \brief Declare a feature to be put into the search index
 	/// \param[in] type type name of the feature
@@ -53,8 +55,8 @@ public:
 	virtual void defineSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)=0;
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)=0;
 
 	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
 	/// \param[in] type type name of the feature
@@ -64,8 +66,8 @@ public:
 	virtual void defineForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)=0;
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
 	/// \param[in] fieldname name of the field in the meta data table this feature is written to
@@ -76,8 +78,8 @@ public:
 	virtual void defineMetaDataFeature(
 			const std::string& fieldname,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)=0;
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)=0;
 
 	/// \brief Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)
 	/// \param[in] attribname name of the document attribute this feature is written as.
@@ -88,22 +90,12 @@ public:
 	virtual void defineAttributeFeature(
 			const std::string& attribname,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)=0;
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)=0;
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
-	virtual analyzer::Document analyzeDocument(
-			const std::string& content) const=0;
-
-	/// \brief Analyze a single chunk of text without segmentation (no document format, just a chunk of text)
-	/// \param[in] tokenizer selects a tokenizer by name describing how the content is tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	/// \param[in] content string to analyze
-	/// \note This function is thought to be used for query anaylsis, where a query language determines the tokenization and normalization of the query parts
-	virtual std::vector<Term> analyzeTextChunk(
-			const std::string& tokenizer,
-			const std::string& normalizer,
+	virtual analyzer::Document analyze(
 			const std::string& content) const=0;
 };
 

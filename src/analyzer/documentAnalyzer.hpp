@@ -26,9 +26,9 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_HPP_INCLUDED
-#define _STRUS_ANALYZER_HPP_INCLUDED
-#include "strus/analyzerInterface.hpp"
+#ifndef _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
+#define _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
+#include "strus/documentAnalyzerInterface.hpp"
 #include "strus/reference.hpp"
 #include <vector>
 #include <string>
@@ -47,22 +47,22 @@ class NormalizerInterface;
 /// \brief Forward declaration
 class TokenizerInterface;
 
-/// \brief Analyzer implementation based on textwolf
-class Analyzer
-	:public AnalyzerInterface
+/// \brief Document analyzer implementation
+class DocumentAnalyzer
+	:public DocumentAnalyzerInterface
 {
 public:
-	Analyzer(
+	DocumentAnalyzer(
 			const TokenMinerFactory* tokenMinerFactory,
 			SegmenterInterface* segmenter_);
 
-	virtual ~Analyzer();
+	virtual ~DocumentAnalyzer();
 
 	virtual void defineSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)
 	{
 		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer);
 	}
@@ -70,8 +70,8 @@ public:
 	virtual void defineForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)
 	{
 		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer);
 	}
@@ -79,31 +79,26 @@ public:
 	virtual void defineMetaDataFeature(
 			const std::string& fieldname,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)
 	{
-		defineFeature( FeatMetaData, type, selectexpr, tokenizer, normalizer);
+		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer);
 	}
 
 	virtual void defineAttributeFeature(
 			const std::string& attribname,
 			const std::string& selectexpr,
-			const std::string& tokenizer,
-			const std::string& normalizer)
+			const TokenizerConfig& tokenizer,
+			const NormalizerConfig& normalizer)
 	{
-		defineFeature( FeatAttribute, type, selectexpr, tokenizer, normalizer);
+		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer);
 	}
 
 
-	virtual analyzer::Document analyzeDocument(
+	virtual analyzer::Document analyze(
 			const std::string& content) const;
 
-	virtual std::vector<Term> analyzeTextChunk(
-			const std::string& tokenizer,
-			const std::string& normalizer,
-			const std::string& content) const;
-
-private:
+public:
 	enum FeatureClass
 	{
 		FeatMetaData,
@@ -122,41 +117,57 @@ private:
 	public:
 		FeatureConfig( const std::string& name_,
 				const TokenizerInterface* tokenizer_,
+				const std::string& tokenizerarg_,
 				const NormalizerInterface* normalizer_,
+				const std::string& normalizerarg_,
 				FeatureClass featureClass_)
 			:m_name(name_)
 			,m_tokenizer(tokenizer_)
+			,m_tokenizerarg(tokenizerarg_)
 			,m_normalizer(normalizer_)
+			,m_normalizerarg(normalizerarg_)
 			,m_featureClass(featureClass_){}
+
+		FeatureConfig( const FeatureConfig& o)
+			:m_name(o.m_name)
+			,m_tokenizer(o.m_tokenizer)
+			,m_tokenizerarg(o.m_tokenizerarg)
+			,m_normalizer(o.m_normalizer)
+			,m_normalizerarg(o.m_normalizerarg)
+			,m_featureClass(o.m_featureClass){}
 	
 		const std::string& name() const			{return m_name;}
 		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
+		const std::string& tokenizerarg() const		{return m_tokenizerarg;}
 		const NormalizerInterface* normalizer() const	{return m_normalizer;}
+		const std::string& normalizerarg() const	{return m_normalizerarg;}
 		FeatureClass featureClass() const		{return m_featureClass;}
-
-		std::vector<tokenizer::Position>
-			tokenize( const char* elem, std::size_t elemsize) const;
 
 	private:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
+		std::string m_tokenizerarg;
 		const NormalizerInterface* m_normalizer;
+		std::string m_normalizerarg;
 		FeatureClass m_featureClass;
 	};
 
+private:
 	void addExpression(
 		const std::string& name,
 		const std::string& expression,
 		const TokenizerInterface* tokenizer,
+		const std::string& tokenizerarg,
 		const NormalizerInterface* normalizer,
+		const std::string& normalizerarg,
 		FeatureClass featureClass);
 
 	void defineFeature(
 		FeatureClass featureClass,
 		const std::string& name,
 		const std::string& expression,
-		const std::string& tokenizer,
-		const std::string& normalizer);
+		const TokenizerConfig& tokenizer,
+		const NormalizerConfig& normalizer);
 
 	const FeatureConfig& featureConfig( int featidx) const;
 
