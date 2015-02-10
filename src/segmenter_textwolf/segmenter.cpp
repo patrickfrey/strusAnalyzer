@@ -106,6 +106,7 @@ static void updateSelectorTypeMap(
 		if (si != se && *si == '@')
 		{
 			// Handle attribute selection at the end of the expression:
+			++si;
 			skipSpaces( si, se);
 			for (; si != se && isTagNameChar(*si); ++si){}
 			if (si == se)
@@ -116,9 +117,11 @@ static void updateSelectorTypeMap(
 		}
 		if (si != se && *si == '(')
 		{
+			++si;
 			skipSpaces( si, se);
 			if (si != se && *si == ')')
 			{
+				++si;
 				skipSpaces( si, se);
 				if (si == se)
 				{
@@ -127,6 +130,7 @@ static void updateSelectorTypeMap(
 			}
 			continue;
 		}
+		throw std::runtime_error( std::string( "error in path expression at '") + si + "' (expression '" + expression + "')");
 	}
 	switch (expressionClass)
 	{

@@ -57,6 +57,11 @@ public:
 		AnnotationSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
 		AnnotationPredecessor		///< An element in the document that gets the position of the preceding content element assigned
 	};
+	static const char* selectorTypeName( SelectorType t)
+	{
+		static const char* ar[] = {"Content","AnnotationSuccessor","AnnotationPredecessor"};
+		return ar[t];
+	}
 
 	/// \brief Evaluate the selector type of a feature defined by id
 	/// \param[in] id id of the selector as assigned with defineSelectorExpression(int,const std::string&)
