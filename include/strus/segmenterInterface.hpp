@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_INTERFACE_HPP_INCLUDED
-#define _STRUS_SEGMENTER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #include <utility>
 #include <string>
 

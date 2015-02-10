@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_NORMALIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_NORMALIZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 

@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
 #include "strus/normalizerConfig.hpp"
 #include "strus/tokenizerConfig.hpp"

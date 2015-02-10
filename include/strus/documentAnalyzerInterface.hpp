@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"

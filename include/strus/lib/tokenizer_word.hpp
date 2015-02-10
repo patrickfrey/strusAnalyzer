@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_WORD_HPP_INCLUDED
-#define _STRUS_TOKENIZER_WORD_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
 #include "strus/tokenizerInterface.hpp"
 
 namespace strus

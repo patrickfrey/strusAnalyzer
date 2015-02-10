@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_TOKENIZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
 #include "strus/tokenizer/token.hpp"
 #include <vector>
 #include <string>

@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #include <string>
 
 namespace strus

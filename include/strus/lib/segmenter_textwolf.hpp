@@ -27,8 +27,8 @@
 --------------------------------------------------------------------
 */
 /// \brief Exported functions of the strus segmenter library
-#ifndef _STRUS_SEGMENTER_LIB_HPP_INCLUDED
-#define _STRUS_SEGMENTER_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_SEGMENTER_TEXTWOLF_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_SEGMENTER_TEXTWOLF_LIB_HPP_INCLUDED
 #include <string>
 
 namespace strus {

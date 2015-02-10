@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
-#define _STRUS_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
 #include "strus/normalizerInterface.hpp"
 
 namespace strus
