@@ -26,29 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_HPP_INCLUDED
+#define _STRUS_ANALYZER_TEXT_PROCESSOR_HPP_INCLUDED
+#include "strus/textProcessorInterface.hpp"
+#include <map>
 
 namespace strus {
 
-class NormalizerConfig
+class TextProcessor
+	:public TextProcessorInterface
 {
 public:
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name),m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	/*implicit*/ NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
+	TextProcessor();
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
+	virtual const TokenizerInterface* getTokenizer( const std::string& name) const;
+
+	virtual const NormalizerInterface* getNormalizer( const std::string& name) const;
+
+	virtual void defineTokenizer( const std::string& name, const TokenizerInterface* tokenizer);
+
+	virtual void defineNormalizer( const std::string& name, const NormalizerInterface* normalizer);
 
 private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
+	std::map<std::string,const TokenizerInterface*> m_tokenizer_map;
+	std::map<std::string,const NormalizerInterface*> m_normalizer_map;
 };
 
 }//namespace

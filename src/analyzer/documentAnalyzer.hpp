@@ -29,23 +29,19 @@
 #ifndef _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #include "strus/documentAnalyzerInterface.hpp"
-#include "strus/reference.hpp"
+#include "strus/normalizerInterface.hpp"
+#include "strus/tokenizerInterface.hpp"
 #include <vector>
 #include <string>
 #include <utility>
-#include <iostream>
-#include <sstream>
+#include <boost/shared_ptr.hpp>
 
 namespace strus
 {
 /// \brief Forward declaration
-class TokenMinerFactory;
+class TextProcessorInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
-/// \brief Forward declaration
-class NormalizerInterface;
-/// \brief Forward declaration
-class TokenizerInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
@@ -53,7 +49,7 @@ class DocumentAnalyzer
 {
 public:
 	DocumentAnalyzer(
-			const TokenMinerFactory* tokenMinerFactory,
+			const TextProcessorInterface* textProcessor_,
 			SegmenterInterface* segmenter_);
 
 	virtual ~DocumentAnalyzer();
@@ -117,9 +113,9 @@ public:
 	public:
 		FeatureConfig( const std::string& name_,
 				const TokenizerInterface* tokenizer_,
-				const std::string& tokenizerarg_,
+				const boost::shared_ptr<TokenizerInterface::Argument>& tokenizerarg_,
 				const NormalizerInterface* normalizer_,
-				const std::string& normalizerarg_,
+				const boost::shared_ptr<NormalizerInterface::Argument>& normalizerarg_,
 				FeatureClass featureClass_)
 			:m_name(name_)
 			,m_tokenizer(tokenizer_)
@@ -137,31 +133,22 @@ public:
 			,m_featureClass(o.m_featureClass){}
 	
 		const std::string& name() const			{return m_name;}
-		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
-		const std::string& tokenizerarg() const		{return m_tokenizerarg;}
-		const NormalizerInterface* normalizer() const	{return m_normalizer;}
-		const std::string& normalizerarg() const	{return m_normalizerarg;}
-		FeatureClass featureClass() const		{return m_featureClass;}
+		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
+		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
+		const NormalizerInterface* normalizer() const			{return m_normalizer;}
+		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
+		FeatureClass featureClass() const				{return m_featureClass;}
 
 	private:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
-		std::string m_tokenizerarg;
+		boost::shared_ptr<TokenizerInterface::Argument> m_tokenizerarg;
 		const NormalizerInterface* m_normalizer;
-		std::string m_normalizerarg;
+		boost::shared_ptr<NormalizerInterface::Argument> m_normalizerarg;
 		FeatureClass m_featureClass;
 	};
 
 private:
-	void addExpression(
-		const std::string& name,
-		const std::string& expression,
-		const TokenizerInterface* tokenizer,
-		const std::string& tokenizerarg,
-		const NormalizerInterface* normalizer,
-		const std::string& normalizerarg,
-		FeatureClass featureClass);
-
 	void defineFeature(
 		FeatureClass featureClass,
 		const std::string& name,
@@ -172,8 +159,8 @@ private:
 	const FeatureConfig& featureConfig( int featidx) const;
 
 private:
-	const TokenMinerFactory* m_tokenMinerFactory;
-	Reference<SegmenterInterface> m_segmenter;
+	const TextProcessorInterface* m_textProcessor;
+	boost::shared_ptr<SegmenterInterface> m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 };
 

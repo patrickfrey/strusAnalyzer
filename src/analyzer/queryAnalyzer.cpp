@@ -27,9 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "queryAnalyzer.hpp"
-#include "strus/tokenMinerLib.hpp"
-#include "strus/tokenMiner.hpp"
-#include "strus/tokenMinerFactory.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include <boost/algorithm/string.hpp>
@@ -41,8 +39,8 @@
 using namespace strus;
 
 QueryAnalyzer::QueryAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory_)
-	:m_tokenMinerFactory(tokenMinerFactory_){}
+		const TextProcessorInterface* textProcessor_)
+	:m_textProcessor(textProcessor_){}
 
 
 void QueryAnalyzer::defineMethod(
@@ -51,10 +49,13 @@ void QueryAnalyzer::defineMethod(
 		const TokenizerConfig& tokenizer,
 		const NormalizerConfig& normalizer)
 {
-	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer.name());
-	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer.name());
+	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
+	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
+	boost::shared_ptr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
+	boost::shared_ptr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
+
 	m_featuremap[ boost::algorithm::to_lower_copy( method)]
-		= FeatureConfig( featureType, tk, tokenizer.argument(), nm, normalizer.argument());
+		= FeatureConfig( featureType, tk, tkarg, nm, nmarg);
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& type) const
@@ -76,9 +77,9 @@ std::vector<analyzer::Term> QueryAnalyzer::analyzeChunk(
 	const FeatureConfig& feat = featureConfig( method);
 	boost::scoped_ptr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
 	boost::scoped_ptr<NormalizerInterface::Context> normctx( feat.normalizer()->createContext( feat.normalizerarg()));
-	std::vector<tokenizer::Position>
+	std::vector<tokenizer::Token>
 		pos = feat.tokenizer()->tokenize( tokctx.get(), content.c_str(), content.size());
-	std::vector<tokenizer::Position>::const_iterator
+	std::vector<tokenizer::Token>::const_iterator
 		pi = pos.begin(), pe = pos.end();
 
 	if (pi == pe) return rt;

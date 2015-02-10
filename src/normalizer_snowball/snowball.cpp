@@ -31,25 +31,9 @@
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include <stdexcept>
+#include <boost/algorithm/string.hpp>
 
 using namespace strus;
-
-class StemContext
-	:public NormalizerInterface::Context
-{
-public:
-	StemContext( struct sb_stemmer* stemmer)
-		:m_stemmer(stemmer),m_env(sb_stemmer_create_env(stemmer)){}
-	virtual ~StemContext()
-	{
-		sb_stemmer_delete_env( m_stemmer, m_env);
-	}
-
-private:
-	friend class StemNormalizer;
-	struct sb_stemmer* m_stemmer;
-	struct SN_env* m_env;
-};
 
 class StemNormalizer
 	:public NormalizerInterface
@@ -58,27 +42,76 @@ public:
 	enum DiaType {DiaTypeUnknown, DiaTypeGerman};
 
 public:
-	explicit StemNormalizer( const char* language)
+	StemNormalizer(){}
+
+	class Argument
+		:public NormalizerInterface::Argument
 	{
-		m_stemmer = sb_stemmer_new_threadsafe( language, 0/*UTF-8 is default*/);
-		if (std::strcmp( language, "de") == 0)
+	public:
+		Argument( const std::string& language)
 		{
-			m_diatype = DiaTypeGerman;
+			std::string language_lo = boost::algorithm::to_lower_copy( language);
+			m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
+			if (!m_stemmer)
+			{
+				throw std::runtime_error( std::string( "unconfigured language '") + language + "' passed to snowball stemmer");
+			}
+			if (language_lo == "de")
+			{
+				m_diatype = DiaTypeGerman;
+			}
+			else
+			{
+				m_diatype = DiaTypeUnknown;
+			}
 		}
-		else
+
+		virtual ~Argument()
 		{
-			m_diatype = DiaTypeUnknown;
+			if (m_stemmer)
+			{
+				sb_stemmer_delete( m_stemmer);
+			}
 		}
-	}
-	~StemNormalizer()
+
+		struct sb_stemmer* m_stemmer;
+		DiaType m_diatype;
+	};
+
+	class Context
+		:public NormalizerInterface::Context
 	{
-		if (m_stemmer)
+	public:
+		explicit Context( const Argument* arg_)
+			:m_stemmer(arg_->m_stemmer)
+			,m_env(sb_stemmer_create_env( arg_->m_stemmer))
+			,m_diatype(arg_->m_diatype){}
+
+		virtual ~Context()
 		{
-			sb_stemmer_delete( m_stemmer);
+			sb_stemmer_delete_env( m_stemmer, m_env);
 		}
+
+		struct sb_stemmer* m_stemmer;
+		struct SN_env* m_env;
+		DiaType m_diatype;
+	};
+
+	virtual Argument* createArgument( const std::vector<std::string>& arg) const
+	{
+		if (arg.size() != 1)
+		{
+			throw std::runtime_error( "illegal number of arguments passed to snowball stemmer");
+		}
+		return new Argument( arg[0]);
 	}
 
-	std::string substDiaCriticalToLower( const std::string& src) const
+	virtual Context* createContext( const Argument* arg) const
+	{
+		return new Context( arg);
+	}
+
+	static std::string substDiaCriticalToLower( Context* ctx, const std::string& src)
 	{
 		std::string rt;
 		textwolf::charset::UTF8 utf8;
@@ -103,7 +136,7 @@ public:
 				}
 				else if (value == 0xC6)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "ae");
 					}
@@ -142,7 +175,7 @@ public:
 				}
 				else if (value == 0xD6)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "oe");
 					}
@@ -161,7 +194,7 @@ public:
 				}
 				else if (value == 0xDC)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "ue");
 					}
@@ -188,7 +221,7 @@ public:
 				}
 				else if (value == 0xE4)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "ae");
 					}
@@ -231,7 +264,7 @@ public:
 				}
 				else if (value == 0xF6)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "oe");
 					}
@@ -250,7 +283,7 @@ public:
 				}
 				else if (value == 0xFC)
 				{
-					if (m_diatype == DiaTypeGerman)
+					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "ue");
 					}
@@ -312,63 +345,14 @@ public:
 		return rt;
 	}
 
-	Context* createContext() const
+	virtual std::string normalize( Context* ctx, const char* src, std::size_t srcsize) const
 	{
-		return new StemContext( m_stemmer);
+		const sb_symbol* res
+			= sb_stemmer_stem_threadsafe( ctx->m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
+		if (!res) throw std::bad_alloc();
+		std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( ctx->m_env);
+
+		return substDiaCriticalToLower( ctx, std::string( (const char*)res, len));
 	}
-
-	virtual std::string normalize( Context* ctx_, const char* src, std::size_t srcsize) const
-	{
-		StemContext* ctx = reinterpret_cast<StemContext*>( ctx_);
-		if (m_stemmer)
-		{
-			const sb_symbol* res
-				= sb_stemmer_stem_threadsafe( m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
-			if (!res) throw std::bad_alloc();
-			std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( ctx->m_env);
-
-			return substDiaCriticalToLower( std::string( (const char*)res, len));
-		}
-		else
-		{
-			throw std::runtime_error( "stemmer for this language not defined");
-		}
-	}
-
-private:
-	struct sb_stemmer* m_stemmer;
-	DiaType m_diatype;
 };
-
-static const StemNormalizer stemNormalizer_dk("da");
-static const StemNormalizer stemNormalizer_nl("nl");
-static const StemNormalizer stemNormalizer_en("en");
-static const StemNormalizer stemNormalizer_fi("fi");
-static const StemNormalizer stemNormalizer_fr("fr");
-static const StemNormalizer stemNormalizer_hu("hu");
-static const StemNormalizer stemNormalizer_de("de");
-static const StemNormalizer stemNormalizer_it("it");
-static const StemNormalizer stemNormalizer_no("no");
-static const StemNormalizer stemNormalizer_ro("ro");
-static const StemNormalizer stemNormalizer_ru("ru");
-static const StemNormalizer stemNormalizer_pt("pt");
-static const StemNormalizer stemNormalizer_es("es");
-static const StemNormalizer stemNormalizer_se("sv");
-static const StemNormalizer stemNormalizer_tr("tr");
-
-const NormalizerInterface* strus::snowball_stemmer_de()	{return &stemNormalizer_de;}
-const NormalizerInterface* strus::snowball_stemmer_dk()	{return &stemNormalizer_dk;}
-const NormalizerInterface* strus::snowball_stemmer_nl()	{return &stemNormalizer_nl;}
-const NormalizerInterface* strus::snowball_stemmer_en()	{return &stemNormalizer_en;}
-const NormalizerInterface* strus::snowball_stemmer_fi()	{return &stemNormalizer_fi;}
-const NormalizerInterface* strus::snowball_stemmer_fr()	{return &stemNormalizer_fr;}
-const NormalizerInterface* strus::snowball_stemmer_hu()	{return &stemNormalizer_hu;}
-const NormalizerInterface* strus::snowball_stemmer_it()	{return &stemNormalizer_it;}
-const NormalizerInterface* strus::snowball_stemmer_no()	{return &stemNormalizer_no;}
-const NormalizerInterface* strus::snowball_stemmer_ro()	{return &stemNormalizer_ro;}
-const NormalizerInterface* strus::snowball_stemmer_ru()	{return &stemNormalizer_ru;}
-const NormalizerInterface* strus::snowball_stemmer_pt()	{return &stemNormalizer_pt;}
-const NormalizerInterface* strus::snowball_stemmer_es()	{return &stemNormalizer_es;}
-const NormalizerInterface* strus::snowball_stemmer_se()	{return &stemNormalizer_se;}
-const NormalizerInterface* strus::snowball_stemmer_tr()	{return &stemNormalizer_tr;}
 

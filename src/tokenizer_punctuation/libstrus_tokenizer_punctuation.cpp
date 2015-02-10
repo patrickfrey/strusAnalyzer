@@ -26,31 +26,14 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#include "strus/lib/tokenizer_punctuation.hpp"
+#include "punctuation.hpp"
+#include "dll_tags.hpp"
 
-namespace strus {
+using namespace strus;
 
-class NormalizerConfig
+DLL_PUBLIC const TokenizerInterface* getTokenizer_punctuation()
 {
-public:
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name),m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	/*implicit*/ NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
-
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
-
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
-};
-
-}//namespace
-#endif
+	return punctuationTokenizer();
+}
 

@@ -26,31 +26,38 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#include "strus/lib/textprocessor.hpp"
+#include "strus/lib/normalizer_snowball.hpp"
+#include "strus/lib/tokenizer_punctuation.hpp"
+#include "strus/lib/tokenizer_word.hpp"
+#include "textProcessor.hpp"
+#include "dll_tags.hpp"
+#include <stdexcept>
 
-namespace strus {
+using namespace strus;
 
-class NormalizerConfig
+DLL_PUBLIC strus::TextProcessorInterface*
+	strus::createTextProcessor()
 {
-public:
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name),m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	/*implicit*/ NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
+	TextProcessor* rt = new TextProcessor();
+	try
+	{
+		rt->defineNormalizer( "stem", getNormalizer_snowball());
+		rt->defineTokenizer( "punctuation", getTokenizer_punctuation());
+		rt->defineTokenizer( "word", getTokenizer_word());
+		rt->defineTokenizer( "split", getTokenizer_whitespace());
+		return rt;
+	}
+	catch (const std::runtime_error& err)
+	{
+		delete rt;
+		throw err;
+	}
+	catch (const std::bad_alloc& err)
+	{
+		delete rt;
+		throw err;
+	}
+}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
-
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
-};
-
-}//namespace
-#endif
 

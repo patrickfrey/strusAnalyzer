@@ -26,30 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#ifndef _STRUS_TOKENIZER_WORD_HPP_INCLUDED
+#define _STRUS_TOKENIZER_WORD_HPP_INCLUDED
+#include "strus/tokenizerInterface.hpp"
 
-namespace strus {
-
-class NormalizerConfig
+namespace strus
 {
-public:
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name),m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	/*implicit*/ NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
-
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
-};
+const TokenizerInterface* getTokenizer_word();
+const TokenizerInterface* getTokenizer_whitespace();
 
 }//namespace
 #endif

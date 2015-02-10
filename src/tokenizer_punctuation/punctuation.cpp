@@ -27,17 +27,35 @@
 --------------------------------------------------------------------
 */
 #include "punctuation.hpp"
-#include "chartable.hpp"
 #include "textwolf/textscanner.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "textwolf/charset.hpp"
 #include <cstring>
 #include <iostream>
+#include <boost/algorithm/string.hpp>
 
 using namespace strus;
 using namespace strus::tokenizer;
 
 #undef STRUS_LOWLEVEL_DEBUG
+
+class CharTable
+{
+public:
+	CharTable( const char* op)
+	{
+		std::size_t ii;
+		for (ii=0; ii<sizeof(m_ar); ++ii) m_ar[ii] = false;
+		for (ii=0; op[ii]; ++ii)
+		{
+			m_ar[(unsigned char)(op[ii])] = true;
+		}
+	}
+
+	bool operator[]( char ch) const		{return m_ar[ (unsigned char)ch];}
+private:
+	bool m_ar[256];
+};
 
 static const CharTable punctuation_char(":.;,!?()-");
 static const CharTable consonant_char("bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ");
@@ -72,11 +90,11 @@ static inline bool isUppercase( textwolf::UChar ch)
 	return (ch >= 'A' && ch <= 'Z') || ch == 0xc4 || ch == 0xd6 || ch == 0xdc;
 }
 
-class PunctuationTokenizer_de
+class PunctuationTokenizer
 	:public TokenizerInterface
 {
 public:
-	PunctuationTokenizer_de(){}
+	PunctuationTokenizer(){}
 
 	class CharWindow
 	{
@@ -158,9 +176,22 @@ public:
 		return true;
 	}
 
-	virtual std::vector<Position> tokenize( Context*, const char* src, std::size_t srcsize) const
+	Argument* createArgument( const std::vector<std::string>& arg) const
 	{
-		std::vector<Position> rt;
+		if (arg.size() != 1)
+		{
+			throw std::runtime_error("illegal number of arguments for punctuation tokenizer (language as single argument expected)");
+		}
+		if (boost::algorithm::iequals( arg[0], "de") || boost::algorithm::iequals( arg[0], "D"))
+		{
+			return 0;
+		}
+		throw std::runtime_error( std::string("unsupported language passed to punctuation tokenizer ('") + arg[0] + "'");
+	}
+
+	virtual std::vector<Token> tokenize( Context*, const char* src, std::size_t srcsize) const
+	{
+		std::vector<Token> rt;
 
 		textwolf::UChar ch0;
 		CharWindow scanner( src, srcsize);
@@ -291,20 +322,20 @@ public:
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-				rt.push_back( Position( scanner.pos(), 1));
+				rt.push_back( Token( scanner.pos(), 1));
 			}
 			else if (isPunctuation(ch0))
 			{
-				rt.push_back( Position( scanner.pos(), 1));
+				rt.push_back( Token( scanner.pos(), 1));
 			}
 		}
 		return rt;
 	}
 };
 
-const TokenizerInterface* strus::punctuationTokenizer_de()
+const TokenizerInterface* strus::punctuationTokenizer()
 {
-	static const PunctuationTokenizer_de tokenizer;
+	static const PunctuationTokenizer tokenizer;
 	return &tokenizer;
 }
 

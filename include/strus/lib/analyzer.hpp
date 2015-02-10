@@ -26,20 +26,37 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus token miner library (part of analyzer)
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+/// \brief Exported functions of the strus analyzer library
+#ifndef _STRUS_ANALYZER_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_LIB_HPP_INCLUDED
 #include <string>
 
 namespace strus {
 
-/// \brief Forward declaration analyze processor
-class TokenMinerFactory;
+/// \brief Forward declaration
+class DocumentAnalyzerInterface;
+/// \brief Forward declaration
+class QueryAnalyzerInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
+/// \brief Forward declaration
+class SegmenterInterface;
 
-/// \brief Create a token miner factory
-/// \param[in] source token description source
-/// \return the constructed token miner factory
-TokenMinerFactory* createTokenMinerFactory();
+/// \brief Creates an analyzer program for analyzing a document
+/// \param[in] textProcessorInterface static const reference to the token miner. It defines the set of token type definitions that can be used in the program.
+/// \param[in] segmenter empty segmenter instance to be used by the created analyzer (ownership transferred).
+/// \return the analyzer program reference to be disposed with delete by the caller
+DocumentAnalyzerInterface*
+	createDocumentAnalyzer(
+		const TextProcessorInterface* textProcessor,
+		SegmenterInterface* segmenter);
+
+/// \brief Creates an analyzer program for analyzing a query
+/// \param[in] textProcessor static const reference to a token miner. It defines the set of token type definitions that can be used in the program.
+/// \return the analyzer program reference to be disposed with delete by the caller
+QueryAnalyzerInterface*
+	createQueryAnalyzer(
+		const TextProcessorInterface* textProcessor);
 
 }//namespace
 #endif

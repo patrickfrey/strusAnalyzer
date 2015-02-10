@@ -26,21 +26,21 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_POSITION_HPP_INCLUDED
-#define _STRUS_ANALYZER_POSITION_HPP_INCLUDED
+#ifndef _STRUS_TOKENIZER_TOKEN_HPP_INCLUDED
+#define _STRUS_TOKENIZER_TOKEN_HPP_INCLUDED
 #include <string>
 
 namespace strus {
 namespace tokenizer {
 
-struct Position
+struct Token
 {
 	unsigned int pos;
 	unsigned int size;
 
-	Position( unsigned int pos_, unsigned int size_)
+	Token( unsigned int pos_, unsigned int size_)
 		:pos(pos_),size(size_){}
-	Position( const Position& o)
+	Token( const Token& o)
 		:pos(o.pos),size(o.size){}
 };
 

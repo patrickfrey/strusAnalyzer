@@ -4,12 +4,12 @@ include $(TOPDIR)/variables.mk
 CPP_OBJS=\
 	documentAnalyzer.o \
 	queryAnalyzer.o \
-	analyzerLib.o
+	libstrus_analyzer.o
 
 CPP_INCLUDE=-I$(TOPDIR)/include -I$(TOPDIR)/include/private -I.
 CXXFLAGS=-g -Werror -Wall -pedantic $(OPTIMIZE) -std=c++98
-LDFLAGS=-L/usr/lib -L$(TOPDIR)/src/tokenminer -L$(TOPDIR)/src/segmenter_textwolf
-LIBS=-lstrus_tokenminer -lstrus_segmenter_textwolf
+LDFLAGS=-L/usr/lib
+LIBS=
 
 all: libstrus_analyzer.so
 

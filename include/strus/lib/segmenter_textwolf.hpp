@@ -26,20 +26,19 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_CHARTABLE_HPP_INCLUDED
-#define _STRUS_ANALYZER_CHARTABLE_HPP_INCLUDED
+/// \brief Exported functions of the strus segmenter library
+#ifndef _STRUS_SEGMENTER_LIB_HPP_INCLUDED
+#define _STRUS_SEGMENTER_LIB_HPP_INCLUDED
+#include <string>
 
-namespace strus
-{
+namespace strus {
 
-class CharTable
-{
-public:
-	CharTable( const char* op="", bool isInverse=false);
-	bool operator[]( char ch) const		{return m_ar[ (unsigned char)ch];}
-private:
-	bool m_ar[256];
-};
+/// \brief Forward declaration
+class SegmenterInterface;
+
+/// \brief Create an automaton for segmenting a document
+/// \return the automaton reference
+SegmenterInterface* createSegmenter_textwolf();
 
 }//namespace
 #endif

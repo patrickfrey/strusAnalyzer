@@ -29,6 +29,7 @@
 #ifndef _STRUS_ANALYZER_TOKENIZER_CONFIG_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_CONFIG_HPP_INCLUDED
 #include <string>
+#include <vector>
 
 namespace strus {
 
@@ -36,18 +37,18 @@ class TokenizerConfig
 {
 public:
 	TokenizerConfig( const TokenizerConfig& o)
-		:m_name(o.m_name),m_argument(o.m_argument){}
-	TokenizerConfig( const std::string& name_, const std::string& argument_)
-		:m_name(name_),m_argument(argument_){}
+		:m_name(o.m_name),m_arguments(o.m_arguments){}
+	TokenizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
+		:m_name(name_),m_arguments(arguments_){}
 	/*implicit*/ TokenizerConfig( const std::string& name_)
-		:m_name(name_),m_argument(){}
+		:m_name(name_),m_arguments(){}
 
-	const std::string& name() const		{return m_name;}
-	const std::string& argument() const	{return m_argument;}
+	const std::string& name() const				{return m_name;}
+	const std::vector<std::string>& arguments() const	{return m_arguments;}
 
 private:
 	std::string m_name;
-	std::string m_argument;
+	std::vector<std::string> m_arguments;
 };
 
 }//namespace

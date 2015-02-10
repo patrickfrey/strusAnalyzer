@@ -26,15 +26,21 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus segmenter library
-#include "strus/segmenterLib.hpp"
-#include "segmenter.hpp"
-#include "dll_tags.hpp"
+/// \brief Exported functions of the strus token miner library (part of analyzer)
+#ifndef _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MINER_LIB_HPP_INCLUDED
+#include <string>
 
-using namespace strus;
+namespace strus {
 
-DLL_PUBLIC SegmenterInterface* strus::createSegmenter()
-{
-	return new Segmenter();
-}
+/// \brief Forward declaration analyze processor
+class TextProcessorInterface;
+
+/// \brief Create a token miner
+/// \param[in] source token description source
+/// \return the constructed token miner factory
+TextProcessorInterface* createTextProcessor();
+
+}//namespace
+#endif
 

@@ -29,20 +29,18 @@
 #ifndef _STRUS_QUERY_ANALYZER_HPP_INCLUDED
 #define _STRUS_QUERY_ANALYZER_HPP_INCLUDED
 #include "strus/queryAnalyzerInterface.hpp"
-#include "strus/reference.hpp"
+#include "strus/normalizerInterface.hpp"
+#include "strus/tokenizerInterface.hpp"
 #include <vector>
 #include <string>
 #include <utility>
 #include <map>
+#include <boost/shared_ptr.hpp>
 
 namespace strus
 {
 /// \brief Forward declaration
-class TokenMinerFactory;
-/// \brief Forward declaration
-class NormalizerInterface;
-/// \brief Forward declaration
-class TokenizerInterface;
+class TextProcessorInterface;
 
 /// \brief Query analyzer implementation
 class QueryAnalyzer
@@ -50,7 +48,7 @@ class QueryAnalyzer
 {
 public:
 	explicit QueryAnalyzer(
-			const TokenMinerFactory* tokenMinerFactory_);
+			const TextProcessorInterface* textProcessor_);
 
 	virtual ~QueryAnalyzer();
 
@@ -73,9 +71,9 @@ private:
 
 		FeatureConfig( const std::string& featureType_,
 				const TokenizerInterface* tokenizer_,
-				const std::string& tokenizerarg_,
+				const boost::shared_ptr<TokenizerInterface::Argument>& tokenizerarg_,
 				const NormalizerInterface* normalizer_,
-				const std::string& normalizerarg_)
+				const boost::shared_ptr<NormalizerInterface::Argument>& normalizerarg_)
 			:m_featureType(featureType_)
 			,m_tokenizer(tokenizer_)
 			,m_tokenizerarg(tokenizerarg_)
@@ -89,24 +87,24 @@ private:
 			,m_normalizer(o.m_normalizer)
 			,m_normalizerarg(o.m_normalizerarg){}
 
-		const std::string& featureType() const		{return m_featureType;}
-		const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
-		const std::string& tokenizerarg() const		{return m_tokenizerarg;}
-		const NormalizerInterface* normalizer() const	{return m_normalizer;}
-		const std::string& normalizerarg() const	{return m_normalizerarg;}
+		const std::string& featureType() const				{return m_featureType;}
+		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
+		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
+		const NormalizerInterface* normalizer() const			{return m_normalizer;}
+		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
 
 	private:
 		std::string m_featureType;
 		const TokenizerInterface* m_tokenizer;
-		std::string m_tokenizerarg;
+		boost::shared_ptr<TokenizerInterface::Argument> m_tokenizerarg;
 		const NormalizerInterface* m_normalizer;
-		std::string m_normalizerarg;
+		boost::shared_ptr<NormalizerInterface::Argument> m_normalizerarg;
 	};
 
 	const FeatureConfig& featureConfig( const std::string& method) const;
 
 private:
-	const TokenMinerFactory* m_tokenMinerFactory;
+	const TextProcessorInterface* m_textProcessor;
 	std::map<std::string,FeatureConfig> m_featuremap;
 };
 

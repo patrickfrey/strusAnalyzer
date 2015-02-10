@@ -30,7 +30,6 @@
 #define _STRUS_NORMALIZER_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
-#include <ostream>
 
 namespace strus
 {
@@ -38,6 +37,17 @@ namespace strus
 class NormalizerInterface
 {
 public:
+	/// \brief Destructor
+	virtual ~NormalizerInterface(){}
+
+	/// \brief Normalizer argument base class
+	class Argument
+	{
+	public:
+		/// \brief Destructor
+		virtual ~Argument(){}
+	};
+
 	/// \brief Normalizer context base class
 	class Context
 	{
@@ -46,13 +56,15 @@ public:
 		virtual ~Context(){}
 	};
 
-	/// \brief Destructor
-	virtual ~NormalizerInterface(){}
+	/// \brief Create the arguments needed for normalization
+	/// \param[in] src arguments for the normalization as list of strings
+	/// \return the argument object to be desposed by the caller with delete if not NULL
+	virtual Argument* createArgument( const std::vector<std::string>&) const	{return 0;}
 
 	/// \brief Create the context object needed for normalization
-	/// \param[in] src source describing the normalization (e.g. date format description)
+	/// \param[in] arg the normalizer arguments
 	/// \return the context object to be desposed by the caller with delete if not NULL
-	virtual Context* createContext( const std::string&) const		{return 0;}
+	virtual Context* createContext( const Argument*) const				{return 0;}
 
 	/// \brief Normalization of a token, transforming it into the unit that is stored or retrieved as such in the storage
 	/// \param[in] ctx context object for normalization, if needed. created with createContext(const std::string&)const 

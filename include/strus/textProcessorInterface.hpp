@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_FACTORY_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_FACTORY_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKEN_MINER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MINER_INTERFACE_HPP_INCLUDED
 #include <string>
 
 namespace strus
@@ -37,13 +37,13 @@ class NormalizerInterface;
 /// \brief Forward declaration
 class TokenizerInterface;
 
-/// \class TokenMinerFactory
-/// \brief Factory for tokenizers and normalizers, the units producing the tokens of document analysis
-class TokenMinerFactory
+/// \class TextProcessorInterface
+/// \brief Interface for the object providing tokenizers and normalizers used for creating terms from chunks of text
+class TextProcessorInterface
 {
 public:
 	/// \brief Desructor
-	virtual ~TokenMinerFactory(){}
+	virtual ~TextProcessorInterface(){}
 
 	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text chunk into tokens
 	/// \return the tokenizer reference

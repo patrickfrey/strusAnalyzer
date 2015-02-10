@@ -26,34 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/analyzerLib.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
-#include "strus/segmenterInterface.hpp"
-#include "documentAnalyzer.hpp"
-#include "queryAnalyzer.hpp"
-#include "dll_tags.hpp"
+#ifndef _STRUS_TOKENIZER_PUNCTUATION_HPP_INCLUDED
+#define _STRUS_TOKENIZER_PUNCTUATION_HPP_INCLUDED
+#include "strus/tokenizerInterface.hpp"
 
-using namespace strus;
-
-
-DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory,
-		SegmenterInterface* segmenter)
+namespace strus
 {
-	return new DocumentAnalyzer( tokenMinerFactory, segmenter);
-}
 
+const TokenizerInterface* getTokenizer_punctuation();
 
-DLL_PUBLIC QueryAnalyzerInterface*
-	strus::createQueryAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory)
-{
-	return new QueryAnalyzer( tokenMinerFactory);
-}
-
-
-
-
+}//namespace
+#endif
 

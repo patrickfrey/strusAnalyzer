@@ -26,35 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#include "chartable.hpp"
-#include <utility>
+#ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
+#define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
+#include "strus/tokenizerInterface.hpp"
 
-using namespace strus;
-
-CharTable::CharTable( const char* op, bool isInverse)
+namespace strus
 {
-	std::size_t ii;
-	for (ii=0; ii<=32; ++ii) m_ar[ii] = false;
-	for (ii=33; ii<sizeof(m_ar); ++ii) m_ar[ii] = isInverse;
-	for (ii=0; op[ii]; ++ii)
-	{
-		if (op[ii] == '.' && op[ii+1] == '.')
-		{
-			unsigned char hi = op[ii+2]?(unsigned char)op[ii+2]:255;
-			unsigned char lo = (ii>0)?(unsigned char)op[ii-1]:1;
-			if (hi < lo)
-			{
-				unsigned char tmp = hi;
-				hi = lo;
-				lo = tmp; //... swapped 'hi' and 'lo'
-			}
-			for (++lo; lo<=hi; ++lo)
-			{
-				m_ar[ lo] = !isInverse;
-			}
-			ii += 2;
-		}
-		m_ar[(unsigned char)(op[ii])] = !isInverse;
-	}
-}
+
+const TokenizerInterface* punctuationTokenizer();
+
+}//namespace
+#endif
 

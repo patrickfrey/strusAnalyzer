@@ -27,19 +27,14 @@
 --------------------------------------------------------------------
 */
 /// \brief Exported functions of the strus segmenter library
-#ifndef _STRUS_SEGMENTER_LIB_HPP_INCLUDED
-#define _STRUS_SEGMENTER_LIB_HPP_INCLUDED
-#include <string>
+#include "strus/lib/segmenter_textwolf.hpp"
+#include "segmenter.hpp"
+#include "dll_tags.hpp"
 
-namespace strus {
+using namespace strus;
 
-/// \brief Forward declaration
-class SegmenterInterface;
-
-/// \brief Create an automaton for segmenting a document
-/// \return the automaton reference
-SegmenterInterface* createSegmenter();
-
-}//namespace
-#endif
+DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf()
+{
+	return new Segmenter();
+}
 

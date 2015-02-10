@@ -27,13 +27,12 @@
 --------------------------------------------------------------------
 */
 #include "documentAnalyzer.hpp"
-#include "strus/tokenMinerLib.hpp"
-#include "strus/tokenMiner.hpp"
-#include "strus/tokenMinerFactory.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
+#include "strus/tokenizer/token.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
@@ -43,23 +42,10 @@
 using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer(
-		const TokenMinerFactory* tokenMinerFactory_,
+		const TextProcessorInterface* textProcessor_,
 		SegmenterInterface* segmenter_)
-	:m_tokenMinerFactory(tokenMinerFactory_),m_segmenter(segmenter_){}
+	:m_textProcessor(textProcessor_),m_segmenter(segmenter_){}
 
-
-void DocumentAnalyzer::addExpression(
-	const std::string& name,
-	const std::string& expression,
-	const TokenizerInterface* tokenizer,
-	const std::string& tokenizerarg,
-	const NormalizerInterface* normalizer,
-	const std::string& normalizerarg,
-	FeatureClass featureClass)
-{
-	m_featurear.push_back( FeatureConfig( name, tokenizer, tokenizerarg, normalizer, normalizerarg, featureClass));
-	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
-}
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
@@ -77,13 +63,21 @@ void DocumentAnalyzer::defineFeature(
 	const TokenizerConfig& tokenizer,
 	const NormalizerConfig& normalizer)
 {
-	const TokenizerInterface* tk = m_tokenMinerFactory->getTokenizer( tokenizer.name());
-	const NormalizerInterface* nm = m_tokenMinerFactory->getNormalizer( normalizer.name());
-	addExpression(
-		name, expression,
-		tk, tokenizer.argument(),
-		nm, normalizer.argument(),
-		featureClass);
+	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
+	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
+	boost::shared_ptr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
+	if (!tkarg.get() && !tokenizer.arguments().empty())
+	{
+		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizer.name() + "'");
+	}
+	boost::shared_ptr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
+	if (!nmarg.get() && !normalizer.arguments().empty())
+	{
+		throw std::runtime_error( std::string( "no arguments expected for normalizer '") + normalizer.name() + "'");
+	}
+
+	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass));
+	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
 }
 
 class ParserContext
@@ -209,10 +203,10 @@ static void normalize(
 		const DocumentAnalyzer::FeatureConfig& feat,
 		const char* elem,
 		std::size_t elemsize,
-		const std::vector<tokenizer::Position>& pos,
+		const std::vector<tokenizer::Token>& pos,
 		std::size_t curr_position)
 {
-	std::vector<tokenizer::Position>::const_iterator
+	std::vector<tokenizer::Token>::const_iterator
 		pi = pos.begin(), pe = pos.end();
 
 	for (; pi != pe; ++pi)
@@ -305,7 +299,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 			}
 			else
 			{
-				std::vector<tokenizer::Position>
+				std::vector<tokenizer::Token>
 					pos = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
 
 				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
@@ -326,7 +320,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 		TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
 		NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
 
-		std::vector<tokenizer::Position>
+		std::vector<tokenizer::Token>
 			pos = feat.tokenizer()->tokenize(
 				tokctx,
 				ci->second.content.c_str(),

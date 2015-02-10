@@ -26,37 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKEN_MINER_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_MINER_HPP_INCLUDED
-#include <string>
+#include "strus/lib/normalizer_snowball.hpp"
+#include "dll_tags.hpp"
+#include "snowball.hpp"
 
-namespace strus
+using namespace strus;
+
+DLL_PUBLIC const NormalizerInterface* getNormalizer_snowball()
 {
-/// \brief Forward declaration
-class TokenizerInterface;
-/// \brief Forward declaration
-class NormalizerInterface;
+	return snowball_stemmer();
+}
 
-/// \class TokenMiner
-/// \brief The unit defining the methods needed for producing the tokens of document analysis
-class TokenMiner
-{
-public:
-	/// \brief Constructor
-	TokenMiner( const TokenizerInterface* tokenizer_,
-			const NormalizerInterface* normalizer_)
-		:m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
-
-	/// \brief Get the tokenizer
-	const TokenizerInterface* tokenizer() const	{return m_tokenizer;}
-	/// \brief Get the normalizer
-	const NormalizerInterface* normalizer() const	{return m_normalizer;}
-
-private:
-	const TokenizerInterface* m_tokenizer;
-	const NormalizerInterface* m_normalizer;
-};
-
-}//namespace
-#endif
 
