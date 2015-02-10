@@ -165,34 +165,102 @@ private:
 
 
 /// \brief Map byte offset positions to token occurrence positions:
-static void mapPositions( const std::vector<analyzer::Term>& ar1, std::vector<analyzer::Term>& res1, const std::vector<analyzer::Term>& ar2, std::vector<analyzer::Term>& res2)
+static void mapPositions(
+		analyzer::Document& res,
+		const std::vector<analyzer::Term>& searchTerms_content,
+		const std::vector<analyzer::Term>& searchTerms_pred,
+		const std::vector<analyzer::Term>& searchTerms_succ,
+		const std::vector<analyzer::Term>& forwardTerms_content,
+		const std::vector<analyzer::Term>& forwardTerms_pred,
+		const std::vector<analyzer::Term>& forwardTerms_succ)
 {
 	std::set<unsigned int> pset;
-	std::vector<analyzer::Term>::const_iterator ri = ar1.begin(), re = ar1.end();
+	std::vector<analyzer::Term>::const_iterator ri = searchTerms_content.begin(), re = searchTerms_content.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
 	}
-	ri = ar2.begin(), re = ar2.end();
+	ri = forwardTerms_content.begin(), re = forwardTerms_content.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
 	}
 	std::map<unsigned int, unsigned int> posmap;
 	std::set<unsigned int>::const_iterator pi = pset.begin(), pe = pset.end();
-	for (unsigned int pcnt=0; pi != pe; ++pi)
+	unsigned int pcnt = 0;
+	for (; pi != pe; ++pi)
 	{
 		posmap[ *pi] = ++pcnt;
 	}
-	for (ri = ar1.begin(), re = ar1.end(); ri != re; ++ri)
+	for (ri = searchTerms_content.begin(), re = searchTerms_content.end(); ri != re; ++ri)
 	{
 		unsigned int pos = posmap[ ri->pos()];
-		res1.push_back( analyzer::Term( ri->type(), ri->value(), pos));
+		res.addSearchIndexTerm( ri->type(), ri->value(), pos);
 	}
-	for (ri = ar2.begin(), re = ar2.end(); ri != re; ++ri)
+	for (ri = forwardTerms_content.begin(), re = forwardTerms_content.end(); ri != re; ++ri)
 	{
 		unsigned int pos = posmap[ ri->pos()];
-		res2.push_back( analyzer::Term( ri->type(), ri->value(), pos));
+		res.addForwardIndexTerm( ri->type(), ri->value(), pos);
+	}
+	for (ri = searchTerms_pred.begin(), re = searchTerms_pred.end(); ri != re; ++ri)
+	{
+		unsigned int pos = 1;
+		if (!posmap.empty())
+		{
+			std::map<unsigned int, unsigned int>::const_iterator
+				si = posmap.upper_bound( ri->pos());
+			--si;
+			pos = si->second;
+		}
+		res.addSearchIndexTerm( ri->type(), ri->value(), pos);
+	}
+	for (ri = forwardTerms_pred.begin(), re = forwardTerms_pred.end(); ri != re; ++ri)
+	{
+		unsigned int pos = 1;
+		if (!posmap.empty())
+		{
+			std::map<unsigned int, unsigned int>::const_iterator
+				si = posmap.upper_bound( ri->pos());
+			--si;
+			pos = si->second;
+		}
+		res.addForwardIndexTerm( ri->type(), ri->value(), pos);
+	}
+	for (ri = searchTerms_succ.begin(), re = searchTerms_succ.end(); ri != re; ++ri)
+	{
+		unsigned int pos = 1;
+		if (!posmap.empty())
+		{
+			std::map<unsigned int, unsigned int>::const_iterator
+				si = posmap.upper_bound( ri->pos());
+			if (si == posmap.end())
+			{
+				pos = pcnt+1;
+			}
+			else
+			{
+				pos = si->second;
+			}
+		}
+		res.addSearchIndexTerm( ri->type(), ri->value(), pos);
+	}
+	for (ri = forwardTerms_succ.begin(), re = forwardTerms_succ.end(); ri != re; ++ri)
+	{
+		unsigned int pos = 1;
+		if (!posmap.empty())
+		{
+			std::map<unsigned int, unsigned int>::const_iterator
+				si = posmap.upper_bound( ri->pos());
+			if (si == posmap.end())
+			{
+				pos = pcnt+1;
+			}
+			else
+			{
+				pos = si->second;
+			}
+		}
+		res.addForwardIndexTerm( ri->type(), ri->value(), pos);
 	}
 }
 
@@ -204,40 +272,68 @@ static void normalize(
 		const char* elem,
 		std::size_t elemsize,
 		const std::vector<tokenizer::Token>& pos,
-		std::size_t curr_position)
+		std::size_t curr_position,
+		std::vector<analyzer::Term>& searchTerms,
+		std::vector<analyzer::Term>& forwardTerms)
 {
-	std::vector<tokenizer::Token>::const_iterator
-		pi = pos.begin(), pe = pos.end();
 
-	for (; pi != pe; ++pi)
+	switch (feat.featureClass())
 	{
-		std::string valstr(
-			feat.normalizer()->normalize( normctx, elem + pi->pos, pi->size));
-
-		switch (feat.featureClass())
+		case DocumentAnalyzer::FeatMetaData:
 		{
-			case DocumentAnalyzer::FeatMetaData:
+			if (!pos.empty())
 			{
+				std::string valstr(
+					feat.normalizer()->normalize(
+						normctx, elem + pos[0].pos, pos[0].size));
 				res.addMetaData( feat.name(), valstr);
-				break;
 			}
-			case DocumentAnalyzer::FeatAttribute:
+			if (pos.size() > 1)
 			{
+				throw std::runtime_error( "metadata feature tokenized to to more than one part");
+			}
+			break;
+		}
+		case DocumentAnalyzer::FeatAttribute:
+		{
+			std::vector<tokenizer::Token>::const_iterator
+				pi = pos.begin(), pe = pos.end();
+			for (; pi != pe; ++pi)
+			{
+				std::string valstr(
+					feat.normalizer()->normalize(
+						normctx, elem + pi->pos, pi->size));
 				res.addAttribute( feat.name(), valstr);
-				break;
 			}
-			case DocumentAnalyzer::FeatSearchIndexTerm:
+			break;
+		}
+		case DocumentAnalyzer::FeatSearchIndexTerm:
+		{
+			std::vector<tokenizer::Token>::const_iterator
+				pi = pos.begin(), pe = pos.end();
+			for (; pi != pe; ++pi)
 			{
-				res.addSearchIndexTerm(
-					feat.name(), valstr, curr_position + pi->pos);
-				break;
+				std::string valstr(
+					feat.normalizer()->normalize(
+						normctx, elem + pi->pos, pi->size));
+				searchTerms.push_back(
+					analyzer::Term( feat.name(), valstr, curr_position + pi->pos));
 			}
-			case DocumentAnalyzer::FeatForwardIndexTerm:
+			break;
+		}
+		case DocumentAnalyzer::FeatForwardIndexTerm:
+		{
+			std::vector<tokenizer::Token>::const_iterator
+				pi = pos.begin(), pe = pos.end();
+			for (; pi != pe; ++pi)
 			{
-				res.addForwardIndexTerm(
-					feat.name(), valstr, curr_position + pi->pos);
-				break;
+				std::string valstr(
+					feat.normalizer()->normalize(
+						normctx, elem + pi->pos, pi->size));
+				forwardTerms.push_back(
+					analyzer::Term( feat.name(), valstr, curr_position + pi->pos));
 			}
+			break;
 		}
 	}
 }
@@ -246,16 +342,27 @@ static void normalize(
 struct Chunk
 {
 	Chunk()
-		:position(0){}
-	Chunk( std::size_t position_, const std::string& content_)
-		:position(position_),content(content_){}
+		:selector(SegmenterInterface::Content),position(0){}
+	Chunk( SegmenterInterface::SelectorType selector_, std::size_t position_, const std::string& content_)
+		:selector(selector_),position(position_),content(content_){}
 	Chunk( const Chunk& o)
-		:position(o.position),content(o.content){}
+		:selector(o.selector),position(o.position),content(o.content){}
 
+	SegmenterInterface::SelectorType selector;
 	std::size_t position;
 	std::string content;
 };
 
+struct Segment
+{
+	unsigned int pos;
+	unsigned int size;
+
+	Segment( unsigned int pos_, unsigned int size_)
+		:pos(pos_),size(size_){}
+	Segment( const Segment& o)
+		:pos(o.pos),size(o.size){}
+};
 
 analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 {
@@ -268,13 +375,53 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 	std::size_t curr_position = 0;
 	typedef std::map<int,Chunk> ConcatenatedMap;
 	ConcatenatedMap concatenatedMap;
+	typedef std::map<int,Segment> AnnotationMap;
+	AnnotationMap annotationMap;
 	ParserContext ctx( m_featurear);
+	std::vector<int> selectortypes;
+
+	selectortypes.resize( m_featurear.size(), -1);
+	std::vector<analyzer::Term> searchTerms_pred;
+	std::vector<analyzer::Term> searchTerms_succ;
+	std::vector<analyzer::Term> searchTerms_content;
+	std::vector<analyzer::Term> forwardTerms_pred;
+	std::vector<analyzer::Term> forwardTerms_succ;
+	std::vector<analyzer::Term> forwardTerms_content;
+	std::vector<analyzer::Term>* searchTerms = 0;
+	std::vector<analyzer::Term>* forwardTerms = 0;
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
 	while (segmenter->getNext( featidx, curr_position, elem, elemsize))
 	{
 		try
 		{
+			int stype = selectortypes[ featidx];
+			SegmenterInterface::SelectorType selectorType;
+			if (stype < 0)
+			{
+				selectorType = m_segmenter->getSelectorType( featidx);
+				selectortypes[ featidx] = (int)selectorType;
+			}
+			else
+			{
+				selectorType = (SegmenterInterface::SelectorType)stype;
+			}
+			switch (selectorType)
+			{
+				case SegmenterInterface::Content:
+					searchTerms = &searchTerms_content;
+					forwardTerms = &forwardTerms_content;
+					break;
+				case SegmenterInterface::AnnotationSuccessor:
+					searchTerms = &searchTerms_succ;
+					forwardTerms = &forwardTerms_succ;
+					break;
+				case SegmenterInterface::AnnotationPredecessor:
+					searchTerms = &searchTerms_pred;
+					forwardTerms = &forwardTerms_pred;
+					break;
+			}
+
 			const DocumentAnalyzer::FeatureConfig& feat = featureConfig( featidx);
 			TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
 			NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
@@ -285,7 +432,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 				if (ci == concatenatedMap.end())
 				{
 					concatenatedMap[ featidx]
-						= Chunk( curr_position,
+						= Chunk( selectorType, curr_position,
 							 std::string( elem, elemsize));
 				}
 				else
@@ -302,7 +449,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 				std::vector<tokenizer::Token>
 					pos = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
 
-				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position);
+				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position, *searchTerms, *forwardTerms);
 			}
 		}
 		catch (const std::runtime_error& err)
@@ -327,13 +474,11 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 				ci->second.content.size());
 
 		normalize( rt, normctx, feat, ci->second.content.c_str(),
-				ci->second.content.size(), pos, ci->second.position);
+				ci->second.content.size(), pos, ci->second.position,
+				*searchTerms, *forwardTerms);
 	}
-	std::vector<analyzer::Term> sterms;
-	std::vector<analyzer::Term> fterms;
-	mapPositions( rt.searchIndexTerms(), sterms, rt.forwardIndexTerms(), fterms);
-
-	return analyzer::Document( rt.metadata(), rt.attributes(), sterms, fterms);
+	mapPositions( rt, searchTerms_content, searchTerms_pred, searchTerms_succ, searchTerms_content, searchTerms_pred, searchTerms_succ);
+	return rt;
 }
 
 
