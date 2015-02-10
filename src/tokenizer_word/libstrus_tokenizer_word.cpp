@@ -26,7 +26,7 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/lib/tokenizer_punctuation.hpp"
+#include "strus/lib/tokenizer_word.hpp"
 #include "strus/tokenizer/token.hpp"
 #include "dll_tags.hpp"
 #include <vector>
@@ -121,12 +121,12 @@ static const WhiteSpaceTokenizer whiteSpaceTokenizer;
 
 
 
-DLL_PUBLIC const TokenizerInterface* getTokenizer_word()
+DLL_PUBLIC const TokenizerInterface* strus::getTokenizer_word()
 {
 	return &wordSeparationTokenizer;
 }
 
-DLL_PUBLIC const TokenizerInterface* getTokenizer_whitespace()
+DLL_PUBLIC const TokenizerInterface* strus::getTokenizer_whitespace()
 {
 	return &wordSeparationTokenizer;
 }

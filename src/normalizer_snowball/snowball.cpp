@@ -345,8 +345,9 @@ public:
 		return rt;
 	}
 
-	virtual std::string normalize( Context* ctx, const char* src, std::size_t srcsize) const
+	virtual std::string normalize( NormalizerInterface::Context* ctx_, const char* src, std::size_t srcsize) const
 	{
+		Context* ctx = reinterpret_cast<Context*>( ctx_);
 		const sb_symbol* res
 			= sb_stemmer_stem_threadsafe( ctx->m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
 		if (!res) throw std::bad_alloc();
@@ -355,4 +356,10 @@ public:
 		return substDiaCriticalToLower( ctx, std::string( (const char*)res, len));
 	}
 };
+
+const NormalizerInterface* strus::snowball_stemmer()
+{
+	return new StemNormalizer();
+}
+
 

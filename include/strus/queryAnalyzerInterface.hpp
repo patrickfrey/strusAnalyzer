@@ -57,9 +57,9 @@ public:
 
 	/// \brief Analyze a single chunk of query
 	/// \param[in] method selects the method defined with defineFeature(const std::string&,const std::string&,const std::string&,const std::string&) that determines how the chunk is tokenized and normalized and what types the resulting terms get.
-	/// \param[in] content string to analyze
+	/// \param[in] content string of segment to analyze
 	/// \note The query language determines the segmentation of the query parts.
-	virtual std::vector<analyzer::Term> analyzeChunk(
+	virtual std::vector<analyzer::Term> analyzeSegment(
 			const std::string& method,
 			const std::string& content) const=0;
 };

@@ -69,7 +69,7 @@ const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::str
 	return fi->second;
 }
 
-std::vector<analyzer::Term> QueryAnalyzer::analyzeChunk(
+std::vector<analyzer::Term> QueryAnalyzer::analyzeSegment(
 		const std::string& method,
 		const std::string& content) const
 {

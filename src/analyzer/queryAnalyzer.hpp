@@ -50,7 +50,7 @@ public:
 	explicit QueryAnalyzer(
 			const TextProcessorInterface* textProcessor_);
 
-	virtual ~QueryAnalyzer();
+	virtual ~QueryAnalyzer(){}
 
 	virtual void defineMethod(
 			const std::string& method,
@@ -58,7 +58,7 @@ public:
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer);
 
-	virtual std::vector<analyzer::Term> analyzeChunk(
+	virtual std::vector<analyzer::Term> analyzeSegment(
 			const std::string& method,
 			const std::string& content) const;
 

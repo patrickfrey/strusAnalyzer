@@ -52,7 +52,7 @@ public:
 			const TextProcessorInterface* textProcessor_,
 			SegmenterInterface* segmenter_);
 
-	virtual ~DocumentAnalyzer();
+	virtual ~DocumentAnalyzer(){}
 
 	virtual void defineSearchIndexFeature(
 			const std::string& type,

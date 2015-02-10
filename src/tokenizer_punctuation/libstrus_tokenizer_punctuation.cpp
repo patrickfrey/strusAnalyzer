@@ -32,7 +32,7 @@
 
 using namespace strus;
 
-DLL_PUBLIC const TokenizerInterface* getTokenizer_punctuation()
+DLL_PUBLIC const TokenizerInterface* strus::getTokenizer_punctuation()
 {
 	return punctuationTokenizer();
 }
