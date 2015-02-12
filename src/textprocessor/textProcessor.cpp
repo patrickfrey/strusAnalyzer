@@ -61,11 +61,11 @@ public:
 	}
 };
 
-class OrigTokenizer
+class ContentTokenizer
 	:public TokenizerInterface
 {
 public:
-	OrigTokenizer(){}
+	ContentTokenizer(){}
 
 	virtual std::vector<tokenizer::Token>
 			tokenize( Context* ctx, const char* src, std::size_t srcsize) const
@@ -77,13 +77,13 @@ public:
 };
 
 
-static OrigTokenizer origTokenizer;
+static ContentTokenizer contentTokenizer;
 static OrigNormalizer origNormalizer;
 static EmptyNormalizer emptyNormalizer;
 
 TextProcessor::TextProcessor()
 {
-	defineTokenizer( "orig", &origTokenizer);
+	defineTokenizer( "content", &contentTokenizer);
 	defineNormalizer( "orig", &origNormalizer);
 	defineNormalizer( "empty", &emptyNormalizer);
 }
@@ -94,7 +94,7 @@ const TokenizerInterface* TextProcessor::getTokenizer( const std::string& name) 
 		ti = m_tokenizer_map.find( boost::algorithm::to_lower_copy( name));
 	if (ti == m_tokenizer_map.end())
 	{
-		throw std::runtime_error(std::string("no normalizer defined with name '") + name + "'");
+		throw std::runtime_error(std::string("no tokenizer defined with name '") + name + "'");
 	}
 	return ti->second;
 }

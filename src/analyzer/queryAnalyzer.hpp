@@ -52,14 +52,14 @@ public:
 
 	virtual ~QueryAnalyzer(){}
 
-	virtual void defineMethod(
-			const std::string& method,
+	virtual void definePhraseType(
+			const std::string& phraseType,
 			const std::string& featureType,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer);
 
-	virtual std::vector<analyzer::Term> analyzeSegment(
-			const std::string& method,
+	virtual std::vector<analyzer::Term> analyzePhrase(
+			const std::string& phraseType,
 			const std::string& content) const;
 
 private:
@@ -87,10 +87,15 @@ private:
 			,m_normalizer(o.m_normalizer)
 			,m_normalizerarg(o.m_normalizerarg){}
 
+		/// \brief Get the type of the features in the storage
 		const std::string& featureType() const				{return m_featureType;}
+		/// \brief Get the tokenizer function for tokenization of the phrase
 		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
+		/// \brief Get the tokenizer arguments for tokenization of the phrase
 		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
+		/// \brief Get the normalizer of the tokens for create the feature values
 		const NormalizerInterface* normalizer() const			{return m_normalizer;}
+		/// \brief Get the normalizer arguments
 		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
 
 	private:
@@ -101,7 +106,8 @@ private:
 		boost::shared_ptr<NormalizerInterface::Argument> m_normalizerarg;
 	};
 
-	const FeatureConfig& featureConfig( const std::string& method) const;
+	/// \brief Get the feature configuration for a named phrase type
+	const FeatureConfig& featureConfig( const std::string& phraseType) const;
 
 private:
 	const TextProcessorInterface* m_textProcessor;

@@ -44,11 +44,11 @@ public:
 public:
 	StemNormalizer(){}
 
-	class Argument
+	class ThisArgument
 		:public NormalizerInterface::Argument
 	{
 	public:
-		Argument( const std::string& language)
+		ThisArgument( const std::string& language)
 		{
 			std::string language_lo = boost::algorithm::to_lower_copy( language);
 			m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
@@ -66,7 +66,7 @@ public:
 			}
 		}
 
-		virtual ~Argument()
+		virtual ~ThisArgument()
 		{
 			if (m_stemmer)
 			{
@@ -78,16 +78,16 @@ public:
 		DiaType m_diatype;
 	};
 
-	class Context
+	class ThisContext
 		:public NormalizerInterface::Context
 	{
 	public:
-		explicit Context( const Argument* arg_)
+		explicit ThisContext( const ThisArgument* arg_)
 			:m_stemmer(arg_->m_stemmer)
 			,m_env(sb_stemmer_create_env( arg_->m_stemmer))
 			,m_diatype(arg_->m_diatype){}
 
-		virtual ~Context()
+		virtual ~ThisContext()
 		{
 			sb_stemmer_delete_env( m_stemmer, m_env);
 		}
@@ -103,15 +103,15 @@ public:
 		{
 			throw std::runtime_error( "illegal number of arguments passed to snowball stemmer");
 		}
-		return new Argument( arg[0]);
+		return new ThisArgument( arg[0]);
 	}
 
 	virtual Context* createContext( const Argument* arg) const
 	{
-		return new Context( arg);
+		return new ThisContext( reinterpret_cast<const ThisArgument*>( arg));
 	}
 
-	static std::string substDiaCriticalToLower( Context* ctx, const std::string& src)
+	static std::string substDiaCriticalToLower( ThisContext* ctx, const std::string& src)
 	{
 		std::string rt;
 		textwolf::charset::UTF8 utf8;
@@ -345,9 +345,9 @@ public:
 		return rt;
 	}
 
-	virtual std::string normalize( NormalizerInterface::Context* ctx_, const char* src, std::size_t srcsize) const
+	virtual std::string normalize( Context* ctx_, const char* src, std::size_t srcsize) const
 	{
-		Context* ctx = reinterpret_cast<Context*>( ctx_);
+		ThisContext* ctx = reinterpret_cast<ThisContext*>( ctx_);
 		const sb_symbol* res
 			= sb_stemmer_stem_threadsafe( ctx->m_stemmer, ctx->m_env, (const sb_symbol*)src, srcsize);
 		if (!res) throw std::bad_alloc();

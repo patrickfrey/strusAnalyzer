@@ -34,6 +34,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace strus
@@ -160,7 +161,7 @@ private:
 
 private:
 	const TextProcessorInterface* m_textProcessor;
-	boost::shared_ptr<SegmenterInterface> m_segmenter;
+	boost::scoped_ptr<SegmenterInterface> m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 };
 

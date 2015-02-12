@@ -44,23 +44,24 @@ public:
 	/// \brief Destructor
 	virtual ~QueryAnalyzerInterface(){}
 
-	/// \brief Declare a method for producing a set of query feature terms out from a text chunk
-	/// \param[in] method name of the method
-	/// \param[in] featureType type name of the generated terms 
-	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	virtual void defineMethod(
-			const std::string& method,
+	/// \brief Declare how a set of query features is produced out from a phrase of a certain type
+	/// \param[in] phraseType label of the phrase type
+	/// \param[in] featureSet name of the set the generated features are assigned to
+	/// \param[in] featureType type name (in the storage) of the generated features
+	/// \param[in] tokenizer selects the tokenizer function for tokenization of the phrase
+	/// \param[in] normalizer selects the normalizer describing how tokens are normalized to term values in the storage
+	virtual void definePhraseType(
+			const std::string& phraseType,
 			const std::string& featureType,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer)=0;
 
-	/// \brief Analyze a single chunk of query
-	/// \param[in] method selects the method defined with defineFeature(const std::string&,const std::string&,const std::string&,const std::string&) that determines how the chunk is tokenized and normalized and what types the resulting terms get.
-	/// \param[in] content string of segment to analyze
+	/// \brief Analyze a single phrase of query
+	/// \param[in] phraseType selects the feature configuration that determines how the phrase is tokenized and normalized, what types the resulting terms get and what set (as referred to in the query evaluation) the created query features are assigned to.
+	/// \param[in] content string of the phrase to analyze
 	/// \note The query language determines the segmentation of the query parts.
-	virtual std::vector<analyzer::Term> analyzeSegment(
-			const std::string& method,
+	virtual std::vector<analyzer::Term> analyzePhrase(
+			const std::string& phraseType,
 			const std::string& content) const=0;
 };
 

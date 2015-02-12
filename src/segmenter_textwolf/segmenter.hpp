@@ -41,6 +41,7 @@ class Segmenter
 {
 public:
 	Segmenter(){}
+	virtual ~Segmenter(){}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 

@@ -96,6 +96,45 @@ class PunctuationTokenizer
 public:
 	PunctuationTokenizer(){}
 
+	enum Language {LANG_DE};
+
+	class ThisArgument
+		:public TokenizerInterface::Argument
+	{
+	public:
+		explicit ThisArgument( const std::string& language)
+		{
+			if (boost::iequals( language, "de") || boost::iequals( language, "D"))
+			{
+				m_language = LANG_DE;
+			}
+			else
+			{
+				throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + language +"')");
+			}
+		}
+
+		virtual ~ThisArgument(){}
+
+		Language language() const	{return m_language;}
+
+	private:
+		Language m_language;
+	};
+
+	class ThisContext
+		:public TokenizerInterface::Context
+	{
+	public:
+		explicit ThisContext( const ThisArgument* arg_)
+			:m_language(arg_->language()){}
+
+		virtual ~ThisContext(){}
+
+	private:
+		Language m_language;
+	};
+
 	class CharWindow
 	{
 	public:
@@ -182,11 +221,12 @@ public:
 		{
 			throw std::runtime_error("illegal number of arguments for punctuation tokenizer (language as single argument expected)");
 		}
-		if (boost::algorithm::iequals( arg[0], "de") || boost::algorithm::iequals( arg[0], "D"))
-		{
-			return 0;
-		}
-		throw std::runtime_error( std::string("unsupported language passed to punctuation tokenizer ('") + arg[0] + "'");
+		return new ThisArgument(arg[0]);
+	}
+
+	virtual Context* createContext( const Argument* arg) const
+	{
+		return new ThisContext( reinterpret_cast<const ThisArgument*>( arg));
 	}
 
 	virtual std::vector<Token> tokenize( Context*, const char* src, std::size_t srcsize) const

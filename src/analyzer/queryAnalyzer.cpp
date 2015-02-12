@@ -43,8 +43,8 @@ QueryAnalyzer::QueryAnalyzer(
 	:m_textProcessor(textProcessor_){}
 
 
-void QueryAnalyzer::defineMethod(
-		const std::string& method,
+void QueryAnalyzer::definePhraseType(
+		const std::string& phraseType,
 		const std::string& featureType,
 		const TokenizerConfig& tokenizer,
 		const NormalizerConfig& normalizer)
@@ -54,29 +54,38 @@ void QueryAnalyzer::defineMethod(
 	boost::shared_ptr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
 	boost::shared_ptr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
 
-	m_featuremap[ boost::algorithm::to_lower_copy( method)]
+	m_featuremap[ boost::algorithm::to_lower_copy( phraseType)]
 		= FeatureConfig( featureType, tk, tkarg, nm, nmarg);
 }
 
-const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& type) const
+const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
 {
 	std::map<std::string,FeatureConfig>::const_iterator
-		fi = m_featuremap.find( boost::algorithm::to_lower_copy( type));
+		fi = m_featuremap.find( boost::algorithm::to_lower_copy( phraseType));
 	if (fi == m_featuremap.end())
 	{
-		throw std::runtime_error(std::string("query feature type '") + type + "' is not defined");
+		throw std::runtime_error(std::string( "query feature constructor for phrase type '") + phraseType + "' is not defined");
 	}
 	return fi->second;
 }
 
-std::vector<analyzer::Term> QueryAnalyzer::analyzeSegment(
-		const std::string& method,
+std::vector<analyzer::Term>
+	QueryAnalyzer::analyzePhrase(
+		const std::string& phraseType,
 		const std::string& content) const
 {
 	std::vector<analyzer::Term> rt;
-	const FeatureConfig& feat = featureConfig( method);
+	const FeatureConfig& feat = featureConfig( phraseType);
 	boost::scoped_ptr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
 	boost::scoped_ptr<NormalizerInterface::Context> normctx( feat.normalizer()->createContext( feat.normalizerarg()));
+	if (feat.tokenizerarg() && !tokctx.get())
+	{
+		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");
+	}
+	if (feat.normalizerarg() && !normctx.get())
+	{
+		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");
+	}
 	std::vector<tokenizer::Token>
 		pos = feat.tokenizer()->tokenize( tokctx.get(), content.c_str(), content.size());
 	std::vector<tokenizer::Token>::const_iterator
