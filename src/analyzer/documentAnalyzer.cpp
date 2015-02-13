@@ -477,7 +477,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 				ci->second.content.size(), pos, ci->second.position,
 				*searchTerms, *forwardTerms);
 	}
-	mapPositions( rt, searchTerms_content, searchTerms_pred, searchTerms_succ, searchTerms_content, searchTerms_pred, searchTerms_succ);
+	mapPositions( rt, searchTerms_content, searchTerms_pred, searchTerms_succ, forwardTerms_content, forwardTerms_pred, forwardTerms_succ);
 	return rt;
 }
 
