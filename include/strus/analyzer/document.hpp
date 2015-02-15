@@ -62,11 +62,11 @@ public:
 	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
 	const std::vector<Term>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
 
-	void addAttribute( const std::string& t, const std::string& v)
+	void setAttribute( const std::string& t, const std::string& v)
 	{
 		m_attributes.push_back( Attribute( t,v));
 	}
-	void addMetaData( const std::string& t, const std::string& v)
+	void setMetaData( const std::string& t, const std::string& v)
 	{
 		m_metadata.push_back( MetaData( t,v));
 	}

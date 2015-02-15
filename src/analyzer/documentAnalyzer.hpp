@@ -55,7 +55,7 @@ public:
 
 	virtual ~DocumentAnalyzer(){}
 
-	virtual void defineSearchIndexFeature(
+	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -64,7 +64,7 @@ public:
 		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer);
 	}
 
-	virtual void defineForwardIndexFeature(
+	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -73,7 +73,7 @@ public:
 		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer);
 	}
 
-	virtual void defineMetaDataFeature(
+	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -82,7 +82,7 @@ public:
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer);
 	}
 
-	virtual void defineAttributeFeature(
+	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,

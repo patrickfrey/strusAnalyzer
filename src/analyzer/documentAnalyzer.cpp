@@ -286,7 +286,7 @@ static void normalize(
 				std::string valstr(
 					feat.normalizer()->normalize(
 						normctx, elem + pos[0].pos, pos[0].size));
-				res.addMetaData( feat.name(), valstr);
+				res.setMetaData( feat.name(), valstr);
 			}
 			if (pos.size() > 1)
 			{
@@ -303,7 +303,7 @@ static void normalize(
 				std::string valstr(
 					feat.normalizer()->normalize(
 						normctx, elem + pi->pos, pi->size));
-				res.addAttribute( feat.name(), valstr);
+				res.setAttribute( feat.name(), valstr);
 			}
 			break;
 		}

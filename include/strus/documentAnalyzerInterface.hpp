@@ -52,7 +52,7 @@ public:
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	virtual void defineSearchIndexFeature(
+	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -63,7 +63,7 @@ public:
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	virtual void defineForwardIndexFeature(
+	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -75,7 +75,7 @@ public:
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
 	/// \remark The field in the meta data table must exist before calling this function
-	virtual void defineMetaDataFeature(
+	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
@@ -87,7 +87,7 @@ public:
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
 	/// \remark Attributes must be defined uniquely per document
-	virtual void defineAttributeFeature(
+	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
