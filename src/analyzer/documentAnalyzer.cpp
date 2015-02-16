@@ -118,19 +118,21 @@ public:
 	{
 		if (m_tokenizerContextAr)
 		{
-			for (std::size_t ii=0; ii <= m_size; ++ii)
+			for (std::size_t ii=0; ii < m_size; ++ii)
 			{
 				if (m_tokenizerContextAr[ ii]) delete m_tokenizerContextAr[ ii];
 			}
 			std::free( m_tokenizerContextAr);
+			m_tokenizerContextAr = 0;
 		}
 		if (m_normalizerContextAr)
 		{
-			for (std::size_t ii=0; ii <= m_size; ++ii)
+			for (std::size_t ii=0; ii < m_size; ++ii)
 			{
 				if (m_normalizerContextAr[ ii]) delete m_normalizerContextAr[ ii];
 			}
 			std::free( m_normalizerContextAr);
+			m_normalizerContextAr = 0;
 		}
 	}
 
@@ -395,12 +397,12 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 	{
 		try
 		{
-			int stype = selectortypes[ featidx];
+			int stype = selectortypes[ featidx-1];
 			SegmenterInterface::SelectorType selectorType;
 			if (stype < 0)
 			{
 				selectorType = m_segmenter->getSelectorType( featidx);
-				selectortypes[ featidx] = (int)selectorType;
+				selectortypes[ featidx-1] = (int)selectorType;
 			}
 			else
 			{

@@ -359,7 +359,8 @@ public:
 
 const NormalizerInterface* strus::snowball_stemmer()
 {
-	return new StemNormalizer();
+	static const StemNormalizer rt;
+	return &rt;
 }
 
 
