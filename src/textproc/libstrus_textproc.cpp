@@ -31,7 +31,7 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "textProcessor.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 #include <stdexcept>
 
 using namespace strus;

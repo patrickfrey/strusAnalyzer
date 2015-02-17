@@ -28,7 +28,7 @@
 */
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "punctuation.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 
 using namespace strus;
 

@@ -29,7 +29,7 @@
 /// \brief Exported functions of the strus segmenter library
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "segmenter.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 
 using namespace strus;
 

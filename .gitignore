@@ -24,6 +24,19 @@
 # Helper scripts
 setenv.sh
 
+# CMake generated files
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+CMakeLists.txt.user
+CTestTestfile.cmake.user
+cmake/uninstall.cmake
+DartConfiguration.tcl
+Testing/
+
 # Compiled Programs
 src/strusAnalyze/strusAnalyze
 src/strusInsert/strusInsert

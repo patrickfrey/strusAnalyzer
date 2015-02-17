@@ -27,7 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/normalizer_snowball.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 #include "snowball.hpp"
 
 using namespace strus;

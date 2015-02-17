@@ -28,7 +28,7 @@
 */
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/tokenizer/token.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 #include <vector>
 #include <string>
 

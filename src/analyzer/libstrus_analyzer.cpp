@@ -32,7 +32,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "documentAnalyzer.hpp"
 #include "queryAnalyzer.hpp"
-#include "dll_tags.hpp"
+#include "private/dll_tags.hpp"
 
 using namespace strus;
 
