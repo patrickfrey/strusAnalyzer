@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # Project globals:
-project(Strus)
-set(STRUS_MAJOR_VERSION 0)
-set(STRUS_MINOR_VERSION 0)
-set(STRUS_PATCH_VERSION 1)
-set(STRUS_VERSION ${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}.${STRUS_PATCH_VERSION})
+project(StrusAnalyzer)
+set( STRUS_MAJOR_VERSION 0 )
+set( STRUS_MINOR_VERSION 0 )
+set( STRUS_PATCH_VERSION 1 )
+set( STRUS_VERSION ${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}.${STRUS_PATCH_VERSION} )
 
 if(CMAKE_COMPILER_IS_GNUCXX)
 set(CMAKE_INSTALL_PREFIX /usr/local)
@@ -19,25 +19,27 @@ set_property(GLOBAL PROPERTY rule_launch_compile ccache)
 set_property(GLOBAL PROPERTY rule_launch_link ccache)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-set(CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -Werror -fvisibility=hidden -fPIC -O0")
-set(CMAKE_C_FLAGS "-std=c99 -Wall -pedantic")
+set( STRUS_OPTIMIZATION_LEVEL "0" )
+set( CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -Werror -fvisibility=hidden -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
+set( CMAKE_C_FLAGS "-std=c99 -Wall -pedantic -Wfatal-errors -Werror -fvisibility=hidden -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
 endif()
 
 if(WIN32)
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} /D_WIN32_WINNT=0x0504")
-set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} /D_WIN32_WINNT=0x0504")
 endif()
 
-find_package(Boost 1.53.0 COMPONENTS thread system date_time)
+find_package( Boost 1.53.0 COMPONENTS thread system date_time )
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
+set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
+configure_file( "${PROJECT_SOURCE_DIR}/include/strus/analyzerVersion.hpp.in"  "${PROJECT_SOURCE_DIR}/include/strus/analyzerVersion.hpp"  @ONLY )
 
 enable_testing()
 
 # Subdirectories:
-add_subdirectory(3rdParty)
-add_subdirectory(src)
-add_subdirectory(tests)
+add_subdirectory( 3rdParty )
+add_subdirectory( src )
+add_subdirectory( tests )
   
 # Message:
 MESSAGE("Platform:")
@@ -66,3 +68,53 @@ add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P "${CMAKE_MODULE_PATH}/uninstall.cmake")
 
 
+# Make distclean:
+IF (UNIX)
+  ADD_CUSTOM_TARGET (distclean @echo cleaning for source distribution)
+  SET(DISTCLEANED
+   cmake.depends
+   cmake.check_depends
+   CMakeCache.txt
+   cmake.check_cache
+   *.cmake
+   Makefile
+   core core.*
+   *~
+  )
+  
+  ADD_CUSTOM_COMMAND(
+    DEPENDS clean
+    COMMENT "distribution clean"
+    COMMAND rm
+    ARGS    -Rf pkg ${DISTCLEANED}
+    TARGET  distclean
+  )
+ENDIF(UNIX)
+
+
+# Packaging (make package)
+IF (UNIX)
+set( CPACK_PACKAGE_VERSION "0.0.1" )
+set( CPACK_PACKAGE_DIRECTORY "${PROJECT_SOURCE_DIR}/pkg" )
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library implementing the storage of a text search engine" )
+set( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/COPYING" )
+set( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README" )
+set( CPACK_RESOURCE_FILE_WELCOME "${PROJECT_SOURCE_DIR}/WELCOME" )
+set( CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README" )
+set( CPACK_CMAKE_GENERATOR "Unix Makefiles" )
+set( CPACK_INSTALL_CMAKE_PROJECTS "${PROJECT_SOURCE_DIR};${PROJECT_NAME};ALL;/" )
+set( CPACK_GENERATOR "RPM;DEB" )
+string( TOLOWER "${PROJECT_NAME}" CPACK_PACKAGE_NAME)
+set( CPACK_PACKAGE_RELEASE 1 )
+set( CPACK_PACKAGE_LICENSE "GPL" )
+set( CPACK_PACKAGE_GROUP "Development/Libraries/C++" )
+set( CPACK_PACKAGE_CONTACT "PatrickFrey@project-strus.net" )
+set( CPACK_PACKAGE_VENDOR "project-strus.net" )
+set( CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} )
+set( CPACK_RPM_PACKAGE_SUMMARY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}" )
+set( CPACK_RPM_CHANGELOG_FILE "${PROJECT_SOURCE_DIR}/CHANGELOG" )
+set( CPACK_RPM_PACKAGE_LICENSE "GPL" )
+set( CPACK_RPM_PACKAGE_GROUP "Development/Libraries/C++" )
+set( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}" )
+include(CPack)
+ENDIF (UNIX)
