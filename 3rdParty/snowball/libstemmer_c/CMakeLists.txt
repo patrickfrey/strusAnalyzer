@@ -46,7 +46,11 @@ include_directories( include libstemmer runtime)
 # SNOWBALL STEMMER LIBRARY
 # -------------------------------------------
 add_library( stemmer SHARED ${snowball_source_files})
-
+set_target_properties(
+    stemmer
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+)
 # ------------------------------
 # INSTALLATION
 # ------------------------------

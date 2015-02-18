@@ -25,6 +25,13 @@ link_directories(
 # -------------------------------------------
 add_library( strus_textproc SHARED ${source_files} )
 target_link_libraries( strus_textproc  strus_normalizer_snowball strus_tokenizer_punctuation strus_tokenizer_word)
+set_target_properties(
+    strus_textproc
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 
 # ------------------------------

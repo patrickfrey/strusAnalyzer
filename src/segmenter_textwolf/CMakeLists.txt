@@ -18,6 +18,13 @@ include_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
+set_target_properties(
+    strus_segmenter_textwolf
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 # ------------------------------
 # INSTALLATION

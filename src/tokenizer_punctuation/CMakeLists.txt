@@ -18,6 +18,13 @@ include_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_punctuation SHARED ${source_files} )
+set_target_properties(
+    strus_tokenizer_punctuation
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 
 # ------------------------------

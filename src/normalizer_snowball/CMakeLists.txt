@@ -23,6 +23,13 @@ link_directories(
 # -------------------------------------------
 add_library( strus_normalizer_snowball SHARED ${source_files} )
 target_link_libraries( strus_normalizer_snowball stemmer)
+set_target_properties(
+    strus_normalizer_snowball
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 
 # ------------------------------

@@ -24,6 +24,13 @@ link_directories(
 # -------------------------------------------
 add_library( strus_analyzer SHARED ${source_files} )
 target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc)
+set_target_properties(
+    strus_analyzer
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 
 # ------------------------------
