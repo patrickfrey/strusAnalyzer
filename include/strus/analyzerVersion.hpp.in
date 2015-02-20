@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANAYLZER_VERSION_HPP_INCLUDED
-#define _STRUS_ANAYLZER_VERSION_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_VERSION_HPP_INCLUDED
+#define _STRUS_ANALYZER_VERSION_HPP_INCLUDED
 
 namespace strus
 {
