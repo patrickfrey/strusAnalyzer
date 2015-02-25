@@ -21,9 +21,9 @@ Document anaylsis is seen as a process involving the following steps. For each o
 Libraries provided:
 -------------------
 libstrus_analyzer.so			Analyzer
-libstrus_textproc.so			Container for all text processing functions.
+libstrus_textproc.so			Container for text processing functions.
 libstrus_segmenter_textwolf.so		XML document segmenter based on textwolf
-libstrus_normalizer_snowball.so		Normalizer implementing stemming based on snowball
+libstrus_normalizer_snowball.so		Normalizer for stemming based on snowball
 libstrus_tokenizer_word.so		Tokenizer to split a text into words
-tokenizer_punctuation.so		Tokenizer to get end of sentence markers out of a text
+tokenizer_punctuation.so		Tokenizer for end of sentence markers
 
