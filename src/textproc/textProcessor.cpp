@@ -29,12 +29,12 @@
 #include "textProcessor.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
-#include "strus/tokenizer/token.hpp"
+#include "strus/analyzer/token.hpp"
 #include <stdexcept>
 #include <boost/algorithm/string.hpp>
 
 using namespace strus;
-using namespace strus::tokenizer;
+using namespace strus::analyzer;
 
 
 class EmptyNormalizer
@@ -67,11 +67,11 @@ class ContentTokenizer
 public:
 	ContentTokenizer(){}
 
-	virtual std::vector<tokenizer::Token>
+	virtual std::vector<analyzer::Token>
 			tokenize( Context* ctx, const char* src, std::size_t srcsize) const
 	{
-		std::vector<tokenizer::Token> rt;
-		rt.push_back( tokenizer::Token( 0, srcsize));
+		std::vector<analyzer::Token> rt;
+		rt.push_back( analyzer::Token( 0, srcsize));
 		return rt;
 	}
 };

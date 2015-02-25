@@ -33,7 +33,7 @@ find_package( Boost 1.53.0 COMPONENTS thread system date_time )
 
 set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
-configure_file( "${PROJECT_SOURCE_DIR}/include/strus/analyzerVersion.hpp.in"  "${PROJECT_SOURCE_DIR}/include/strus/analyzerVersion.hpp"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/include/strus/versionAnalyzer.hpp.in"  "${PROJECT_SOURCE_DIR}/include/strus/versionAnalyzer.hpp"  @ONLY )
 
 enable_testing()
 

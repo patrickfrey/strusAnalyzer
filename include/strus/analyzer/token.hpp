@@ -26,19 +26,24 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_VERSION_HPP_INCLUDED
-#define _STRUS_ANALYZER_VERSION_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
+#include <string>
 
-namespace strus
+namespace strus {
+namespace analyzer {
+
+struct Token
 {
+	unsigned int pos;
+	unsigned int size;
 
-#define STRUS_ANAYLZER_VERSION (\
-	0 * 1000000\
-	+ 0 * 10000\
-	+ 1\
-)
+	Token( unsigned int pos_, unsigned int size_)
+		:pos(pos_),size(size_){}
+	Token( const Token& o)
+		:pos(o.pos),size(o.size){}
+};
 
-#define STRUS_ANAYLZER_VERSION_STRING "0.0.1"
-
-}//namespace
+}}//namespace
 #endif
+

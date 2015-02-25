@@ -28,7 +28,7 @@
 */
 #ifndef _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
-#include "strus/tokenizer/token.hpp"
+#include "strus/analyzer/token.hpp"
 #include <vector>
 #include <string>
 
@@ -76,7 +76,7 @@ public:
 	/// \param[in] ctx context object for tokenization, if needed. created with createContext(const std::string&)const 
 	/// \param[in] src pointer to chunk to tokenize
 	/// \param[in] srcsize size of chunk to tokenize in bytes
-	virtual std::vector<tokenizer::Token>
+	virtual std::vector<analyzer::Token>
 			tokenize( Context* ctx, const char* src, std::size_t srcsize) const=0;
 };
 

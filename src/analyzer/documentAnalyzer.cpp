@@ -32,7 +32,7 @@
 #include "strus/tokenizerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
-#include "strus/tokenizer/token.hpp"
+#include "strus/analyzer/token.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <stdexcept>
@@ -273,7 +273,7 @@ static void normalize(
 		const DocumentAnalyzer::FeatureConfig& feat,
 		const char* elem,
 		std::size_t elemsize,
-		const std::vector<tokenizer::Token>& pos,
+		const std::vector<analyzer::Token>& pos,
 		std::size_t curr_position,
 		std::vector<analyzer::Term>& searchTerms,
 		std::vector<analyzer::Term>& forwardTerms)
@@ -298,7 +298,7 @@ static void normalize(
 		}
 		case DocumentAnalyzer::FeatAttribute:
 		{
-			std::vector<tokenizer::Token>::const_iterator
+			std::vector<analyzer::Token>::const_iterator
 				pi = pos.begin(), pe = pos.end();
 			for (; pi != pe; ++pi)
 			{
@@ -311,7 +311,7 @@ static void normalize(
 		}
 		case DocumentAnalyzer::FeatSearchIndexTerm:
 		{
-			std::vector<tokenizer::Token>::const_iterator
+			std::vector<analyzer::Token>::const_iterator
 				pi = pos.begin(), pe = pos.end();
 			for (; pi != pe; ++pi)
 			{
@@ -325,7 +325,7 @@ static void normalize(
 		}
 		case DocumentAnalyzer::FeatForwardIndexTerm:
 		{
-			std::vector<tokenizer::Token>::const_iterator
+			std::vector<analyzer::Token>::const_iterator
 				pi = pos.begin(), pe = pos.end();
 			for (; pi != pe; ++pi)
 			{
@@ -448,7 +448,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 			}
 			else
 			{
-				std::vector<tokenizer::Token>
+				std::vector<analyzer::Token>
 					pos = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
 
 				normalize( rt, normctx, feat, elem, elemsize, pos, curr_position, *searchTerms, *forwardTerms);
@@ -469,7 +469,7 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 		TokenizerInterface::Context* tokctx = ctx.tokenizerContext( featidx);
 		NormalizerInterface::Context* normctx = ctx.normalizerContext( featidx);
 
-		std::vector<tokenizer::Token>
+		std::vector<analyzer::Token>
 			pos = feat.tokenizer()->tokenize(
 				tokctx,
 				ci->second.content.c_str(),

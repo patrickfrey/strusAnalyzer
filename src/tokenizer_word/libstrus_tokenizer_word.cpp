@@ -27,13 +27,13 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/tokenizer_word.hpp"
-#include "strus/tokenizer/token.hpp"
+#include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
 #include <vector>
 #include <string>
 
 using namespace strus;
-using namespace strus::tokenizer;
+using namespace strus::analyzer;
 
 class CharTable
 {

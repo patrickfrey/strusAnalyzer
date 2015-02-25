@@ -35,7 +35,7 @@
 #include <boost/algorithm/string.hpp>
 
 using namespace strus;
-using namespace strus::tokenizer;
+using namespace strus::analyzer;
 
 #undef STRUS_LOWLEVEL_DEBUG
 

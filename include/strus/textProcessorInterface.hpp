@@ -38,14 +38,14 @@ class NormalizerInterface;
 class TokenizerInterface;
 
 /// \class TextProcessorInterface
-/// \brief Interface for the object providing tokenizers and normalizers used for creating terms from chunks of text
+/// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text
 class TextProcessorInterface
 {
 public:
 	/// \brief Desructor
 	virtual ~TextProcessorInterface(){}
 
-	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text chunk into tokens
+	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens
 	/// \return the tokenizer reference
 	virtual const TokenizerInterface* getTokenizer( const std::string& name) const=0;
 

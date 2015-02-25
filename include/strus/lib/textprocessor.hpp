@@ -35,7 +35,7 @@ namespace strus {
 /// \brief Forward declaration analyze processor
 class TextProcessorInterface;
 
-/// \brief Create a token miner
+/// \brief Create a text processor
 /// \param[in] source token description source
 /// \return the constructed token miner factory
 TextProcessorInterface* createTextProcessor();

@@ -86,9 +86,9 @@ std::vector<analyzer::Term>
 	{
 		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");
 	}
-	std::vector<tokenizer::Token>
+	std::vector<analyzer::Token>
 		pos = feat.tokenizer()->tokenize( tokctx.get(), content.c_str(), content.size());
-	std::vector<tokenizer::Token>::const_iterator
+	std::vector<analyzer::Token>::const_iterator
 		pi = pos.begin(), pe = pos.end();
 
 	if (pi == pe) return rt;
