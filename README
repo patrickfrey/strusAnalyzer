@@ -1,16 +1,29 @@
 strusAnalyzer
 =============
 
-Library for document analysis that splits a document into normalized atomic terms that
-can be insterted into a strus storage for retrieval.
+Library for document analysis that splits a document into normalized atomic terms that can be insterted into a strus storage for retrieval. Also some functions for analysing tokens or phrases of the strus query are provided.
 
 
-For using it you have to include "strus/strusAnalyzer.hpp"
+Document analysis process:
+--------------------------
+Document anaylsis is seen as a process involving four steps. For each of these steps there exist interfaces and the involved components can be replaced or alternatively used if loading them as modules (see project strusModule).
+
+1. Document segmentation:
+	A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivarion of abbreviated syntax of XPath to select the segments.
+
+2. Segment tokenization
+	A segment delivered by the segmenter is split into tokens. The tokenization does not change the items selected. It just marks them by start and end position in the original source.
+
+3. Token normalization
+	A token delivered by the tokenization is passed to a function that returns the value of the item as it will be inserted into the storage.
 
 
-And link against at the libraries:
-
-  libstrus_analyzer.so
-  libstrus_tokenminer.so
-  libstrus_system.so
+Libraries provided:
+-------------------
+libstrus_analyzer.so			Exports a function to create an analyzer
+libstrus_textproc.so			Exports a function to create the object that provides all tokenizer and normalizer functions.
+libstrus_segmenter_textwolf.so		XML document segmenter based on textwolf
+libstrus_normalizer_snowball.so		Normalizer implementing stemming based on snowball
+libstrus_tokenizer_word.so		Tokenizer to split a text into words
+tokenizer_punctuation.so		Tokenizer to get end of sentence markers out of a text
 
