@@ -6,22 +6,22 @@ Library for document analysis that splits a document into normalized atomic term
 
 Document analysis process:
 --------------------------
-Document anaylsis is seen as a process involving four steps. For each of these steps there exist interfaces and the involved components can be replaced or alternatively used if loading them as modules (see project strusModule).
+Document anaylsis is seen as a process involving the following steps. For each of these steps there exist interfaces and the involved components can be replaced or alternatively used if loading them as modules (see project strusModule).
 
 1. Document segmentation:
 	A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivarion of abbreviated syntax of XPath to select the segments.
 
-2. Segment tokenization
+2. Segment tokenization:
 	A segment delivered by the segmenter is split into tokens. The tokenization does not change the items selected. It just marks them by start and end position in the original source.
 
-3. Token normalization
+3. Token normalization:
 	A token delivered by the tokenization is passed to a function that returns the value of the item as it will be inserted into the storage.
 
 
 Libraries provided:
 -------------------
-libstrus_analyzer.so			Exports a function to create an analyzer
-libstrus_textproc.so			Exports a function to create the object that provides all tokenizer and normalizer functions.
+libstrus_analyzer.so			Analyzer
+libstrus_textproc.so			Container for all text processing functions.
 libstrus_segmenter_textwolf.so		XML document segmenter based on textwolf
 libstrus_normalizer_snowball.so		Normalizer implementing stemming based on snowball
 libstrus_tokenizer_word.so		Tokenizer to split a text into words
