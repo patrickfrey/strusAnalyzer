@@ -26,7 +26,7 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/lib/textprocessor.hpp"
+#include "strus/lib/textproc.hpp"
 #include "strus/lib/normalizer_snowball.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
