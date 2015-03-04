@@ -31,6 +31,22 @@
 #include <utility>
 #include <string>
 
+#ifdef _MSC_VER
+#include <BaseTsd.h>
+namespace strus {
+	///\typedef SegmenterPosition
+	///\brief Byte position in scanned source
+	typedef INT64 SegmenterPosition;
+}//namespace
+#else
+#include <stdint.h>
+namespace strus {
+	///\typedef SegmenterPosition
+	///\brief Byte position in scanned source
+	typedef int64_t SegmenterPosition;
+}//namespace
+#endif
+
 namespace strus
 {
 
@@ -42,14 +58,14 @@ public:
 	/// \brief Destructor
 	virtual ~SegmenterInstanceInterface(){}
 
-	/// \brief Fetch the next chunk
-	/// \param[out] id identifier of the expression that addresses the chunk
-	/// \param[out] pos position of the chunk in the original source
-	/// \param[out] chunk pointer to the start of the chunk. Must remain a valid reference during the whole lifetime of this segmented instance.
-	/// \param[out] chunksize size of chunk in bytes
-	/// \return true, if a valid chunk could be returned, false in case of EOF (no chunks left)
+	/// \brief Fetch the next text segment
+	/// \param[out] id identifier of the expression that addresses the text segment (defined with SegmenterInterface::defineSelectorExpression(int, const std::string&) or with SegmenterInterface::defineSubSection(int,int,const std::string&))
+	/// \param[out] pos position of the segment in the original source
+	/// \param[out] segment pointer to the start of the segment. Must remain a valid reference during the whole lifetime of this segmented instance.
+	/// \param[out] segmentsize size of segment in bytes
+	/// \return true, if a valid segment could be returned, false in case of EOF (no segments left)
 	/// \remark throws on error
-	virtual bool getNext( int& id, std::size_t& pos, const char*& chunk, std::size_t& chunksize)=0;
+	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)=0;
 };
 
 }//namespace

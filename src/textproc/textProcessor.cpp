@@ -57,7 +57,21 @@ public:
 
 	virtual std::string normalize( Context*, const char* src, std::size_t srcsize) const
 	{
-		return std::string( src, srcsize);
+		std::string rt;
+		std::size_t ii=0;
+		for (;ii<srcsize; ++ii)
+		{
+			if ((unsigned char)src[ii] <= 32)
+			{
+				for (;src[ii+1] <= 32; ++ii){}
+				rt.push_back( ' ');
+			}
+			else
+			{
+				rt.push_back( src[ii]);
+			}
+		}
+		return rt;
 	}
 };
 

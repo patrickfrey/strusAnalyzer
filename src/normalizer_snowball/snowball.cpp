@@ -126,7 +126,14 @@ public:
 	
 			if (value < 0x7F)
 			{
-				rt.push_back( (char)value | 32);
+				if (value >= 'A' && value <= 'Z')
+				{
+					rt.push_back( (char)value | 32);
+				}
+				else
+				{
+					rt.push_back( (char)value);
+				}
 			}
 			else if (value <= 0xFF)
 			{

@@ -26,40 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include <map>
-#include <istream>
+#ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/document.hpp"
+#include <vector>
+#include <string>
 
 namespace strus
 {
 
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+/// \brief Defines the context for analyzing multi part documents, iterating on the sub documents defined, splitting them into normalized terms that can be fed to the strus IR engine
+class DocumentAnalyzerInstanceInterface
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	/// \brief Destructor
+	virtual ~DocumentAnalyzerInstanceInterface(){}
 
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
+	/// \brief Analyze the next sub document from an input stream
+	/// \param[in,out] input stream to fetch the document content string to analyze from
+	/// \return the analyzed sub document structure
+	virtual analyzer::Document analyzeNext()=0;
 
-	virtual SegmenterInstanceInterface* createInstance( std::istream& input) const;
-
-	virtual SelectorType getSelectorType( int id) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
-	std::map<int,SelectorType> m_selectorTypeMap;
+	/// \brief Evaluate if there is a document left on the input stream to analyze
+	virtual bool hasMore() const=0;
 };
 
 }//namespace
 #endif
-

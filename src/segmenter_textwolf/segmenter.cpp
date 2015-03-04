@@ -61,28 +61,22 @@ static void skipSpaces( char const*& si, const char* se)
 	for (; si != se && isSpace(*si); ++si){}
 }
 
-static void updateSelectorTypeMap(
-		const textwolf::XMLPathSelectAutomatonParser<>& atm,
-		std::map<int,SegmenterInterface::SelectorType>& selectorTypeMap,
-		int id,
-		const std::string& expression)
-{
-	XMLPathSelect xs( &atm);
-	std::vector<std::string> tags;
 
-	enum ExpressionClass
-	{
-		ContentSelection,
-		TagSelection,
-		AttributeSelection
-	};
-	ExpressionClass expressionClass = TagSelection;
-		
+enum ExpressionClass
+{
+	ContentSelection,
+	TagSelection,
+	AttributeSelection
+};
+
+// Determine the ExpressionClass
+// and get the tag selection state of the last tag node of the expression:
+static ExpressionClass getExpressionClass( const std::string& expression, std::vector<std::string>& tags)
+{
+	ExpressionClass rt = TagSelection;
 	char const* si = expression.c_str();
 	char const* se = si + expression.size();
 
-	// Determine the ExpressionClass
-	// and get the tag selection state of the last tag node of the expression:
 	while (si != se)
 	{
 		for (; si != se && (*si == '/' || isSpace(*si)); ++si){}
@@ -111,7 +105,7 @@ static void updateSelectorTypeMap(
 			for (; si != se && isTagNameChar(*si); ++si){}
 			if (si == se)
 			{
-				expressionClass = AttributeSelection;
+				rt = AttributeSelection;
 			}
 			continue;
 		}
@@ -125,13 +119,26 @@ static void updateSelectorTypeMap(
 				skipSpaces( si, se);
 				if (si == se)
 				{
-					expressionClass = ContentSelection;
+					rt = ContentSelection;
 				}
 			}
 			continue;
 		}
 		throw std::runtime_error( std::string( "error in path expression at '") + si + "' (expression '" + expression + "')");
 	}
+	return rt;
+}
+
+static void updateSelectorTypeMap(
+		const textwolf::XMLPathSelectAutomatonParser<>& atm,
+		std::map<int,SegmenterInterface::SelectorType>& selectorTypeMap,
+		int id,
+		const std::string& expression)
+{
+	XMLPathSelect xs( &atm);
+	std::vector<std::string> tags;
+
+	ExpressionClass expressionClass = getExpressionClass( expression, tags);
 	switch (expressionClass)
 	{
 		case ContentSelection:
@@ -215,7 +222,7 @@ SegmenterInterface::SelectorType Segmenter::getSelectorType( int id) const
 	return si->second;
 }
 
-void Segmenter::defineSelectorExpression( int id, const std::string& expression)
+void Segmenter::addExpression( int id, const std::string& expression)
 {
 	int errorpos = m_automaton.addExpression( id, expression.c_str(), expression.size());
 	if (errorpos)
@@ -240,12 +247,30 @@ void Segmenter::defineSelectorExpression( int id, const std::string& expression)
 		}
 		throw std::runtime_error( std::string( "error in selection expression '") + expression + "' at " + locstr);
 	}
+}
+
+void Segmenter::defineSelectorExpression( int id, const std::string& expression)
+{
+	addExpression( id, expression);
 	updateSelectorTypeMap( m_automaton, m_selectorTypeMap, id, expression);
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( const std::string& source) const
+
+void Segmenter::defineSubSection( int startId, int endId, const std::string& expression)
 {
-	return new SegmenterInstance( &m_automaton, source.c_str());
+	std::vector<std::string> tags;
+	if (getExpressionClass( expression, tags) != TagSelection)
+	{
+		throw std::runtime_error( std::string( "tag selection expected for defining a sub section of the document: '") + expression + "'");
+	}
+	addExpression( startId, expression);
+	addExpression( endId, expression + "~");
+}
+
+
+SegmenterInstanceInterface* Segmenter::createInstance( std::istream& input) const
+{
+	return new SegmenterInstance( &m_automaton, input);
 }
 
 

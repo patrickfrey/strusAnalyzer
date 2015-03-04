@@ -48,6 +48,12 @@ public:
 	/// \param[in] expression expression for selecting chunks
 	virtual void defineSelectorExpression( int id, const std::string& expression)=0;
 
+	/// \brief Defines an expression for identifying a sub section of the document.
+	/// \param[in] startId identifier to be returned when a sub section of this type starts
+	/// \param[in] endId identifier to be returned when a sub section of this type ends
+	/// \param[in] expression expression for selecting the sub section
+	virtual void defineSubSection( int startId, int endId, const std::string& expression)=0;
+
 	/// \enum SelectorType
 	/// \brief Classification of selector expressions that determine how positions are assigned to terms
 	/// \remark The motivation of defining a selector type is to classify elements that are just markup that should influence positions of real terms.
@@ -70,9 +76,9 @@ public:
 	virtual SelectorType getSelectorType( int id) const=0;
 
 	/// \brief Creates an instance of the segmenter
-	/// \param[in] source pointer to source. Expected to be valid the whole life time of the instance created
-	/// \return the segmenter object to be desposed with delete by the caller
-	virtual SegmenterInstanceInterface* createInstance( const std::string& source) const=0;
+	/// \param[in] source source stream. Expected to be valid the whole life time of the instance created
+	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
+	virtual SegmenterInstanceInterface* createInstance( std::istream& input) const=0;
 };
 
 }//namespace

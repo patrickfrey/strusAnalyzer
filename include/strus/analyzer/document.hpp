@@ -40,28 +40,24 @@ namespace analyzer {
 class Document
 {
 public:
-	Document()
-		:m_metadata(0){}
+	Document(){}
 	Document( const Document& o)
-		:m_metadata(o.m_metadata)
+		:m_subdoctypename(o.m_subdoctypename)
+		,m_metadata(o.m_metadata)
 		,m_attributes(o.m_attributes)
 		,m_searchIndexTerms(o.m_searchIndexTerms)
 		,m_forwardIndexTerms(o.m_forwardIndexTerms){}
-	Document(
-			const std::vector<MetaData>& metadata_,
-			const std::vector<Attribute>& attributes_,
-			const std::vector<Term>& searchIndexTerms_,
-			const std::vector<Term>& forwardIndexTerms_)
-		:m_metadata(metadata_)
-		,m_attributes(attributes_)
-		,m_searchIndexTerms(searchIndexTerms_)
-		,m_forwardIndexTerms(forwardIndexTerms_){}
 
+	const std::string& subDocumentTypeName() const		{return m_subdoctypename;}
 	const std::vector<Attribute>& attributes() const	{return m_attributes;}
 	const std::vector<MetaData>& metadata() const		{return m_metadata;}
 	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
 	const std::vector<Term>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
 
+	void setSubDocumentTypeName( const std::string& n)
+	{
+		m_subdoctypename = n;
+	}
 	void setAttribute( const std::string& t, const std::string& v)
 	{
 		m_attributes.push_back( Attribute( t,v));
@@ -80,6 +76,7 @@ public:
 	}
 
 private:
+	std::string m_subdoctypename;
 	std::vector<MetaData> m_metadata;
 	std::vector<Attribute> m_attributes;
 	std::vector<Term> m_searchIndexTerms;

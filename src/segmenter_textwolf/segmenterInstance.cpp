@@ -31,8 +31,8 @@
 
 using namespace strus;
 
-SegmenterInstance::SegmenterInstance( const Automaton* automaton_, const char* src_)
-	:m_automaton(automaton_),m_src(src_),m_scanner( src_),m_pathselect(automaton_)
+SegmenterInstance::SegmenterInstance( const Automaton* automaton_, std::istream& input_)
+	:m_automaton(automaton_),m_scanner(textwolf::IStreamIterator(input_)),m_pathselect(automaton_)
 {
 	m_itr = m_scanner.begin();
 	m_end = m_scanner.end();
@@ -47,7 +47,7 @@ SegmenterInstance::SegmenterInstance( const Automaton* automaton_, const char* s
 	}
 }
 
-bool SegmenterInstance::getNext( int& id, std::size_t& pos, const char*& chunk, std::size_t& chunksize)
+bool SegmenterInstance::getNext( int& id, SegmenterPosition& pos, const char*& chunk, std::size_t& chunksize)
 {
 	if (m_itr == m_end) return false;
 	while (m_selitr == m_selend)
@@ -70,7 +70,7 @@ bool SegmenterInstance::getNext( int& id, std::size_t& pos, const char*& chunk, 
 	}
 	id = *m_selitr;
 	++m_selitr;
-	pos = m_scanner.getPosition() - m_itr->size();
+	pos = m_scanner.getIterator().position() - m_itr->size();
 	chunk = m_itr->content();
 	chunksize = m_itr->size();
 	return true;

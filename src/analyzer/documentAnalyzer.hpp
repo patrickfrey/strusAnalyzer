@@ -29,10 +29,14 @@
 #ifndef _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
+#include "strus/segmenterInterface.hpp"
+#include "strus/segmenterInstanceInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
 #include <vector>
 #include <string>
+#include <map>
 #include <utility>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
@@ -91,9 +95,15 @@ public:
 		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer);
 	}
 
+	virtual void defineSubDocument(
+			const std::string& subDocumentTypeName,
+			const std::string& selectexpr);
 
-	virtual analyzer::Document analyze(
-			const std::string& content) const;
+	virtual analyzer::Document analyze( const std::string& content) const;
+
+	virtual analyzer::Document analyze( std::istream& input) const;
+
+	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzerInstance( std::istream& input) const;
 
 public:
 	enum FeatureClass
@@ -133,7 +143,7 @@ public:
 			,m_normalizerarg(o.m_normalizerarg)
 			,m_featureClass(o.m_featureClass){}
 	
-		const std::string& name() const			{return m_name;}
+		const std::string& name() const					{return m_name;}
 		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
 		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
 		const NormalizerInterface* normalizer() const			{return m_normalizer;}
@@ -160,9 +170,102 @@ private:
 	const FeatureConfig& featureConfig( int featidx) const;
 
 private:
+	friend class DocumentAnalyzerInstance;
 	const TextProcessorInterface* m_textProcessor;
 	boost::scoped_ptr<SegmenterInterface> m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
+	std::vector<std::string> m_subdoctypear;
+};
+
+
+class ParserContext
+{
+public:
+	ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config);
+	~ParserContext()
+	{
+		cleanup();
+	}
+
+	void cleanup();
+
+	NormalizerInterface::Context* normalizerContext( int featidx) const;
+	TokenizerInterface::Context* tokenizerContext( int featidx) const;
+
+private:
+	TokenizerInterface::Context** m_tokenizerContextAr;
+	NormalizerInterface::Context** m_normalizerContextAr;
+	std::size_t m_size;
+};
+
+
+class DocumentAnalyzerInstance
+	:public DocumentAnalyzerInstanceInterface
+{
+public:
+	explicit DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_, std::istream& input_)
+		:m_analyzer(analyzer_)
+		,m_segmenter(m_analyzer->m_segmenter->createInstance( input_))
+		,m_parserContext(analyzer_->m_featurear)
+	{
+		m_subdocstack.push_back( analyzer::Document());
+		m_selectortypes.resize( analyzer_->m_featurear.size(), -1);
+		m_searchTerms = &m_searchTerms_content;
+		m_forwardTerms = &m_forwardTerms_content;
+	}
+
+	virtual ~DocumentAnalyzerInstance()
+	{
+		delete m_segmenter;
+	}
+
+	virtual analyzer::Document analyzeNext();
+
+	virtual bool hasMore() const
+	{
+		return !m_subdocstack.empty();
+	}
+
+private:
+	void setSelectorType( int featidx);
+	void clearTermMaps();
+	void normalizeConcatenatedMap( analyzer::Document& res) const;
+	void mapPositions( analyzer::Document& res) const;
+	void pushConcatenated( int featidx, std::size_t curr_position, const char* elem, std::size_t elemsize);
+
+private:
+	const DocumentAnalyzer* m_analyzer;
+	SegmenterInstanceInterface* m_segmenter;
+	ParserContext m_parserContext;
+	std::vector<int> m_selectortypes;
+	std::vector<analyzer::Document> m_subdocstack;
+
+	struct Chunk
+	{
+		Chunk()
+			:selector(SegmenterInterface::Content),position(0){}
+		Chunk( SegmenterInterface::SelectorType selector_, std::size_t position_, const std::string& content_)
+			:selector(selector_),position(position_),content(content_){}
+		Chunk( const Chunk& o)
+			:selector(o.selector),position(o.position),content(o.content){}
+	
+		SegmenterInterface::SelectorType selector;
+		std::size_t position;
+		std::string content;
+	};
+	
+	typedef std::map<int,Chunk> ConcatenatedMap;
+
+	ConcatenatedMap m_concatenatedMap;
+
+	std::vector<analyzer::Term> m_searchTerms_pred;
+	std::vector<analyzer::Term> m_searchTerms_succ;
+	std::vector<analyzer::Term> m_searchTerms_content;
+	std::vector<analyzer::Term> m_forwardTerms_pred;
+	std::vector<analyzer::Term> m_forwardTerms_succ;
+	std::vector<analyzer::Term> m_forwardTerms_content;
+	std::vector<analyzer::Term>* m_searchTerms;
+	std::vector<analyzer::Term>* m_forwardTerms;
 };
 
 }//namespace
