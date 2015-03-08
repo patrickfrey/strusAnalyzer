@@ -16,6 +16,7 @@ include_directories(
 link_directories(
    "${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
    "${PROJECT_SOURCE_DIR}/src/textproc"
+   "${PROJECT_SOURCE_DIR}/src/utils"
 )
 
 
@@ -23,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_analyzer SHARED ${source_files} )
-target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc)
+target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strus_private_utils )
 set_target_properties(
     strus_analyzer
     PROPERTIES

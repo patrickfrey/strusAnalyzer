@@ -9,14 +9,15 @@ set(source_files
 )
 
 include_directories(  
-  "${PROJECT_SOURCE_DIR}/include" 
-  "${PROJECT_SOURCE_DIR}/src//textwolf/include"
+	"${PROJECT_SOURCE_DIR}/include" 
+	"${PROJECT_SOURCE_DIR}/src//textwolf/include"
 )
 
 link_directories(
-   "${PROJECT_SOURCE_DIR}/src/normalizer_snowball"
-   "${PROJECT_SOURCE_DIR}/src/tokenizer_punctuation"
-   "${PROJECT_SOURCE_DIR}/src/tokenizer_word"
+	"${PROJECT_SOURCE_DIR}/src/normalizer_snowball"
+	"${PROJECT_SOURCE_DIR}/src/tokenizer_punctuation"
+ 	"${PROJECT_SOURCE_DIR}/src/tokenizer_word"
+ 	"${PROJECT_SOURCE_DIR}/src/utils"
 )
 
 
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_textproc SHARED ${source_files} )
-target_link_libraries( strus_textproc  strus_normalizer_snowball strus_tokenizer_punctuation strus_tokenizer_word)
+target_link_libraries( strus_textproc  strus_normalizer_snowball strus_tokenizer_punctuation strus_tokenizer_word strus_private_utils )
 set_target_properties(
     strus_textproc
     PROPERTIES

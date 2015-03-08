@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <string>
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -42,7 +42,7 @@ int main( int , const char** )
 {
 	try
 	{
-		boost::scoped_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf());
+		std::auto_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf());
 
 		segmenter->defineSelectorExpression( 1, "/doc/person/name()");
 		segmenter->defineSelectorExpression( 2, "/doc/person/birth()");

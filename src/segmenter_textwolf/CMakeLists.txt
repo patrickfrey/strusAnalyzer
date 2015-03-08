@@ -10,14 +10,17 @@ set(source_files
 )
 
 include_directories(  
-  "${PROJECT_SOURCE_DIR}/include" 
-  "${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${PROJECT_SOURCE_DIR}/include" 
+	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+)
+link_directories(
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
+target_link_libraries( strus_segmenter_textwolf )
 set_target_properties(
     strus_segmenter_textwolf
     PROPERTIES

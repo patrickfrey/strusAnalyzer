@@ -30,8 +30,8 @@
 #include "libstemmer.h"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
+#include "private/utils.hpp"
 #include <stdexcept>
-#include <boost/algorithm/string.hpp>
 
 using namespace strus;
 
@@ -50,7 +50,7 @@ public:
 	public:
 		ThisArgument( const std::string& language)
 		{
-			std::string language_lo = boost::algorithm::to_lower_copy( language);
+			std::string language_lo = utils::tolower( language);
 			m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
 			if (!m_stemmer)
 			{

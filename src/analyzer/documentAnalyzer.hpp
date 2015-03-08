@@ -34,19 +34,16 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <map>
 #include <utility>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace strus
 {
 /// \brief Forward declaration
 class TextProcessorInterface;
-/// \brief Forward declaration
-class SegmenterInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
@@ -57,7 +54,10 @@ public:
 			const TextProcessorInterface* textProcessor_,
 			SegmenterInterface* segmenter_);
 
-	virtual ~DocumentAnalyzer(){}
+	virtual ~DocumentAnalyzer()
+	{
+		delete m_segmenter;
+	}
 
 	virtual void addSearchIndexFeature(
 			const std::string& type,
@@ -124,9 +124,9 @@ public:
 	public:
 		FeatureConfig( const std::string& name_,
 				const TokenizerInterface* tokenizer_,
-				const boost::shared_ptr<TokenizerInterface::Argument>& tokenizerarg_,
+				const utils::SharedPtr<TokenizerInterface::Argument>& tokenizerarg_,
 				const NormalizerInterface* normalizer_,
-				const boost::shared_ptr<NormalizerInterface::Argument>& normalizerarg_,
+				const utils::SharedPtr<NormalizerInterface::Argument>& normalizerarg_,
 				FeatureClass featureClass_)
 			:m_name(name_)
 			,m_tokenizer(tokenizer_)
@@ -153,9 +153,9 @@ public:
 	private:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
-		boost::shared_ptr<TokenizerInterface::Argument> m_tokenizerarg;
+		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
 		const NormalizerInterface* m_normalizer;
-		boost::shared_ptr<NormalizerInterface::Argument> m_normalizerarg;
+		utils::SharedPtr<NormalizerInterface::Argument> m_normalizerarg;
 		FeatureClass m_featureClass;
 	};
 
@@ -172,7 +172,7 @@ private:
 private:
 	friend class DocumentAnalyzerInstance;
 	const TextProcessorInterface* m_textProcessor;
-	boost::scoped_ptr<SegmenterInterface> m_segmenter;
+	SegmenterInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
 };

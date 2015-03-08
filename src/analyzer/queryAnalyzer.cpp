@@ -30,8 +30,7 @@
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
-#include <boost/algorithm/string.hpp>
-#include <boost/scoped_ptr.hpp>
+#include "private/utils.hpp"
 #include <stdexcept>
 #include <set>
 #include <map>
@@ -51,17 +50,17 @@ void QueryAnalyzer::definePhraseType(
 {
 	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
 	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
-	boost::shared_ptr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
-	boost::shared_ptr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
+	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
+	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
 
-	m_featuremap[ boost::algorithm::to_lower_copy( phraseType)]
+	m_featuremap[ utils::tolower( phraseType)]
 		= FeatureConfig( featureType, tk, tkarg, nm, nmarg);
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
 {
 	std::map<std::string,FeatureConfig>::const_iterator
-		fi = m_featuremap.find( boost::algorithm::to_lower_copy( phraseType));
+		fi = m_featuremap.find( utils::tolower( phraseType));
 	if (fi == m_featuremap.end())
 	{
 		throw std::runtime_error(std::string( "query feature constructor for phrase type '") + phraseType + "' is not defined");
@@ -76,8 +75,8 @@ std::vector<analyzer::Term>
 {
 	std::vector<analyzer::Term> rt;
 	const FeatureConfig& feat = featureConfig( phraseType);
-	boost::scoped_ptr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
-	boost::scoped_ptr<NormalizerInterface::Context> normctx( feat.normalizer()->createContext( feat.normalizerarg()));
+	utils::ScopedPtr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
+	utils::ScopedPtr<NormalizerInterface::Context> normctx( feat.normalizer()->createContext( feat.normalizerarg()));
 	if (feat.tokenizerarg() && !tokctx.get())
 	{
 		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");

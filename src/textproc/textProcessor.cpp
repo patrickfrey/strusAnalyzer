@@ -30,8 +30,8 @@
 #include "strus/tokenizerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "private/utils.hpp"
 #include <stdexcept>
-#include <boost/algorithm/string.hpp>
 
 using namespace strus;
 using namespace strus::analyzer;
@@ -105,7 +105,7 @@ TextProcessor::TextProcessor()
 const TokenizerInterface* TextProcessor::getTokenizer( const std::string& name) const
 {
 	std::map<std::string,const TokenizerInterface*>::const_iterator
-		ti = m_tokenizer_map.find( boost::algorithm::to_lower_copy( name));
+		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
 		throw std::runtime_error(std::string("no tokenizer defined with name '") + name + "'");
@@ -116,7 +116,7 @@ const TokenizerInterface* TextProcessor::getTokenizer( const std::string& name) 
 const NormalizerInterface* TextProcessor::getNormalizer( const std::string& name) const
 {
 	std::map<std::string,const NormalizerInterface*>::const_iterator
-		ni = m_normalizer_map.find( boost::algorithm::to_lower_copy( name));
+		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
 		throw std::runtime_error(std::string("no normalizer defined with name '") + name + "'");
@@ -126,12 +126,12 @@ const NormalizerInterface* TextProcessor::getNormalizer( const std::string& name
 
 void TextProcessor::defineTokenizer( const std::string& name, const TokenizerInterface* tokenizer)
 {
-	m_tokenizer_map[ boost::algorithm::to_lower_copy( name)] = tokenizer;
+	m_tokenizer_map[ utils::tolower( name)] = tokenizer;
 }
 
 void TextProcessor::defineNormalizer( const std::string& name, const NormalizerInterface* normalizer)
 {
-	m_normalizer_map[ boost::algorithm::to_lower_copy( name)] = normalizer;
+	m_normalizer_map[ utils::tolower( name)] = normalizer;
 }
 
 

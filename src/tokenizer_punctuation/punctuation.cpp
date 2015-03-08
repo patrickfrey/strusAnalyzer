@@ -30,9 +30,9 @@
 #include "textwolf/textscanner.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "textwolf/charset.hpp"
+#include "private/utils.hpp"
 #include <cstring>
 #include <iostream>
-#include <boost/algorithm/string.hpp>
 
 using namespace strus;
 using namespace strus::analyzer;
@@ -104,7 +104,8 @@ public:
 	public:
 		explicit ThisArgument( const std::string& language)
 		{
-			if (boost::iequals( language, "de") || boost::iequals( language, "D"))
+			if (utils::caseInsensitiveEquals( language, "de")
+			||  utils::caseInsensitiveEquals( language, "D"))
 			{
 				m_language = LANG_DE;
 			}

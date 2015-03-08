@@ -9,20 +9,21 @@ set(source_files
 )
 
 include_directories(  
-  "${PROJECT_SOURCE_DIR}/include" 
-  "${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c/include"
-  "${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${PROJECT_SOURCE_DIR}/include" 
+	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c/include"
+	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 )
 
 link_directories(
-   "${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c"
+	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c"
+	"${PROJECT_SOURCE_DIR}/src/utils"
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_snowball SHARED ${source_files} )
-target_link_libraries( strus_normalizer_snowball stemmer)
+target_link_libraries( strus_normalizer_snowball  stemmer strus_private_utils )
 set_target_properties(
     strus_normalizer_snowball
     PROPERTIES

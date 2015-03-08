@@ -33,8 +33,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
-#include <boost/algorithm/string.hpp>
-#include <boost/scoped_ptr.hpp>
+#include "private/utils.hpp"
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -69,12 +68,12 @@ void DocumentAnalyzer::defineFeature(
 {
 	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
 	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
-	boost::shared_ptr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
+	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
 	if (!tkarg.get() && !tokenizer.arguments().empty())
 	{
 		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizer.name() + "'");
 	}
-	boost::shared_ptr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
+	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
 	if (!nmarg.get() && !normalizer.arguments().empty())
 	{
 		throw std::runtime_error( std::string( "no arguments expected for normalizer '") + normalizer.name() + "'");

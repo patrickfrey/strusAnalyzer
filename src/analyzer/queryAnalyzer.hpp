@@ -31,11 +31,11 @@
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <utility>
 #include <map>
-#include <boost/shared_ptr.hpp>
 
 namespace strus
 {
@@ -71,9 +71,9 @@ private:
 
 		FeatureConfig( const std::string& featureType_,
 				const TokenizerInterface* tokenizer_,
-				const boost::shared_ptr<TokenizerInterface::Argument>& tokenizerarg_,
+				const utils::SharedPtr<TokenizerInterface::Argument>& tokenizerarg_,
 				const NormalizerInterface* normalizer_,
-				const boost::shared_ptr<NormalizerInterface::Argument>& normalizerarg_)
+				const utils::SharedPtr<NormalizerInterface::Argument>& normalizerarg_)
 			:m_featureType(featureType_)
 			,m_tokenizer(tokenizer_)
 			,m_tokenizerarg(tokenizerarg_)
@@ -101,9 +101,9 @@ private:
 	private:
 		std::string m_featureType;
 		const TokenizerInterface* m_tokenizer;
-		boost::shared_ptr<TokenizerInterface::Argument> m_tokenizerarg;
+		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
 		const NormalizerInterface* m_normalizer;
-		boost::shared_ptr<NormalizerInterface::Argument> m_normalizerarg;
+		utils::SharedPtr<NormalizerInterface::Argument> m_normalizerarg;
 	};
 
 	/// \brief Get the feature configuration for a named phrase type
