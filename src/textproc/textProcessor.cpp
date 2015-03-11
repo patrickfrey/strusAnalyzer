@@ -85,7 +85,7 @@ public:
 			tokenize( Context* ctx, const char* src, std::size_t srcsize) const
 	{
 		std::vector<analyzer::Token> rt;
-		rt.push_back( analyzer::Token( 0, srcsize));
+		rt.push_back( analyzer::Token( 0, 0, srcsize));
 		return rt;
 	}
 };

@@ -35,13 +35,14 @@ namespace analyzer {
 
 struct Token
 {
-	unsigned int pos;
-	unsigned int size;
+	unsigned int docpos;	///< logical byte position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
+	unsigned int strpos;	///< start byte position of the token string in the original document segment
+	unsigned int strsize;	///< byte size of the token string in the original document segment
 
-	Token( unsigned int pos_, unsigned int size_)
-		:pos(pos_),size(size_){}
+	Token( unsigned int docpos_, unsigned int strpos_, unsigned int strsize_)
+		:docpos(docpos_),strpos(strpos_),strsize(strsize_){}
 	Token( const Token& o)
-		:pos(o.pos),size(o.size){}
+		:docpos(o.docpos),strpos(o.strpos),strsize(o.strsize){}
 };
 
 }}//namespace

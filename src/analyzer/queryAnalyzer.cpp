@@ -91,17 +91,17 @@ std::vector<analyzer::Term>
 		pi = pos.begin(), pe = pos.end();
 
 	if (pi == pe) return rt;
-	unsigned int prevpos = pi->pos;
+	unsigned int prevpos = pi->docpos;
 	for (unsigned int posidx=1; pi != pe; ++pi)
 	{
-		if (pi->pos > prevpos)
+		if (pi->docpos > prevpos)
 		{
 			posidx += 1;
-			prevpos = pi->pos;
+			prevpos = pi->docpos;
 		}
 		std::string val
 			= feat.normalizer()->normalize(
-				normctx.get(), content.c_str() + pi->pos, pi->size);
+				normctx.get(), content.c_str() + pi->strpos, pi->strsize);
 		rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
 	}
 	return rt;

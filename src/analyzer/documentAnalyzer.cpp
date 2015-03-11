@@ -65,10 +65,18 @@ void DocumentAnalyzer::defineFeature(
 	const std::string& expression,
 	const TokenizerConfig& tokenizer,
 	const NormalizerConfig& normalizer,
-	PositionBind positionBind)
+	const FeatureOptions& options)
 {
 	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
 	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
+
+	if (tk->concatBeforeTokenize())
+	{
+		if (options.positionBind() != FeatureOptions::BindContent)
+		{
+			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
+		}
+	}
 	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
 	if (!tkarg.get() && !tokenizer.arguments().empty())
 	{
@@ -80,7 +88,7 @@ void DocumentAnalyzer::defineFeature(
 		throw std::runtime_error( std::string( "no arguments expected for normalizer '") + normalizer.name() + "'");
 	}
 
-	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass, positionBind));
+	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass, options));
 	if (m_featurear.size() >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
@@ -198,12 +206,12 @@ TokenizerInterface::Context* ParserContext::tokenizerContext( int featidx) const
 void DocumentAnalyzerInstance::mapPositions( analyzer::Document& res) const
 {
 	std::set<unsigned int> pset;
-	std::vector<analyzer::Term>::const_iterator ri = m_searchTerms_content.begin(), re = m_searchTerms_content.end();
+	std::vector<analyzer::Term>::const_iterator ri = m_searchTerms.begin(), re = m_searchTerms.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
 	}
-	ri = m_forwardTerms_content.begin(), re = m_forwardTerms_content.end();
+	ri = m_forwardTerms.begin(), re = m_forwardTerms.end();
 	for (; ri != re; ++ri)
 	{
 		pset.insert( ri->pos());
@@ -224,103 +232,38 @@ void DocumentAnalyzerInstance::mapPositions( analyzer::Document& res) const
 	{
 		posofs = res.forwardIndexTerms().back().pos();
 	}
-	for (ri = m_searchTerms_content.begin(), re = m_searchTerms_content.end(); ri != re; ++ri)
+	for (ri = m_searchTerms.begin(), re = m_searchTerms.end(); ri != re; ++ri)
 	{
 		unsigned int pos = posmap[ ri->pos()];
 		res.addSearchIndexTerm( ri->type(), ri->value(), pos + posofs);
 	}
-	for (ri = m_forwardTerms_content.begin(), re = m_forwardTerms_content.end(); ri != re; ++ri)
+	for (ri = m_forwardTerms.begin(), re = m_forwardTerms.end(); ri != re; ++ri)
 	{
 		unsigned int pos = posmap[ ri->pos()];
-		res.addForwardIndexTerm( ri->type(), ri->value(), pos + posofs);
-	}
-	for (ri = m_searchTerms_pred.begin(), re = m_searchTerms_pred.end(); ri != re; ++ri)
-	{
-		unsigned int pos = 1;
-		if (!posmap.empty())
-		{
-			std::map<unsigned int, unsigned int>::const_iterator
-				si = posmap.upper_bound( ri->pos());
-			--si;
-			pos = si->second;
-		}
-		res.addSearchIndexTerm( ri->type(), ri->value(), pos + posofs);
-	}
-	for (ri = m_forwardTerms_pred.begin(), re = m_forwardTerms_pred.end(); ri != re; ++ri)
-	{
-		unsigned int pos = 1;
-		if (!posmap.empty())
-		{
-			std::map<unsigned int, unsigned int>::const_iterator
-				si = posmap.upper_bound( ri->pos());
-			--si;
-			pos = si->second;
-		}
-		res.addForwardIndexTerm( ri->type(), ri->value(), pos + posofs);
-	}
-	for (ri = m_searchTerms_succ.begin(), re = m_searchTerms_succ.end(); ri != re; ++ri)
-	{
-		unsigned int pos = 1;
-		if (!posmap.empty())
-		{
-			std::map<unsigned int, unsigned int>::const_iterator
-				si = posmap.upper_bound( ri->pos());
-			if (si == posmap.end())
-			{
-				pos = pcnt+1;
-			}
-			else
-			{
-				pos = si->second;
-			}
-		}
-		res.addSearchIndexTerm( ri->type(), ri->value(), pos + posofs);
-	}
-	for (ri = m_forwardTerms_succ.begin(), re = m_forwardTerms_succ.end(); ri != re; ++ri)
-	{
-		unsigned int pos = 1;
-		if (!posmap.empty())
-		{
-			std::map<unsigned int, unsigned int>::const_iterator
-				si = posmap.upper_bound( ri->pos());
-			if (si == posmap.end())
-			{
-				pos = pcnt+1;
-			}
-			else
-			{
-				pos = si->second;
-			}
-		}
 		res.addForwardIndexTerm( ri->type(), ri->value(), pos + posofs);
 	}
 }
 
-
-static void normalize(
-		analyzer::Document& res,
-		NormalizerInterface::Context* normctx,
-		const DocumentAnalyzer::FeatureConfig& feat,
-		const char* elem,
-		std::size_t elemsize,
-		const std::vector<analyzer::Token>& pos,
-		std::size_t curr_position,
-		std::vector<analyzer::Term>& searchTerms,
-		std::vector<analyzer::Term>& forwardTerms)
+void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
+	TokenizerInterface::Context* tokctx = m_parserContext.tokenizerContext( featidx);
+	NormalizerInterface::Context* normctx = m_parserContext.normalizerContext( featidx);
+
+	const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
+	std::vector<analyzer::Token> tokens = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
 
 	switch (feat.featureClass())
 	{
 		case DocumentAnalyzer::FeatMetaData:
 		{
-			if (!pos.empty())
+			if (!tokens.empty())
 			{
 				std::string valstr(
 					feat.normalizer()->normalize(
-						normctx, elem + pos[0].pos, pos[0].size));
+						normctx, elem + tokens[0].strpos, tokens[0].strsize));
 				res.setMetaData( feat.name(), valstr);
 			}
-			if (pos.size() > 1)
+			if (tokens.size() > 1)
 			{
 				throw std::runtime_error( "metadata feature tokenized to to more than one part");
 			}
@@ -329,12 +272,12 @@ static void normalize(
 		case DocumentAnalyzer::FeatAttribute:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				pi = pos.begin(), pe = pos.end();
-			for (; pi != pe; ++pi)
+				ti = tokens.begin(), te = tokens.end();
+			for (; ti != te; ++ti)
 			{
 				std::string valstr(
 					feat.normalizer()->normalize(
-						normctx, elem + pi->pos, pi->size));
+						normctx, elem + ti->strpos, ti->strsize));
 				res.setAttribute( feat.name(), valstr);
 			}
 			break;
@@ -342,28 +285,28 @@ static void normalize(
 		case DocumentAnalyzer::FeatSearchIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				pi = pos.begin(), pe = pos.end();
-			for (; pi != pe; ++pi)
+				ti = tokens.begin(), te = tokens.end();
+			for (; ti != te; ++ti)
 			{
 				std::string valstr(
 					feat.normalizer()->normalize(
-						normctx, elem + pi->pos, pi->size));
-				searchTerms.push_back(
-					analyzer::Term( feat.name(), valstr, curr_position + pi->pos));
+						normctx, elem + ti->strpos, ti->strsize));
+				m_searchTerms.push_back(
+					analyzer::Term( feat.name(), valstr, rel_position + ti->docpos));
 			}
 			break;
 		}
 		case DocumentAnalyzer::FeatForwardIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				pi = pos.begin(), pe = pos.end();
-			for (; pi != pe; ++pi)
+				ti = tokens.begin(), te = tokens.end();
+			for (; ti != te; ++ti)
 			{
 				std::string valstr(
 					feat.normalizer()->normalize(
-						normctx, elem + pi->pos, pi->size));
-				forwardTerms.push_back(
-					analyzer::Term( feat.name(), valstr, curr_position + pi->pos));
+						normctx, elem + ti->strpos, ti->strsize));
+				m_forwardTerms.push_back(
+					analyzer::Term( feat.name(), valstr, rel_position + ti->docpos));
 			}
 			break;
 		}
@@ -382,7 +325,7 @@ struct Segment
 		:pos(o.pos),size(o.size){}
 };
 
-void DocumentAnalyzerInstance::normalizeConcatenatedMap(
+void DocumentAnalyzerInstance::processConcatenated(
 		analyzer::Document& res)
 {
 	ConcatenatedMap::const_iterator
@@ -391,58 +334,23 @@ void DocumentAnalyzerInstance::normalizeConcatenatedMap(
 
 	for (; ci != ce; ++ci)
 	{
-		setPositionBind( ci->first);
-		const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( ci->first);
-		TokenizerInterface::Context* tokctx = m_parserContext.tokenizerContext( ci->first);
-		NormalizerInterface::Context* normctx = m_parserContext.normalizerContext( ci->first);
-
-		std::vector<analyzer::Token>
-			pos = feat.tokenizer()->tokenize(
-				tokctx,
-				ci->second.content.c_str(),
-				ci->second.content.size());
-
-		normalize( res, normctx, feat, ci->second.content.c_str(),
-				ci->second.content.size(), pos, ci->second.position,
-				*m_searchTerms, *m_forwardTerms);
+		processDocumentSegment(
+			res, ci->first, ci->second.position, ci->second.content.c_str(), ci->second.content.size());
 	}
 }
 
-void DocumentAnalyzerInstance::setPositionBind( int featidx)
-{
-	DocumentAnalyzerInterface::PositionBind positionBind = m_analyzer->m_featurear[ featidx-1].positionBind();
-	switch (positionBind)
-	{
-		case DocumentAnalyzerInterface::BindContent:
-			m_searchTerms = &m_searchTerms_content;
-			m_forwardTerms = &m_forwardTerms_content;
-			break;
-		case DocumentAnalyzerInterface::BindSuccessor:
-			m_searchTerms = &m_searchTerms_succ;
-			m_forwardTerms = &m_forwardTerms_succ;
-			break;
-		case DocumentAnalyzerInterface::BindPredecessor:
-			m_searchTerms = &m_searchTerms_pred;
-			m_forwardTerms = &m_forwardTerms_pred;
-			break;
-	}
-}
-
-void DocumentAnalyzerInstance::pushConcatenated( int featidx, std::size_t curr_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerInstance::concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
 	ConcatenatedMap::iterator ci = m_concatenatedMap.find( featidx);
 	if (ci == m_concatenatedMap.end())
 	{
-		DocumentAnalyzerInterface::PositionBind positionBind = m_analyzer->m_featurear[ featidx-1].positionBind();
 		m_concatenatedMap[ featidx]
-			= Chunk( positionBind,
-				 curr_position,
-				 std::string( elem, elemsize));
+			= Chunk( rel_position, std::string( elem, elemsize));
 	}
 	else
 	{
 		Chunk& cm = m_concatenatedMap[ featidx];
-		std::size_t newlen = curr_position - cm.position;
+		std::size_t newlen = rel_position - cm.position;
 		cm.content.resize( newlen, ' ');
 		cm.content.append( elem, elemsize);
 	}
@@ -451,13 +359,19 @@ void DocumentAnalyzerInstance::pushConcatenated( int featidx, std::size_t curr_p
 void DocumentAnalyzerInstance::clearTermMaps()
 {
 	m_concatenatedMap.clear();
-	m_searchTerms_pred.clear();
-	m_searchTerms_succ.clear();
-	m_searchTerms_content.clear();
-	m_forwardTerms_pred.clear();
-	m_forwardTerms_succ.clear();
-	m_forwardTerms_content.clear();
+	m_searchTerms.clear();
+	m_forwardTerms.clear();
 }
+
+struct SuccPositionChunk
+{
+	SuccPositionChunk( int featidx_, const char* elem_, std::size_t elemsize_)
+		:featidx(featidx_),elem(elem_,elemsize_){}
+	SuccPositionChunk( const SuccPositionChunk& o)
+		:featidx(o.featidx),elem(o.elem){}
+	int featidx;
+	std::string elem;
+};
 
 analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 {
@@ -470,8 +384,10 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 	const char* elem = 0;
 	std::size_t elemsize = 0;
 	int featidx = 0;
+	SegmenterPosition last_position = 0;
 	SegmenterPosition curr_position = 0;
 	SegmenterPosition start_position = 0;
+	std::vector<SuccPositionChunk> succChunks;
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
 	while (m_segmenter->getNext( featidx, curr_position, elem, elemsize))
@@ -488,10 +404,23 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 				}
 				else
 				{
-					//... start of sub document
-					normalizeConcatenatedMap( rt);
+					// process chunks bound to successor not processed yet (without successor):
+					std::vector<SuccPositionChunk>::const_iterator
+						si = succChunks.begin(), se = succChunks.end();
+					std::size_t rel_position
+						= (std::size_t)(curr_position - start_position);
+					for (; si != se; ++si)
+					{
+						processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+					}
+					succChunks.clear();
+
+					// process what is left to process for the current sub document:
+					processConcatenated( rt);
 					mapPositions( rt);
 					clearTermMaps();
+
+					// create new sub document:
 					m_subdocstack.push_back( rt);
 					rt.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
 					start_position = curr_position;
@@ -499,24 +428,50 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 			}
 			else
 			{
-				setPositionBind( featidx);
-	
 				const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
 
 				if (feat.tokenizer()->concatBeforeTokenize())
 				{
-					pushConcatenated( featidx, (std::size_t)(curr_position - start_position), elem, elemsize);
+					// concat chunks that need to be concatenated before tokenization:
+					std::size_t rel_position = (std::size_t)(curr_position - start_position);
+					concatDocumentSegment( featidx, rel_position, elem, elemsize);
 					continue;
 				}
 				else
 				{
-					TokenizerInterface::Context* tokctx = m_parserContext.tokenizerContext( featidx);
-					NormalizerInterface::Context* normctx = m_parserContext.normalizerContext( featidx);
+					switch (feat.options().positionBind())
+					{
+						case DocumentAnalyzerInterface::FeatureOptions::BindContent:
+						{
+							// process chunks bound to successor (this chunk):
+							std::vector<SuccPositionChunk>::const_iterator
+								si = succChunks.begin(), se = succChunks.end();
+							std::size_t rel_position
+								= (std::size_t)(curr_position - start_position);
+							for (; si != se; ++si)
+							{
+								processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+							}
+							succChunks.clear();
 
-					std::vector<analyzer::Token>
-						pos = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
-
-					normalize( rt, normctx, feat, elem, elemsize, pos, (std::size_t)(curr_position - start_position), *m_searchTerms, *m_forwardTerms);
+							// process this chunk:
+							last_position = curr_position;
+							processDocumentSegment( rt, featidx, rel_position, elem, elemsize);
+							break;
+						}
+						case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
+						{
+							succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
+							break;
+						}
+						case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
+						{
+							std::size_t rel_position
+								= (std::size_t)(last_position - start_position);
+							processDocumentSegment( rt, featidx, rel_position, elem, elemsize);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -525,7 +480,20 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
 		}
 	}
-	normalizeConcatenatedMap( rt);
+	// process chunks bound to successor not processed yet (without successor):
+	std::vector<SuccPositionChunk>::const_iterator
+		si = succChunks.begin(), se = succChunks.end();
+	std::size_t rel_position
+		= (std::size_t)(curr_position - start_position);
+	for (; si != se; ++si)
+	{
+		processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+	}
+
+	// process concatenated chunks:
+	processConcatenated( rt);
+
+	// create real positions for output:
 	mapPositions( rt);
 	clearTermMaps();
 	return rt;

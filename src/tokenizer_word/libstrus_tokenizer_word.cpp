@@ -115,7 +115,6 @@ static bool wordBoundaryDelimiter( char const* si, const char* se)
 
 static bool whiteSpaceDelimiter( char const* si, const char* se)
 {
-	static const CharTable ascii_delimiter("'{}[]<>");
 	if ((unsigned char)*si <= 32)
 	{
 		return true;
@@ -131,10 +130,6 @@ static bool whiteSpaceDelimiter( char const* si, const char* se)
 		if (chr == 0x3000) return true;
 		if (chr == 0xFEFF) return true;
 		return false;
-	}
-	else if (ascii_delimiter[ *si])
-	{
-		return true;
 	}
 	else
 	{
@@ -169,7 +164,7 @@ public:
 			{
 				si = skipChar( si);
 			}
-			rt.push_back( Token( start-src, si-start));
+			rt.push_back( Token( start-src, start-src, si-start));
 		}
 		return rt;
 	}

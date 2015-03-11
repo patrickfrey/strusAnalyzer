@@ -64,9 +64,9 @@ public:
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer,
-			PositionBind positionBind)
+			const FeatureOptions& options)
 	{
-		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer, positionBind);
+		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer, options);
 	}
 
 	virtual void addForwardIndexFeature(
@@ -74,9 +74,9 @@ public:
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer,
-			PositionBind positionBind)
+			const FeatureOptions& options)
 	{
-		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer, positionBind);
+		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer, options);
 	}
 
 	virtual void defineMetaData(
@@ -85,7 +85,7 @@ public:
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer)
 	{
-		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer, BindContent);
+		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer, FeatureOptions());
 	}
 
 	virtual void defineAttribute(
@@ -94,7 +94,7 @@ public:
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer)
 	{
-		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer, BindContent);
+		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer, FeatureOptions());
 	}
 
 	virtual void defineSubDocument(
@@ -130,14 +130,14 @@ public:
 				const NormalizerInterface* normalizer_,
 				const utils::SharedPtr<NormalizerInterface::Argument>& normalizerarg_,
 				FeatureClass featureClass_,
-				PositionBind positionBind_)
+				const FeatureOptions& options_)
 			:m_name(name_)
 			,m_tokenizer(tokenizer_)
 			,m_tokenizerarg(tokenizerarg_)
 			,m_normalizer(normalizer_)
 			,m_normalizerarg(normalizerarg_)
 			,m_featureClass(featureClass_)
-			,m_positionBind(positionBind_){}
+			,m_options(options_){}
 
 		FeatureConfig( const FeatureConfig& o)
 			:m_name(o.m_name)
@@ -146,7 +146,7 @@ public:
 			,m_normalizer(o.m_normalizer)
 			,m_normalizerarg(o.m_normalizerarg)
 			,m_featureClass(o.m_featureClass)
-			,m_positionBind(o.m_positionBind){}
+			,m_options(o.m_options){}
 	
 		const std::string& name() const					{return m_name;}
 		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
@@ -154,7 +154,7 @@ public:
 		const NormalizerInterface* normalizer() const			{return m_normalizer;}
 		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
 		FeatureClass featureClass() const				{return m_featureClass;}
-		PositionBind positionBind() const				{return m_positionBind;}
+		FeatureOptions options() const					{return m_options;}
 
 	private:
 		std::string m_name;
@@ -163,7 +163,7 @@ public:
 		const NormalizerInterface* m_normalizer;
 		utils::SharedPtr<NormalizerInterface::Argument> m_normalizerarg;
 		FeatureClass m_featureClass;
-		PositionBind m_positionBind;
+		FeatureOptions m_options;
 	};
 
 private:
@@ -173,7 +173,7 @@ private:
 		const std::string& expression,
 		const TokenizerConfig& tokenizer,
 		const NormalizerConfig& normalizer,
-		PositionBind positionBind);
+		const FeatureOptions& options);
 
 	const FeatureConfig& featureConfig( int featidx) const;
 
@@ -217,8 +217,6 @@ public:
 		,m_parserContext(analyzer_->m_featurear)
 	{
 		m_subdocstack.push_back( analyzer::Document());
-		m_searchTerms = &m_searchTerms_content;
-		m_forwardTerms = &m_forwardTerms_content;
 	}
 
 	virtual ~DocumentAnalyzerInstance()
@@ -234,11 +232,11 @@ public:
 	}
 
 private:
-	void setPositionBind( int featidx);
 	void clearTermMaps();
-	void normalizeConcatenatedMap( analyzer::Document& res);
 	void mapPositions( analyzer::Document& res) const;
-	void pushConcatenated( int featidx, std::size_t curr_position, const char* elem, std::size_t elemsize);
+	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
+	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
+	void processConcatenated( analyzer::Document& res);
 
 private:
 	const DocumentAnalyzer* m_analyzer;
@@ -249,13 +247,12 @@ private:
 	struct Chunk
 	{
 		Chunk()
-			:positionBind(DocumentAnalyzerInterface::BindContent),position(0){}
-		Chunk( DocumentAnalyzerInterface::PositionBind positionBind_, std::size_t position_, const std::string& content_)
-			:positionBind(positionBind_),position(position_),content(content_){}
+			:position(0){}
+		Chunk( std::size_t position_, const std::string& content_)
+			:position(position_),content(content_){}
 		Chunk( const Chunk& o)
-			:positionBind(o.positionBind),position(o.position),content(o.content){}
+			:position(o.position),content(o.content){}
 	
-		DocumentAnalyzerInterface::PositionBind positionBind;
 		std::size_t position;
 		std::string content;
 	};
@@ -264,14 +261,8 @@ private:
 
 	ConcatenatedMap m_concatenatedMap;
 
-	std::vector<analyzer::Term> m_searchTerms_pred;
-	std::vector<analyzer::Term> m_searchTerms_succ;
-	std::vector<analyzer::Term> m_searchTerms_content;
-	std::vector<analyzer::Term> m_forwardTerms_pred;
-	std::vector<analyzer::Term> m_forwardTerms_succ;
-	std::vector<analyzer::Term> m_forwardTerms_content;
-	std::vector<analyzer::Term>* m_searchTerms;
-	std::vector<analyzer::Term>* m_forwardTerms;
+	std::vector<analyzer::Term> m_searchTerms;
+	std::vector<analyzer::Term> m_forwardTerms;
 };
 
 }//namespace

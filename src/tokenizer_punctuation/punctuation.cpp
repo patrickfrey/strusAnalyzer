@@ -363,11 +363,11 @@ public:
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-				rt.push_back( Token( scanner.pos(), 1));
+				rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
 			}
 			else if (isPunctuation(ch0))
 			{
-				rt.push_back( Token( scanner.pos(), 1));
+				rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
 			}
 		}
 		return rt;

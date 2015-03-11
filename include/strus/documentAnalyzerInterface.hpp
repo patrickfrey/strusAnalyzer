@@ -49,46 +49,66 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentAnalyzerInterface(){}
 
-	/// \enum PositionBind
-	/// \brief Determines how document positions are assigned to terms
-	/// \remark The motivation is to distinguish content elements from markup.
-	enum PositionBind
+	/// \class FeatureOptions
+	/// \brief Some options to stear the analyzer behaviour
+	class FeatureOptions
 	{
-		BindContent,		///< An element in the document that gets an own position assigned
-		BindSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
-		BindPredecessor		///< An element in the document that gets the position of the preceding content element assigned
+	public:
+		/// \brief Constructor
+		FeatureOptions()
+			:m_opt(0){}
+		/// \brief Copy constructor
+		FeatureOptions( const FeatureOptions& o)
+			:m_opt(o.m_opt){}
+
+		/// \enum PositionBind
+		/// \brief Determines how document positions are assigned to terms
+		/// \remark The motivation is to distinguish content elements from markup.
+		enum PositionBind
+		{
+			BindContent,		///< An element in the document that gets an own position assigned
+			BindSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
+			BindPredecessor		///< An element in the document that gets the position of the preceding content element assigned
+		};
+		/// \brief Get a PositionBind value as string
+		static const char* positionBindName( PositionBind t)
+		{
+			static const char* ar[] = {"BindContent","BindSuccessor","BindPredecessor"};
+			return ar[t];
+		}
+
+		PositionBind positionBind() const		{return (PositionBind)(m_opt & 0x3);}
+		void definePositionBind( PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
+
+	private:
+		unsigned int m_opt;
 	};
-	static const char* positionBindName( PositionBind t)
-	{
-		static const char* ar[] = {"BindContent","BindSuccessor","BindPredecessor"};
-		return ar[t];
-	}
 
 	/// \brief Declare a feature to be put into the search index
 	/// \param[in] type type name of the feature
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	/// \param[in] positionBind influences the assingment of document position of terms produced
+	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer,
-			PositionBind positionBind)=0;
+			const FeatureOptions& options=FeatureOptions())=0;
 
 	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
 	/// \param[in] type type name of the feature
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
 	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
-	/// \param[in] positionBind influences the assingment of document position of terms produced
+	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
 			const NormalizerConfig& normalizer,
-			PositionBind positionBind)=0;
+			const FeatureOptions& options=FeatureOptions())=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
 	/// \param[in] fieldname name of the field in the meta data table this feature is written to
