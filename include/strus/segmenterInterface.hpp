@@ -54,27 +54,6 @@ public:
 	/// \param[in] expression expression for selecting the sub section
 	virtual void defineSubSection( int startId, int endId, const std::string& expression)=0;
 
-	/// \enum SelectorType
-	/// \brief Classification of selector expressions that determine how positions are assigned to terms
-	/// \remark The motivation of defining a selector type is to classify elements that are just markup that should influence positions of real terms.
-	enum SelectorType
-	{
-		Content,			///< An element in the document that gets an own position assigned
-		AnnotationSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
-		AnnotationPredecessor		///< An element in the document that gets the position of the preceding content element assigned
-	};
-	static const char* selectorTypeName( SelectorType t)
-	{
-		static const char* ar[] = {"Content","AnnotationSuccessor","AnnotationPredecessor"};
-		return ar[t];
-	}
-
-	/// \brief Evaluate the selector type of a feature defined by id
-	/// \param[in] id id of the selector as assigned with defineSelectorExpression(int,const std::string&)
-	/// \remark Do not call this function before all selector expressions are defined. It works but might lead to a wrong classification. The classification is influenced by other expressions
-	/// \return the selector type
-	virtual SelectorType getSelectorType( int id) const=0;
-
 	/// \brief Creates an instance of the segmenter
 	/// \param[in] source source stream. Expected to be valid the whole life time of the instance created
 	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)

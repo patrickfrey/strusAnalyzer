@@ -49,15 +49,12 @@ public:
 
 	virtual SegmenterInstanceInterface* createInstance( std::istream& input) const;
 
-	virtual SelectorType getSelectorType( int id) const;
-
 private:
 	void addExpression( int id, const std::string& expression);
 
 private:
 	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	Automaton m_automaton;
-	std::map<int,SelectorType> m_selectorTypeMap;
 };
 
 }//namespace

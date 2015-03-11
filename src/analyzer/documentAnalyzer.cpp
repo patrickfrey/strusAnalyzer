@@ -64,7 +64,8 @@ void DocumentAnalyzer::defineFeature(
 	const std::string& name,
 	const std::string& expression,
 	const TokenizerConfig& tokenizer,
-	const NormalizerConfig& normalizer)
+	const NormalizerConfig& normalizer,
+	PositionBind positionBind)
 {
 	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
 	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
@@ -79,7 +80,7 @@ void DocumentAnalyzer::defineFeature(
 		throw std::runtime_error( std::string( "no arguments expected for normalizer '") + normalizer.name() + "'");
 	}
 
-	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass));
+	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass, positionBind));
 	if (m_featurear.size() >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
@@ -382,7 +383,7 @@ struct Segment
 };
 
 void DocumentAnalyzerInstance::normalizeConcatenatedMap(
-		analyzer::Document& res) const
+		analyzer::Document& res)
 {
 	ConcatenatedMap::const_iterator
 		ci = m_concatenatedMap.begin(),
@@ -390,6 +391,7 @@ void DocumentAnalyzerInstance::normalizeConcatenatedMap(
 
 	for (; ci != ce; ++ci)
 	{
+		setPositionBind( ci->first);
 		const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( ci->first);
 		TokenizerInterface::Context* tokctx = m_parserContext.tokenizerContext( ci->first);
 		NormalizerInterface::Context* normctx = m_parserContext.normalizerContext( ci->first);
@@ -406,30 +408,20 @@ void DocumentAnalyzerInstance::normalizeConcatenatedMap(
 	}
 }
 
-void DocumentAnalyzerInstance::setSelectorType( int featidx)
+void DocumentAnalyzerInstance::setPositionBind( int featidx)
 {
-	int stype = m_selectortypes[ featidx-1];
-	SegmenterInterface::SelectorType selectorType;
-	if (stype < 0)
+	DocumentAnalyzerInterface::PositionBind positionBind = m_analyzer->m_featurear[ featidx-1].positionBind();
+	switch (positionBind)
 	{
-		selectorType = m_analyzer->m_segmenter->getSelectorType( featidx);
-		m_selectortypes[ featidx-1] = (int)selectorType;
-	}
-	else
-	{
-		selectorType = (SegmenterInterface::SelectorType)stype;
-	}
-	switch (selectorType)
-	{
-		case SegmenterInterface::Content:
+		case DocumentAnalyzerInterface::BindContent:
 			m_searchTerms = &m_searchTerms_content;
 			m_forwardTerms = &m_forwardTerms_content;
 			break;
-		case SegmenterInterface::AnnotationSuccessor:
+		case DocumentAnalyzerInterface::BindSuccessor:
 			m_searchTerms = &m_searchTerms_succ;
 			m_forwardTerms = &m_forwardTerms_succ;
 			break;
-		case SegmenterInterface::AnnotationPredecessor:
+		case DocumentAnalyzerInterface::BindPredecessor:
 			m_searchTerms = &m_searchTerms_pred;
 			m_forwardTerms = &m_forwardTerms_pred;
 			break;
@@ -441,8 +433,9 @@ void DocumentAnalyzerInstance::pushConcatenated( int featidx, std::size_t curr_p
 	ConcatenatedMap::iterator ci = m_concatenatedMap.find( featidx);
 	if (ci == m_concatenatedMap.end())
 	{
+		DocumentAnalyzerInterface::PositionBind positionBind = m_analyzer->m_featurear[ featidx-1].positionBind();
 		m_concatenatedMap[ featidx]
-			= Chunk( (SegmenterInterface::SelectorType)m_selectortypes[ featidx-1],
+			= Chunk( positionBind,
 				 curr_position,
 				 std::string( elem, elemsize));
 	}
@@ -506,7 +499,7 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 			}
 			else
 			{
-				setSelectorType( featidx);
+				setPositionBind( featidx);
 	
 				const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
 

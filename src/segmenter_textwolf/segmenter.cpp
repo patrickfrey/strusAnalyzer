@@ -129,99 +129,6 @@ static ExpressionClass getExpressionClass( const std::string& expression, std::v
 	return rt;
 }
 
-static void updateSelectorTypeMap(
-		const textwolf::XMLPathSelectAutomatonParser<>& atm,
-		std::map<int,SegmenterInterface::SelectorType>& selectorTypeMap,
-		int id,
-		const std::string& expression)
-{
-	XMLPathSelect xs( &atm);
-	std::vector<std::string> tags;
-
-	ExpressionClass expressionClass = getExpressionClass( expression, tags);
-	switch (expressionClass)
-	{
-		case ContentSelection:
-		{
-			selectorTypeMap[ id] = SegmenterInterface::Content;
-			break;
-		}
-		case TagSelection:
-		{
-			// Tag selection generates a content element:
-			selectorTypeMap[ id] = SegmenterInterface::Content;
-
-			// Get the xpath selection to the state of the tag selection of the expression:
-			std::vector<std::string>::const_iterator ti = tags.begin(), te = tags.end();
-			for (; ti != te; ++ti)
-			{
-				XMLPathSelect::iterator
-					itr = xs.push( XMLScanner::OpenTag, ti->c_str(), ti->size()),end=xs.end();
-				for (; itr != end; ++itr){}
-			}
-
-			// Evaluate if there are attribute selections defined for this tag selection.
-			// If yes mark them as being bound to this tag selection (Predecessor):
-			std::vector<unsigned int> fbuf;
-			xs.getTokenTypeMatchingStates( XMLScanner::TagAttribName, false, fbuf);
-			std::vector<unsigned int>::const_iterator fi = fbuf.begin(), fe = fbuf.end();
-			for (; fi != fe; ++fi)
-			{
-				std::vector<int> ebuf;
-				atm.getEmmitedTokens( *fi, XMLScanner::TagAttribValue, ebuf);
-				std::vector<int>::const_iterator ei = ebuf.begin(), ee = ebuf.end();
-				for (; ei != ee; ++ei)
-				{
-					selectorTypeMap[ *ei] = SegmenterInterface::AnnotationPredecessor;
-				}
-			}
-			break;
-		}
-		case AttributeSelection:
-		{
-			if (selectorTypeMap[ id] != SegmenterInterface::AnnotationPredecessor)
-			{
-				selectorTypeMap[ id] = SegmenterInterface::AnnotationSuccessor;
-
-				bool tagOutput = false;
-
-				// Get the xpath selection to the state of the tag selection of the expression
-				// and determine if the tag is selected:
-				std::vector<std::string>::const_iterator ti = tags.begin(), te = tags.end();
-				for (; ti != te; ++ti)
-				{
-					XMLPathSelect::iterator
-						itr = xs.push( XMLScanner::OpenTag, ti->c_str(), ti->size()),end=xs.end();
-					tagOutput = (itr != end);
-					for (; itr != end; ++itr){}
-				}
-				// If the tag the selected attribute belongs to is selected we create
-				// An annotation type bound to the tag of the attribute. Otherwise
-				// to the first content element (immediate successor):
-				if (tagOutput)
-				{
-					selectorTypeMap[ id] = SegmenterInterface::AnnotationPredecessor;
-				}
-				else
-				{
-					selectorTypeMap[ id] = SegmenterInterface::AnnotationSuccessor;
-				}
-			}
-			break;
-		}
-	}
-}
-
-SegmenterInterface::SelectorType Segmenter::getSelectorType( int id) const
-{
-	std::map<int,SelectorType>::const_iterator si = m_selectorTypeMap.find( id);
-	if (si == m_selectorTypeMap.end())
-	{
-		throw std::runtime_error( "expression with this id not defined in textwolf XML segmenter");
-	}
-	return si->second;
-}
-
 void Segmenter::addExpression( int id, const std::string& expression)
 {
 	int errorpos = m_automaton.addExpression( id, expression.c_str(), expression.size());
@@ -252,7 +159,6 @@ void Segmenter::addExpression( int id, const std::string& expression)
 void Segmenter::defineSelectorExpression( int id, const std::string& expression)
 {
 	addExpression( id, expression);
-	updateSelectorTypeMap( m_automaton, m_selectorTypeMap, id, expression);
 }
 
 
