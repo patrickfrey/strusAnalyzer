@@ -28,6 +28,7 @@
 */
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/normalizer_snowball.hpp"
+#include "strus/lib/normalizer_wordmap.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "textProcessor.hpp"
@@ -43,6 +44,7 @@ DLL_PUBLIC strus::TextProcessorInterface*
 	try
 	{
 		rt->defineNormalizer( "stem", getNormalizer_snowball());
+		rt->defineNormalizer( "wordmap", getNormalizer_wordmap());
 		rt->defineTokenizer( "punctuation", getTokenizer_punctuation());
 		rt->defineTokenizer( "word", getTokenizer_word());
 		rt->defineTokenizer( "split", getTokenizer_whitespace());

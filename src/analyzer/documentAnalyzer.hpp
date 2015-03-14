@@ -39,6 +39,7 @@
 #include <string>
 #include <map>
 #include <utility>
+#include <stdexcept>
 
 namespace strus
 {
@@ -125,34 +126,39 @@ public:
 	{
 	public:
 		FeatureConfig( const std::string& name_,
-				const TokenizerInterface* tokenizer_,
-				const utils::SharedPtr<TokenizerInterface::Argument>& tokenizerarg_,
-				const NormalizerInterface* normalizer_,
-				const utils::SharedPtr<NormalizerInterface::Argument>& normalizerarg_,
+				const TextProcessorInterface* textProcessor_,
+				const TokenizerConfig& tokenizerConfig,
+				const NormalizerConfig& normalizerConfig,
 				FeatureClass featureClass_,
-				const FeatureOptions& options_)
-			:m_name(name_)
-			,m_tokenizer(tokenizer_)
-			,m_tokenizerarg(tokenizerarg_)
-			,m_normalizer(normalizer_)
-			,m_normalizerarg(normalizerarg_)
-			,m_featureClass(featureClass_)
-			,m_options(options_){}
+				const FeatureOptions& options_);
 
 		FeatureConfig( const FeatureConfig& o)
 			:m_name(o.m_name)
 			,m_tokenizer(o.m_tokenizer)
 			,m_tokenizerarg(o.m_tokenizerarg)
-			,m_normalizer(o.m_normalizer)
-			,m_normalizerarg(o.m_normalizerarg)
+			,m_normalizerlist(o.m_normalizerlist)
 			,m_featureClass(o.m_featureClass)
 			,m_options(o.m_options){}
 	
+		struct NormalizerDef
+		{
+			NormalizerDef( const NormalizerInterface* normalizer_,
+					const utils::SharedPtr<NormalizerInterface::Argument> normalizerarg_)
+				:normalizer(normalizer_)
+				,normalizerarg(normalizerarg_){}
+
+			NormalizerDef( const NormalizerDef& o)
+				:normalizer(o.normalizer)
+				,normalizerarg(o.normalizerarg){}
+
+			const NormalizerInterface* normalizer;
+			utils::SharedPtr<NormalizerInterface::Argument> normalizerarg;
+		};
+
 		const std::string& name() const					{return m_name;}
 		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
 		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
-		const NormalizerInterface* normalizer() const			{return m_normalizer;}
-		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
+		const std::vector<NormalizerDef>& normalizerlist() const	{return m_normalizerlist;}
 		FeatureClass featureClass() const				{return m_featureClass;}
 		FeatureOptions options() const					{return m_options;}
 
@@ -160,8 +166,7 @@ public:
 		std::string m_name;
 		const TokenizerInterface* m_tokenizer;
 		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
-		const NormalizerInterface* m_normalizer;
-		utils::SharedPtr<NormalizerInterface::Argument> m_normalizerarg;
+		std::vector<NormalizerDef> m_normalizerlist;
 		FeatureClass m_featureClass;
 		FeatureOptions m_options;
 	};
@@ -190,20 +195,32 @@ class ParserContext
 {
 public:
 	ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config);
-	~ParserContext()
+	ParserContext( const ParserContext& o)
+		:m_featureContextAr(o.m_featureContextAr){}
+	~ParserContext(){}
+
+	struct FeatureContext
 	{
-		cleanup();
+		FeatureContext( const DocumentAnalyzer::FeatureConfig& config);
+		FeatureContext( const FeatureContext& o)
+			:m_config(o.m_config)
+			,m_normalizerContextAr(o.m_normalizerContextAr)
+			,m_tokenizerContext(o.m_tokenizerContext){}
+
+		std::string normalize( const char* tok, std::size_t toksize);
+		const DocumentAnalyzer::FeatureConfig* m_config;
+		std::vector<utils::SharedPtr<NormalizerInterface::Context> > m_normalizerContextAr;
+		utils::SharedPtr<TokenizerInterface::Context> m_tokenizerContext;
+	};
+
+	FeatureContext& featureContext( int featidx)
+	{
+		if (featidx <= 0) throw std::logic_error("array bound write (document analyzer parser context)");
+		return m_featureContextAr[ featidx-1];
 	}
 
-	void cleanup();
-
-	NormalizerInterface::Context* normalizerContext( int featidx) const;
-	TokenizerInterface::Context* tokenizerContext( int featidx) const;
-
 private:
-	TokenizerInterface::Context** m_tokenizerContextAr;
-	NormalizerInterface::Context** m_normalizerContextAr;
-	std::size_t m_size;
+	std::vector<FeatureContext> m_featureContextAr;
 };
 
 

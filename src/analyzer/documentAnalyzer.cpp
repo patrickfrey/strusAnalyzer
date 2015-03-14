@@ -45,7 +45,8 @@ using namespace strus;
 DocumentAnalyzer::DocumentAnalyzer(
 		const TextProcessorInterface* textProcessor_,
 		SegmenterInterface* segmenter_)
-	:m_textProcessor(textProcessor_),m_segmenter(segmenter_){}
+	:m_textProcessor(textProcessor_)
+	,m_segmenter(segmenter_){}
 
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
@@ -59,6 +60,54 @@ const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int feat
 
 enum {MaxNofFeatures=(1<<24)-1, EndOfSubDocument=(1<<24), OfsSubDocument=(1<<24)+1, MaxNofSubDocuments=(1<<7)};
 
+DocumentAnalyzer::FeatureConfig::FeatureConfig(
+		const std::string& name_,
+		const TextProcessorInterface* textProcessor_,
+		const TokenizerConfig& tokenizerConfig,
+		const NormalizerConfig& normalizerConfig,
+		FeatureClass featureClass_,
+		const FeatureOptions& options_)
+	:m_name(name_)
+	,m_tokenizer(0)
+	,m_featureClass(featureClass_)
+	,m_options(options_)
+{
+	m_tokenizer = textProcessor_->getTokenizer( tokenizerConfig.name());
+
+	if (m_tokenizer->concatBeforeTokenize())
+	{
+		if (m_options.positionBind() != FeatureOptions::BindContent)
+		{
+			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
+		}
+	}
+	m_tokenizerarg.reset( m_tokenizer->createArgument( tokenizerConfig.arguments()));
+	if (!m_tokenizerarg.get() && !tokenizerConfig.arguments().empty())
+	{
+		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizerConfig.name() + "'");
+	}
+	std::vector<const NormalizerConfig*> ns;
+	const NormalizerConfig* ni = &normalizerConfig;
+	for (;ni; ni = ni->next())
+	{
+		ns.push_back( ni);
+	}
+	std::vector<const NormalizerConfig*>::reverse_iterator
+		ri = ns.rbegin(), re = ns.rend();
+	for (; ri != re; ++ri)
+	{
+		const NormalizerInterface* nm = textProcessor_->getNormalizer( (*ri)->name());
+		utils::SharedPtr<NormalizerInterface::Argument>
+			nmarg( nm->createArgument( (*ri)->arguments()));
+
+		if (!nmarg.get() && !(*ri)->arguments().empty())
+		{
+			throw std::runtime_error( std::string( "no arguments expected for normalizer '") + (*ri)->name() + "'");
+		}
+		m_normalizerlist.push_back( NormalizerDef( nm, nmarg));
+	}
+}
+
 void DocumentAnalyzer::defineFeature(
 	FeatureClass featureClass,
 	const std::string& name,
@@ -67,28 +116,8 @@ void DocumentAnalyzer::defineFeature(
 	const NormalizerConfig& normalizer,
 	const FeatureOptions& options)
 {
-	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
-	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
-
-	if (tk->concatBeforeTokenize())
-	{
-		if (options.positionBind() != FeatureOptions::BindContent)
-		{
-			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
-		}
-	}
-	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
-	if (!tkarg.get() && !tokenizer.arguments().empty())
-	{
-		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizer.name() + "'");
-	}
-	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
-	if (!nmarg.get() && !normalizer.arguments().empty())
-	{
-		throw std::runtime_error( std::string( "no arguments expected for normalizer '") + normalizer.name() + "'");
-	}
-
-	m_featurear.push_back( FeatureConfig( name, tk, tkarg, nm, nmarg, featureClass, options));
+	m_featurear.push_back( 
+		FeatureConfig( name, m_textProcessor, tokenizer, normalizer, featureClass, options));
 	if (m_featurear.size() >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
@@ -110,34 +139,52 @@ void DocumentAnalyzer::defineSubDocument(
 }
 
 
-ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config)
+ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureConfig& config)
+	:m_config(&config)
+	,m_tokenizerContext( config.tokenizer()->createContext( config.tokenizerarg()))
 {
-	try
+	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerDef>::const_iterator
+		ni = config.normalizerlist().begin(),
+		ne = config.normalizerlist().end();
+	
+	for (; ni != ne; ++ni)
 	{
-		m_size = config.size();
+		m_normalizerContextAr.push_back( 
+			ni->normalizer->createContext( ni->normalizerarg.get()));
+	}
+}
 
-		m_tokenizerContextAr = (TokenizerInterface::Context**)
-				std::calloc( m_size, sizeof( m_tokenizerContextAr[0]));
-		m_normalizerContextAr = (NormalizerInterface::Context**)
-				std::calloc( m_size, sizeof( m_normalizerContextAr[0]));
+std::string ParserContext::FeatureContext::normalize( char const* tok, std::size_t toksize)
+{
+	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerDef>::const_iterator
+		ni = m_config->normalizerlist().begin(),
+		ne = m_config->normalizerlist().end();
+	std::vector<utils::SharedPtr<NormalizerInterface::Context> >::iterator
+		ci = m_normalizerContextAr.begin(),
+		ce = m_normalizerContextAr.end();
 
-		if (!m_tokenizerContextAr || !m_normalizerContextAr)
+	std::string rt;
+	std::string origstr;
+	for (; ni != ne && ci != ce; ++ni,++ci)
+	{
+		rt = ni->normalizer->normalize( ci->get(), tok, toksize);
+		if (ni + 1 != ne)
 		{
-			throw std::bad_alloc();
-		}
-
-		std::vector<DocumentAnalyzer::FeatureConfig>::const_iterator
-			ci = config.begin(), ce = config.end();
-		for (std::size_t cidx=0; ci != ce; ++ci,++cidx)
-		{
-			m_tokenizerContextAr[ cidx] = ci->tokenizer()->createContext( ci->tokenizerarg());
-			m_normalizerContextAr[ cidx] = ci->normalizer()->createContext( ci->normalizerarg());
+			origstr.swap( rt);
+			tok = origstr.c_str();
+			toksize = origstr.size();
 		}
 	}
-	catch (const std::bad_alloc& err)
+	return rt;
+}
+
+ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config)
+{
+	std::vector<DocumentAnalyzer::FeatureConfig>::const_iterator
+		ci = config.begin(), ce = config.end();
+	for (; ci != ce; ++ci)
 	{
-		cleanup();
-		throw err;
+		m_featureContextAr.push_back( FeatureContext( *ci));
 	}
 }
 
@@ -159,46 +206,6 @@ analyzer::Document DocumentAnalyzer::analyze( std::istream& input) const
 DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createDocumentAnalyzerInstance( std::istream& input) const
 {
 	return new DocumentAnalyzerInstance( this, input);
-}
-
-void ParserContext::cleanup()
-{
-	if (m_tokenizerContextAr)
-	{
-		for (std::size_t ii=0; ii < m_size; ++ii)
-		{
-			if (m_tokenizerContextAr[ ii]) delete m_tokenizerContextAr[ ii];
-		}
-		std::free( m_tokenizerContextAr);
-		m_tokenizerContextAr = 0;
-	}
-	if (m_normalizerContextAr)
-	{
-		for (std::size_t ii=0; ii < m_size; ++ii)
-		{
-			if (m_normalizerContextAr[ ii]) delete m_normalizerContextAr[ ii];
-		}
-		std::free( m_normalizerContextAr);
-		m_normalizerContextAr = 0;
-	}
-}
-
-NormalizerInterface::Context* ParserContext::normalizerContext( int featidx) const
-{
-	if (featidx <= 0 || (std::size_t)featidx > m_size)
-	{
-		throw std::runtime_error( "internal: unknown index of feature");
-	}
-	return m_normalizerContextAr[ featidx-1];
-}
-
-TokenizerInterface::Context* ParserContext::tokenizerContext( int featidx) const
-{
-	if (featidx <= 0 || (std::size_t)featidx > m_size)
-	{
-		throw std::runtime_error( "internal: unknown index of feature");
-	}
-	return m_tokenizerContextAr[ featidx-1];
 }
 
 
@@ -246,22 +253,20 @@ void DocumentAnalyzerInstance::mapPositions( analyzer::Document& res) const
 
 void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
-	TokenizerInterface::Context* tokctx = m_parserContext.tokenizerContext( featidx);
-	NormalizerInterface::Context* normctx = m_parserContext.normalizerContext( featidx);
+	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 
-	const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
-	std::vector<analyzer::Token> tokens = feat.tokenizer()->tokenize( tokctx, elem, elemsize);
-
-	switch (feat.featureClass())
+	std::vector<analyzer::Token>
+		tokens = feat.m_config->tokenizer()->tokenize(
+			feat.m_tokenizerContext.get(), elem, elemsize);
+	switch (feat.m_config->featureClass())
 	{
 		case DocumentAnalyzer::FeatMetaData:
 		{
 			if (!tokens.empty())
 			{
-				std::string valstr(
-					feat.normalizer()->normalize(
-						normctx, elem + tokens[0].strpos, tokens[0].strsize));
-				res.setMetaData( feat.name(), valstr);
+				res.setMetaData(
+					feat.m_config->name(),
+					feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
 			}
 			if (tokens.size() > 1)
 			{
@@ -275,10 +280,9 @@ void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, 
 				ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				std::string valstr(
-					feat.normalizer()->normalize(
-						normctx, elem + ti->strpos, ti->strsize));
-				res.setAttribute( feat.name(), valstr);
+				res.setAttribute(
+					feat.m_config->name(),
+					feat.normalize( elem + ti->strpos, ti->strsize));
 			}
 			break;
 		}
@@ -288,11 +292,11 @@ void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, 
 				ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				std::string valstr(
-					feat.normalizer()->normalize(
-						normctx, elem + ti->strpos, ti->strsize));
 				m_searchTerms.push_back(
-					analyzer::Term( feat.name(), valstr, rel_position + ti->docpos));
+					analyzer::Term(
+						feat.m_config->name(),
+						feat.normalize( elem + ti->strpos, ti->strsize),
+						rel_position + ti->docpos));
 			}
 			break;
 		}
@@ -302,11 +306,11 @@ void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, 
 				ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				std::string valstr(
-					feat.normalizer()->normalize(
-						normctx, elem + ti->strpos, ti->strsize));
 				m_forwardTerms.push_back(
-					analyzer::Term( feat.name(), valstr, rel_position + ti->docpos));
+					analyzer::Term(
+						feat.m_config->name(),
+						feat.normalize( elem + ti->strpos, ti->strsize),
+						rel_position + ti->docpos));
 			}
 			break;
 		}
