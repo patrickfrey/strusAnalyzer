@@ -33,6 +33,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class TextProcessorInterface;
 
 class NormalizerInterface
 {
@@ -57,9 +59,10 @@ public:
 	};
 
 	/// \brief Create the arguments needed for normalization
+	/// \param[in] textproc text processor for resolving resources
 	/// \param[in] src arguments for the normalization as list of strings
 	/// \return the argument object to be desposed by the caller with delete if not NULL
-	virtual Argument* createArgument( const std::vector<std::string>&) const	{return 0;}
+	virtual Argument* createArgument( const TextProcessorInterface* textproc, const std::vector<std::string>&) const	{return 0;}
 
 	/// \brief Create the context object needed for normalization
 	/// \param[in] arg the normalizer arguments

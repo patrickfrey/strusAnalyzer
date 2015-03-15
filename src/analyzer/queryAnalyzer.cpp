@@ -50,7 +50,7 @@ void QueryAnalyzer::definePhraseType(
 	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
 	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
 	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
-	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( normalizer.arguments()));
+	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( m_textProcessor, normalizer.arguments()));
 
 	m_featuremap[ utils::tolower( phraseType)]
 		= FeatureConfig( featureType, tk, tkarg, nm, nmarg);

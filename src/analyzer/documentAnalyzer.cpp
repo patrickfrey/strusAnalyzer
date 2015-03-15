@@ -99,7 +99,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	{
 		const NormalizerInterface* nm = textProcessor_->getNormalizer( (*ri)->name());
 		utils::SharedPtr<NormalizerInterface::Argument>
-			nmarg( nm->createArgument( (*ri)->arguments()));
+			nmarg( nm->createArgument( textProcessor_, (*ri)->arguments()));
 
 		if (!nmarg.get() && !(*ri)->arguments().empty())
 		{

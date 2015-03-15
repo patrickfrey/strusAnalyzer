@@ -141,7 +141,7 @@ public:
 		const CharMap* m_map;
 	};
 	
-	virtual Argument* createArgument( const std::vector<std::string>& arg) const;
+	virtual Argument* createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const;
 	virtual Context* createContext( const Argument* arg) const;
 
 	virtual std::string normalize(

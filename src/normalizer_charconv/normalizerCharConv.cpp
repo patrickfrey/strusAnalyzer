@@ -313,7 +313,7 @@ DiacriticalNormalizer::ThisArgument::ThisArgument( const std::string& language)
 	}
 }
 
-NormalizerInterface::Argument* DiacriticalNormalizer::createArgument( const std::vector<std::string>& arg) const
+NormalizerInterface::Argument* DiacriticalNormalizer::createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const
 {
 	if (arg.size() != 1)
 	{

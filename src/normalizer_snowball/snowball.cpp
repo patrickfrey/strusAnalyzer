@@ -97,7 +97,7 @@ public:
 		DiaType m_diatype;
 	};
 
-	virtual Argument* createArgument( const std::vector<std::string>& arg) const
+	virtual Argument* createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const
 	{
 		if (arg.size() != 1)
 		{

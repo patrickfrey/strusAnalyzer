@@ -30,6 +30,7 @@
 #define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/private/fileio.hpp"
 #include <string>
 #include <vector>
@@ -73,11 +74,11 @@ public:
 		Argument( const Argument& o)
 			:m_map(o.m_map){}
 
-		Argument( const std::vector<std::string>& arg)
+		Argument( const TextProcessorInterface* textproc, const std::vector<std::string>& arg)
 		{
 			if (arg.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
 			if (arg.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
-			m_map.loadFile( arg[0]);
+			m_map.loadFile( textproc->getResourcePath( arg[0]));
 		}
 
 		virtual ~Argument(){}
@@ -106,9 +107,9 @@ public:
 		const DictMap* m_map;
 	};
 
-	virtual NormalizerInterface::Argument* createArgument( const std::vector<std::string>& arg) const
+	virtual NormalizerInterface::Argument* createArgument( const TextProcessorInterface* textproc, const std::vector<std::string>& arg) const
 	{
-		return new Argument( arg);
+		return new Argument( textproc, arg);
 	}
 
 	virtual NormalizerInterface::Context* createContext( const NormalizerInterface::Argument* arg_) const
