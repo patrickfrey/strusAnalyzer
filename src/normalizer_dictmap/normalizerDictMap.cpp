@@ -26,12 +26,12 @@
 
 --------------------------------------------------------------------
 */
-#include "normalizerWordMap.hpp"
+#include "normalizerDictMap.hpp"
 #include <cstring>
 
 using namespace strus;
 
-void WordMap::set( const std::string& key, const std::string& value)
+void DictMap::set( const std::string& key, const std::string& value)
 {
 	std::size_t validx = m_value_strings.size();
 	m_value_strings.append( value);
@@ -39,7 +39,7 @@ void WordMap::set( const std::string& key, const std::string& value)
 	m_map.set( key.c_str(), validx);
 }
 
-bool WordMap::get( const std::string& key, std::string& value) const
+bool DictMap::get( const std::string& key, std::string& value) const
 {
 	conotrie::CompactNodeTrie::NodeData validx;
 	if (!m_map.get( key.c_str(), validx)) return false;
@@ -47,7 +47,7 @@ bool WordMap::get( const std::string& key, std::string& value) const
 	return true;
 }
 
-void WordMap::loadFile( const std::string& filename)
+void DictMap::loadFile( const std::string& filename)
 {
 	std::string content;
 	unsigned int ec = readFile( filename, content);
@@ -55,7 +55,7 @@ void WordMap::loadFile( const std::string& filename)
 	{
 		std::stringstream err;
 		err << ec;
-		throw std::runtime_error( std::string( "error reading wordmap file '") + filename + "' (error code " + err.str() + ")");
+		throw std::runtime_error( std::string( "error reading 'dictmap' file '") + filename + "' (error code " + err.str() + ")");
 	}
 	char delim = ' ';
 	char const* cc = content.c_str();
@@ -95,7 +95,7 @@ void WordMap::loadFile( const std::string& filename)
 }
 
 
-std::string WordMapNormalizer::normalize(
+std::string DictMapNormalizer::normalize(
 		NormalizerInterface::Context* ctx_,
 		const char* src,
 		std::size_t srcsize) const

@@ -26,15 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_WORDMAP_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_WORDMAP_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
 
 namespace strus
 {
 /// \brief Forward declaration
 class NormalizerInterface;
 
-const NormalizerInterface* getNormalizer_wordmap();
+const NormalizerInterface* getNormalizer_dictmap();
 
 }//namespace
 #endif

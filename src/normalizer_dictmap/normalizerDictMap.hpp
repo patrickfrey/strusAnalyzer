@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_NORMALIZER_WORDMAP_HPP_INCLUDED
-#define _STRUS_NORMALIZER_WORDMAP_HPP_INCLUDED
+#ifndef _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
+#define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/private/fileio.hpp"
@@ -39,13 +39,13 @@
 namespace strus
 {
 
-class WordMap
+class DictMap
 {
 public:
-	WordMap(){}
-	WordMap( const WordMap& o)
+	DictMap(){}
+	DictMap( const DictMap& o)
 		:m_map(o.m_map),m_value_strings(o.m_value_strings){}
-	~WordMap(){}
+	~DictMap(){}
 
 public:
 	void loadFile( const std::string& filename);
@@ -59,12 +59,12 @@ private:
 };
 
 
-class WordMapNormalizer
+class DictMapNormalizer
 	:public NormalizerInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~WordMapNormalizer(){}
+	virtual ~DictMapNormalizer(){}
 
 	class Argument
 		:public NormalizerInterface::Argument
@@ -75,17 +75,17 @@ public:
 
 		Argument( const std::vector<std::string>& arg)
 		{
-			if (arg.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'wordmap' normalizer");
-			if (arg.size() > 1) throw std::runtime_error( "too many arguments for 'wordmap' normalizer");
+			if (arg.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
+			if (arg.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
 			m_map.loadFile( arg[0]);
 		}
 
 		virtual ~Argument(){}
 
-		const WordMap& map() const	{return m_map;}
+		const DictMap& map() const	{return m_map;}
 
 	public:
-		WordMap m_map;
+		DictMap m_map;
 	};
 
 	class Context
@@ -103,7 +103,7 @@ public:
 		}
 
 	private:
-		const WordMap* m_map;
+		const DictMap* m_map;
 	};
 
 	virtual NormalizerInterface::Argument* createArgument( const std::vector<std::string>& arg) const

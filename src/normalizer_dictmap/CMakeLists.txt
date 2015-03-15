@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 set( source_files
-	normalizerWordMap.cpp   
+	normalizerDictMap.cpp   
 )
 
 include_directories(  
@@ -20,11 +20,11 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_library( strus_normalizer_wordmap SHARED ${source_files} libstrus_normalizer_wordmap.cpp )
-target_link_libraries( strus_normalizer_wordmap compactnodetrie_static strus_private_utils )
+add_library( strus_normalizer_dictmap SHARED ${source_files} libstrus_normalizer_dictmap.cpp )
+target_link_libraries( strus_normalizer_dictmap compactnodetrie_static strus_private_utils )
 
 set_target_properties(
-    strus_normalizer_wordmap
+    strus_normalizer_dictmap
     PROPERTIES
     DEBUG_POSTFIX "_d"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
@@ -35,7 +35,7 @@ set_target_properties(
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strus_normalizer_wordmap
+install( TARGETS strus_normalizer_dictmap
            LIBRARY DESTINATION lib/strus )
 
 

@@ -26,15 +26,15 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/lib/normalizer_wordmap.hpp"
+#include "strus/lib/normalizer_dictmap.hpp"
 #include "private/dll_tags.hpp"
-#include "normalizerWordMap.hpp"
+#include "normalizerDictMap.hpp"
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerInterface* strus::getNormalizer_wordmap()
+DLL_PUBLIC const NormalizerInterface* strus::getNormalizer_dictmap()
 {
-	static const WordMapNormalizer rt;
+	static const DictMapNormalizer rt;
 	return &rt;
 }
 
