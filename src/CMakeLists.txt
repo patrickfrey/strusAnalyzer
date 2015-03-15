@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 add_subdirectory( utils )
 add_subdirectory( normalizer_snowball )
+add_subdirectory( normalizer_charconv )
 add_subdirectory( normalizer_dictmap )
 add_subdirectory( segmenter_textwolf )
 add_subdirectory( tokenizer_punctuation )

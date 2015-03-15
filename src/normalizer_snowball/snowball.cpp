@@ -143,6 +143,10 @@ public:
 				}
 				else if (value == 0xC6)
 				{
+					rt.append( "ae");
+				}
+				else if (value == 0xC4)
+				{
 					if (ctx->m_diatype == DiaTypeGerman)
 					{
 						rt.append( "ae");
@@ -151,10 +155,6 @@ public:
 					{
 						rt.push_back( 'a');
 					}
-				}
-				else if (value == 0xC4)
-				{
-					rt.append( "ae");
 				}
 				else if (value == 0xC7)
 				{
