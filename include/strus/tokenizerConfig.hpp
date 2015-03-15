@@ -36,11 +36,13 @@ namespace strus {
 class TokenizerConfig
 {
 public:
+	TokenizerConfig()
+		:m_name(),m_arguments(){}
 	TokenizerConfig( const TokenizerConfig& o)
 		:m_name(o.m_name),m_arguments(o.m_arguments){}
 	TokenizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
 		:m_name(name_),m_arguments(arguments_){}
-	/*implicit*/ TokenizerConfig( const std::string& name_)
+	TokenizerConfig( const std::string& name_)
 		:m_name(name_),m_arguments(){}
 
 	const std::string& name() const				{return m_name;}

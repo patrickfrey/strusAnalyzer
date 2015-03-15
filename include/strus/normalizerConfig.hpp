@@ -36,6 +36,8 @@ namespace strus {
 class NormalizerConfig
 {
 public:
+	NormalizerConfig()
+		:m_name(),m_arguments(),m_next(0){}
 	NormalizerConfig( const NormalizerConfig& o)
 		:m_name(o.m_name)
 		,m_arguments(o.m_arguments)
