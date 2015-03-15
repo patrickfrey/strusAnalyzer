@@ -41,6 +41,7 @@ bool caseInsensitiveEquals( const std::string& val1, const std::string& val2);
 bool caseInsensitiveStartsWith( const std::string& val, const std::string& prefix);
 int toint( const std::string& val);
 std::string tostring( int val);
+bool isFile( const std::string& path);
 
 template <class X>
 class SharedPtr

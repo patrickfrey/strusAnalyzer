@@ -45,6 +45,14 @@ public:
 	/// \brief Desructor
 	virtual ~TextProcessorInterface(){}
 
+	/// \brief Declare a path for locating resource files
+	/// \param[in] path path to add
+	virtual void addResourcePath( const std::string& path)=0;
+
+	/// \brief Get the absolute path of a resource file
+	/// \param[in] filename name of the resource file
+	virtual std::string getResourcePath( const std::string& filename) const=0;
+
 	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens
 	/// \return the tokenizer reference
 	virtual const TokenizerInterface* getTokenizer( const std::string& name) const=0;

@@ -39,6 +39,7 @@
 #include <iostream>
 #include <set>
 #include <map>
+#include <cstring>
 
 using namespace strus;
 

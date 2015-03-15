@@ -26,37 +26,11 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_HPP_INCLUDED
-#define _STRUS_ANALYZER_TEXT_PROCESSOR_HPP_INCLUDED
-#include "strus/textProcessorInterface.hpp"
-#include <map>
-#include <vector>
+#ifndef _STRUS_RESOURCE_DIRECTORY_HPP_INCLUDED
+#define _STRUS_RESOURCE_DIRECTORY_HPP_INCLUDED
 
-namespace strus {
+#define STRUS_RESOURCE_PATHSEP                ':'
+#define STRUS_RESOURCE_DIRSEP                 '/'
 
-class TextProcessor
-	:public TextProcessorInterface
-{
-public:
-	TextProcessor();
-
-	virtual void addResourcePath( const std::string& path);
-	virtual std::string getResourcePath( const std::string& filename) const;
-
-	virtual const TokenizerInterface* getTokenizer( const std::string& name) const;
-
-	virtual const NormalizerInterface* getNormalizer( const std::string& name) const;
-
-	virtual void defineTokenizer( const std::string& name, const TokenizerInterface* tokenizer);
-
-	virtual void defineNormalizer( const std::string& name, const NormalizerInterface* normalizer);
-
-private:
-	std::map<std::string,const TokenizerInterface*> m_tokenizer_map;
-	std::map<std::string,const NormalizerInterface*> m_normalizer_map;
-	std::vector<std::string> m_resourcePaths;
-};
-
-}//namespace
 #endif
 

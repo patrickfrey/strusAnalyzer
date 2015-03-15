@@ -41,7 +41,6 @@ QueryAnalyzer::QueryAnalyzer(
 		const TextProcessorInterface* textProcessor_)
 	:m_textProcessor(textProcessor_){}
 
-
 void QueryAnalyzer::definePhraseType(
 		const std::string& phraseType,
 		const std::string& featureType,

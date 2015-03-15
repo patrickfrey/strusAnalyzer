@@ -29,6 +29,7 @@
 #include "private/utils.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
+#include <sys/stat.h>
 
 using namespace strus;
 using namespace strus::utils;
@@ -77,4 +78,16 @@ std::string utils::tostring( int val)
 	}
 }
 
+bool utils::isFile( const std::string& path)
+{
+	struct stat s;
+	if (::stat( path.c_str(), &s) == 0)
+	{
+		if( s.st_mode & S_IFREG )
+		{
+			return true;
+		}
+	}
+	return false;
+}
 

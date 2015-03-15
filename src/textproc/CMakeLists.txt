@@ -26,7 +26,14 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_textproc SHARED ${source_files} )
-target_link_libraries( strus_textproc  strus_normalizer_snowball strus_normalizer_dictmap strus_tokenizer_punctuation strus_tokenizer_word strus_private_utils )
+target_link_libraries( strus_textproc
+	strus_normalizer_snowball
+	strus_normalizer_dictmap
+	strus_normalizer_charconv
+	strus_tokenizer_punctuation
+	strus_tokenizer_word
+	strus_private_utils )
+
 set_target_properties(
     strus_textproc
     PROPERTIES

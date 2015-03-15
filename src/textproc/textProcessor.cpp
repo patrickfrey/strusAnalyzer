@@ -31,7 +31,9 @@
 #include "strus/normalizerInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
+#include "resourceDirectory.hpp"
 #include <stdexcept>
+#include <cstring>
 
 using namespace strus;
 using namespace strus::analyzer;
@@ -132,6 +134,32 @@ void TextProcessor::defineTokenizer( const std::string& name, const TokenizerInt
 void TextProcessor::defineNormalizer( const std::string& name, const NormalizerInterface* normalizer)
 {
 	m_normalizer_map[ utils::tolower( name)] = normalizer;
+}
+
+void TextProcessor::addResourcePath( const std::string& path)
+{
+	char const* cc = path.c_str();
+	char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
+	for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
+	{
+		m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
+	}
+	m_resourcePaths.push_back( utils::trim( std::string( cc)));
+}
+
+std::string TextProcessor::getResourcePath( const std::string& filename) const
+{
+	std::vector<std::string>::const_iterator
+		pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
+	for (; pi != pe; ++pi)
+	{
+		std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
+		if (utils::isFile( absfilename))
+		{
+			return absfilename;
+		}
+	}
+	throw std::runtime_error( std::string( "resource file '") + filename + "' not found");
 }
 
 
