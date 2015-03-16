@@ -65,7 +65,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 		const std::string& name_,
 		const TextProcessorInterface* textProcessor_,
 		const TokenizerConfig& tokenizerConfig,
-		const NormalizerConfig& normalizerConfig,
+		const std::vector<NormalizerConfig>& normalizerConfig,
 		FeatureClass featureClass_,
 		const FeatureOptions& options_)
 	:m_name(name_)
@@ -87,26 +87,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	{
 		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizerConfig.name() + "'");
 	}
-	std::vector<const NormalizerConfig*> ns;
-	const NormalizerConfig* ni = &normalizerConfig;
-	for (;ni; ni = ni->next())
-	{
-		ns.push_back( ni);
-	}
-	std::vector<const NormalizerConfig*>::reverse_iterator
-		ri = ns.rbegin(), re = ns.rend();
-	for (; ri != re; ++ri)
-	{
-		const NormalizerInterface* nm = textProcessor_->getNormalizer( (*ri)->name());
-		utils::SharedPtr<NormalizerInterface::Argument>
-			nmarg( nm->createArgument( textProcessor_, (*ri)->arguments()));
-
-		if (!nmarg.get() && !(*ri)->arguments().empty())
-		{
-			throw std::runtime_error( std::string( "no arguments expected for normalizer '") + (*ri)->name() + "'");
-		}
-		m_normalizerlist.push_back( NormalizerDef( nm, nmarg));
-	}
+	m_normalizerlist = NormalizerDef::getNormalizerDefList( textProcessor_, normalizerConfig);
 }
 
 void DocumentAnalyzer::defineFeature(
@@ -114,7 +95,7 @@ void DocumentAnalyzer::defineFeature(
 	const std::string& name,
 	const std::string& expression,
 	const TokenizerConfig& tokenizer,
-	const NormalizerConfig& normalizer,
+	const std::vector<NormalizerConfig>& normalizer,
 	const FeatureOptions& options)
 {
 	m_featurear.push_back( 
@@ -144,7 +125,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	:m_config(&config)
 	,m_tokenizerContext( config.tokenizer()->createContext( config.tokenizerarg()))
 {
-	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerDef>::const_iterator
+	std::vector<NormalizerDef>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
 	
@@ -157,7 +138,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 
 std::string ParserContext::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerDef>::const_iterator
+	std::vector<NormalizerDef>::const_iterator
 		ni = m_config->normalizerlist().begin(),
 		ne = m_config->normalizerlist().end();
 	std::vector<utils::SharedPtr<NormalizerInterface::Context> >::iterator

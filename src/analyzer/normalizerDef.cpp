@@ -26,34 +26,31 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#include "normalizerDef.hpp"
+#include "strus/normalizerConfig.hpp"
+#include "strus/textProcessorInterface.hpp"
+#include <stdexcept>
 
-namespace strus {
+using namespace strus;
 
-class NormalizerConfig
+std::vector<NormalizerDef> NormalizerDef::getNormalizerDefList( const TextProcessorInterface* tp, const std::vector<NormalizerConfig>& config)
 {
-public:
-	NormalizerConfig()
-		:m_name(),m_arguments(){}
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name)
-		,m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
+	std::vector<NormalizerDef> rt;
+	std::vector<NormalizerConfig>::const_iterator
+		ci = config.begin(), ce = config.end();
+	for (; ci != ce; ++ci)
+	{
+		const NormalizerInterface* nm = tp->getNormalizer( ci->name());
+		utils::SharedPtr<NormalizerInterface::Argument>
+			nmarg( nm->createArgument( tp, ci->arguments()));
+	
+		if (!nmarg.get() && !ci->arguments().empty())
+		{
+			throw std::runtime_error( std::string( "no arguments expected for normalizer '") + ci->name() + "'");
+		}
+		rt.push_back( NormalizerDef( nm, nmarg));
+	}
+	return rt;
+}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
-
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
-};
-
-}//namespace
-#endif
 

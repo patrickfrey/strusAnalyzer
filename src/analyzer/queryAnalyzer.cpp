@@ -41,19 +41,72 @@ QueryAnalyzer::QueryAnalyzer(
 		const TextProcessorInterface* textProcessor_)
 	:m_textProcessor(textProcessor_){}
 
+
+QueryAnalyzer::FeatureConfig::FeatureConfig(
+		const std::string& featureType_,
+		const TextProcessorInterface* textProcessor_,
+		const TokenizerConfig& tokenizerConfig,
+		const std::vector<NormalizerConfig>& normalizerConfig)
+	:m_featureType(featureType_)
+	,m_tokenizer(0)
+{
+	m_tokenizer = textProcessor_->getTokenizer( tokenizerConfig.name());
+	m_tokenizerarg.reset( m_tokenizer->createArgument( tokenizerConfig.arguments()));
+	if (!m_tokenizerarg.get() && !tokenizerConfig.arguments().empty())
+	{
+		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizerConfig.name() + "'");
+	}
+	m_normalizerlist = NormalizerDef::getNormalizerDefList( textProcessor_, normalizerConfig);
+}
+
+QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfig& config)
+	:m_config(&config)
+	,m_tokenizerContext( config.tokenizer()->createContext( config.tokenizerarg()))
+{
+	std::vector<NormalizerDef>::const_iterator
+		ni = config.normalizerlist().begin(),
+		ne = config.normalizerlist().end();
+	
+	for (; ni != ne; ++ni)
+	{
+		m_normalizerContextAr.push_back( 
+			ni->normalizer->createContext( ni->normalizerarg.get()));
+	}
+}
+
+std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size_t toksize)
+{
+	std::vector<NormalizerDef>::const_iterator
+		ni = m_config->normalizerlist().begin(),
+		ne = m_config->normalizerlist().end();
+	std::vector<utils::SharedPtr<NormalizerInterface::Context> >::iterator
+		ci = m_normalizerContextAr.begin(),
+		ce = m_normalizerContextAr.end();
+
+	std::string rt;
+	std::string origstr;
+	for (; ni != ne && ci != ce; ++ni,++ci)
+	{
+		rt = ni->normalizer->normalize( ci->get(), tok, toksize);
+		if (ni + 1 != ne)
+		{
+			origstr.swap( rt);
+			tok = origstr.c_str();
+			toksize = origstr.size();
+		}
+	}
+	return rt;
+}
+
+
 void QueryAnalyzer::definePhraseType(
 		const std::string& phraseType,
 		const std::string& featureType,
 		const TokenizerConfig& tokenizer,
-		const NormalizerConfig& normalizer)
+		const std::vector<NormalizerConfig>& normalizer)
 {
-	const TokenizerInterface* tk = m_textProcessor->getTokenizer( tokenizer.name());
-	const NormalizerInterface* nm = m_textProcessor->getNormalizer( normalizer.name());
-	utils::SharedPtr<TokenizerInterface::Argument> tkarg( tk->createArgument( tokenizer.arguments()));
-	utils::SharedPtr<NormalizerInterface::Argument> nmarg( nm->createArgument( m_textProcessor, normalizer.arguments()));
-
 	m_featuremap[ utils::tolower( phraseType)]
-		= FeatureConfig( featureType, tk, tkarg, nm, nmarg);
+		= FeatureConfig( featureType, m_textProcessor, tokenizer, normalizer);
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
@@ -75,15 +128,8 @@ std::vector<analyzer::Term>
 	std::vector<analyzer::Term> rt;
 	const FeatureConfig& feat = featureConfig( phraseType);
 	utils::ScopedPtr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
-	utils::ScopedPtr<NormalizerInterface::Context> normctx( feat.normalizer()->createContext( feat.normalizerarg()));
-	if (feat.tokenizerarg() && !tokctx.get())
-	{
-		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");
-	}
-	if (feat.normalizerarg() && !normctx.get())
-	{
-		throw std::runtime_error("internal: arguments defined for tokenizer but context constructor is empty");
-	}
+	FeatureContext ctx( feat);
+
 	std::vector<analyzer::Token>
 		pos = feat.tokenizer()->tokenize( tokctx.get(), content.c_str(), content.size());
 	std::vector<analyzer::Token>::const_iterator
@@ -98,9 +144,7 @@ std::vector<analyzer::Term>
 			posidx += 1;
 			prevpos = pi->docpos;
 		}
-		std::string val
-			= feat.normalizer()->normalize(
-				normctx.get(), content.c_str() + pi->strpos, pi->strsize);
+		std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
 		rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
 	}
 	return rt;

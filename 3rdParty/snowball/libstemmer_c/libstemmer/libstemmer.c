@@ -76,13 +76,13 @@ sb_stemmer_new_threadsafe( const char * algorithm, const char * charenc)
 }
 
 extern struct SN_env*
-sb_stemmer_create_env( struct sb_stemmer * stemmer)
+sb_stemmer_create_env( const struct sb_stemmer * stemmer)
 {
 	return stemmer->create();
 }
 
 void
-sb_stemmer_delete_env( struct sb_stemmer * stemmer, struct SN_env* env)
+sb_stemmer_delete_env( const struct sb_stemmer * stemmer, struct SN_env* env)
 {
 	if (env) stemmer->close( env);
 }
@@ -113,7 +113,7 @@ sb_stemmer_stem(struct sb_stemmer * stemmer, const sb_symbol * word, int size)
 }
 
 const sb_symbol *
-sb_stemmer_stem_threadsafe( struct sb_stemmer * stemmer, struct SN_env* env, const sb_symbol * word, int size)
+sb_stemmer_stem_threadsafe( const struct sb_stemmer * stemmer, struct SN_env* env, const sb_symbol * word, int size)
 {
     int ret;
     if (SN_set_current( env, size, (const symbol *)(word)))

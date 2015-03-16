@@ -31,6 +31,7 @@
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "normalizerDef.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -56,7 +57,7 @@ public:
 			const std::string& phraseType,
 			const std::string& featureType,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer);
+			const std::vector<NormalizerConfig>& normalizer);
 
 	virtual std::vector<analyzer::Term> analyzePhrase(
 			const std::string& phraseType,
@@ -67,25 +68,18 @@ private:
 	{
 	public:
 		FeatureConfig()
-			:m_tokenizer(0),m_normalizer(0){}
+			:m_tokenizer(0){}
 
 		FeatureConfig( const std::string& featureType_,
-				const TokenizerInterface* tokenizer_,
-				const utils::SharedPtr<TokenizerInterface::Argument>& tokenizerarg_,
-				const NormalizerInterface* normalizer_,
-				const utils::SharedPtr<NormalizerInterface::Argument>& normalizerarg_)
-			:m_featureType(featureType_)
-			,m_tokenizer(tokenizer_)
-			,m_tokenizerarg(tokenizerarg_)
-			,m_normalizer(normalizer_)
-			,m_normalizerarg(normalizerarg_){}
+				const TextProcessorInterface* textProcessor_,
+				const TokenizerConfig& tokenizerConfig,
+				const std::vector<NormalizerConfig>& normalizerConfig);
 
 		FeatureConfig( const FeatureConfig& o)
 			:m_featureType(o.m_featureType)
 			,m_tokenizer(o.m_tokenizer)
 			,m_tokenizerarg(o.m_tokenizerarg)
-			,m_normalizer(o.m_normalizer)
-			,m_normalizerarg(o.m_normalizerarg){}
+			,m_normalizerlist(o.m_normalizerlist){}
 
 		/// \brief Get the type of the features in the storage
 		const std::string& featureType() const				{return m_featureType;}
@@ -94,16 +88,28 @@ private:
 		/// \brief Get the tokenizer arguments for tokenization of the phrase
 		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
 		/// \brief Get the normalizer of the tokens for create the feature values
-		const NormalizerInterface* normalizer() const			{return m_normalizer;}
-		/// \brief Get the normalizer arguments
-		const NormalizerInterface::Argument* normalizerarg() const	{return m_normalizerarg.get();}
+		const std::vector<NormalizerDef>& normalizerlist() const	{return m_normalizerlist;}
 
 	private:
 		std::string m_featureType;
 		const TokenizerInterface* m_tokenizer;
 		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
-		const NormalizerInterface* m_normalizer;
-		utils::SharedPtr<NormalizerInterface::Argument> m_normalizerarg;
+		std::vector<NormalizerDef> m_normalizerlist;
+	};
+
+	struct FeatureContext
+	{
+		FeatureContext( const FeatureConfig& config);
+		FeatureContext( const FeatureContext& o)
+			:m_config(o.m_config)
+			,m_normalizerContextAr(o.m_normalizerContextAr)
+			,m_tokenizerContext(o.m_tokenizerContext){}
+
+		std::string normalize( const char* tok, std::size_t toksize);
+
+		const FeatureConfig* m_config;
+		std::vector<utils::SharedPtr<NormalizerInterface::Context> > m_normalizerContextAr;
+		utils::SharedPtr<TokenizerInterface::Context> m_tokenizerContext;
 	};
 
 	/// \brief Get the feature configuration for a named phrase type

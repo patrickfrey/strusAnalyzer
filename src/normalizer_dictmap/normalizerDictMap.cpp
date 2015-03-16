@@ -79,14 +79,14 @@ void DictMap::loadFile( const std::string& filename)
 		const char* mid = std::strchr( cc, delim);
 		if (!mid || mid >= eoln) mid = eoln;
 
-		std::string key( cc, mid - cc);
-		std::string val;
+		std::string val( cc, mid - cc);
+		std::string key;
 		if (mid != eoln)
 		{
-			val.append( mid+1, eoln-mid-1);
-			if (val.size() && val[ val.size()-1] == '\r')
+			key.append( mid+1, eoln-mid-1);
+			if (key.size() && key[ key.size()-1] == '\r')
 			{
-				val.resize( val.size()-1);
+				key.resize( key.size()-1);
 			}
 		}
 		set( key, val);

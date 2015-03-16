@@ -88,51 +88,51 @@ public:
 	/// \param[in] type type name of the feature
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
+	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
 	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer,
+			const std::vector<NormalizerConfig>& normalizer,
 			const FeatureOptions& options=FeatureOptions())=0;
 
 	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
 	/// \param[in] type type name of the feature
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
+	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
 	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer,
+			const std::vector<NormalizerConfig>& normalizer,
 			const FeatureOptions& options=FeatureOptions())=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
 	/// \param[in] fieldname name of the field in the meta data table this feature is written to
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
+	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
 	/// \remark The field in the meta data table must exist before calling this function
 	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer)=0;
+			const std::vector<NormalizerConfig>& normalizer)=0;
 
 	/// \brief Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)
 	/// \param[in] attribname name of the document attribute this feature is written as.
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer selects a tokenizer by name describing how text chunks are tokenized
-	/// \param[in] normalizer selects a normalizer by name describing how tokens are normalized
+	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
 	/// \remark Attributes must be defined uniquely per document
 	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer)=0;
+			const std::vector<NormalizerConfig>& normalizer)=0;
 
 	/// \brief Declare a sub document for the handling of multi part documents in an analyzed content
 	/// \param[in] selectexpr an expression that defines the content of the sub document declared

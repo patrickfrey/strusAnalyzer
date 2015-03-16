@@ -315,11 +315,18 @@ DiacriticalNormalizer::ThisArgument::ThisArgument( const std::string& language)
 
 NormalizerInterface::Argument* DiacriticalNormalizer::createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const
 {
-	if (arg.size() != 1)
+	if (arg.size() > 1)
 	{
-		throw std::runtime_error( "illegal number of arguments passed to snowball stemmer");
+		throw std::runtime_error( "too many arguments passed to convdia (diacritical character conversion) normalizer");
 	}
-	return new ThisArgument( arg[0]);
+	else if (arg.empty())
+	{
+		return new ThisArgument( "");
+	}
+	else
+	{
+		return new ThisArgument( arg[0]);
+	}
 }
 
 NormalizerInterface::Context* DiacriticalNormalizer::createContext( const Argument* arg) const

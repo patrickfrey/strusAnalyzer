@@ -49,12 +49,12 @@ public:
 	/// \param[in] featureSet name of the set the generated features are assigned to
 	/// \param[in] featureType type name (in the storage) of the generated features
 	/// \param[in] tokenizer selects the tokenizer function for tokenization of the phrase
-	/// \param[in] normalizer selects the normalizer describing how tokens are normalized to term values in the storage
+	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
 	virtual void definePhraseType(
 			const std::string& phraseType,
 			const std::string& featureType,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer)=0;
+			const std::vector<NormalizerConfig>& normalizer)=0;
 
 	/// \brief Analyze a single phrase of query
 	/// \param[in] phraseType selects the feature configuration that determines how the phrase is tokenized and normalized, what types the resulting terms get and what set (as referred to in the query evaluation) the created query features are assigned to.

@@ -26,33 +26,38 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#ifndef _STRUS_ANALYZER_NORMALIZER_DEF_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_DEF_HPP_INCLUDED
+#include "strus/normalizerInterface.hpp"
+#include "private/utils.hpp"
 
-namespace strus {
-
-class NormalizerConfig
+namespace strus
 {
-public:
-	NormalizerConfig()
-		:m_name(),m_arguments(){}
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name)
-		,m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
+/// \brief Forward declaration
+class NormalizerConfig;
+/// \brief Forward declaration
+class TextProcessorInterface;
 
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
+struct NormalizerDef
+{
+	NormalizerDef( const NormalizerInterface* normalizer_,
+			const utils::SharedPtr<NormalizerInterface::Argument> normalizerarg_)
+		:normalizer(normalizer_)
+		,normalizerarg(normalizerarg_){}
+
+	NormalizerDef( const NormalizerDef& o)
+		:normalizer(o.normalizer)
+		,normalizerarg(o.normalizerarg){}
+
+	const NormalizerInterface* normalizer;
+	utils::SharedPtr<NormalizerInterface::Argument> normalizerarg;
+
+	static std::vector<NormalizerDef> getNormalizerDefList(
+			const TextProcessorInterface* tp,
+			const std::vector<NormalizerConfig>& config);
 };
+
 
 }//namespace
 #endif

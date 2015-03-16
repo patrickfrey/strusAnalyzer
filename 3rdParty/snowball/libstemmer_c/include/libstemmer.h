@@ -74,13 +74,13 @@ const sb_symbol *   sb_stemmer_stem(
 
 
 /** Create context for thread safe variant of stem a word. */
-struct SN_env* sb_stemmer_create_env( struct sb_stemmer * stemmer);
+struct SN_env* sb_stemmer_create_env( const struct sb_stemmer * stemmer);
 /** Destroy context for thread safe variant of stem a word. */
-void sb_stemmer_delete_env( struct sb_stemmer * stemmer, struct SN_env* env);
+void sb_stemmer_delete_env( const struct sb_stemmer * stemmer, struct SN_env* env);
 
 /** Thread safe variant of stem a word. */
 const sb_symbol *   sb_stemmer_stem_threadsafe( 
-                                struct sb_stemmer * stemmer,
+                                const struct sb_stemmer * stemmer,
                                 struct SN_env* env,
                                 const sb_symbol * word, int size);
 

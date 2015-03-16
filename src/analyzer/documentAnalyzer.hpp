@@ -34,6 +34,7 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "normalizerDef.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -64,7 +65,7 @@ public:
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer,
+			const std::vector<NormalizerConfig>& normalizer,
 			const FeatureOptions& options)
 	{
 		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer, options);
@@ -74,7 +75,7 @@ public:
 			const std::string& type,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer,
+			const std::vector<NormalizerConfig>& normalizer,
 			const FeatureOptions& options)
 	{
 		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer, options);
@@ -84,7 +85,7 @@ public:
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer)
+			const std::vector<NormalizerConfig>& normalizer)
 	{
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer, FeatureOptions());
 	}
@@ -93,7 +94,7 @@ public:
 			const std::string& attribname,
 			const std::string& selectexpr,
 			const TokenizerConfig& tokenizer,
-			const NormalizerConfig& normalizer)
+			const std::vector<NormalizerConfig>& normalizer)
 	{
 		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer, FeatureOptions());
 	}
@@ -128,7 +129,7 @@ public:
 		FeatureConfig( const std::string& name_,
 				const TextProcessorInterface* textProcessor_,
 				const TokenizerConfig& tokenizerConfig,
-				const NormalizerConfig& normalizerConfig,
+				const std::vector<NormalizerConfig>& normalizerConfig,
 				FeatureClass featureClass_,
 				const FeatureOptions& options_);
 
@@ -140,21 +141,6 @@ public:
 			,m_featureClass(o.m_featureClass)
 			,m_options(o.m_options){}
 	
-		struct NormalizerDef
-		{
-			NormalizerDef( const NormalizerInterface* normalizer_,
-					const utils::SharedPtr<NormalizerInterface::Argument> normalizerarg_)
-				:normalizer(normalizer_)
-				,normalizerarg(normalizerarg_){}
-
-			NormalizerDef( const NormalizerDef& o)
-				:normalizer(o.normalizer)
-				,normalizerarg(o.normalizerarg){}
-
-			const NormalizerInterface* normalizer;
-			utils::SharedPtr<NormalizerInterface::Argument> normalizerarg;
-		};
-
 		const std::string& name() const					{return m_name;}
 		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
 		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
@@ -177,7 +163,7 @@ private:
 		const std::string& name,
 		const std::string& expression,
 		const TokenizerConfig& tokenizer,
-		const NormalizerConfig& normalizer,
+		const std::vector<NormalizerConfig>& normalizer,
 		const FeatureOptions& options);
 
 	const FeatureConfig& featureConfig( int featidx) const;
@@ -208,6 +194,7 @@ public:
 			,m_tokenizerContext(o.m_tokenizerContext){}
 
 		std::string normalize( const char* tok, std::size_t toksize);
+
 		const DocumentAnalyzer::FeatureConfig* m_config;
 		std::vector<utils::SharedPtr<NormalizerInterface::Context> > m_normalizerContextAr;
 		utils::SharedPtr<TokenizerInterface::Context> m_tokenizerContext;
