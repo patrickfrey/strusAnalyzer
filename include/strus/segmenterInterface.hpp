@@ -56,8 +56,9 @@ public:
 
 	/// \brief Creates an instance of the segmenter
 	/// \param[in] source source stream. Expected to be valid the whole life time of the instance created
+	/// \param[in] bufsize (optional) size of input buffer to use for the input stream
 	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterInstanceInterface* createInstance( std::istream& input) const=0;
+	virtual SegmenterInstanceInterface* createInstance( std::istream& input, std::size_t bufsize=8192) const=0;
 };
 
 }//namespace

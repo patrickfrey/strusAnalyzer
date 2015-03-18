@@ -156,7 +156,7 @@ public:
 
 	/// \brief Create an instance of the context used for analyzing multipart documents
 	/// \return the analyzer context (ownership to caller)
-	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzerInstance( std::istream& input) const=0;
+	virtual DocumentAnalyzerInstanceInterface* createInstance( std::istream& input) const=0;
 };
 
 }//namespace

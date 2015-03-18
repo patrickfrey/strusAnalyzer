@@ -31,8 +31,8 @@
 
 using namespace strus;
 
-SegmenterInstance::SegmenterInstance( const Automaton* automaton_, std::istream& input_)
-	:m_automaton(automaton_),m_scanner(textwolf::IStreamIterator(input_)),m_pathselect(automaton_)
+SegmenterInstance::SegmenterInstance( const Automaton* automaton_, std::istream& input_, std::size_t bufsize)
+	:m_automaton(automaton_),m_scanner(textwolf::IStreamIterator(input_, bufsize)),m_pathselect(automaton_)
 {
 	m_itr = m_scanner.begin();
 	m_end = m_scanner.end();

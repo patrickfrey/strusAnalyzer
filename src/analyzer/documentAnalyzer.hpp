@@ -107,7 +107,7 @@ public:
 
 	virtual analyzer::Document analyze( std::istream& input) const;
 
-	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzerInstance( std::istream& input) const;
+	virtual DocumentAnalyzerInstanceInterface* createInstance( std::istream& input) const;
 
 public:
 	enum FeatureClass

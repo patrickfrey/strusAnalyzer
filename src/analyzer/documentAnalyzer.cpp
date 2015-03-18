@@ -185,7 +185,7 @@ analyzer::Document DocumentAnalyzer::analyze( std::istream& input) const
 	return analyzerInstance->analyzeNext();
 }
 
-DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createDocumentAnalyzerInstance( std::istream& input) const
+DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createInstance( std::istream& input) const
 {
 	return new DocumentAnalyzerInstance( this, input);
 }

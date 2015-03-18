@@ -174,9 +174,9 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterInstanceInterface* Segmenter::createInstance( std::istream& input) const
+SegmenterInstanceInterface* Segmenter::createInstance( std::istream& input, std::size_t bufsize) const
 {
-	return new SegmenterInstance( &m_automaton, input);
+	return new SegmenterInstance( &m_automaton, input, bufsize);
 }
 
 

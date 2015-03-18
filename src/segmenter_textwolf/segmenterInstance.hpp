@@ -44,7 +44,7 @@ public:
 	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
 public:
-	SegmenterInstance( const Automaton* automaton_, std::istream& input_);
+	SegmenterInstance( const Automaton* automaton_, std::istream& input_, std::size_t bufsize=8192);
 
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& chunk, std::size_t& chunksize);
 
