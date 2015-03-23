@@ -28,6 +28,10 @@
 */
 #include "normalizerDictMap.hpp"
 #include <cstring>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <sys/stat.h>
 
 using namespace strus;
 
@@ -47,16 +51,50 @@ bool DictMap::get( const std::string& key, std::string& value) const
 	return true;
 }
 
+static std::string readFile( const std::string& filename)
+{
+	std::string rt;
+	FILE* fh = ::fopen( filename.c_str(), "rb");
+	if (!fh)
+	{
+		std::ostringstream msg;
+		msg << errno;
+		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+	}
+	unsigned int nn;
+	enum {bufsize=(1<<12)};
+	char buf[ bufsize];
+
+	while (!!(nn=::fread( buf, 1, bufsize, fh)))
+	{
+		try
+		{
+			rt.append( buf, nn);
+		}
+		catch (const std::bad_alloc& err)
+		{
+			::fclose( fh);
+			throw err;
+		}
+	}
+	if (!feof( fh))
+	{
+		unsigned int ec = ::ferror( fh);
+		::fclose( fh);
+		std::ostringstream msg;
+		msg << ec;
+		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+	}
+	else
+	{
+		::fclose( fh);
+	}
+	return rt;
+}
+
 void DictMap::loadFile( const std::string& filename)
 {
-	std::string content;
-	unsigned int ec = readFile( filename, content);
-	if (ec)
-	{
-		std::stringstream err;
-		err << ec;
-		throw std::runtime_error( std::string( "error reading 'dictmap' file '") + filename + "' (error code " + err.str() + ")");
-	}
+	std::string content = readFile( filename);
 	char delim = ' ';
 	char const* cc = content.c_str();
 	if (content[0] >= 32 && (content[1] == '\r' || content[1] == '\n'))

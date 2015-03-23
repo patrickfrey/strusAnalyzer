@@ -31,7 +31,6 @@
 #include "compactNodeTrie.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "strus/private/fileio.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
