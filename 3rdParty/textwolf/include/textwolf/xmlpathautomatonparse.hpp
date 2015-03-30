@@ -359,7 +359,7 @@ private:
 	{
 		if (*src == '"' || *src == '\'')
 		{
-			char eb = *src;
+			unsigned char eb = *src;
 			for (++src; *src && *src != eb; ++src){}
 			if (*src) ++src;
 		}
