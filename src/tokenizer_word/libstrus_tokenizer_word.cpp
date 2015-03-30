@@ -89,7 +89,7 @@ typedef bool (*TokenDelimiter)( char const* si, const char* se);
 
 static bool wordBoundaryDelimiter( char const* si, const char* se)
 {
-	static const CharTable ascii_delimiter("#|{}[]<>&:.;,!?%/()*+-'\"`=");
+	static const CharTable wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	if ((unsigned char)*si <= 32)
 	{
 		return true;
@@ -103,13 +103,13 @@ static bool wordBoundaryDelimiter( char const* si, const char* se)
 		if (chr == 0xFEFF) return true;
 		return false;
 	}
-	else if (ascii_delimiter[ *si])
+	else if (wordCharacter[ *si])
 	{
-		return true;
+		return false;
 	}
 	else
 	{
-		return false;
+		return true;
 	}
 }
 

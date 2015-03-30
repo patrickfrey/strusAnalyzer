@@ -35,12 +35,13 @@
 
 using namespace strus;
 
-void DictMap::set( const std::string& key, const std::string& value)
+bool DictMap::set( const std::string& key, const std::string& value)
 {
 	std::size_t validx = m_value_strings.size();
+	if (!m_map.set( key.c_str(), validx)) return false;
 	m_value_strings.append( value);
 	m_value_strings.push_back( '\0');
-	m_map.set( key.c_str(), validx);
+	return true;
 }
 
 bool DictMap::get( const std::string& key, std::string& value) const
@@ -127,7 +128,10 @@ void DictMap::loadFile( const std::string& filename)
 				key.resize( key.size()-1);
 			}
 		}
-		set( key, val);
+		if (!set( key, val))
+		{
+			throw std::runtime_error("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'");
+		}
 		cc = (*eoln)?(eoln+1):eoln;
 	}
 }

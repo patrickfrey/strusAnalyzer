@@ -29,21 +29,9 @@
 #include "segmenter.hpp"
 #include "segmenterInstance.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
-#include "textwolf/xmlpathselect.hpp"
 #include "textwolf/charset.hpp"
 
 using namespace strus;
-
-typedef textwolf::XMLScanner<
-		char const*,
-		textwolf::charset::UTF8,
-		textwolf::charset::UTF8,
-		std::string
-	> XMLScanner;
-
-typedef textwolf::XMLPathSelect<
-		textwolf::charset::UTF8
-	> XMLPathSelect;
 
 static bool isTagNameChar( char ch)
 {
