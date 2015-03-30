@@ -332,7 +332,7 @@ private:
 		std::size_t rt = idstrings.size();
 		if (*src == '"' || *src == '\'')
 		{
-			char eb = *src;
+			unsigned char eb = *src;
 			for (++src; *src && *src != eb; ++src)
 			{
 				m_atmcharset.print( *src, idstrings);
