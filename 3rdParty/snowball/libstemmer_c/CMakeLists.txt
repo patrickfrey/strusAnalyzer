@@ -55,5 +55,5 @@ set_target_properties(
 # INSTALLATION
 # ------------------------------
 install( TARGETS stemmer
-           LIBRARY DESTINATION lib/strus )
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

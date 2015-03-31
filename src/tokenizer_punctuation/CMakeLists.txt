@@ -35,6 +35,6 @@ set_target_properties(
 # INSTALLATION
 # ------------------------------
 install( TARGETS strus_tokenizer_punctuation
-           LIBRARY DESTINATION lib/strus )
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 
 
