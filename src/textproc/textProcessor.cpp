@@ -65,7 +65,7 @@ public:
 		{
 			if ((unsigned char)src[ii] <= 32)
 			{
-				for (;src[ii+1] <= 32; ++ii){}
+				for (;ii+1 < srcsize && (unsigned char)src[ii+1] <= 32; ++ii){}
 				rt.push_back( ' ');
 			}
 			else
