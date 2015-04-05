@@ -148,15 +148,9 @@ public:
 	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerInstance(std::istream&)const' instead.
 	virtual analyzer::Document analyze( const std::string& content) const=0;
 
-	/// \brief Analyzer a document (same as 'DocumentAnalyzerInterface::analyze( const std::string&) const' but with stream as input)
-	/// \param[in] stream with content document content string to analyze
-	/// \return the analyzed document
-	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerInstance(std::istream&)const' instead.
-	virtual analyzer::Document analyze( std::istream& input) const=0;
-
-	/// \brief Create an instance of the context used for analyzing multipart documents
+	/// \brief Create an instance of the context used for analyzing multipart or very big documents
 	/// \return the analyzer context (ownership to caller)
-	virtual DocumentAnalyzerInstanceInterface* createInstance( std::istream& input) const=0;
+	virtual DocumentAnalyzerInstanceInterface* createInstance() const=0;
 };
 
 }//namespace

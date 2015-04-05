@@ -31,8 +31,8 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "textwolf/xmlpathselect.hpp"
 #include "textwolf/charset.hpp"
-#include "textwolf/istreamiterator.hpp"
-#include <istream>
+#include "textwolf/sourceiterator.hpp"
+#include <stdint.h>
 
 namespace strus
 {
@@ -44,16 +44,18 @@ public:
 	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
 public:
-	SegmenterInstance( const Automaton* automaton_, std::istream& input_, std::size_t bufsize=8192);
+	explicit SegmenterInstance( const Automaton* automaton_);
 
-	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& chunk, std::size_t& chunksize);
+	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof);
+
+	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize);
 
 private:
 	typedef textwolf::XMLPathSelect<
 			textwolf::charset::UTF8
 		> XMLPathSelect;
 	typedef textwolf::XMLScanner<
-			textwolf::IStreamIterator,
+			textwolf::SrcIterator,
 			textwolf::charset::UTF8,
 			textwolf::charset::UTF8,
 			std::string
@@ -66,6 +68,9 @@ private:
 	XMLScanner::iterator m_end;
 	XMLPathSelect::iterator m_selitr;
 	XMLPathSelect::iterator m_selend;
+	const char* m_chunk;
+	std::size_t m_chunksize;
+	bool m_eof;
 };
 
 }//namespace

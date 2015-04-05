@@ -42,13 +42,15 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentAnalyzerInstanceInterface(){}
 
-	/// \brief Analyze the next sub document from an input stream
-	/// \param[in,out] input stream to fetch the document content string to analyze from
-	/// \return the analyzed sub document structure
-	virtual analyzer::Document analyzeNext()=0;
+	/// \brief Feed the analyzer with the next chunk of input to process
+	/// \param[in] chunk pointer to input chunk to process
+	/// \param[in] chunksize size of input chunk to process in bytes
+	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof)=0;
 
-	/// \brief Evaluate if there is a document left on the input stream to analyze
-	virtual bool hasMore() const=0;
+	/// \brief Analyze the next sub document from the input feeded with putInput(const char*,std::size_t)
+	/// \param[out] doc the analyzed sub document structure
+	/// \return true, if the next document could be fetched, false if more input has to be fed or no input left (EOF)
+	virtual bool analyzeNext( analyzer::Document& doc)=0;
 };
 
 }//namespace

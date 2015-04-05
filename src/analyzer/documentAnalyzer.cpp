@@ -173,21 +173,19 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 {
 	analyzer::Document rt;
-	std::istringstream input( content);
-	return analyze( input);
-}
-
-analyzer::Document DocumentAnalyzer::analyze( std::istream& input) const
-{
-	analyzer::Document rt;
 	std::auto_ptr<DocumentAnalyzerInstance>
-		analyzerInstance( new DocumentAnalyzerInstance( this, input));
-	return analyzerInstance->analyzeNext();
+		analyzerInstance( new DocumentAnalyzerInstance( this));
+	analyzerInstance->putInput( content.c_str(), content.size(), true);
+	if (!analyzerInstance->analyzeNext( rt))
+	{
+		throw std::runtime_error( "analyzed content incomplete or empty");
+	}
+	return rt;
 }
 
-DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createInstance( std::istream& input) const
+DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createInstance() const
 {
-	return new DocumentAnalyzerInstance( this, input);
+	return new DocumentAnalyzerInstance( this);
 }
 
 
@@ -349,34 +347,38 @@ void DocumentAnalyzerInstance::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-struct SuccPositionChunk
+DocumentAnalyzerInstance::DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_)
+	:m_analyzer(analyzer_)
+	,m_segmenter(m_analyzer->m_segmenter->createInstance())
+	,m_parserContext(analyzer_->m_featurear)
+	,m_eof(false)
+	,m_last_position(0)
+	,m_curr_position(0)
+	,m_start_position(0)
 {
-	SuccPositionChunk( int featidx_, const char* elem_, std::size_t elemsize_)
-		:featidx(featidx_),elem(elem_,elemsize_){}
-	SuccPositionChunk( const SuccPositionChunk& o)
-		:featidx(o.featidx),elem(o.elem){}
-	int featidx;
-	std::string elem;
-};
+	m_subdocstack.push_back( analyzer::Document());
+}
 
-analyzer::Document DocumentAnalyzerInstance::analyzeNext()
+void DocumentAnalyzerInstance::putInput( const char* chunk, std::size_t chunksize, bool eof)
+{
+	m_segmenter->putInput( chunk, chunksize, eof);
+	m_eof = eof;
+}
+
+bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 {
 	if (m_subdocstack.empty())
 	{
 		throw std::runtime_error( "internal: called analyzeNext after EOF");
 	}
-	analyzer::Document rt = m_subdocstack.back();
+	doc = m_subdocstack.back();
 	m_subdocstack.pop_back();
 	const char* elem = 0;
 	std::size_t elemsize = 0;
 	int featidx = 0;
-	SegmenterPosition last_position = 0;
-	SegmenterPosition curr_position = 0;
-	SegmenterPosition start_position = 0;
-	std::vector<SuccPositionChunk> succChunks;
 
 	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (m_segmenter->getNext( featidx, curr_position, elem, elemsize))
+	while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
 	{
 		try
 		{
@@ -392,24 +394,24 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 				{
 					// process chunks bound to successor not processed yet (without successor):
 					std::vector<SuccPositionChunk>::const_iterator
-						si = succChunks.begin(), se = succChunks.end();
+						si = m_succChunks.begin(), se = m_succChunks.end();
 					std::size_t rel_position
-						= (std::size_t)(curr_position - start_position);
+						= (std::size_t)(m_curr_position - m_start_position);
 					for (; si != se; ++si)
 					{
-						processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+						processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
 					}
-					succChunks.clear();
+					m_succChunks.clear();
 
 					// process what is left to process for the current sub document:
-					processConcatenated( rt);
-					mapPositions( rt);
+					processConcatenated( doc);
+					mapPositions( doc);
 					clearTermMaps();
 
 					// create new sub document:
-					m_subdocstack.push_back( rt);
-					rt.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
-					start_position = curr_position;
+					m_subdocstack.push_back( doc);
+					doc.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
+					m_start_position = m_curr_position;
 				}
 			}
 			else
@@ -419,7 +421,7 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 				if (feat.tokenizer()->concatBeforeTokenize())
 				{
 					// concat chunks that need to be concatenated before tokenization:
-					std::size_t rel_position = (std::size_t)(curr_position - start_position);
+					std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 					concatDocumentSegment( featidx, rel_position, elem, elemsize);
 					continue;
 				}
@@ -431,30 +433,30 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 						{
 							// process chunks bound to successor (this chunk):
 							std::vector<SuccPositionChunk>::const_iterator
-								si = succChunks.begin(), se = succChunks.end();
+								si = m_succChunks.begin(), se = m_succChunks.end();
 							std::size_t rel_position
-								= (std::size_t)(curr_position - start_position);
+								= (std::size_t)(m_curr_position - m_start_position);
 							for (; si != se; ++si)
 							{
-								processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+								processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
 							}
-							succChunks.clear();
+							m_succChunks.clear();
 
 							// process this chunk:
-							last_position = curr_position;
-							processDocumentSegment( rt, featidx, rel_position, elem, elemsize);
+							m_last_position = m_curr_position;
+							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
 							break;
 						}
 						case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
 						{
-							succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
+							m_succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
 							break;
 						}
 						case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
 						{
 							std::size_t rel_position
-								= (std::size_t)(last_position - start_position);
-							processDocumentSegment( rt, featidx, rel_position, elem, elemsize);
+								= (std::size_t)(m_last_position - m_start_position);
+							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
 							break;
 						}
 					}
@@ -466,22 +468,29 @@ analyzer::Document DocumentAnalyzerInstance::analyzeNext()
 			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
 		}
 	}
+	if (!m_eof)
+	{
+		m_subdocstack.push_back( analyzer::Document());
+		m_subdocstack.back().swap( doc);
+		return false;
+	}
+
 	// process chunks bound to successor not processed yet (without successor):
 	std::vector<SuccPositionChunk>::const_iterator
-		si = succChunks.begin(), se = succChunks.end();
+		si = m_succChunks.begin(), se = m_succChunks.end();
 	std::size_t rel_position
-		= (std::size_t)(curr_position - start_position);
+		= (std::size_t)(m_curr_position - m_start_position);
 	for (; si != se; ++si)
 	{
-		processDocumentSegment( rt, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+		processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
 	}
 
 	// process concatenated chunks:
-	processConcatenated( rt);
+	processConcatenated( doc);
 
 	// create real positions for output:
-	mapPositions( rt);
+	mapPositions( doc);
 	clearTermMaps();
-	return rt;
+	return true;
 }
 

@@ -58,12 +58,18 @@ public:
 	/// \brief Destructor
 	virtual ~SegmenterInstanceInterface(){}
 
+	/// \brief Feed the segmenter with the next chunk of input to process
+	/// \param[in] chunk pointer to input chunk to process
+	/// \param[in] chunksize size of input chunk to process in bytes
+	/// \param[in] eof true, if this is the last chunk to feed
+	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof)=0;
+
 	/// \brief Fetch the next text segment
 	/// \param[out] id identifier of the expression that addresses the text segment (defined with SegmenterInterface::defineSelectorExpression(int, const std::string&) or with SegmenterInterface::defineSubSection(int,int,const std::string&))
 	/// \param[out] pos position of the segment in the original source
 	/// \param[out] segment pointer to the start of the segment. Must remain a valid reference during the whole lifetime of this segmented instance.
 	/// \param[out] segmentsize size of segment in bytes
-	/// \return true, if a valid segment could be returned, false in case of EOF (no segments left)
+	/// \return true, if a valid segment could be returned, false in case of no segments left or more required to be fed
 	/// \remark throws on error
 	/// \remark the segments must be delivered in ascending order of positions. Segments with same position can be returned in any order
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)=0;

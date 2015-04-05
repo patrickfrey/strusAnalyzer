@@ -105,9 +105,7 @@ public:
 
 	virtual analyzer::Document analyze( const std::string& content) const;
 
-	virtual analyzer::Document analyze( std::istream& input) const;
-
-	virtual DocumentAnalyzerInstanceInterface* createInstance( std::istream& input) const;
+	virtual DocumentAnalyzerInstanceInterface* createInstance() const;
 
 public:
 	enum FeatureClass
@@ -215,25 +213,16 @@ class DocumentAnalyzerInstance
 	:public DocumentAnalyzerInstanceInterface
 {
 public:
-	explicit DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_, std::istream& input_)
-		:m_analyzer(analyzer_)
-		,m_segmenter(m_analyzer->m_segmenter->createInstance( input_))
-		,m_parserContext(analyzer_->m_featurear)
-	{
-		m_subdocstack.push_back( analyzer::Document());
-	}
+	explicit DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_);
 
 	virtual ~DocumentAnalyzerInstance()
 	{
 		delete m_segmenter;
 	}
 
-	virtual analyzer::Document analyzeNext();
+	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof);
 
-	virtual bool hasMore() const
-	{
-		return !m_subdocstack.empty();
-	}
+	virtual bool analyzeNext( analyzer::Document& doc);
 
 private:
 	void clearTermMaps();
@@ -243,11 +232,6 @@ private:
 	void processConcatenated( analyzer::Document& res);
 
 private:
-	const DocumentAnalyzer* m_analyzer;
-	SegmenterInstanceInterface* m_segmenter;
-	ParserContext m_parserContext;
-	std::vector<analyzer::Document> m_subdocstack;
-
 	struct Chunk
 	{
 		Chunk()
@@ -263,10 +247,31 @@ private:
 	
 	typedef std::map<int,Chunk> ConcatenatedMap;
 
+	struct SuccPositionChunk
+	{
+		SuccPositionChunk( int featidx_, const char* elem_, std::size_t elemsize_)
+			:featidx(featidx_),elem(elem_,elemsize_){}
+		SuccPositionChunk( const SuccPositionChunk& o)
+			:featidx(o.featidx),elem(o.elem){}
+		int featidx;
+		std::string elem;
+	};
+
+private:
+	const DocumentAnalyzer* m_analyzer;
+	SegmenterInstanceInterface* m_segmenter;
+	ParserContext m_parserContext;
+	std::vector<analyzer::Document> m_subdocstack;
+
 	ConcatenatedMap m_concatenatedMap;
 
 	std::vector<analyzer::Term> m_searchTerms;
 	std::vector<analyzer::Term> m_forwardTerms;
+	bool m_eof;
+	SegmenterPosition m_last_position;
+	SegmenterPosition m_curr_position;
+	SegmenterPosition m_start_position;
+	std::vector<SuccPositionChunk> m_succChunks;
 };
 
 }//namespace

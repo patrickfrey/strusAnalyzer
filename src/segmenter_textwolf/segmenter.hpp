@@ -30,8 +30,7 @@
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
-#include <map>
-#include <istream>
+#include <string>
 
 namespace strus
 {
@@ -47,7 +46,7 @@ public:
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
-	virtual SegmenterInstanceInterface* createInstance( std::istream& input, std::size_t bufsize) const;
+	virtual SegmenterInstanceInterface* createInstance() const;
 
 private:
 	void addExpression( int id, const std::string& expression);
