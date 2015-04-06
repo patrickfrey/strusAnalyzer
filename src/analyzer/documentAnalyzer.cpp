@@ -369,7 +369,7 @@ bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 {
 	if (m_subdocstack.empty())
 	{
-		throw std::runtime_error( "internal: called analyzeNext after EOF");
+		return false;
 	}
 	bool have_document = false;
 	doc.clear();
