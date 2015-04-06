@@ -62,6 +62,7 @@ private:
 		> XMLScanner;
 
 	const Automaton* m_automaton;
+	textwolf::SrcIterator m_srciter;
 	XMLScanner m_scanner;
 	XMLPathSelect m_pathselect;
 	XMLScanner::iterator m_itr;
@@ -71,6 +72,7 @@ private:
 	const char* m_chunk;
 	std::size_t m_chunksize;
 	bool m_eof;
+	bool m_done;
 };
 
 }//namespace

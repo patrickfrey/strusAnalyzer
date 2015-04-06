@@ -371,7 +371,9 @@ bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 	{
 		throw std::runtime_error( "internal: called analyzeNext after EOF");
 	}
-	doc = m_subdocstack.back();
+	bool have_document = false;
+	doc.clear();
+	m_subdocstack.back().swap( doc);
 	m_subdocstack.pop_back();
 	const char* elem = 0;
 	std::size_t elemsize = 0;
@@ -388,6 +390,7 @@ bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 				if (featidx == EndOfSubDocument)
 				{
 					//... end of sub document -> out of loop and return document
+					have_document = true;
 					break;
 				}
 				else
@@ -468,7 +471,7 @@ bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
 		}
 	}
-	if (!m_eof)
+	if (!m_eof && !have_document)
 	{
 		m_subdocstack.push_back( analyzer::Document());
 		m_subdocstack.back().swap( doc);
@@ -491,6 +494,11 @@ bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
 	// create real positions for output:
 	mapPositions( doc);
 	clearTermMaps();
-	return true;
+
+	if (!doc.attributes().empty()) return true;
+	if (!doc.metadata().empty()) return true;
+	if (!doc.searchIndexTerms().empty()) return true;
+	if (!doc.forwardIndexTerms().empty()) return true;
+	return false;
 }
 

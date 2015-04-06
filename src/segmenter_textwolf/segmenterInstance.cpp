@@ -36,19 +36,9 @@ SegmenterInstance::SegmenterInstance( const Automaton* automaton_)
 	:m_automaton(automaton_)
 	,m_scanner(textwolf::SrcIterator())
 	,m_pathselect(automaton_)
-	,m_chunk(0),m_chunksize(0),m_eof(false)
+	,m_chunk(0),m_chunksize(0),m_eof(false),m_done(false)
 {
-	m_itr = m_scanner.begin();
-	m_end = m_scanner.end();
-	if (m_itr == m_end)
-	{
-		m_selitr = m_selend = m_pathselect.end();
-	}
-	else
-	{
-		m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
-		m_selend = m_pathselect.end();
-	}
+	m_selitr = m_selend = m_pathselect.end();
 }
 
 void SegmenterInstance::putInput( const char* chunk, std::size_t chunksize, bool eof)
@@ -57,7 +47,7 @@ void SegmenterInstance::putInput( const char* chunk, std::size_t chunksize, bool
 	{
 		throw std::runtime_error("feeded chunk after declared end of input");
 	}
-	if (m_chunk != 0 || m_scanner.getIterator().endOfChunk())
+	if (m_chunk != 0 || !m_scanner.getIterator().endOfChunk())
 	{
 		throw std::runtime_error("feeded chunk to segmenter while previous chunk is still processed");
 	}
@@ -69,35 +59,46 @@ void SegmenterInstance::putInput( const char* chunk, std::size_t chunksize, bool
 bool SegmenterInstance::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 {
 	jmp_buf eom;
-	if (m_chunk)
-	{
-		m_scanner.getIterator().putInput( m_chunk, m_chunksize, &eom);
-		m_chunk = 0;
-		m_chunksize = 0;
-	}
 	if (setjmp(eom) != 0)
 	{
 		if (m_eof)
 		{
-			throw std::runtime_error( "unexpected end of input");
+			if (!m_done)
+			{
+				m_chunk = "";
+				m_chunksize = 1;
+				m_done = true;
+			}
+			else
+			{
+				throw std::runtime_error( "unexpected end of input");
+			}
 		}
-		return false; //... do call the function with the next chunk
+		else
+		{
+			return false; //... do call the function with the next chunk or exit (eof)
+		}
+	}
+	if (m_chunk)
+	{
+		m_srciter.putInput( m_chunk, m_chunksize, &eom);
+		m_scanner.setSource( m_srciter);
+		m_chunk = 0;
+		m_chunksize = 0;
+		m_itr = m_scanner.begin(false);
+		m_end = m_scanner.end();
 	}
 	if (m_itr == m_end) return false;
 	while (m_selitr == m_selend)
 	{
 		++m_itr;
+
 		XMLScanner::ElementType et = m_itr->type();
 		if (et == XMLScanner::ErrorOccurred)
 		{
-			if (m_itr->size())
-			{
-				throw std::runtime_error( std::string( "error in XML document: ") + std::string(m_itr->content(), m_itr->size()));
-			}
-			else
-			{
-				throw std::runtime_error( std::string( "input document is not valid XML"));
-			}
+			const char* errstr = "";
+			m_scanner.getError( &errstr);
+			throw std::runtime_error( std::string( "error in XML document: ") + errstr);
 		}
 		else if (et == XMLScanner::Exit)
 		{
