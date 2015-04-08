@@ -32,9 +32,9 @@
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerInterface* strus::getNormalizer_dictmap()
+DLL_PUBLIC const NormalizerConstructorInterface* strus::getNormalizer_dictmap()
 {
-	static const DictMapNormalizer rt;
+	static const DictMapNormalizerConstructor rt;
 	return &rt;
 }
 

@@ -31,12 +31,13 @@
 
 namespace strus
 {
-/// \brief Forward declaration
-class NormalizerInterface;
 
-const NormalizerInterface* getNormalizer_lowercase();
-const NormalizerInterface* getNormalizer_uppercase();
-const NormalizerInterface* getNormalizer_convdia();
+/// \brief Forward declaration
+class NormalizerConstructorInterface;
+
+const NormalizerConstructorInterface* getNormalizer_lowercase();
+const NormalizerConstructorInterface* getNormalizer_uppercase();
+const NormalizerConstructorInterface* getNormalizer_convdia();
 
 }//namespace
 #endif

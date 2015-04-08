@@ -28,55 +28,23 @@
 */
 #ifndef _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
-#include <vector>
-#include <string>
 
 namespace strus
 {
 /// \brief Forward declaration
-class TextProcessorInterface;
+class NormalizerInstanceInterface;
 
+/// \class NormalizerInterface
+/// \brief Interface for normalization
 class NormalizerInterface
 {
 public:
 	/// \brief Destructor
 	virtual ~NormalizerInterface(){}
 
-	/// \brief Normalizer argument base class
-	class Argument
-	{
-	public:
-		/// \brief Destructor
-		virtual ~Argument(){}
-	};
-
-	/// \brief Normalizer context base class
-	class Context
-	{
-	public:
-		/// \brief Destructor
-		virtual ~Context(){}
-	};
-
-	/// \brief Create the arguments needed for normalization
-	/// \param[in] textproc text processor for resolving resources
-	/// \param[in] src arguments for the normalization as list of strings
-	/// \return the argument object to be desposed by the caller with delete if not NULL
-	virtual Argument* createArgument( const TextProcessorInterface* textproc, const std::vector<std::string>&) const	{return 0;}
-
-	/// \brief Create the context object needed for normalization
-	/// \param[in] arg the normalizer arguments
-	/// \return the context object to be desposed by the caller with delete if not NULL
-	virtual Context* createContext( const Argument*) const				{return 0;}
-
-	/// \brief Normalization of a token, transforming it into the unit that is stored or retrieved as such in the storage
-	/// \param[in] ctx context object for normalization, if needed. created with createContext(const std::string&)const 
-	/// \param[in] src start of the source chunk
-	/// \param[in] srcsize size of the source chunk
-	virtual std::string normalize(
-			Context* ctx,
-			const char* src,
-			std::size_t srcsize) const=0;
+	/// \brief Create an instance (context for one document) for normalization
+	/// \return the created normalizer instance (with ownership)
+	virtual NormalizerInstanceInterface* createInstance() const=0;
 };
 
 }//namespace

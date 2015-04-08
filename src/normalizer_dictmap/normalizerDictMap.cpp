@@ -27,6 +27,9 @@
 --------------------------------------------------------------------
 */
 #include "normalizerDictMap.hpp"
+#include "strus/normalizerConstructorInterface.hpp"
+#include "strus/normalizerInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include <cstring>
 #include <cstring>
 #include <cstdio>
@@ -34,6 +37,26 @@
 #include <sys/stat.h>
 
 using namespace strus;
+
+class DictMap
+{
+public:
+	DictMap(){}
+	DictMap( const DictMap& o)
+		:m_map(o.m_map),m_value_strings(o.m_value_strings){}
+	~DictMap(){}
+
+public:
+	void loadFile( const std::string& filename);
+
+	bool set( const std::string& key, const std::string& value);
+	bool get( const std::string& key, std::string& value) const;
+
+private:
+	conotrie::CompactNodeTrie m_map;
+	std::string m_value_strings;
+};
+
 
 bool DictMap::set( const std::string& key, const std::string& value)
 {
@@ -137,23 +160,60 @@ void DictMap::loadFile( const std::string& filename)
 }
 
 
-std::string DictMapNormalizer::normalize(
-		NormalizerInterface::Context* ctx_,
-		const char* src,
-		std::size_t srcsize) const
+class DictMapNormalizerInstance
+	:public NormalizerInstanceInterface
 {
-	const Context* ctx = reinterpret_cast<const Context*>( ctx_);
-	std::string rt;
-	std::string key( src, srcsize);
-	if (ctx->get( key, rt))
+public:
+	DictMapNormalizerInstance( const DictMap* map_)
+		:m_map( map_){}
+	
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize)
 	{
-		return rt;
+		std::string key( src, srcsize);
+		std::string rt;
+		if (m_map->get( key, rt))
+		{
+			return rt;
+		}
+		else
+		{
+			return key;
+		}
 	}
-	else
-	{
-		return key;
-	}
-}
 
+private:
+	const DictMap* m_map;
+};
+
+class DictMapNormalizer
+	:public NormalizerInterface
+{
+public:
+	/// \brief Destructor
+	virtual ~DictMapNormalizer(){}
+
+	DictMapNormalizer( const std::string& filename, const TextProcessorInterface* textproc)
+	{
+		m_map.loadFile( textproc->getResourcePath( filename));
+	}
+
+	virtual NormalizerInstanceInterface* createInstance() const
+	{
+		return new DictMapNormalizerInstance( &m_map);
+	}
+
+private:
+	DictMap m_map;
+};
+
+
+NormalizerInterface* DictMapNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
+{
+	if (args.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
+	if (args.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
+	return new DictMapNormalizer( args[0], textproc);
+}
 
 

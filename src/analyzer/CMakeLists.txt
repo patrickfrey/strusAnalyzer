@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 set(source_files
-	normalizerDef.cpp
 	documentAnalyzer.cpp
 	libstrus_analyzer.cpp
 	queryAnalyzer.cpp

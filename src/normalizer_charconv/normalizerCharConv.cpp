@@ -34,6 +34,68 @@
 
 using namespace strus;
 
+class CharMap
+{
+public:
+	enum ConvType {DiacriticalUnknown, DiacriticalGerman, Lowercase, Uppercase};
+
+	CharMap(){}
+	explicit CharMap( ConvType type)
+	{
+		load( type);
+	}
+
+	void load( ConvType type);
+	std::string rewrite( const char* src, std::size_t srcsize) const;
+
+private:
+	void set( unsigned int chr, const char* value);
+	void set( unsigned int chr, unsigned int mapchr);
+
+	void buildMapDiacritical( ConvType diatype);
+	void buildMapTolower();
+	void buildMapToupper();
+
+private:
+	std::map<unsigned int,std::size_t> m_map;
+	std::string m_strings;
+};
+
+class CharMapNormalizerInstance
+	:public NormalizerInstanceInterface
+{
+public:
+	CharMapNormalizerInstance( const CharMap* map_)
+		:m_map( map_){}
+	
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize)
+	{
+		return m_map->rewrite( src, srcsize);
+	}
+
+private:
+	const CharMap* m_map;
+};
+
+class CharMapNormalizer
+	:public NormalizerInterface
+{
+public:
+	CharMapNormalizer( CharMap::ConvType maptype)
+		:m_map(maptype){}
+
+	virtual NormalizerInstanceInterface* createInstance() const
+	{
+		return new CharMapNormalizerInstance( &m_map);
+	}
+
+private:
+	CharMap m_map;
+};
+
+
 void CharMap::set( unsigned int chr, const char* value)
 {
 	m_map[ chr] = m_strings.size();
@@ -300,38 +362,37 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize) const
 	return rt;
 }
 
-DiacriticalNormalizer::ThisArgument::ThisArgument( const std::string& language)
+NormalizerInterface* LowercaseNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
-	std::string language_lo = utils::tolower( language);
-	if (language_lo == "de")
+	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'lc'");
+	return new CharMapNormalizer( CharMap::Lowercase);
+}
+
+NormalizerInterface* UppercaseNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+{
+	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'uc'");
+	return new CharMapNormalizer( CharMap::Uppercase);
+}
+
+NormalizerInterface* DiacriticalNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+{
+	if (args.size() > 1) throw std::runtime_error( "too many arguments passed to normalizer 'convdia'");
+	if (args.size() == 0)
 	{
-		m_map.load( CharMap::DiacriticalGerman);
+		return new CharMapNormalizer( CharMap::DiacriticalUnknown);
 	}
 	else
 	{
-		m_map.load( CharMap::DiacriticalUnknown);
+		std::string language_lo = utils::tolower( args[0]);
+		if (language_lo == "de")
+		{
+			return new CharMapNormalizer( CharMap::DiacriticalGerman);
+		}
+		else
+		{
+			return new CharMapNormalizer( CharMap::DiacriticalUnknown);
+		}
 	}
-}
-
-NormalizerInterface::Argument* DiacriticalNormalizer::createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const
-{
-	if (arg.size() > 1)
-	{
-		throw std::runtime_error( "too many arguments passed to convdia (diacritical character conversion) normalizer");
-	}
-	else if (arg.empty())
-	{
-		return new ThisArgument( "");
-	}
-	else
-	{
-		return new ThisArgument( arg[0]);
-	}
-}
-
-NormalizerInterface::Context* DiacriticalNormalizer::createContext( const Argument* arg) const
-{
-	return new ThisContext( reinterpret_cast<const ThisArgument*>( arg));
 }
 
 

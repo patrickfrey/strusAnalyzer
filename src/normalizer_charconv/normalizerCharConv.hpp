@@ -28,7 +28,9 @@
 */
 #ifndef _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
 #define _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
+#include "strus/normalizerConstructorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -36,122 +38,31 @@
 namespace strus
 {
 
-class CharMap
+class LowercaseNormalizerConstructor
+	:public NormalizerConstructorInterface
 {
 public:
-	enum ConvType {DiacriticalUnknown, DiacriticalGerman, Lowercase, Uppercase};
+	LowercaseNormalizerConstructor(){}
 
-	CharMap(){}
-	explicit CharMap( ConvType type)
-	{
-		load( type);
-	}
-
-	void load( ConvType type);
-	std::string rewrite( const char* src, std::size_t srcsize) const;
-
-private:
-	void set( unsigned int chr, const char* value);
-	void set( unsigned int chr, unsigned int mapchr);
-
-	void buildMapDiacritical( ConvType diatype);
-	void buildMapTolower();
-	void buildMapToupper();
-
-private:
-	std::map<unsigned int,std::size_t> m_map;
-	std::string m_strings;
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
-class LowercaseNormalizer
-	:public NormalizerInterface
+class UppercaseNormalizerConstructor
+	:public NormalizerConstructorInterface
 {
 public:
-	LowercaseNormalizer()
-		:m_map( CharMap::Lowercase){}
-	
-	/// \brief Destructor
-	virtual ~LowercaseNormalizer(){}
+	UppercaseNormalizerConstructor(){}
 
-	virtual std::string normalize(
-			NormalizerInterface::Context*,
-			const char* src,
-			std::size_t srcsize) const
-	{
-		return m_map.rewrite( src, srcsize);
-	}
-
-private:
-	CharMap m_map;
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
-
-class UppercaseNormalizer
-	:public NormalizerInterface
+class DiacriticalNormalizerConstructor
+	:public NormalizerConstructorInterface
 {
 public:
-	UppercaseNormalizer()
-		:m_map( CharMap::Uppercase){}
+	DiacriticalNormalizerConstructor(){}
 
-	/// \brief Destructor
-	virtual ~UppercaseNormalizer(){}
-
-	virtual std::string normalize(
-			NormalizerInterface::Context*,
-			const char* src,
-			std::size_t srcsize) const
-	{
-		return m_map.rewrite( src, srcsize);
-	}
-	
-private:
-	CharMap m_map;
-};
-
-
-class DiacriticalNormalizer
-	:public NormalizerInterface
-{
-public:
-	/// \brief Destructor
-	virtual ~DiacriticalNormalizer(){}
-
-	class ThisArgument
-		:public NormalizerInterface::Argument
-	{
-	public:
-		ThisArgument( const std::string& language);
-
-		virtual ~ThisArgument()
-		{}
-
-		CharMap m_map;
-	};
-	
-	class ThisContext
-		:public NormalizerInterface::Context
-	{
-	public:
-		explicit ThisContext( const ThisArgument* arg_)
-			:m_map(&arg_->m_map){}
-	
-		virtual ~ThisContext()
-		{}
-	
-		const CharMap* m_map;
-	};
-	
-	virtual Argument* createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const;
-	virtual Context* createContext( const Argument* arg) const;
-
-	virtual std::string normalize(
-			NormalizerInterface::Context* ctx_,
-			const char* src,
-			std::size_t srcsize) const
-	{
-		ThisContext* ctx = reinterpret_cast<ThisContext*>( ctx_);
-		return ctx->m_map->rewrite( src, srcsize);
-	}
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
 }//namespace

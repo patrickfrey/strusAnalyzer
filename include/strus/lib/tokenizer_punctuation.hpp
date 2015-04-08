@@ -28,12 +28,14 @@
 */
 #ifndef _STRUS_ANALYZER_TOKENIZER_PUNCTUATION_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_PUNCTUATION_LIB_HPP_INCLUDED
-#include "strus/tokenizerInterface.hpp"
 
 namespace strus
 {
 
-const TokenizerInterface* getTokenizer_punctuation();
+/// \brief Forward declaration
+class TokenizerConstructorInterface;
+
+const TokenizerConstructorInterface* getTokenizer_punctuation();
 
 }//namespace
 #endif

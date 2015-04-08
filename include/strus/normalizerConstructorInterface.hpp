@@ -26,17 +26,32 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_CONSTRUCTOR_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_CONSTRUCTOR_INTERFACE_HPP_INCLUDED
+#include <vector>
+#include <string>
 
 namespace strus
 {
 
 /// \brief Forward declaration
-class TokenizerConstructorInterface;
+class NormalizerInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
 
-const TokenizerConstructorInterface* getTokenizer_word();
-const TokenizerConstructorInterface* getTokenizer_whitespace();
+/// \class NormalizerConstructorInterface
+/// \brief Interface for the normalizer constructor
+class NormalizerConstructorInterface
+{
+public:
+	/// \brief Destructor
+	virtual ~NormalizerConstructorInterface(){}
+
+	/// \brief Create a normalizer
+	/// \param[in] args arguments for the normalization
+	/// \param[in] tp text processor reference (for loading resources)
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+};
 
 }//namespace
 #endif

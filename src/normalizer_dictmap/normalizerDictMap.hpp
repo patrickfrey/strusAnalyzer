@@ -29,7 +29,9 @@
 #ifndef _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
+#include "strus/normalizerConstructorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include <string>
 #include <vector>
@@ -39,88 +41,13 @@
 namespace strus
 {
 
-class DictMap
+class DictMapNormalizerConstructor
+	:public NormalizerConstructorInterface
 {
 public:
-	DictMap(){}
-	DictMap( const DictMap& o)
-		:m_map(o.m_map),m_value_strings(o.m_value_strings){}
-	~DictMap(){}
+	DictMapNormalizerConstructor(){}
 
-public:
-	void loadFile( const std::string& filename);
-
-	bool set( const std::string& key, const std::string& value);
-	bool get( const std::string& key, std::string& value) const;
-
-private:
-	conotrie::CompactNodeTrie m_map;
-	std::string m_value_strings;
-};
-
-
-class DictMapNormalizer
-	:public NormalizerInterface
-{
-public:
-	/// \brief Destructor
-	virtual ~DictMapNormalizer(){}
-
-	class Argument
-		:public NormalizerInterface::Argument
-	{
-	public:
-		Argument( const Argument& o)
-			:m_map(o.m_map){}
-
-		Argument( const TextProcessorInterface* textproc, const std::vector<std::string>& arg)
-		{
-			if (arg.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
-			if (arg.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
-			m_map.loadFile( textproc->getResourcePath( arg[0]));
-		}
-
-		virtual ~Argument(){}
-
-		const DictMap& map() const	{return m_map;}
-
-	public:
-		DictMap m_map;
-	};
-
-	class Context
-		:public NormalizerInterface::Context
-	{
-	public:
-		Context( const Argument& arg)
-			:m_map(&arg.map())
-		{}
-
-		virtual ~Context(){}
-		bool get( const std::string& key, std::string& value) const
-		{
-			return m_map->get( key, value);
-		}
-
-	private:
-		const DictMap* m_map;
-	};
-
-	virtual NormalizerInterface::Argument* createArgument( const TextProcessorInterface* textproc, const std::vector<std::string>& arg) const
-	{
-		return new Argument( textproc, arg);
-	}
-
-	virtual NormalizerInterface::Context* createContext( const NormalizerInterface::Argument* arg_) const
-	{
-		const Argument* arg = reinterpret_cast<const Argument*>( arg_);
-		return new Context( *arg);
-	}
-
-	virtual std::string normalize(
-			NormalizerInterface::Context* ctx_,
-			const char* src,
-			std::size_t srcsize) const;
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
 }//namespace

@@ -28,12 +28,14 @@
 */
 #ifndef _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
-#include "strus/normalizerInterface.hpp"
 
 namespace strus
 {
 
-const NormalizerInterface* getNormalizer_snowball();
+/// \brief Forward declaration
+class NormalizerConstructorInterface;
+
+const NormalizerConstructorInterface* getNormalizer_snowball();
 
 }//namespace
 #endif

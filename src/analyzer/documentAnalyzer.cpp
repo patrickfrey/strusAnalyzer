@@ -29,7 +29,9 @@
 #include "documentAnalyzer.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/normalizerConstructorInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "strus/tokenizerConstructorInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
@@ -73,7 +75,8 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	m_tokenizer = textProcessor_->getTokenizer( tokenizerConfig.name());
+	const TokenizerConstructorInterface* tk = textProcessor_->getTokenizer( tokenizerConfig.name());
+	m_tokenizer.reset( tk->create( tokenizerConfig.arguments(), textProcessor_));
 
 	if (m_tokenizer->concatBeforeTokenize())
 	{
@@ -82,12 +85,15 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
 		}
 	}
-	m_tokenizerarg.reset( m_tokenizer->createArgument( tokenizerConfig.arguments()));
-	if (!m_tokenizerarg.get() && !tokenizerConfig.arguments().empty())
+	std::vector<NormalizerConfig>::const_iterator
+		ci = normalizerConfig.begin(), ce = normalizerConfig.end();
+	for (; ci != ce; ++ci)
 	{
-		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizerConfig.name() + "'");
+		const NormalizerConstructorInterface* nm = textProcessor_->getNormalizer( ci->name());
+		NormalizerReference normalizer( nm->create( ci->arguments(), textProcessor_));
+
+		m_normalizerlist.push_back( normalizer);
 	}
-	m_normalizerlist = NormalizerDef::getNormalizerDefList( textProcessor_, normalizerConfig);
 }
 
 void DocumentAnalyzer::defineFeature(
@@ -123,34 +129,30 @@ void DocumentAnalyzer::defineSubDocument(
 
 ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext( config.tokenizer()->createContext( config.tokenizerarg()))
+	,m_tokenizerContext(config.tokenizer()->createInstance())
 {
-	std::vector<NormalizerDef>::const_iterator
+	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( 
-			ni->normalizer->createContext( ni->normalizerarg.get()));
+		m_normalizerContextAr.push_back( (*ni)->createInstance());
 	}
 }
 
 std::string ParserContext::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	std::vector<NormalizerDef>::const_iterator
-		ni = m_config->normalizerlist().begin(),
-		ne = m_config->normalizerlist().end();
-	std::vector<utils::SharedPtr<NormalizerInterface::Context> >::iterator
+	NormalizerInstanceArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 
 	std::string rt;
 	std::string origstr;
-	for (; ni != ne && ci != ce; ++ni,++ci)
+	for (; ci != ce; ++ci)
 	{
-		rt = ni->normalizer->normalize( ci->get(), tok, toksize);
-		if (ni + 1 != ne)
+		rt = (*ci)->normalize( tok, toksize);
+		if (ci + 1 != ce)
 		{
 			origstr.swap( rt);
 			tok = origstr.c_str();
@@ -236,8 +238,7 @@ void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, 
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 
 	std::vector<analyzer::Token>
-		tokens = feat.m_config->tokenizer()->tokenize(
-			feat.m_tokenizerContext.get(), elem, elemsize);
+		tokens = feat.m_tokenizerContext->tokenize( elem, elemsize);
 	switch (feat.m_config->featureClass())
 	{
 		case DocumentAnalyzer::FeatMetaData:

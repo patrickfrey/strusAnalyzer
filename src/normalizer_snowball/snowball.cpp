@@ -26,6 +26,9 @@
 
 --------------------------------------------------------------------
 */
+#include "strus/normalizerConstructorInterface.hpp"
+#include "strus/normalizerInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "textwolf/charset_utf8.hpp"
@@ -35,95 +38,89 @@
 
 using namespace strus;
 
+class StemNormalizerInstance
+	:public NormalizerInstanceInterface
+{
+public:
+	StemNormalizerInstance( const struct sb_stemmer* stemmer_)
+		:m_stemmer(stemmer_)
+		,m_env( sb_stemmer_create_env( stemmer_))
+	{}
+
+	virtual ~StemNormalizerInstance()
+	{
+		sb_stemmer_delete_env( m_stemmer, m_env);
+	}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize)
+	{
+		const sb_symbol* res
+			= sb_stemmer_stem_threadsafe(
+				m_stemmer, m_env, (const sb_symbol*)src, srcsize);
+		if (!res) throw std::bad_alloc();
+		std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( m_env);
+
+		return std::string( (const char*)res, len);
+	}
+
+private:
+	const struct sb_stemmer* m_stemmer;
+	struct SN_env* m_env;
+};
+
+
 class StemNormalizer
 	:public NormalizerInterface
 {
 public:
-	StemNormalizer(){}
-
-	class ThisArgument
-		:public NormalizerInterface::Argument
+	StemNormalizer( const std::string& language)
 	{
-	public:
-		ThisArgument( const std::string& language)
+		std::string language_lo = utils::tolower( language);
+		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
+		if (!m_stemmer)
 		{
-			std::string language_lo = utils::tolower( language);
-			m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
-			if (!m_stemmer)
-			{
-				throw std::runtime_error( std::string( "language '") + language + "' unknown for snowball stemmer");
-			}
+			throw std::runtime_error( std::string( "language '") + language + "' unknown for snowball stemmer");
 		}
+	}
 
-		virtual ~ThisArgument()
-		{
-			if (m_stemmer)
-			{
-				sb_stemmer_delete( m_stemmer);
-			}
-		}
-
-		const struct sb_stemmer* stemmer() const
-		{
-			return m_stemmer;
-		}
-
-	private:
-		struct sb_stemmer* m_stemmer;
-	};
-
-	class ThisContext
-		:public NormalizerInterface::Context
+	virtual ~StemNormalizer()
 	{
-	public:
-		explicit ThisContext( const ThisArgument* arg_)
-			:m_stemmer(arg_->stemmer())
-			,m_env( sb_stemmer_create_env( arg_->stemmer()))
-			{}
-
-		virtual ~ThisContext()
+		if (m_stemmer)
 		{
-			sb_stemmer_delete_env( m_stemmer, m_env);
+			sb_stemmer_delete( m_stemmer);
 		}
+	}
 
-		const struct sb_stemmer* stemmer() const	{return m_stemmer;}
-		struct SN_env* env()				{return m_env;}
-
-	private:
-		const struct sb_stemmer* m_stemmer;
-		struct SN_env* m_env;
-	};
-
-	virtual Argument* createArgument( const TextProcessorInterface*, const std::vector<std::string>& arg) const
+	virtual NormalizerInstanceInterface* createInstance() const
 	{
-		if (arg.size() != 1)
+		return new StemNormalizerInstance( m_stemmer);
+	}
+
+private:
+	struct sb_stemmer* m_stemmer;
+};
+
+
+class StemNormalizerConstructor
+	:public NormalizerConstructorInterface
+{
+public:
+	StemNormalizerConstructor(){}
+
+	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size() != 1)
 		{
 			throw std::runtime_error( "illegal number of arguments passed to snowball stemmer");
 		}
-		return new ThisArgument( arg[0]);
-	}
-
-	virtual Context* createContext( const Argument* arg) const
-	{
-		return new ThisContext( reinterpret_cast<const ThisArgument*>( arg));
-	}
-
-	virtual std::string normalize( Context* ctx_, const char* src, std::size_t srcsize) const
-	{
-		ThisContext* ctx = reinterpret_cast<ThisContext*>( ctx_);
-		const sb_symbol* res
-			= sb_stemmer_stem_threadsafe(
-				ctx->stemmer(), ctx->env(), (const sb_symbol*)src, srcsize);
-		if (!res) throw std::bad_alloc();
-		std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( ctx->env());
-
-		return std::string( (const char*)res, len);
+		return new StemNormalizer( args[0]);
 	}
 };
 
-const NormalizerInterface* strus::snowball_stemmer()
+
+const NormalizerConstructorInterface* strus::snowball_stemmer()
 {
-	static const StemNormalizer rt;
+	static const StemNormalizerConstructor rt;
 	return &rt;
 }
 

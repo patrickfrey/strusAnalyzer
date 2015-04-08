@@ -27,6 +27,9 @@
 --------------------------------------------------------------------
 */
 #include "punctuation.hpp"
+#include "strus/tokenizerConstructorInterface.hpp"
+#include "strus/tokenizerInterface.hpp"
+#include "strus/tokenizerInstanceInterface.hpp"
 #include "textwolf/textscanner.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "textwolf/charset.hpp"
@@ -38,6 +41,69 @@ using namespace strus;
 using namespace strus::analyzer;
 
 #undef STRUS_LOWLEVEL_DEBUG
+
+enum Language {LANG_DE};
+
+class PunctuationTokenizerInstance
+	:public TokenizerInstanceInterface
+{
+public:
+	PunctuationTokenizerInstance( Language language_)
+		:m_language(language_){}
+
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
+
+private:
+	Language m_language;
+};
+
+
+class PunctuationTokenizer
+	:public TokenizerInterface
+{
+public:
+	PunctuationTokenizer( const std::string& language)
+	{
+		if (utils::caseInsensitiveEquals( language, "de")
+		||  utils::caseInsensitiveEquals( language, "D"))
+		{
+			m_language = LANG_DE;
+		}
+		else
+		{
+			throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + language +"')");
+		}
+	}
+
+	virtual bool concatBeforeTokenize() const
+	{
+		return true;
+	}
+
+	TokenizerInstanceInterface* createInstance() const
+	{
+		return new PunctuationTokenizerInstance( m_language);
+	}
+
+private:
+	Language m_language;
+};
+
+
+class PunctuationTokenizerConstructor
+	:public TokenizerConstructorInterface
+{
+public:
+	virtual TokenizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size() != 1)
+		{
+			throw std::runtime_error( "illegal number of arguments for punctuation tokenizer (language as single argument expected)");
+		}
+		return new PunctuationTokenizer(args[0]);
+	}
+};
+
 
 class CharTable
 {
@@ -90,212 +156,139 @@ static inline bool isUppercase( textwolf::UChar ch)
 	return (ch >= 'A' && ch <= 'Z') || ch == 0xc4 || ch == 0xd6 || ch == 0xdc;
 }
 
-class PunctuationTokenizer
-	:public TokenizerInterface
+class CharWindow
 {
 public:
-	PunctuationTokenizer(){}
+	enum {NofPrevChar=8};
+	typedef textwolf::TextScanner<
+			textwolf::CStringIterator,
+			textwolf::charset::UTF8>
+		Scanner;
 
-	enum Language {LANG_DE};
-
-	class ThisArgument
-		:public TokenizerInterface::Argument
+	CharWindow( const char* src, std::size_t srcsize)
+		:m_itr( textwolf::CStringIterator( src, srcsize))
+		,m_idx(0)
+		,m_wordlen(0)
+		,m_pos(0)
 	{
-	public:
-		explicit ThisArgument( const std::string& language)
+		std::memset( m_prev_ch, 0, sizeof(m_prev_ch));
+		m_prev_ch[ 0] = *m_itr;
+		if (!isSpace( m_prev_ch[ 0]) && !isPunctuation( m_prev_ch[ 0]))
 		{
-			if (utils::caseInsensitiveEquals( language, "de")
-			||  utils::caseInsensitiveEquals( language, "D"))
-			{
-				m_language = LANG_DE;
-			}
-			else
-			{
-				throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + language +"')");
-			}
+			++m_wordlen;
 		}
-
-		virtual ~ThisArgument(){}
-
-		Language language() const	{return m_language;}
-
-	private:
-		Language m_language;
-	};
-
-	class ThisContext
-		:public TokenizerInterface::Context
-	{
-	public:
-		explicit ThisContext( const ThisArgument* arg_)
-			:m_language(arg_->language()){}
-
-		virtual ~ThisContext(){}
-
-	private:
-		Language m_language;
-	};
-
-	class CharWindow
-	{
-	public:
-		enum {NofPrevChar=8};
-		typedef textwolf::TextScanner<
-				textwolf::CStringIterator,
-				textwolf::charset::UTF8>
-			Scanner;
-
-		CharWindow( const char* src, std::size_t srcsize)
-			:m_itr( textwolf::CStringIterator( src, srcsize))
-			,m_idx(0)
-			,m_wordlen(0)
-			,m_pos(0)
-		{
-			std::memset( m_prev_ch, 0, sizeof(m_prev_ch));
-			m_prev_ch[ 0] = *m_itr;
-			if (!isSpace( m_prev_ch[ 0]) && !isPunctuation( m_prev_ch[ 0]))
-			{
-				++m_wordlen;
-			}
-		}
-
-		void skip()
-		{
-			m_pos = m_itr.getPosition();
-			++m_itr;
-			++m_idx;
-			textwolf::UChar ch = *m_itr;
-			m_prev_ch[ m_idx & ((unsigned int)NofPrevChar -1)] = ch;
-			if (!isSpace( ch) && !isPunctuation( ch))
-			{
-				++m_wordlen;
-			}
-			else
-			{
-				m_wordlen = 0;
-			}
-		}
-
-		textwolf::UChar chr( unsigned int idx) const
-		{
-			return m_prev_ch[ (m_idx - idx) & ((unsigned int)NofPrevChar -1)];
-		}
-
-		unsigned int pos() const
-		{
-			return m_pos;
-		}
-
-		unsigned int wordlen() const
-		{
-			return m_wordlen;
-		}
-
-		std::string tostring()
-		{
-			std::string rt;
-			unsigned int ii=0;
-			for (; ii<NofPrevChar; ++ii)
-			{
-				textwolf::UChar ch = chr( NofPrevChar-ii-1);
-				if (ch) rt.push_back( ch<256?(char)(unsigned char)ch:'_');
-			}
-			return rt;
-		}
-
-	private:
-		Scanner m_itr;
-		unsigned int m_idx;
-		unsigned int m_wordlen;
-		unsigned int m_pos;
-		textwolf::UChar m_prev_ch[ NofPrevChar];
-	};
-
-	virtual bool concatBeforeTokenize() const
-	{
-		return true;
 	}
 
-	Argument* createArgument( const std::vector<std::string>& arg) const
+	void skip()
 	{
-		if (arg.size() != 1)
+		m_pos = m_itr.getPosition();
+		++m_itr;
+		++m_idx;
+		textwolf::UChar ch = *m_itr;
+		m_prev_ch[ m_idx & ((unsigned int)NofPrevChar -1)] = ch;
+		if (!isSpace( ch) && !isPunctuation( ch))
 		{
-			throw std::runtime_error("illegal number of arguments for punctuation tokenizer (language as single argument expected)");
+			++m_wordlen;
 		}
-		return new ThisArgument(arg[0]);
-	}
-
-	virtual Context* createContext( const Argument* arg) const
-	{
-		return new ThisContext( reinterpret_cast<const ThisArgument*>( arg));
-	}
-
-	virtual std::vector<Token> tokenize( Context*, const char* src, std::size_t srcsize) const
-	{
-		std::vector<Token> rt;
-
-		textwolf::UChar ch0;
-		CharWindow scanner( src, srcsize);
-		unsigned int wordlen=0;
-
-		for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
+		else
 		{
-			if (ch0 == '-')
+			m_wordlen = 0;
+		}
+	}
+
+	textwolf::UChar chr( unsigned int idx) const
+	{
+		return m_prev_ch[ (m_idx - idx) & ((unsigned int)NofPrevChar -1)];
+	}
+
+	unsigned int pos() const
+	{
+		return m_pos;
+	}
+
+	unsigned int wordlen() const
+	{
+		return m_wordlen;
+	}
+
+	std::string tostring()
+	{
+		std::string rt;
+		unsigned int ii=0;
+		for (; ii<NofPrevChar; ++ii)
+		{
+			textwolf::UChar ch = chr( NofPrevChar-ii-1);
+			if (ch) rt.push_back( ch<256?(char)(unsigned char)ch:'_');
+		}
+		return rt;
+	}
+
+private:
+	Scanner m_itr;
+	unsigned int m_idx;
+	unsigned int m_wordlen;
+	unsigned int m_pos;
+	textwolf::UChar m_prev_ch[ NofPrevChar];
+};
+
+
+std::vector<analyzer::Token>
+	PunctuationTokenizerInstance::tokenize(
+		const char* src, std::size_t srcsize)
+{
+	std::vector<Token> rt;
+
+	textwolf::UChar ch0;
+	CharWindow scanner( src, srcsize);
+	unsigned int wordlen=0;
+
+	for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
+	{
+		if (ch0 == '-')
+		{
+			textwolf::UChar ch1 = scanner.chr(1);
+			if (isAlpha( ch1)) continue;
+		}
+		else if (ch0 == '.')
+		{
+			textwolf::UChar ch1 = scanner.chr(1);
+			if (isDigit( ch1))
 			{
-				textwolf::UChar ch1 = scanner.chr(1);
-				if (isAlpha( ch1)) continue;
-			}
-			else if (ch0 == '.')
-			{
-				textwolf::UChar ch1 = scanner.chr(1);
-				if (isDigit( ch1))
-				{
-					// dot in a number belongs to the number
+				// dot in a number belongs to the number
 #ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "ABBREV " << scanner.tostring() << std::endl;
+				std::cout << "ABBREV " << scanner.tostring() << std::endl;
 #endif
-					continue;
-				}
-				if (isDigit( ch1) || wordlen == 1)
-				{
-					// single characters followed by a dot.
+				continue;
+			}
+			if (isDigit( ch1) || wordlen == 1)
+			{
+				// single characters followed by a dot.
 #ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+				std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-					continue;
-				}
-				if (isAlpha( ch1))
+				continue;
+			}
+			if (isAlpha( ch1))
+			{
+				textwolf::UChar ch2 = scanner.chr(2);
+				textwolf::UChar ch3 = scanner.chr(3);
+				if (ch3)
 				{
-					textwolf::UChar ch2 = scanner.chr(2);
-					textwolf::UChar ch3 = scanner.chr(3);
-					if (ch3)
+					// 3 subsequent consonants at the end
+					// or 2 subsequent consonants in a word
+					// with length <= 3
+					if (isConsonant( ch1)
+					&&  isConsonant( ch2) && ch2 != ch1)
 					{
-						// 3 subsequent consonants at the end
-						// or 2 subsequent consonants in a word
-						// with length <= 3
-						if (isConsonant( ch1)
-						&&  isConsonant( ch2) && ch2 != ch1)
-						{
-							if ((wordlen <= 3 
-								&& (ch3 != 'i' && ch2 != 's' && ch1 != 't')
-								&& (ch2 != 'h' && ch1 != 'r' && ch1 != 'n' && ch1 != 't')
-								&& (ch2 != 'h' && ch1 != 'r')
-								&& (ch3 != 'u' && ch2 != 'n' && ch1 != 's'))
-							|| ((isConsonant( ch3) && ch3 != ch2 && wordlen <= 5)
-								&& (ch3 != 'c' && ch2 != 'h' && ch1 != 't')
-								&& (ch3 != 'h' && ch2 != 'r' && ch1 != 't')
-							))
-							{
-#ifdef STRUS_LOWLEVEL_DEBUG
-								std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-								continue;
-							}
-						}
-					}
-					else
-					{
-						if (isConsonant( ch1) && isConsonant( ch2))
+						if ((wordlen <= 3 
+							&& (ch3 != 'i' && ch2 != 's' && ch1 != 't')
+							&& (ch2 != 'h' && ch1 != 'r' && ch1 != 'n' && ch1 != 't')
+							&& (ch2 != 'h' && ch1 != 'r')
+							&& (ch3 != 'u' && ch2 != 'n' && ch1 != 's'))
+						|| ((isConsonant( ch3) && ch3 != ch2 && wordlen <= 5)
+							&& (ch3 != 'c' && ch2 != 'h' && ch1 != 't')
+							&& (ch3 != 'h' && ch2 != 'r' && ch1 != 't')
+						))
 						{
 #ifdef STRUS_LOWLEVEL_DEBUG
 							std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
@@ -303,80 +296,91 @@ public:
 							continue;
 						}
 					}
-					if (ch1 == 'f' && ch2 == 'o' && ch3 == 'r')
+				}
+				else
+				{
+					if (isConsonant( ch1) && isConsonant( ch2))
 					{
-						// special case for "Prof."
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'c' && wordlen <= 3)
-					{
-						// c at the end of a small word
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'z' && ch2 != 't' && ch2 != 'n' && ch2 != 'r' && ch2 != 'l' && isConsonant( ch2))
-					{
-						// z after another consonant at the end a word
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'w' && isConsonant( ch2))
-					{
-						// w after another consonant at the end a word
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'v' && isConsonant( ch2))
-					{
-						// v after another consonant at the end a word
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'h' && ch2 != 'c' && isConsonant( ch2))
-					{
-						// h after a consonant other than 'c' at the end a word
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
-#endif
-						continue;
-					}
-					if (ch1 == 'k' && ch2 != 'c' && ch2 != 'l' && ch2 != 'n' && ch2 != 'r' && isConsonant( ch2))
-					{
-						// k after a consonant other than 'c','l','n' or 'r' at the end a word
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
 						continue;
 					}
 				}
+				if (ch1 == 'f' && ch2 == 'o' && ch3 == 'r')
+				{
+					// special case for "Prof."
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-				rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
+					continue;
+				}
+				if (ch1 == 'c' && wordlen <= 3)
+				{
+					// c at the end of a small word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				if (ch1 == 'z' && ch2 != 't' && ch2 != 'n' && ch2 != 'r' && ch2 != 'l' && isConsonant( ch2))
+				{
+					// z after another consonant at the end a word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				if (ch1 == 'w' && isConsonant( ch2))
+				{
+					// w after another consonant at the end a word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				if (ch1 == 'v' && isConsonant( ch2))
+				{
+					// v after another consonant at the end a word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				if (ch1 == 'h' && ch2 != 'c' && isConsonant( ch2))
+				{
+					// h after a consonant other than 'c' at the end a word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				if (ch1 == 'k' && ch2 != 'c' && ch2 != 'l' && ch2 != 'n' && ch2 != 'r' && isConsonant( ch2))
+				{
+					// k after a consonant other than 'c','l','n' or 'r' at the end a word
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
 			}
-			else if (isPunctuation(ch0))
-			{
-				rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
-			}
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+			rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
 		}
-		return rt;
+		else if (isPunctuation(ch0))
+		{
+			rt.push_back( Token( scanner.pos(), scanner.pos(), 1));
+		}
 	}
-};
+	return rt;
+}
 
-const TokenizerInterface* strus::punctuationTokenizer()
+
+const TokenizerConstructorInterface* strus::punctuationTokenizer()
 {
-	static const PunctuationTokenizer tokenizer;
+	static const PunctuationTokenizerConstructor tokenizer;
 	return &tokenizer;
 }
 

@@ -43,17 +43,17 @@ public:
 	virtual void addResourcePath( const std::string& path);
 	virtual std::string getResourcePath( const std::string& filename) const;
 
-	virtual const TokenizerInterface* getTokenizer( const std::string& name) const;
+	virtual const TokenizerConstructorInterface* getTokenizer( const std::string& name) const;
 
-	virtual const NormalizerInterface* getNormalizer( const std::string& name) const;
+	virtual const NormalizerConstructorInterface* getNormalizer( const std::string& name) const;
 
-	virtual void defineTokenizer( const std::string& name, const TokenizerInterface* tokenizer);
+	virtual void defineTokenizer( const std::string& name, const TokenizerConstructorInterface* tokenizer);
 
-	virtual void defineNormalizer( const std::string& name, const NormalizerInterface* normalizer);
+	virtual void defineNormalizer( const std::string& name, const NormalizerConstructorInterface* normalizer);
 
 private:
-	std::map<std::string,const TokenizerInterface*> m_tokenizer_map;
-	std::map<std::string,const NormalizerInterface*> m_normalizer_map;
+	std::map<std::string,const TokenizerConstructorInterface*> m_tokenizer_map;
+	std::map<std::string,const NormalizerConstructorInterface*> m_normalizer_map;
 	std::vector<std::string> m_resourcePaths;
 };
 

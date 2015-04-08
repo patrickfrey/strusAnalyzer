@@ -33,8 +33,9 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
-#include "normalizerDef.hpp"
+#include "strus/tokenizerInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -134,23 +135,23 @@ public:
 		FeatureConfig( const FeatureConfig& o)
 			:m_name(o.m_name)
 			,m_tokenizer(o.m_tokenizer)
-			,m_tokenizerarg(o.m_tokenizerarg)
 			,m_normalizerlist(o.m_normalizerlist)
 			,m_featureClass(o.m_featureClass)
 			,m_options(o.m_options){}
 	
+		typedef utils::SharedPtr<NormalizerInterface> NormalizerReference;
+		typedef utils::SharedPtr<TokenizerInterface> TokenizerReference;
+
 		const std::string& name() const					{return m_name;}
-		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
-		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
-		const std::vector<NormalizerDef>& normalizerlist() const	{return m_normalizerlist;}
+		const TokenizerReference& tokenizer() const			{return m_tokenizer;}
+		const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 		FeatureClass featureClass() const				{return m_featureClass;}
 		FeatureOptions options() const					{return m_options;}
 
 	private:
 		std::string m_name;
-		const TokenizerInterface* m_tokenizer;
-		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
-		std::vector<NormalizerDef> m_normalizerlist;
+		TokenizerReference m_tokenizer;
+		std::vector<NormalizerReference> m_normalizerlist;
 		FeatureClass m_featureClass;
 		FeatureOptions m_options;
 	};
@@ -185,6 +186,10 @@ public:
 
 	struct FeatureContext
 	{
+		typedef utils::SharedPtr<NormalizerInstanceInterface> NormalizerInstanceReference;
+		typedef std::vector<NormalizerInstanceReference> NormalizerInstanceArray;
+		typedef utils::SharedPtr<TokenizerInstanceInterface> TokenizerInstanceReference;
+
 		FeatureContext( const DocumentAnalyzer::FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
 			:m_config(o.m_config)
@@ -194,8 +199,8 @@ public:
 		std::string normalize( const char* tok, std::size_t toksize);
 
 		const DocumentAnalyzer::FeatureConfig* m_config;
-		std::vector<utils::SharedPtr<NormalizerInterface::Context> > m_normalizerContextAr;
-		utils::SharedPtr<TokenizerInterface::Context> m_tokenizerContext;
+		NormalizerInstanceArray m_normalizerContextAr;
+		TokenizerInstanceReference m_tokenizerContext;
 	};
 
 	FeatureContext& featureContext( int featidx)

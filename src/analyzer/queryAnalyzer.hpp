@@ -31,7 +31,7 @@
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/normalizerInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
-#include "normalizerDef.hpp"
+#include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -67,6 +67,9 @@ private:
 	class FeatureConfig
 	{
 	public:
+		typedef utils::SharedPtr<TokenizerInterface> TokenizerReference;
+		typedef utils::SharedPtr<NormalizerInterface> NormalizerReference;
+
 		FeatureConfig()
 			:m_tokenizer(0){}
 
@@ -78,38 +81,39 @@ private:
 		FeatureConfig( const FeatureConfig& o)
 			:m_featureType(o.m_featureType)
 			,m_tokenizer(o.m_tokenizer)
-			,m_tokenizerarg(o.m_tokenizerarg)
 			,m_normalizerlist(o.m_normalizerlist){}
 
 		/// \brief Get the type of the features in the storage
 		const std::string& featureType() const				{return m_featureType;}
 		/// \brief Get the tokenizer function for tokenization of the phrase
-		const TokenizerInterface* tokenizer() const			{return m_tokenizer;}
-		/// \brief Get the tokenizer arguments for tokenization of the phrase
-		const TokenizerInterface::Argument* tokenizerarg() const	{return m_tokenizerarg.get();}
+		const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 		/// \brief Get the normalizer of the tokens for create the feature values
-		const std::vector<NormalizerDef>& normalizerlist() const	{return m_normalizerlist;}
+		const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 
 	private:
 		std::string m_featureType;
-		const TokenizerInterface* m_tokenizer;
-		utils::SharedPtr<TokenizerInterface::Argument> m_tokenizerarg;
-		std::vector<NormalizerDef> m_normalizerlist;
+		TokenizerReference m_tokenizer;
+		std::vector<NormalizerReference> m_normalizerlist;
 	};
 
 	struct FeatureContext
 	{
+		typedef utils::SharedPtr<NormalizerInstanceInterface> NormalizerInstanceReference;
+		typedef std::vector<NormalizerInstanceReference> NormalizerInstanceArray;
+		typedef utils::SharedPtr<TokenizerInstanceInterface> TokenizerInstanceReference;
+
 		FeatureContext( const FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
 			:m_config(o.m_config)
 			,m_normalizerContextAr(o.m_normalizerContextAr)
 			,m_tokenizerContext(o.m_tokenizerContext){}
 
+		std::vector<analyzer::Token> tokenize( char const* segment, std::size_t segmentsize);
 		std::string normalize( const char* tok, std::size_t toksize);
 
 		const FeatureConfig* m_config;
-		std::vector<utils::SharedPtr<NormalizerInterface::Context> > m_normalizerContextAr;
-		utils::SharedPtr<TokenizerInterface::Context> m_tokenizerContext;
+		NormalizerInstanceArray m_normalizerContextAr;
+		TokenizerInstanceReference m_tokenizerContext;
 	};
 
 	/// \brief Get the feature configuration for a named phrase type

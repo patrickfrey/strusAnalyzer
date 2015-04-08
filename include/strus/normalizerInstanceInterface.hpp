@@ -26,17 +26,26 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include <vector>
+#include <string>
 
 namespace strus
 {
 
-/// \brief Forward declaration
-class TokenizerConstructorInterface;
+class NormalizerInstanceInterface
+{
+public:
+	/// \brief Destructor
+	virtual ~NormalizerInstanceInterface(){}
 
-const TokenizerConstructorInterface* getTokenizer_word();
-const TokenizerConstructorInterface* getTokenizer_whitespace();
+	/// \brief Normalization of a token
+	/// \param[in] src start of the token to normalize
+	/// \param[in] srcsize size of the token in bytes
+	/// \return list of normalized tokens
+	virtual std::string normalize( const char* src, std::size_t srcsize)=0;
+};
 
 }//namespace
 #endif

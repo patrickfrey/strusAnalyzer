@@ -31,10 +31,11 @@
 
 namespace strus
 {
-/// \brief Forward declaration
-class NormalizerInterface;
 
-const NormalizerInterface* getNormalizer_dictmap();
+/// \brief Forward declaration
+class NormalizerConstructorInterface;
+
+const NormalizerConstructorInterface* getNormalizer_dictmap();
 
 }//namespace
 #endif

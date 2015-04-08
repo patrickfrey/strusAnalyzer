@@ -26,18 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKENIZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/token.hpp"
+#include <utility>
+#include <cstddef>
+#include <vector>
 
-namespace strus
+namespace strus {
+
+/// \class TokenizerInstanceInterface
+/// \brief Interface of a tokenizer instance (context for the tokenization of one document)
+class TokenizerInstanceInterface
 {
+public:
+	/// \brief Destructor
+	virtual ~TokenizerInstanceInterface(){}
 
-/// \brief Forward declaration
-class TokenizerConstructorInterface;
-
-const TokenizerConstructorInterface* getTokenizer_word();
-const TokenizerConstructorInterface* getTokenizer_whitespace();
+	/// \brief Tokenize a segment into a list of tokens
+	/// \param[in] src pointer to segment to tokenize
+	/// \param[in] srcsize size of the segment to tokenize in bytes
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)=0;
+};
 
 }//namespace
 #endif
+
 

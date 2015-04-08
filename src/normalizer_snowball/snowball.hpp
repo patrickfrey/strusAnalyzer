@@ -33,7 +33,7 @@
 namespace strus
 {
 
-const NormalizerInterface* snowball_stemmer();
+const NormalizerConstructorInterface* snowball_stemmer();
 
 }//namespace
 #endif

@@ -27,6 +27,9 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/tokenizer_word.hpp"
+#include "strus/tokenizerConstructorInterface.hpp"
+#include "strus/tokenizerInterface.hpp"
+#include "strus/tokenizerInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
 #include "textwolf/charset_utf8.hpp"
@@ -35,6 +38,58 @@
 
 using namespace strus;
 using namespace strus::analyzer;
+
+typedef bool (*TokenDelimiter)( char const* si, const char* se);
+
+class SeparationTokenizerInstance
+	:public TokenizerInstanceInterface
+{
+public:
+	SeparationTokenizerInstance( TokenDelimiter delim)
+		:m_delim(delim){}
+
+	const char* skipToToken( char const* si, const char* se) const;
+
+	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize);
+
+private:
+	TokenDelimiter m_delim;
+};
+
+
+class SeparationTokenizer
+	:public TokenizerInterface
+{
+public:
+	SeparationTokenizer( TokenDelimiter delim)
+		:m_delim(delim){}
+
+	TokenizerInstanceInterface* createInstance() const
+	{
+		return new SeparationTokenizerInstance( m_delim);
+	}
+
+private:
+	TokenDelimiter m_delim;
+};
+
+class SeparationTokenizerConstructor
+	:public TokenizerConstructorInterface
+{
+public:
+	SeparationTokenizerConstructor( TokenDelimiter delim)
+		:m_delim(delim){}
+
+	TokenizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size()) throw std::runtime_error( "no arguments expected for word separation tokenizer");
+		return new SeparationTokenizer( m_delim);
+	}
+
+private:
+	TokenDelimiter m_delim;
+};
+
 
 static textwolf::charset::UTF8::CharLengthTab g_charLengthTab;
 
@@ -85,7 +140,6 @@ private:
 	bool m_ar[128];
 };
 
-typedef bool (*TokenDelimiter)( char const* si, const char* se);
 
 static bool wordBoundaryDelimiter( char const* si, const char* se)
 {
@@ -137,52 +191,41 @@ static bool whiteSpaceDelimiter( char const* si, const char* se)
 	}
 }
 
-
-class SeparationTokenizer
-	:public TokenizerInterface
+const char* SeparationTokenizerInstance::skipToToken( char const* si, const char* se) const
 {
-public:
-	SeparationTokenizer( TokenDelimiter delim)
-		:m_delim(delim){}
+	for (; si < se && m_delim( si, se); si = skipChar( si)){}
+	return si;
+}
 
-	const char* skipToToken( char const* si, const char* se) const
+std::vector<Token> SeparationTokenizerInstance::tokenize( const char* src, std::size_t srcsize)
+{
+	std::vector<Token> rt;
+	char const* si = skipToToken( src, src+srcsize);
+	const char* se = src+srcsize;
+
+	for (;si < se; si = skipToToken(si,se))
 	{
-		for (; si < se && m_delim( si, se); si = skipChar( si)){}
-		return si;
-	}
-
-	virtual std::vector<Token> tokenize( Context*, const char* src, std::size_t srcsize) const
-	{
-		std::vector<Token> rt;
-		char const* si = skipToToken( src, src+srcsize);
-		const char* se = src+srcsize;
-
-		for (;si < se; si = skipToToken(si,se))
+		const char* start = si;
+		while (si < se && !m_delim( si, se))
 		{
-			const char* start = si;
-			while (si < se && !m_delim( si, se))
-			{
-				si = skipChar( si);
-			}
-			rt.push_back( Token( start-src, start-src, si-start));
+			si = skipChar( si);
 		}
-		return rt;
+		rt.push_back( Token( start-src, start-src, si-start));
 	}
-private:
-	TokenDelimiter m_delim;
-};
+	return rt;
+}
 
-static const SeparationTokenizer wordSeparationTokenizer( wordBoundaryDelimiter);
-static const SeparationTokenizer whiteSpaceTokenizer( whiteSpaceDelimiter);
-
+static const SeparationTokenizerConstructor wordSeparationTokenizer( wordBoundaryDelimiter);
+static const SeparationTokenizerConstructor whiteSpaceTokenizer( whiteSpaceDelimiter);
 
 
-DLL_PUBLIC const TokenizerInterface* strus::getTokenizer_word()
+
+DLL_PUBLIC const TokenizerConstructorInterface* strus::getTokenizer_word()
 {
 	return &wordSeparationTokenizer;
 }
 
-DLL_PUBLIC const TokenizerInterface* strus::getTokenizer_whitespace()
+DLL_PUBLIC const TokenizerConstructorInterface* strus::getTokenizer_whitespace()
 {
 	return &whiteSpaceTokenizer;
 }

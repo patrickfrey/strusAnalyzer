@@ -29,7 +29,11 @@
 #include "queryAnalyzer.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerInterface.hpp"
+#include "strus/normalizerConstructorInterface.hpp"
+#include "strus/normalizerInstanceInterface.hpp"
 #include "strus/tokenizerInterface.hpp"
+#include "strus/tokenizerConstructorInterface.hpp"
+#include "strus/tokenizerInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
 #include <set>
@@ -50,45 +54,51 @@ QueryAnalyzer::FeatureConfig::FeatureConfig(
 	:m_featureType(featureType_)
 	,m_tokenizer(0)
 {
-	m_tokenizer = textProcessor_->getTokenizer( tokenizerConfig.name());
-	m_tokenizerarg.reset( m_tokenizer->createArgument( tokenizerConfig.arguments()));
-	if (!m_tokenizerarg.get() && !tokenizerConfig.arguments().empty())
+	const TokenizerConstructorInterface* tk = textProcessor_->getTokenizer( tokenizerConfig.name());
+	m_tokenizer.reset( tk->create( tokenizerConfig.arguments(), textProcessor_));
+
+	std::vector<NormalizerConfig>::const_iterator
+		ci = normalizerConfig.begin(), ce = normalizerConfig.end();
+	for (; ci != ce; ++ci)
 	{
-		throw std::runtime_error( std::string( "no arguments expected for tokenizer '") + tokenizerConfig.name() + "'");
+		const NormalizerConstructorInterface* nm = textProcessor_->getNormalizer( ci->name());
+		NormalizerReference normalizer( nm->create( ci->arguments(), textProcessor_));
+
+		m_normalizerlist.push_back( normalizer);
 	}
-	m_normalizerlist = NormalizerDef::getNormalizerDefList( textProcessor_, normalizerConfig);
 }
 
 QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext( config.tokenizer()->createContext( config.tokenizerarg()))
+	,m_tokenizerContext( config.tokenizer()->createInstance())
 {
-	std::vector<NormalizerDef>::const_iterator
+	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( 
-			ni->normalizer->createContext( ni->normalizerarg.get()));
+		m_normalizerContextAr.push_back( (*ni)->createInstance());
 	}
+}
+
+std::vector<analyzer::Token> QueryAnalyzer::FeatureContext::tokenize( char const* segment, std::size_t segmentsize)
+{
+	return m_tokenizerContext->tokenize( segment, segmentsize);
 }
 
 std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	std::vector<NormalizerDef>::const_iterator
-		ni = m_config->normalizerlist().begin(),
-		ne = m_config->normalizerlist().end();
-	std::vector<utils::SharedPtr<NormalizerInterface::Context> >::iterator
+	NormalizerInstanceArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 
 	std::string rt;
 	std::string origstr;
-	for (; ni != ne && ci != ce; ++ni,++ci)
+	for (; ci != ce; ++ci)
 	{
-		rt = ni->normalizer->normalize( ci->get(), tok, toksize);
-		if (ni + 1 != ne)
+		rt = (*ci)->normalize( tok, toksize);
+		if (ci + 1 != ce)
 		{
 			origstr.swap( rt);
 			tok = origstr.c_str();
@@ -127,11 +137,10 @@ std::vector<analyzer::Term>
 {
 	std::vector<analyzer::Term> rt;
 	const FeatureConfig& feat = featureConfig( phraseType);
-	utils::ScopedPtr<TokenizerInterface::Context> tokctx( feat.tokenizer()->createContext( feat.tokenizerarg()));
 	FeatureContext ctx( feat);
 
 	std::vector<analyzer::Token>
-		pos = feat.tokenizer()->tokenize( tokctx.get(), content.c_str(), content.size());
+		pos = ctx.tokenize( content.c_str(), content.size());
 	std::vector<analyzer::Token>::const_iterator
 		pi = pos.begin(), pe = pos.end();
 
