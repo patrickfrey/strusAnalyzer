@@ -54,12 +54,15 @@ public:
 	class FeatureOptions
 	{
 	public:
-		/// \brief Constructor
+		/// \brief Default constructor
 		FeatureOptions()
 			:m_opt(0){}
 		/// \brief Copy constructor
 		FeatureOptions( const FeatureOptions& o)
 			:m_opt(o.m_opt){}
+		/// \brief Constructor
+		FeatureOptions( unsigned int opt_)
+			:m_opt(opt_){}
 
 		/// \enum PositionBind
 		/// \brief Determines how document positions are assigned to terms
@@ -77,8 +80,14 @@ public:
 			return ar[t];
 		}
 
+		/// \brief Get the PositionBind value set
 		PositionBind positionBind() const		{return (PositionBind)(m_opt & 0x3);}
+
+		/// \brief Define the PositionBind value
 		void definePositionBind( PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
+
+		/// \brief Get the options transacription as integer
+		unsigned int opt() const			{return m_opt;}
 
 	private:
 		unsigned int m_opt;
