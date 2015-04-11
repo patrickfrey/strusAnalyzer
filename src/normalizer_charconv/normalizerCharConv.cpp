@@ -198,16 +198,50 @@ void CharMap::buildMapDiacritical( ConvType diatype)
 	set( 0xFE, "th");
 	set( 0xFF, "y");
 
-	set( 0x102, "A");
-	set( 0x103, "a");
-	set( 0x218, "S");
-	set( 0x15F, "S");
-	set( 0x219, "s");
-	set( 0x15E, "s");
-	set( 0x21A, "T");
-	set( 0x162, "T");
-	set( 0x21B, "t");
-	set( 0x163, "t");
+	std::size_t ii;
+	for (ii=0x100; ii<0x106; ii+=2) {set( ii, "A"); set( ii+1, "a");}
+	for (ii=0x106; ii<0x10E; ii+=2) {set( ii, "C"); set( ii+1, "c");}
+	for (ii=0x10E; ii<0x112; ii+=2) {set( ii, "D"); set( ii+1, "d");}
+	for (ii=0x112; ii<0x11C; ii+=2) {set( ii, "E"); set( ii+1, "e");}
+	for (ii=0x11C; ii<0x124; ii+=2) {set( ii, "G"); set( ii+1, "g");}
+	for (ii=0x132; ii<0x136; ii+=2) {set( ii, "J"); set( ii+1, "j");}
+	for (ii=0x139; ii<0x143; ii+=2) {set( ii, "L"); set( ii+1, "l");}
+	for (ii=0x143; ii<0x149; ii+=2) {set( ii, "N"); set( ii+1, "n");}
+	set( 0x14A, "N"); set( 0x14B, "n");
+	for (ii=0x14C; ii<0x152; ii+=2) {set( ii, "O"); set( ii+1, "o");}
+	set( 0x152, "OE"); set( 0x153, "oe");
+	for (ii=0x154; ii<0x15A; ii+=2) {set( ii, "R"); set( ii+1, "r");}
+	for (ii=0x15A; ii<0x162; ii+=2) {set( ii, "S"); set( ii+1, "s");}
+	for (ii=0x162; ii<0x168; ii+=2) {set( ii, "T"); set( ii+1, "t");}
+	for (ii=0x168; ii<0x174; ii+=2) {set( ii, "U"); set( ii+1, "u");}
+	set( 0x174, "W"); set( 0x175, "w");
+	set( 0x176, "Y"); set( 0x177, "y"); set( 0x178, "Y");
+	for (ii=0x179; ii<0x17F; ii+=2) {set( ii, "Z"); set( ii+1, "z");}
+	set( 0x17F, "s");
+	for (ii=0x180; ii<0x186; ii+=2) {set( ii, "B"); set( ii+1, "b");}
+	set( 0x187, "C"); set( 0x188, "c");
+	for (ii=0x189; ii<0x18D; ii+=2) {set( ii, "D"); set( ii+1, "d");}
+	set( 0x1CE, "a");
+	set( 0x1CF, "I"); set( 0x1D0, "i");
+	set( 0x1D1, "O"); set( 0x1D2, "o");
+	for (ii=0x1D3; ii<0x1DD; ii+=2) {set( ii, "U"); set( ii+1, "u");}
+	for (ii=0x1DE; ii<0x1E2; ii+=2) {set( ii, "A"); set( ii+1, "a");}
+	set( 0x1E2, "AE"); set( 0x1E3, "ae");
+	for (ii=0x1E4; ii<0x1E8; ii+=2) {set( ii, "G"); set( ii+1, "g");}
+	set( 0x1E8, "K"); set( 0x1E9, "k");
+	for (ii=0x1EA; ii<0x1EE; ii+=2) {set( ii, "O"); set( ii+1, "o");}
+	for (ii=0x200; ii<0x204; ii+=2) {set( ii, "A"); set( ii+1, "a");}
+	for (ii=0x204; ii<0x208; ii+=2) {set( ii, "E"); set( ii+1, "e");}
+	for (ii=0x208; ii<0x20C; ii+=2) {set( ii, "I"); set( ii+1, "i");}
+	for (ii=0x20C; ii<0x210; ii+=2) {set( ii, "O"); set( ii+1, "o");}
+	for (ii=0x210; ii<0x214; ii+=2) {set( ii, "R"); set( ii+1, "r");}
+	for (ii=0x214; ii<0x218; ii+=2) {set( ii, "U"); set( ii+1, "u");}
+	set( 0x218, "S"); set( 0x219, "s");
+	set( 0x21A, "T"); set( 0x21B, "t");
+	set( 0x21E, "H"); set( 0x21F, "h");
+	set( 0x226, "A"); set( 0x227, "a");
+	set( 0x228, "E"); set( 0x229, "e");
+	for (ii=0x214; ii<0x218; ii+=2) {set( ii, "U"); set( ii+1, "u");}
 
 	set( 0x1E9E, "ss");
 }
