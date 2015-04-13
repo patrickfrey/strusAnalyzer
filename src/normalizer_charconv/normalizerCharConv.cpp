@@ -241,9 +241,30 @@ void CharMap::buildMapDiacritical( ConvType diatype)
 	set( 0x21E, "H"); set( 0x21F, "h");
 	set( 0x226, "A"); set( 0x227, "a");
 	set( 0x228, "E"); set( 0x229, "e");
-	for (ii=0x214; ii<0x218; ii+=2) {set( ii, "U"); set( ii+1, "u");}
-
+	set( 0x1E02, "B" );
+	set( 0x1E03, "b" );
+	set( 0x1E0A, "D" );
+	set( 0x1E0B, "d" );
+	set( 0x1E1E, "F" );
+	set( 0x1E1F, "f" );
+	set( 0x1E40, "M" );
+	set( 0x1E41, "m" );
+	set( 0x1E56, "P" );
+	set( 0x1E57, "p" );
+	set( 0x1E60, "S" );
+	set( 0x1E61, "s" );
+	set( 0x1E6A, "T" );
+	set( 0x1E6B, "t" );
+	set( 0x1E80, "W" );
+	set( 0x1E81, "w" );
+	set( 0x1E82, "W" );
+	set( 0x1E83, "w" );
+	set( 0x1E84, "W" );
+	set( 0x1E85, "w" );
+	set( 0x1E9B, "S" );
 	set( 0x1E9E, "ss");
+	set( 0x1EF2, "Y" );
+	set( 0x1EF3, "y" );
 }
 
 void CharMap::buildMapTolower()
