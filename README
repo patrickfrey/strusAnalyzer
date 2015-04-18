@@ -1,29 +1,10 @@
 strusAnalyzer
 =============
 
-Library for document analysis that splits a document into normalized atomic terms that can be insterted into a strus storage for retrieval. Also some functions for analysing tokens or phrases of the strus query are provided.
+Library for document analysis that splits a document into normalized atomic terms that 
+can be insterted into a search engine for retrieval. Also some functions for analysing tokens 
+or phrases of the strus query are provided.
+You will find more documentation at http://patrickfrey.github.io/strusAnalyzer.
+See also the project homepage http://project-strus.net.
 
-
-Document analysis process:
---------------------------
-Document anaylsis is seen as a process involving the following steps. For each of these steps there exist interfaces and the involved components can be replaced or alternatively used if loading them as modules (see project strusModule).
-
-1. Document segmentation:
-	A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivarion of abbreviated syntax of XPath to select the segments.
-
-2. Segment tokenization:
-	A segment delivered by the segmenter is split into tokens. The tokenization does not change the items selected. It just marks them by start and end position in the original source.
-
-3. Token normalization:
-	A token delivered by the tokenization is passed to a function that returns the value of the item as it will be inserted into the storage.
-
-
-Libraries provided:
--------------------
-libstrus_analyzer.so			Analyzer
-libstrus_textproc.so			Container for text processing functions.
-libstrus_segmenter_textwolf.so		XML document segmenter (textwolf)
-libstrus_normalizer_snowball.so		Normalizer for stemming (snowball)
-libstrus_tokenizer_word.so		Tokenizer to split a text into words
-tokenizer_punctuation.so		Tokenizer for end of sentence markers
 
