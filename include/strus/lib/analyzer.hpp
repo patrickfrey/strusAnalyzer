@@ -43,7 +43,7 @@ class TextProcessorInterface;
 class SegmenterInterface;
 
 /// \brief Creates an analyzer program for analyzing a document
-/// \param[in] textProcessorInterface static const reference to the token miner. It defines the set of token type definitions that can be used in the program.
+/// \param[in] textProcessor const reference to the text processor providing the functions that can be used in document analysis.
 /// \param[in] segmenter empty segmenter instance to be used by the created analyzer (ownership transferred).
 /// \return the analyzer program reference to be disposed with delete by the caller
 DocumentAnalyzerInterface*
@@ -52,7 +52,7 @@ DocumentAnalyzerInterface*
 		SegmenterInterface* segmenter);
 
 /// \brief Creates an analyzer program for analyzing a query
-/// \param[in] textProcessor static const reference to a token miner. It defines the set of token type definitions that can be used in the program.
+/// \param[in] textProcessor const reference to the text processor providing the functions that can be used in query analysis.
 /// \return the analyzer program reference to be disposed with delete by the caller
 QueryAnalyzerInterface*
 	createQueryAnalyzer(

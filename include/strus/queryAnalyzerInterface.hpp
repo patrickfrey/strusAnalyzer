@@ -46,7 +46,6 @@ public:
 
 	/// \brief Declare how a set of query features is produced out from a phrase of a certain type
 	/// \param[in] phraseType label of the phrase type
-	/// \param[in] featureSet name of the set the generated features are assigned to
 	/// \param[in] featureType type name (in the storage) of the generated features
 	/// \param[in] tokenizer selects the tokenizer function for tokenization of the phrase
 	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized

@@ -19,6 +19,8 @@
 
 # Packaging directory
 pkg/
+# Documentation doxygen generated files
+doc/doxygen
 
 # Valgring suppression files
 *.sup

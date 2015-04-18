@@ -36,8 +36,7 @@ namespace strus {
 class TextProcessorInterface;
 
 /// \brief Create a text processor
-/// \param[in] source token description source
-/// \return the constructed token miner factory
+/// \return the constructed text processor
 TextProcessorInterface* createTextProcessor();
 
 }//namespace
