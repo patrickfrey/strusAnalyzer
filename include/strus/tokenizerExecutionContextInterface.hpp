@@ -26,34 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONFIG_HPP_INCLUDED
-#include <string>
+#ifndef _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/token.hpp"
+#include <utility>
+#include <cstddef>
 #include <vector>
 
 namespace strus {
 
-class NormalizerConfig
+/// \class TokenizerInstanceInterface
+/// \brief Interface to the context (state) for the execution of a tokenizer for one unit (document,query)
+class TokenizerExecutionContextInterface
 {
 public:
-	NormalizerConfig()
-		:m_name(),m_arguments(){}
-	NormalizerConfig( const NormalizerConfig& o)
-		:m_name(o.m_name)
-		,m_arguments(o.m_arguments){}
-	NormalizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	NormalizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
+	/// \brief Destructor
+	virtual ~TokenizerExecutionContextInterface(){}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
-
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
+	/// \brief Tokenize a segment into a list of tokens
+	/// \param[in] src pointer to segment to tokenize
+	/// \param[in] srcsize size of the segment to tokenize in bytes
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)=0;
 };
 
 }//namespace
 #endif
+
 

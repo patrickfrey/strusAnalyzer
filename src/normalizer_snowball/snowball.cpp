@@ -26,9 +26,9 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "textwolf/charset_utf8.hpp"
@@ -38,16 +38,16 @@
 
 using namespace strus;
 
-class StemNormalizerInstance
-	:public NormalizerInstanceInterface
+class StemNormalizerExecutionContext
+	:public NormalizerExecutionContextInterface
 {
 public:
-	StemNormalizerInstance( const struct sb_stemmer* stemmer_)
+	StemNormalizerExecutionContext( const struct sb_stemmer* stemmer_)
 		:m_stemmer(stemmer_)
 		,m_env( sb_stemmer_create_env( stemmer_))
 	{}
 
-	virtual ~StemNormalizerInstance()
+	virtual ~StemNormalizerExecutionContext()
 	{
 		sb_stemmer_delete_env( m_stemmer, m_env);
 	}
@@ -69,11 +69,11 @@ private:
 };
 
 
-class StemNormalizer
-	:public NormalizerInterface
+class StemNormalizerFunctionInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	StemNormalizer( const std::string& language)
+	StemNormalizerFunctionInstance( const std::string& language)
 	{
 		std::string language_lo = utils::tolower( language);
 		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
@@ -83,7 +83,7 @@ public:
 		}
 	}
 
-	virtual ~StemNormalizer()
+	virtual ~StemNormalizerFunctionInstance()
 	{
 		if (m_stemmer)
 		{
@@ -91,9 +91,9 @@ public:
 		}
 	}
 
-	virtual NormalizerInstanceInterface* createInstance() const
+	virtual NormalizerExecutionContextInterface* createExecutionContext() const
 	{
-		return new StemNormalizerInstance( m_stemmer);
+		return new StemNormalizerExecutionContext( m_stemmer);
 	}
 
 private:
@@ -101,26 +101,26 @@ private:
 };
 
 
-class StemNormalizerConstructor
-	:public NormalizerConstructorInterface
+class StemNormalizerFunction
+	:public NormalizerFunctionInterface
 {
 public:
-	StemNormalizerConstructor(){}
+	StemNormalizerFunction(){}
 
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size() != 1)
 		{
 			throw std::runtime_error( "illegal number of arguments passed to snowball stemmer");
 		}
-		return new StemNormalizer( args[0]);
+		return new StemNormalizerFunctionInstance( args[0]);
 	}
 };
 
 
-const NormalizerConstructorInterface* strus::snowball_stemmer()
+const NormalizerFunctionInterface* strus::snowball_stemmer()
 {
-	static const StemNormalizerConstructor rt;
+	static const StemNormalizerFunction rt;
 	return &rt;
 }
 

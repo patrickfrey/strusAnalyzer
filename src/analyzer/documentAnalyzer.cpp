@@ -28,10 +28,10 @@
 */
 #include "documentAnalyzer.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/tokenizerInterface.hpp"
-#include "strus/tokenizerConstructorInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
@@ -65,19 +65,15 @@ enum {MaxNofFeatures=(1<<24)-1, EndOfSubDocument=(1<<24), OfsSubDocument=(1<<24)
 
 DocumentAnalyzer::FeatureConfig::FeatureConfig(
 		const std::string& name_,
-		const TextProcessorInterface* textProcessor_,
-		const TokenizerConfig& tokenizerConfig,
-		const std::vector<NormalizerConfig>& normalizerConfig,
+		TokenizerFunctionInstanceInterface* tokenizer_,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
 		FeatureClass featureClass_,
 		const FeatureOptions& options_)
 	:m_name(name_)
-	,m_tokenizer(0)
+	,m_tokenizer(tokenizer_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	const TokenizerConstructorInterface* tk = textProcessor_->getTokenizer( tokenizerConfig.name());
-	m_tokenizer.reset( tk->create( tokenizerConfig.arguments(), textProcessor_));
-
 	if (m_tokenizer->concatBeforeTokenize())
 	{
 		if (m_options.positionBind() != FeatureOptions::BindContent)
@@ -85,27 +81,23 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
 		}
 	}
-	std::vector<NormalizerConfig>::const_iterator
-		ci = normalizerConfig.begin(), ce = normalizerConfig.end();
+	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+		ci = normalizers_.begin(), ce = normalizers_.end();
 	for (; ci != ce; ++ci)
 	{
-		const NormalizerConstructorInterface* nm = textProcessor_->getNormalizer( ci->name());
-		NormalizerReference normalizer( nm->create( ci->arguments(), textProcessor_));
-
-		m_normalizerlist.push_back( normalizer);
+		m_normalizerlist.push_back( *ci);
 	}
 }
 
 void DocumentAnalyzer::defineFeature(
-	FeatureClass featureClass,
-	const std::string& name,
-	const std::string& expression,
-	const TokenizerConfig& tokenizer,
-	const std::vector<NormalizerConfig>& normalizer,
-	const FeatureOptions& options)
+		FeatureClass featureClass,
+		const std::string& name,
+		const std::string& expression,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const FeatureOptions& options)
 {
-	m_featurear.push_back( 
-		FeatureConfig( name, m_textProcessor, tokenizer, normalizer, featureClass, options));
+	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
 	if (m_featurear.size() >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
@@ -129,7 +121,7 @@ void DocumentAnalyzer::defineSubDocument(
 
 ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext(config.tokenizer()->createInstance())
+	,m_tokenizerContext(config.tokenizer()->createExecutionContext())
 {
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
@@ -137,13 +129,13 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( (*ni)->createInstance());
+		m_normalizerContextAr.push_back( (*ni)->createExecutionContext());
 	}
 }
 
 std::string ParserContext::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	NormalizerInstanceArray::iterator
+	NormalizerExecutionContextArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 

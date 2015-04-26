@@ -26,8 +26,8 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_CONSTRUCTOR_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_CONSTRUCTOR_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
@@ -38,19 +38,21 @@ namespace strus
 class NormalizerInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
+/// \brief Forward declaration
+class NormalizerFunctionInstanceInterface;
 
-/// \class NormalizerConstructorInterface
+/// \class NormalizerFunctionInterface
 /// \brief Interface for the normalizer constructor
-class NormalizerConstructorInterface
+class NormalizerFunctionInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~NormalizerConstructorInterface(){}
+	virtual ~NormalizerFunctionInterface(){}
 
-	/// \brief Create a normalizer
-	/// \param[in] args arguments for the normalization
+	/// \brief Create a parameterizable normalizer function instance
+	/// \param[in] args arguments for the normalizer function
 	/// \param[in] tp text processor reference (for loading resources)
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
 };
 
 }//namespace

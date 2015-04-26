@@ -26,33 +26,28 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#include <vector>
+#include <string>
 
-namespace strus {
+namespace strus
+{
 
-/// \brief Forward declaration
-class TokenizerInstanceInterface;
-
-/// \class TokenizerInterface
-/// \brief Interface for tokenization
-class TokenizerInterface
+/// \brief Interface to the context (state) for the execution of a normalizer for one unit (document,query)
+class NormalizerExecutionContextInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~TokenizerInterface(){}
+	virtual ~NormalizerExecutionContextInterface(){}
 
-	/// \brief Flag defined by tokenizer indicating that different segments defined by the tag hierarchy should be concatenated before tokenization
-	/// \return true, if the argument chunks should be passed as one concatenated string, else if no
-	/// \remark This flag is needed for context sensitive tokenization like for example for recognizing punctuation.
-	virtual bool concatBeforeTokenize() const					{return false;}
-
-	/// \brief Create an instance (context for one document) for tokenization
-	/// \return the created tokenizer instance (with ownership)
-	virtual TokenizerInstanceInterface* createInstance() const=0;
+	/// \brief Normalization of a token
+	/// \param[in] src start of the token to normalize
+	/// \param[in] srcsize size of the token in bytes
+	/// \return list of normalized tokens
+	virtual std::string normalize( const char* src, std::size_t srcsize)=0;
 };
 
 }//namespace
 #endif
-
 

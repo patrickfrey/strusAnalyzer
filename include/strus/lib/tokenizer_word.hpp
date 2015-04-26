@@ -33,10 +33,10 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class TokenizerConstructorInterface;
+class TokenizerFunctionInterface;
 
-const TokenizerConstructorInterface* getTokenizer_word();
-const TokenizerConstructorInterface* getTokenizer_whitespace();
+const TokenizerFunctionInterface* getTokenizer_word();
+const TokenizerFunctionInterface* getTokenizer_whitespace();
 
 }//namespace
 #endif

@@ -29,9 +29,9 @@
 #ifndef _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include <string>
 #include <vector>
@@ -41,13 +41,13 @@
 namespace strus
 {
 
-class DictMapNormalizerConstructor
-	:public NormalizerConstructorInterface
+class DictMapNormalizerFunction
+	:public NormalizerFunctionInterface
 {
 public:
-	DictMapNormalizerConstructor(){}
+	DictMapNormalizerFunction(){}
 
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
 }//namespace

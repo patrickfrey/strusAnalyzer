@@ -28,12 +28,12 @@
 */
 #ifndef _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
 #define _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
-#include "strus/normalizerInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
 
 namespace strus
 {
 
-const NormalizerConstructorInterface* snowball_stemmer();
+const NormalizerFunctionInterface* snowball_stemmer();
 
 }//namespace
 #endif

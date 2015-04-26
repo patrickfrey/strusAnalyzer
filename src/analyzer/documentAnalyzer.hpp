@@ -32,10 +32,8 @@
 #include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
-#include "strus/tokenizerInterface.hpp"
-#include "strus/tokenizerInstanceInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -65,39 +63,39 @@ public:
 	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const TokenizerConfig& tokenizer,
-			const std::vector<NormalizerConfig>& normalizer,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			const FeatureOptions& options)
 	{
-		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizer, options);
+		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
 	}
 
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
-			const TokenizerConfig& tokenizer,
-			const std::vector<NormalizerConfig>& normalizer,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			const FeatureOptions& options)
 	{
-		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizer, options);
+		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
 	}
 
 	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
-			const TokenizerConfig& tokenizer,
-			const std::vector<NormalizerConfig>& normalizer)
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 	{
-		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizer, FeatureOptions());
+		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
 	}
 
 	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
-			const TokenizerConfig& tokenizer,
-			const std::vector<NormalizerConfig>& normalizer)
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 	{
-		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizer, FeatureOptions());
+		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, FeatureOptions());
 	}
 
 	virtual void defineSubDocument(
@@ -126,9 +124,8 @@ public:
 	{
 	public:
 		FeatureConfig( const std::string& name_,
-				const TextProcessorInterface* textProcessor_,
-				const TokenizerConfig& tokenizerConfig,
-				const std::vector<NormalizerConfig>& normalizerConfig,
+				TokenizerFunctionInstanceInterface* tokenizer,
+				const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 				FeatureClass featureClass_,
 				const FeatureOptions& options_);
 
@@ -139,8 +136,8 @@ public:
 			,m_featureClass(o.m_featureClass)
 			,m_options(o.m_options){}
 	
-		typedef utils::SharedPtr<NormalizerInterface> NormalizerReference;
-		typedef utils::SharedPtr<TokenizerInterface> TokenizerReference;
+		typedef utils::SharedPtr<NormalizerFunctionInstanceInterface> NormalizerReference;
+		typedef utils::SharedPtr<TokenizerFunctionInstanceInterface> TokenizerReference;
 
 		const std::string& name() const					{return m_name;}
 		const TokenizerReference& tokenizer() const			{return m_tokenizer;}
@@ -161,8 +158,8 @@ private:
 		FeatureClass featureClass,
 		const std::string& name,
 		const std::string& expression,
-		const TokenizerConfig& tokenizer,
-		const std::vector<NormalizerConfig>& normalizer,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const FeatureOptions& options);
 
 	const FeatureConfig& featureConfig( int featidx) const;
@@ -186,9 +183,9 @@ public:
 
 	struct FeatureContext
 	{
-		typedef utils::SharedPtr<NormalizerInstanceInterface> NormalizerInstanceReference;
-		typedef std::vector<NormalizerInstanceReference> NormalizerInstanceArray;
-		typedef utils::SharedPtr<TokenizerInstanceInterface> TokenizerInstanceReference;
+		typedef utils::SharedPtr<NormalizerExecutionContextInterface> NormalizerExecutionContextReference;
+		typedef std::vector<NormalizerExecutionContextReference> NormalizerExecutionContextArray;
+		typedef utils::SharedPtr<TokenizerExecutionContextInterface> TokenizerExecutionContextReference;
 
 		FeatureContext( const DocumentAnalyzer::FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
@@ -199,8 +196,8 @@ public:
 		std::string normalize( const char* tok, std::size_t toksize);
 
 		const DocumentAnalyzer::FeatureConfig* m_config;
-		NormalizerInstanceArray m_normalizerContextAr;
-		TokenizerInstanceReference m_tokenizerContext;
+		NormalizerExecutionContextArray m_normalizerContextAr;
+		TokenizerExecutionContextReference m_tokenizerContext;
 	};
 
 	FeatureContext& featureContext( int featidx)

@@ -27,12 +27,12 @@
 --------------------------------------------------------------------
 */
 #include "textProcessor.hpp"
-#include "strus/tokenizerInterface.hpp"
-#include "strus/tokenizerConstructorInterface.hpp"
-#include "strus/tokenizerInstanceInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
+#include "strus/tokenizerFunctionInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "resourceDirectory.hpp"
@@ -43,11 +43,11 @@ using namespace strus;
 using namespace strus::analyzer;
 
 
-class EmptyNormalizerInstance
-	:public NormalizerInstanceInterface
+class EmptyNormalizerExecutionContext
+	:public NormalizerExecutionContextInterface
 {
 public:
-	EmptyNormalizerInstance(){}
+	EmptyNormalizerExecutionContext(){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
 	{
@@ -55,34 +55,34 @@ public:
 	}
 };
 
-class EmptyNormalizer
-	:public NormalizerInterface
+class EmptyNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	EmptyNormalizer(){}
+	EmptyNormalizerInstance(){}
 
-	virtual NormalizerInstanceInterface* createInstance() const
+	virtual NormalizerExecutionContextInterface* createExecutionContext() const
 	{
+		return new EmptyNormalizerExecutionContext();
+	}
+};
+
+class EmptyNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size()) throw std::runtime_error("no arguments expected for 'empty' normalizer");
 		return new EmptyNormalizerInstance();
 	}
 };
 
-class EmptyNormalizerConstructor
-	:public NormalizerConstructorInterface
+class OrigNormalizerExecutionContext
+	:public NormalizerExecutionContextInterface
 {
 public:
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
-	{
-		if (args.size()) throw std::runtime_error("no arguments expected for 'empty' normalizer");
-		return new EmptyNormalizer();
-	}
-};
-
-class OrigNormalizerInstance
-	:public NormalizerInstanceInterface
-{
-public:
-	OrigNormalizerInstance(){}
+	OrigNormalizerExecutionContext(){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
 	{
@@ -104,34 +104,34 @@ public:
 	}
 };
 
-class OrigNormalizer
-	:public NormalizerInterface
+class OrigNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	OrigNormalizer(){}
+	OrigNormalizerInstance(){}
 
-	virtual NormalizerInstanceInterface* createInstance() const
+	virtual NormalizerExecutionContextInterface* createExecutionContext() const
 	{
+		return new OrigNormalizerExecutionContext();
+	}
+};
+
+class OrigNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size()) throw std::runtime_error("no arguments expected for 'orig' normalizer");
 		return new OrigNormalizerInstance();
 	}
 };
 
-class OrigNormalizerConstructor
-	:public NormalizerConstructorInterface
+class ContentTokenizerExecutionContext
+	:public TokenizerExecutionContextInterface
 {
 public:
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
-	{
-		if (args.size()) throw std::runtime_error("no arguments expected for 'orig' normalizer");
-		return new OrigNormalizer();
-	}
-};
-
-class ContentTokenizerInstance
-	:public TokenizerInstanceInterface
-{
-public:
-	ContentTokenizerInstance(){}
+	ContentTokenizerExecutionContext(){}
 
 	virtual std::vector<analyzer::Token>
 			tokenize( const char* src, std::size_t srcsize)
@@ -142,31 +142,31 @@ public:
 	}
 };
 
-class ContentTokenizer
-	:public TokenizerInterface
+class ContentTokenizerInstance
+	:public TokenizerFunctionInstanceInterface
 {
 public:
-	virtual TokenizerInstanceInterface* createInstance() const
+	virtual TokenizerExecutionContextInterface* createExecutionContext() const
 	{
+		return new ContentTokenizerExecutionContext();
+	}
+};
+
+class ContentTokenizerFunction
+	:public TokenizerFunctionInterface
+{
+public:
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const
+	{
+		if (args.size()) throw std::runtime_error("no arguments expected for 'content' normalizer");
 		return new ContentTokenizerInstance();
 	}
 };
 
-class ContentTokenizerConstructor
-	:public TokenizerConstructorInterface
-{
-public:
-	virtual TokenizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface* tp) const
-	{
-		if (args.size()) throw std::runtime_error("no arguments expected for 'content' normalizer");
-		return new ContentTokenizer();
-	}
-};
 
-
-static ContentTokenizerConstructor contentTokenizer;
-static OrigNormalizerConstructor origNormalizer;
-static EmptyNormalizerConstructor emptyNormalizer;
+static ContentTokenizerFunction contentTokenizer;
+static OrigNormalizerFunction origNormalizer;
+static EmptyNormalizerFunction emptyNormalizer;
 
 
 TextProcessor::TextProcessor()
@@ -176,9 +176,9 @@ TextProcessor::TextProcessor()
 	defineNormalizer( "empty", &emptyNormalizer);
 }
 
-const TokenizerConstructorInterface* TextProcessor::getTokenizer( const std::string& name) const
+const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
 {
-	std::map<std::string,const TokenizerConstructorInterface*>::const_iterator
+	std::map<std::string,const TokenizerFunctionInterface*>::const_iterator
 		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
@@ -187,9 +187,9 @@ const TokenizerConstructorInterface* TextProcessor::getTokenizer( const std::str
 	return ti->second;
 }
 
-const NormalizerConstructorInterface* TextProcessor::getNormalizer( const std::string& name) const
+const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::string& name) const
 {
-	std::map<std::string,const NormalizerConstructorInterface*>::const_iterator
+	std::map<std::string,const NormalizerFunctionInterface*>::const_iterator
 		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
@@ -198,12 +198,12 @@ const NormalizerConstructorInterface* TextProcessor::getNormalizer( const std::s
 	return ni->second;
 }
 
-void TextProcessor::defineTokenizer( const std::string& name, const TokenizerConstructorInterface* tokenizer)
+void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)
 {
 	m_tokenizer_map[ utils::tolower( name)] = tokenizer;
 }
 
-void TextProcessor::defineNormalizer( const std::string& name, const NormalizerConstructorInterface* normalizer)
+void TextProcessor::defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)
 {
 	m_normalizer_map[ utils::tolower( name)] = normalizer;
 }

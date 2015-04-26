@@ -28,9 +28,9 @@
 */
 #ifndef _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
 #define _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -38,31 +38,31 @@
 namespace strus
 {
 
-class LowercaseNormalizerConstructor
-	:public NormalizerConstructorInterface
+class LowercaseNormalizerFunction
+	:public NormalizerFunctionInterface
 {
 public:
-	LowercaseNormalizerConstructor(){}
+	LowercaseNormalizerFunction(){}
 
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
-class UppercaseNormalizerConstructor
-	:public NormalizerConstructorInterface
+class UppercaseNormalizerFunction
+	:public NormalizerFunctionInterface
 {
 public:
-	UppercaseNormalizerConstructor(){}
+	UppercaseNormalizerFunction(){}
 
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
-class DiacriticalNormalizerConstructor
-	:public NormalizerConstructorInterface
+class DiacriticalNormalizerFunction
+	:public NormalizerFunctionInterface
 {
 public:
-	DiacriticalNormalizerConstructor(){}
+	DiacriticalNormalizerFunction(){}
 
-	virtual NormalizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 };
 
 }//namespace

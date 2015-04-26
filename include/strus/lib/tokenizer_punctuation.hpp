@@ -33,9 +33,9 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class TokenizerConstructorInterface;
+class TokenizerFunctionInterface;
 
-const TokenizerConstructorInterface* getTokenizer_punctuation();
+const TokenizerFunctionInterface* getTokenizer_punctuation();
 
 }//namespace
 #endif

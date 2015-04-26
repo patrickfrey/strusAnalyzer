@@ -32,21 +32,21 @@
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerConstructorInterface* strus::getNormalizer_lowercase()
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_lowercase()
 {
-	static const LowercaseNormalizerConstructor rt;
+	static const LowercaseNormalizerFunction rt;
 	return &rt;
 }
 
-DLL_PUBLIC const NormalizerConstructorInterface* strus::getNormalizer_uppercase()
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_uppercase()
 {
-	static const UppercaseNormalizerConstructor rt;
+	static const UppercaseNormalizerFunction rt;
 	return &rt;
 }
 
-DLL_PUBLIC const NormalizerConstructorInterface* strus::getNormalizer_convdia()
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_convdia()
 {
-	static const DiacriticalNormalizerConstructor rt;
+	static const DiacriticalNormalizerFunction rt;
 	return &rt;
 }
 

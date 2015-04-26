@@ -32,7 +32,7 @@
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerConstructorInterface* strus::getNormalizer_snowball()
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_snowball()
 {
 	return snowball_stemmer();
 }

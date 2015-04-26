@@ -33,9 +33,9 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class NormalizerConstructorInterface;
+class NormalizerFunctionInterface;
 
-const NormalizerConstructorInterface* getNormalizer_dictmap();
+const NormalizerFunctionInterface* getNormalizer_dictmap();
 
 }//namespace
 #endif

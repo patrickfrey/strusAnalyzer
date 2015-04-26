@@ -27,9 +27,9 @@
 --------------------------------------------------------------------
 */
 #include "punctuation.hpp"
-#include "strus/tokenizerConstructorInterface.hpp"
-#include "strus/tokenizerInterface.hpp"
-#include "strus/tokenizerInstanceInterface.hpp"
+#include "strus/tokenizerFunctionInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerExecutionContextInterface.hpp"
 #include "textwolf/textscanner.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "textwolf/charset.hpp"
@@ -44,11 +44,11 @@ using namespace strus::analyzer;
 
 enum Language {LANG_DE};
 
-class PunctuationTokenizerInstance
-	:public TokenizerInstanceInterface
+class PunctuationTokenizerExecutionContext
+	:public TokenizerExecutionContextInterface
 {
 public:
-	PunctuationTokenizerInstance( Language language_)
+	PunctuationTokenizerExecutionContext( Language language_)
 		:m_language(language_){}
 
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
@@ -58,11 +58,11 @@ private:
 };
 
 
-class PunctuationTokenizer
-	:public TokenizerInterface
+class PunctuationTokenizerInstance
+	:public TokenizerFunctionInstanceInterface
 {
 public:
-	PunctuationTokenizer( const std::string& language)
+	PunctuationTokenizerInstance( const std::string& language)
 	{
 		if (utils::caseInsensitiveEquals( language, "de")
 		||  utils::caseInsensitiveEquals( language, "D"))
@@ -80,9 +80,9 @@ public:
 		return true;
 	}
 
-	TokenizerInstanceInterface* createInstance() const
+	TokenizerExecutionContextInterface* createExecutionContext() const
 	{
-		return new PunctuationTokenizerInstance( m_language);
+		return new PunctuationTokenizerExecutionContext( m_language);
 	}
 
 private:
@@ -90,17 +90,17 @@ private:
 };
 
 
-class PunctuationTokenizerConstructor
-	:public TokenizerConstructorInterface
+class PunctuationTokenizerFunction
+	:public TokenizerFunctionInterface
 {
 public:
-	virtual TokenizerInterface* create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size() != 1)
 		{
 			throw std::runtime_error( "illegal number of arguments for punctuation tokenizer (language as single argument expected)");
 		}
-		return new PunctuationTokenizer(args[0]);
+		return new PunctuationTokenizerInstance(args[0]);
 	}
 };
 
@@ -233,7 +233,7 @@ private:
 
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerInstance::tokenize(
+	PunctuationTokenizerExecutionContext::tokenize(
 		const char* src, std::size_t srcsize)
 {
 	std::vector<Token> rt;
@@ -378,9 +378,9 @@ std::vector<analyzer::Token>
 }
 
 
-const TokenizerConstructorInterface* strus::punctuationTokenizer()
+const TokenizerFunctionInterface* strus::punctuationTokenizer()
 {
-	static const PunctuationTokenizerConstructor tokenizer;
+	static const PunctuationTokenizerFunction tokenizer;
 	return &tokenizer;
 }
 

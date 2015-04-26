@@ -33,11 +33,11 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class NormalizerConstructorInterface;
+class NormalizerFunctionInterface;
 
-const NormalizerConstructorInterface* getNormalizer_lowercase();
-const NormalizerConstructorInterface* getNormalizer_uppercase();
-const NormalizerConstructorInterface* getNormalizer_convdia();
+const NormalizerFunctionInterface* getNormalizer_lowercase();
+const NormalizerFunctionInterface* getNormalizer_uppercase();
+const NormalizerFunctionInterface* getNormalizer_convdia();
 
 }//namespace
 #endif

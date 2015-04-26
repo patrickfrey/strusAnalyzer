@@ -26,27 +26,30 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/token.hpp"
-#include <utility>
-#include <cstddef>
+#ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #include <vector>
+#include <string>
 
 namespace strus {
 
-/// \class TokenizerInstanceInterface
-/// \brief Interface of a tokenizer instance (context for the tokenization of one document)
-class TokenizerInstanceInterface
+/// \brief Forward declaration
+class TokenizerFunctionInstanceInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
+
+/// \class TokenizerFunctionInterface
+/// \brief Interface for a tokenizer function
+class TokenizerFunctionInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~TokenizerInstanceInterface(){}
+	virtual ~TokenizerFunctionInterface(){}
 
-	/// \brief Tokenize a segment into a list of tokens
-	/// \param[in] src pointer to segment to tokenize
-	/// \param[in] srcsize size of the segment to tokenize in bytes
-	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)=0;
+	/// \brief Create a parameterizable tokenizer function instance
+	/// \param[in] args arguments for the tokenizer function
+	/// \param[in] tp text processor reference (for loading resources)
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
 };
 
 }//namespace

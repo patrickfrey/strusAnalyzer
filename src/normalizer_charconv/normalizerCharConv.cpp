@@ -61,11 +61,11 @@ private:
 	std::string m_strings;
 };
 
-class CharMapNormalizerInstance
-	:public NormalizerInstanceInterface
+class CharMapNormalizerExecutionContext
+	:public NormalizerExecutionContextInterface
 {
 public:
-	CharMapNormalizerInstance( const CharMap* map_)
+	CharMapNormalizerExecutionContext( const CharMap* map_)
 		:m_map( map_){}
 	
 	virtual std::string normalize(
@@ -79,16 +79,16 @@ private:
 	const CharMap* m_map;
 };
 
-class CharMapNormalizer
-	:public NormalizerInterface
+class CharMapNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	CharMapNormalizer( CharMap::ConvType maptype)
+	CharMapNormalizerInstance( CharMap::ConvType maptype)
 		:m_map(maptype){}
 
-	virtual NormalizerInstanceInterface* createInstance() const
+	virtual NormalizerExecutionContextInterface* createExecutionContext() const
 	{
-		return new CharMapNormalizerInstance( &m_map);
+		return new CharMapNormalizerExecutionContext( &m_map);
 	}
 
 private:
@@ -417,35 +417,35 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize) const
 	return rt;
 }
 
-NormalizerInterface* LowercaseNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'lc'");
-	return new CharMapNormalizer( CharMap::Lowercase);
+	return new CharMapNormalizerInstance( CharMap::Lowercase);
 }
 
-NormalizerInterface* UppercaseNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'uc'");
-	return new CharMapNormalizer( CharMap::Uppercase);
+	return new CharMapNormalizerInstance( CharMap::Uppercase);
 }
 
-NormalizerInterface* DiacriticalNormalizerConstructor::create( const std::vector<std::string>& args, const TextProcessorInterface*) const
+NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	if (args.size() > 1) throw std::runtime_error( "too many arguments passed to normalizer 'convdia'");
 	if (args.size() == 0)
 	{
-		return new CharMapNormalizer( CharMap::DiacriticalUnknown);
+		return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown);
 	}
 	else
 	{
 		std::string language_lo = utils::tolower( args[0]);
 		if (language_lo == "de")
 		{
-			return new CharMapNormalizer( CharMap::DiacriticalGerman);
+			return new CharMapNormalizerInstance( CharMap::DiacriticalGerman);
 		}
 		else
 		{
-			return new CharMapNormalizer( CharMap::DiacriticalUnknown);
+			return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown);
 		}
 	}
 }

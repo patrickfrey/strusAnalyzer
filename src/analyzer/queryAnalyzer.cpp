@@ -28,12 +28,10 @@
 */
 #include "queryAnalyzer.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "strus/normalizerInterface.hpp"
-#include "strus/normalizerConstructorInterface.hpp"
-#include "strus/normalizerInstanceInterface.hpp"
-#include "strus/tokenizerInterface.hpp"
-#include "strus/tokenizerConstructorInterface.hpp"
-#include "strus/tokenizerInstanceInterface.hpp"
+#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
 #include <set>
@@ -48,29 +46,22 @@ QueryAnalyzer::QueryAnalyzer(
 
 QueryAnalyzer::FeatureConfig::FeatureConfig(
 		const std::string& featureType_,
-		const TextProcessorInterface* textProcessor_,
-		const TokenizerConfig& tokenizerConfig,
-		const std::vector<NormalizerConfig>& normalizerConfig)
+		TokenizerFunctionInstanceInterface* tokenizer_,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_)
 	:m_featureType(featureType_)
-	,m_tokenizer(0)
+	,m_tokenizer(tokenizer_)
 {
-	const TokenizerConstructorInterface* tk = textProcessor_->getTokenizer( tokenizerConfig.name());
-	m_tokenizer.reset( tk->create( tokenizerConfig.arguments(), textProcessor_));
-
-	std::vector<NormalizerConfig>::const_iterator
-		ci = normalizerConfig.begin(), ce = normalizerConfig.end();
+	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+		ci = normalizers_.begin(), ce = normalizers_.end();
 	for (; ci != ce; ++ci)
 	{
-		const NormalizerConstructorInterface* nm = textProcessor_->getNormalizer( ci->name());
-		NormalizerReference normalizer( nm->create( ci->arguments(), textProcessor_));
-
-		m_normalizerlist.push_back( normalizer);
+		m_normalizerlist.push_back( *ci);
 	}
 }
 
 QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext( config.tokenizer()->createInstance())
+	,m_tokenizerContext( config.tokenizer()->createExecutionContext())
 {
 	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
@@ -78,7 +69,7 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( (*ni)->createInstance());
+		m_normalizerContextAr.push_back( (*ni)->createExecutionContext());
 	}
 }
 
@@ -89,7 +80,7 @@ std::vector<analyzer::Token> QueryAnalyzer::FeatureContext::tokenize( char const
 
 std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	NormalizerInstanceArray::iterator
+	NormalizerExecutionContextArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 
@@ -112,11 +103,11 @@ std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size
 void QueryAnalyzer::definePhraseType(
 		const std::string& phraseType,
 		const std::string& featureType,
-		const TokenizerConfig& tokenizer,
-		const std::vector<NormalizerConfig>& normalizer)
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	m_featuremap[ utils::tolower( phraseType)]
-		= FeatureConfig( featureType, m_textProcessor, tokenizer, normalizer);
+		= FeatureConfig( featureType, tokenizer, normalizers);
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const

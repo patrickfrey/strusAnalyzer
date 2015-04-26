@@ -33,9 +33,9 @@
 namespace strus
 {
 /// \brief Forward declaration
-class NormalizerConstructorInterface;
+class NormalizerFunctionInterface;
 /// \brief Forward declaration
-class TokenizerConstructorInterface;
+class TokenizerFunctionInterface;
 
 /// \class TextProcessorInterface
 /// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text
@@ -55,21 +55,21 @@ public:
 
 	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens
 	/// \return the tokenizer reference
-	virtual const TokenizerConstructorInterface* getTokenizer( const std::string& name) const=0;
+	virtual const TokenizerFunctionInterface* getTokenizer( const std::string& name) const=0;
 
 	/// \brief Get a const reference to a normalizer object that implements the transformation of a token into a term string
 	/// \return the normalizer reference
-	virtual const NormalizerConstructorInterface* getNormalizer( const std::string& name) const=0;
+	virtual const NormalizerFunctionInterface* getNormalizer( const std::string& name) const=0;
 
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the normalizer to define
 	/// \param[in] tokenizer a static const reference to a tokenizer object
-	virtual void defineTokenizer( const std::string& name, const TokenizerConstructorInterface* tokenizer)=0;
+	virtual void defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)=0;
 
 	/// \brief Define a normalizer by name
 	/// \param[in] name name of the normalizer to define
 	/// \param[in] normalizer a static const reference to a normalizer object
-	virtual void defineNormalizer( const std::string& name, const NormalizerConstructorInterface* normalizer)=0;
+	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)=0;
 };
 
 }//namespace

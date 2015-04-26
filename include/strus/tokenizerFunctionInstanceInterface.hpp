@@ -26,33 +26,33 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_TOKENIZER_CONFIG_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_CONFIG_HPP_INCLUDED
-#include <string>
-#include <vector>
+#ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 
 namespace strus {
 
-class TokenizerConfig
+/// \brief Forward declaration
+class TokenizerExecutionContextInterface;
+
+/// \class TokenizerInterface
+/// \brief Interface for tokenization
+class TokenizerFunctionInstanceInterface
 {
 public:
-	TokenizerConfig()
-		:m_name(),m_arguments(){}
-	TokenizerConfig( const TokenizerConfig& o)
-		:m_name(o.m_name),m_arguments(o.m_arguments){}
-	TokenizerConfig( const std::string& name_, const std::vector<std::string>& arguments_)
-		:m_name(name_),m_arguments(arguments_){}
-	TokenizerConfig( const std::string& name_)
-		:m_name(name_),m_arguments(){}
+	/// \brief Destructor
+	virtual ~TokenizerFunctionInstanceInterface(){}
 
-	const std::string& name() const				{return m_name;}
-	const std::vector<std::string>& arguments() const	{return m_arguments;}
+	/// \brief Flag defined by tokenizer indicating that different segments defined by the tag hierarchy should be concatenated before tokenization
+	/// \return true, if the argument chunks should be passed as one concatenated string, else if no
+	/// \remark This flag is needed for context sensitive tokenization like for example for recognizing punctuation.
+	virtual bool concatBeforeTokenize() const					{return false;}
 
-private:
-	std::string m_name;
-	std::vector<std::string> m_arguments;
+	/// \brief Create an instance (context for one document) for tokenization
+	/// \return the created tokenizer instance (with ownership)
+	virtual TokenizerExecutionContextInterface* createExecutionContext() const=0;
 };
 
 }//namespace
 #endif
+
 

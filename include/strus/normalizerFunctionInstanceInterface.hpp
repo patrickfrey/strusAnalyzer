@@ -26,25 +26,25 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 
 namespace strus
 {
 /// \brief Forward declaration
-class NormalizerInstanceInterface;
+class NormalizerExecutionContextInterface;
 
-/// \class NormalizerInterface
-/// \brief Interface for normalization
-class NormalizerInterface
+/// \class NormalizerFunctionInstanceInterface
+/// \brief Interface for a parameterizable normalization function
+class NormalizerFunctionInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~NormalizerInterface(){}
+	virtual ~NormalizerFunctionInstanceInterface(){}
 
 	/// \brief Create an instance (context for one document) for normalization
 	/// \return the created normalizer instance (with ownership)
-	virtual NormalizerInstanceInterface* createInstance() const=0;
+	virtual NormalizerExecutionContextInterface* createExecutionContext() const=0;
 };
 
 }//namespace

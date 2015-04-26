@@ -29,8 +29,8 @@
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
-#include "strus/normalizerConfig.hpp"
-#include "strus/tokenizerConfig.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include <vector>
 #include <string>
 
@@ -47,13 +47,13 @@ public:
 	/// \brief Declare how a set of query features is produced out from a phrase of a certain type
 	/// \param[in] phraseType label of the phrase type
 	/// \param[in] featureType type name (in the storage) of the generated features
-	/// \param[in] tokenizer selects the tokenizer function for tokenization of the phrase
-	/// \param[in] normalizer selects a list of normalizers by name describing how tokens are normalized
+	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
+	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
 	virtual void definePhraseType(
 			const std::string& phraseType,
 			const std::string& featureType,
-			const TokenizerConfig& tokenizer,
-			const std::vector<NormalizerConfig>& normalizer)=0;
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
 	/// \brief Analyze a single phrase of query
 	/// \param[in] phraseType selects the feature configuration that determines how the phrase is tokenized and normalized, what types the resulting terms get and what set (as referred to in the query evaluation) the created query features are assigned to.
