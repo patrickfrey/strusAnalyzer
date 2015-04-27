@@ -38,25 +38,16 @@ class DocumentAnalyzerInterface;
 /// \brief Forward declaration
 class QueryAnalyzerInterface;
 /// \brief Forward declaration
-class TextProcessorInterface;
-/// \brief Forward declaration
 class SegmenterInterface;
 
-/// \brief Creates an analyzer program for analyzing a document
-/// \param[in] textProcessor const reference to the text processor providing the functions that can be used in document analysis.
+/// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter empty segmenter instance to be used by the created analyzer (ownership transferred).
-/// \return the analyzer program reference to be disposed with delete by the caller
-DocumentAnalyzerInterface*
-	createDocumentAnalyzer(
-		const TextProcessorInterface* textProcessor,
-		SegmenterInterface* segmenter);
+/// \return the analyzer program (with ownership)
+DocumentAnalyzerInterface* createDocumentAnalyzer( SegmenterInterface* segmenter);
 
-/// \brief Creates an analyzer program for analyzing a query
-/// \param[in] textProcessor const reference to the text processor providing the functions that can be used in query analysis.
-/// \return the analyzer program reference to be disposed with delete by the caller
-QueryAnalyzerInterface*
-	createQueryAnalyzer(
-		const TextProcessorInterface* textProcessor);
+/// \brief Creates a parameterizable analyzer instance for analyzing queries
+/// \return the analyzer program (with ownership)
+QueryAnalyzerInterface* createQueryAnalyzer();
 
 }//namespace
 #endif

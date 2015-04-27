@@ -27,7 +27,6 @@
 --------------------------------------------------------------------
 */
 #include "documentAnalyzer.hpp"
-#include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerExecutionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerExecutionContextInterface.hpp"
@@ -45,11 +44,8 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer(
-		const TextProcessorInterface* textProcessor_,
-		SegmenterInterface* segmenter_)
-	:m_textProcessor(textProcessor_)
-	,m_segmenter(segmenter_){}
+DocumentAnalyzer::DocumentAnalyzer( SegmenterInterface* segmenter_)
+	:m_segmenter(segmenter_){}
 
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const

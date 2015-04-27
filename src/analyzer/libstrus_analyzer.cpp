@@ -38,19 +38,15 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer(
-		const TextProcessorInterface* textProcessor,
-		SegmenterInterface* segmenter)
+	strus::createDocumentAnalyzer( SegmenterInterface* segmenter)
 {
-	return new DocumentAnalyzer( textProcessor, segmenter);
+	return new DocumentAnalyzer( segmenter);
 }
 
 
-DLL_PUBLIC QueryAnalyzerInterface*
-	strus::createQueryAnalyzer(
-		const TextProcessorInterface* textProcessor)
+DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer()
 {
-	return new QueryAnalyzer( textProcessor);
+	return new QueryAnalyzer();
 }
 
 

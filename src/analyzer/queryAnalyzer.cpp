@@ -27,7 +27,6 @@
 --------------------------------------------------------------------
 */
 #include "queryAnalyzer.hpp"
-#include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerExecutionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerExecutionContextInterface.hpp"
@@ -38,11 +37,6 @@
 #include <map>
 
 using namespace strus;
-
-QueryAnalyzer::QueryAnalyzer(
-		const TextProcessorInterface* textProcessor_)
-	:m_textProcessor(textProcessor_){}
-
 
 QueryAnalyzer::FeatureConfig::FeatureConfig(
 		const std::string& featureType_,

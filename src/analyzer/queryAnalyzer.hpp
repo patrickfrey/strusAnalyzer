@@ -41,18 +41,12 @@
 namespace strus
 {
 
-/// \brief Forward declaration
-class TextProcessorInterface;
-
-
 /// \brief Query analyzer implementation
 class QueryAnalyzer
 	:public QueryAnalyzerInterface
 {
 public:
-	explicit QueryAnalyzer(
-			const TextProcessorInterface* textProcessor_);
-
+	QueryAnalyzer(){}
 	virtual ~QueryAnalyzer(){}
 
 	virtual void definePhraseType(
@@ -121,7 +115,6 @@ private:
 	const FeatureConfig& featureConfig( const std::string& phraseType) const;
 
 private:
-	const TextProcessorInterface* m_textProcessor;
 	std::map<std::string,FeatureConfig> m_featuremap;
 };
 

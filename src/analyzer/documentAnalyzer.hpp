@@ -43,17 +43,13 @@
 
 namespace strus
 {
-/// \brief Forward declaration
-class TextProcessorInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer(
-			const TextProcessorInterface* textProcessor_,
-			SegmenterInterface* segmenter_);
+	DocumentAnalyzer( SegmenterInterface* segmenter_);
 
 	virtual ~DocumentAnalyzer()
 	{
@@ -166,7 +162,6 @@ private:
 
 private:
 	friend class DocumentAnalyzerInstance;
-	const TextProcessorInterface* m_textProcessor;
 	SegmenterInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
