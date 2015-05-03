@@ -26,51 +26,40 @@
 
 --------------------------------------------------------------------
 */
-#include "punctuation.hpp"
-#include "strus/tokenizerFunctionInterface.hpp"
-#include "strus/tokenizerFunctionInstanceInterface.hpp"
+#ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
+#define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #include "strus/tokenizerExecutionContextInterface.hpp"
-#include "private/utils.hpp"
-#include "punctuation_de.hpp"
-#include "punctuation_en.hpp"
-#include <cstring>
-#include <iostream>
-#include <stdexcept>
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 
-using namespace strus;
-using namespace strus::analyzer;
+namespace strus
+{
 
-#undef STRUS_LOWLEVEL_DEBUG
-
-class PunctuationTokenizerFunction
-	:public TokenizerFunctionInterface
+class PunctuationTokenizerExecutionContext_de
+	:public TokenizerExecutionContextInterface
 {
 public:
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	PunctuationTokenizerExecutionContext_de(){}
+
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
+};
+
+class PunctuationTokenizerInstance_de
+	:public TokenizerFunctionInstanceInterface
+{
+public:
+	PunctuationTokenizerInstance_de(){}
+
+	virtual bool concatBeforeTokenize() const
 	{
-		if (args.size() != 1)
-		{
-			throw std::runtime_error( "illegal number of arguments for punctuation tokenizer (language as single argument expected)");
-		}
-		if (utils::caseInsensitiveEquals( args[0], "de"))
-		{
-			return new PunctuationTokenizerInstance_de();
-		}
-		else if (utils::caseInsensitiveEquals( args[0], "en"))
-		{
-			return new PunctuationTokenizerInstance_en();
-		}
-		else
-		{
-			throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + args[0] +"')");
-		}
+		return true;
+	}
+
+	TokenizerExecutionContextInterface* createExecutionContext() const
+	{
+		return new PunctuationTokenizerExecutionContext_de();
 	}
 };
 
-const TokenizerFunctionInterface* strus::punctuationTokenizer()
-{
-	static const PunctuationTokenizerFunction tokenizer;
-	return &tokenizer;
-}
-
+}//namespace
+#endif
 

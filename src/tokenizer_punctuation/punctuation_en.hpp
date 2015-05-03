@@ -26,51 +26,48 @@
 
 --------------------------------------------------------------------
 */
-#include "punctuation.hpp"
-#include "strus/tokenizerFunctionInterface.hpp"
-#include "strus/tokenizerFunctionInstanceInterface.hpp"
+#ifndef _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
+#define _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
 #include "strus/tokenizerExecutionContextInterface.hpp"
-#include "private/utils.hpp"
-#include "punctuation_de.hpp"
-#include "punctuation_en.hpp"
-#include <cstring>
-#include <iostream>
-#include <stdexcept>
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "compactNodeTrie.hpp"
 
-using namespace strus;
-using namespace strus::analyzer;
+namespace strus
+{
 
-#undef STRUS_LOWLEVEL_DEBUG
-
-class PunctuationTokenizerFunction
-	:public TokenizerFunctionInterface
+class PunctuationTokenizerExecutionContext_en
+	:public TokenizerExecutionContextInterface
 {
 public:
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
-	{
-		if (args.size() != 1)
-		{
-			throw std::runtime_error( "illegal number of arguments for punctuation tokenizer (language as single argument expected)");
-		}
-		if (utils::caseInsensitiveEquals( args[0], "de"))
-		{
-			return new PunctuationTokenizerInstance_de();
-		}
-		else if (utils::caseInsensitiveEquals( args[0], "en"))
-		{
-			return new PunctuationTokenizerInstance_en();
-		}
-		else
-		{
-			throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + args[0] +"')");
-		}
-	}
+	PunctuationTokenizerExecutionContext_en( const conotrie::CompactNodeTrie* abbrevDict_)
+		:m_abbrevDict(abbrevDict_){}
+
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
+
+private:
+	const conotrie::CompactNodeTrie* m_abbrevDict;
 };
 
-const TokenizerFunctionInterface* strus::punctuationTokenizer()
+class PunctuationTokenizerInstance_en
+	:public TokenizerFunctionInstanceInterface
 {
-	static const PunctuationTokenizerFunction tokenizer;
-	return &tokenizer;
-}
+public:
+	PunctuationTokenizerInstance_en();
 
+	virtual bool concatBeforeTokenize() const
+	{
+		return true;
+	}
+
+	TokenizerExecutionContextInterface* createExecutionContext() const
+	{
+		return new PunctuationTokenizerExecutionContext_en( &m_abbrevDict);
+	}
+
+private:
+	conotrie::CompactNodeTrie m_abbrevDict;
+};
+
+}//namespace
+#endif
 

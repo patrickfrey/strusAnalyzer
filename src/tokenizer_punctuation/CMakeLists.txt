@@ -5,14 +5,18 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 set(source_files
 	libstrus_tokenizer_punctuation.cpp
+	punctuation_de.cpp
+	punctuation_en.cpp
 	punctuation.cpp
 )
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/include"
 )
 link_directories(
+	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/src"
  	"${PROJECT_SOURCE_DIR}/src/utils"
 )
 
