@@ -42,6 +42,7 @@
 using namespace strus;
 using namespace strus::analyzer;
 
+#undef STRUS_LOWLEVEL_DEBUG
 
 class EmptyNormalizerExecutionContext
 	:public NormalizerExecutionContextInterface
@@ -215,8 +216,14 @@ void TextProcessor::addResourcePath( const std::string& path)
 	for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
 	{
 		m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
+#ifdef STRUS_LOWLEVEL_DEBUG
+	std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
+#endif
 	}
 	m_resourcePaths.push_back( utils::trim( std::string( cc)));
+#ifdef STRUS_LOWLEVEL_DEBUG
+	std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
+#endif
 }
 
 std::string TextProcessor::getResourcePath( const std::string& filename) const
@@ -226,6 +233,9 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 	for (; pi != pe; ++pi)
 	{
 		std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cout << "check resource path '" << absfilename << "'" << std::endl;
+#endif
 		if (utils::isFile( absfilename))
 		{
 			return absfilename;
