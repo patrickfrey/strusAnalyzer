@@ -30,6 +30,7 @@
 #define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #include "strus/tokenizerExecutionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "punctuation_utils.hpp"
 
 namespace strus
 {
@@ -38,16 +39,27 @@ class PunctuationTokenizerExecutionContext_de
 	:public TokenizerExecutionContextInterface
 {
 public:
-	PunctuationTokenizerExecutionContext_de(){}
+	PunctuationTokenizerExecutionContext_de( const CharTable* punctuation_char_)
+		:m_punctuation_char(punctuation_char_){}
+
+	inline bool isPunctuation( textwolf::UChar ch)
+	{
+		return (ch <= 127 && (*m_punctuation_char)[(unsigned char)ch]);
+	}
 
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
+
+private:
+	const CharTable* m_punctuation_char;
 };
+
 
 class PunctuationTokenizerInstance_de
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	PunctuationTokenizerInstance_de(){}
+	PunctuationTokenizerInstance_de( const char* punctuationCharList)
+		:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-"){}
 
 	virtual bool concatBeforeTokenize() const
 	{
@@ -56,8 +68,11 @@ public:
 
 	TokenizerExecutionContextInterface* createExecutionContext() const
 	{
-		return new PunctuationTokenizerExecutionContext_de();
+		return new PunctuationTokenizerExecutionContext_de( &m_punctuation_char);
 	}
+
+private:
+	CharTable m_punctuation_char;
 };
 
 }//namespace

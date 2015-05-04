@@ -38,7 +38,7 @@ std::vector<analyzer::Token>
 	std::vector<analyzer::Token> rt;
 
 	textwolf::UChar ch0;
-	CharWindow scanner( src, srcsize);
+	CharWindow scanner( src, srcsize, m_punctuation_char);
 	unsigned int wordlen=0;
 
 	for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())

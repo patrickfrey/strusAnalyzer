@@ -53,16 +53,11 @@ private:
 	bool m_ar[256];
 };
 
-static const CharTable punctuation_char(":.;,!?()-");
 static const CharTable consonant_char("bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ");
 
 static inline bool isSpace( textwolf::UChar ch)
 {
 	return (ch <= 32);
-}
-static inline bool isPunctuation( textwolf::UChar ch)
-{
-	return (ch <= 127 && punctuation_char[(unsigned char)ch]);
 }
 static inline bool isConsonant( textwolf::UChar ch)
 {
@@ -95,11 +90,12 @@ public:
 			textwolf::charset::UTF8>
 		Scanner;
 
-	CharWindow( const char* src, std::size_t srcsize)
+	CharWindow( const char* src, std::size_t srcsize, const CharTable* punctuation_char_)
 		:m_itr( textwolf::CStringIterator( src, srcsize))
 		,m_idx(0)
 		,m_wordlen(0)
 		,m_pos(0)
+		,m_punctuation_char(punctuation_char_)
 	{
 		std::memset( m_prev_ch, 0, sizeof(m_prev_ch));
 		m_prev_ch[ 0] = *m_itr;
@@ -107,6 +103,11 @@ public:
 		{
 			++m_wordlen;
 		}
+	}
+
+	inline bool isPunctuation( textwolf::UChar ch)
+	{
+		return (ch <= 127 && (*m_punctuation_char)[(unsigned char)ch]);
 	}
 
 	void skip()
@@ -159,6 +160,7 @@ private:
 	unsigned int m_wordlen;
 	unsigned int m_pos;
 	textwolf::UChar m_prev_ch[ NofPrevChar];
+	const CharTable* m_punctuation_char;
 };
 
 }//namespace

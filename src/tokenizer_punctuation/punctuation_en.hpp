@@ -31,6 +31,7 @@
 #include "strus/tokenizerExecutionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "compactNodeTrie.hpp"
+#include "punctuation_utils.hpp"
 
 namespace strus
 {
@@ -39,20 +40,28 @@ class PunctuationTokenizerExecutionContext_en
 	:public TokenizerExecutionContextInterface
 {
 public:
-	PunctuationTokenizerExecutionContext_en( const conotrie::CompactNodeTrie* abbrevDict_)
-		:m_abbrevDict(abbrevDict_){}
+	PunctuationTokenizerExecutionContext_en(
+			const conotrie::CompactNodeTrie* abbrevDict_,
+			const CharTable* punctuation_char_)
+		:m_abbrevDict(abbrevDict_),m_punctuation_char(punctuation_char_){}
+
+	inline bool isPunctuation( textwolf::UChar ch)
+	{
+		return (ch <= 127 && (*m_punctuation_char)[(unsigned char)ch]);
+	}
 
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
 
 private:
 	const conotrie::CompactNodeTrie* m_abbrevDict;
+	const CharTable* m_punctuation_char;
 };
 
 class PunctuationTokenizerInstance_en
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	PunctuationTokenizerInstance_en();
+	PunctuationTokenizerInstance_en( const char* punctuationCharList);
 
 	virtual bool concatBeforeTokenize() const
 	{
@@ -61,11 +70,12 @@ public:
 
 	TokenizerExecutionContextInterface* createExecutionContext() const
 	{
-		return new PunctuationTokenizerExecutionContext_en( &m_abbrevDict);
+		return new PunctuationTokenizerExecutionContext_en( &m_abbrevDict, &m_punctuation_char);
 	}
 
 private:
 	conotrie::CompactNodeTrie m_abbrevDict;
+	CharTable m_punctuation_char;
 };
 
 }//namespace

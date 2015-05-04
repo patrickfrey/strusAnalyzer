@@ -48,17 +48,26 @@ class PunctuationTokenizerFunction
 public:
 	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
-		if (args.size() != 1)
+		if (args.size() > 2)
 		{
-			throw std::runtime_error( "illegal number of arguments for punctuation tokenizer (language as single argument expected)");
+			throw std::runtime_error( "too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)");
+		}
+		if (args.size() < 1)
+		{
+			throw std::runtime_error( "too few arguments for punctuation tokenizer (language as mandatory argument expected)");
+		}
+		const char* punctChar = 0;
+		if (args.size() == 2)
+		{
+			punctChar = args[1].c_str();
 		}
 		if (utils::caseInsensitiveEquals( args[0], "de"))
 		{
-			return new PunctuationTokenizerInstance_de();
+			return new PunctuationTokenizerInstance_de( punctChar);
 		}
 		else if (utils::caseInsensitiveEquals( args[0], "en"))
 		{
-			return new PunctuationTokenizerInstance_en();
+			return new PunctuationTokenizerInstance_en( punctChar);
 		}
 		else
 		{

@@ -32,6 +32,8 @@
 
 using namespace strus;
 
+#define STRUS_LOWLEVEL_DEBUG
+
 static const char g_abbrevList[] = 
 	"abbrev\0"
 	"abd\0"
@@ -1059,7 +1061,8 @@ static const char g_abbrevList[] =
 	"zool\0"
 ;
 
-PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en()
+PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en( const char* punctuationCharList)
+	:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
 {
 	char const* cc = g_abbrevList;
 	char const* ee = std::strchr( cc, '\0');
@@ -1079,7 +1082,7 @@ std::vector<analyzer::Token>
 	std::vector<analyzer::Token> rt;
 
 	textwolf::UChar ch0;
-	CharWindow scanner( src, srcsize);
+	CharWindow scanner( src, srcsize, m_punctuation_char);
 	unsigned int wordlen=0;
 
 	for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
@@ -1111,18 +1114,22 @@ std::vector<analyzer::Token>
 			if (isAlpha( ch1))
 			{
 				// Check, if it is an abbreviation listed in the dictonary:
-				char word[ CharWindow::NofPrevChar];
+				char word[ CharWindow::NofPrevChar+1];
+				word[ CharWindow::NofPrevChar] = 0;
 				int wi = CharWindow::NofPrevChar;
 				int ci = 1;
-				textwolf::UChar ch = ch1;
-				while (wi > 0 && (ch|32) >= 'a' && (ch|32) <= 'z')
+				textwolf::UChar ch = ch1|32;
+				while (wi > 0 && ch >= 'a' && ch <= 'z')
 				{
-					word[ --wi] = (ch|32);
-					ch = scanner.chr(++ci);
+					word[ --wi] = (char)ch;
+					ch = scanner.chr(++ci)|32;
 				}
 				if (wi > 0 && (ch == 0 || isSpace(ch) || !isPunctuation(ch)))
 				{
 					conotrie::CompactNodeTrie::NodeData val;
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "check abbreviation candidate '" << (word+wi) << "'" << std::endl;
+#endif
 					if (m_abbrevDict->get( word+wi, val))
 					{
 #ifdef STRUS_LOWLEVEL_DEBUG
