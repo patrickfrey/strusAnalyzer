@@ -25,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_punctuation SHARED ${source_files} )
-target_link_libraries( strus_tokenizer_punctuation strus_private_utils )
+target_link_libraries( strus_tokenizer_punctuation compactnodetrie_static strus_private_utils )
 set_target_properties(
     strus_tokenizer_punctuation
     PROPERTIES
