@@ -28,8 +28,11 @@
 */
 #include "punctuation_de.hpp"
 #include "punctuation_utils.hpp"
+#include <iostream>
 
 using namespace strus;
+
+#undef STRUS_LOWLEVEL_DEBUG
 
 std::vector<analyzer::Token>
 	PunctuationTokenizerExecutionContext_de::tokenize(

@@ -49,6 +49,7 @@ public:
 	/// \param[in] featureType type name (in the storage) of the generated features
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
+	/// \note It is recommended to name the phraseType as the featureType to avoid to many different namings. The phrase type is used to address the method, as the expressions in the segmenter of the document do. But in most cases there will be only one of a kind, so it does not make sense to have disinct names for it.
 	virtual void definePhraseType(
 			const std::string& phraseType,
 			const std::string& featureType,
