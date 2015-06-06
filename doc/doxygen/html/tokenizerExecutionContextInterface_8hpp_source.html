@@ -79,35 +79,35 @@
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">--------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="token_8hpp.html">strus/analyzer/token.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>strus {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="token_8hpp.html">strus/analyzer/token.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenizerExecutionContextInterface.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html">TokenizerExecutionContextInterface</a></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">   44</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">~TokenizerExecutionContextInterface</a>(){}</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::Token&gt; <a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html#a22c8e730e743dc81024be26d163869d2">tokenize</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* src, std::size_t srcsize)=0;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="ttc" id="classstrus_1_1TokenizerExecutionContextInterface_html_a23f32568b7bc866f1d932cc1d1239144"><div class="ttname"><a href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">strus::TokenizerExecutionContextInterface::~TokenizerExecutionContextInterface</a></div><div class="ttdeci">virtual ~TokenizerExecutionContextInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> tokenizerExecutionContextInterface.hpp:44</div></div>
-<div class="ttc" id="token_8hpp_html"><div class="ttname"><a href="token_8hpp.html">token.hpp</a></div></div>
-<div class="ttc" id="classstrus_1_1TokenizerExecutionContextInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerExecutionContextInterface.html">strus::TokenizerExecutionContextInterface</a></div><div class="ttdef"><b>Definition:</b> tokenizerExecutionContextInterface.hpp:40</div></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span>strus {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenizerExecutionContextInterface.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html">TokenizerExecutionContextInterface</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">   46</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">~TokenizerExecutionContextInterface</a>(){}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::Token&gt; <a class="code" href="classstrus_1_1TokenizerExecutionContextInterface.html#a22c8e730e743dc81024be26d163869d2">tokenize</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* src, std::size_t srcsize)=0;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="ttc" id="classstrus_1_1TokenizerExecutionContextInterface_html_a23f32568b7bc866f1d932cc1d1239144"><div class="ttname"><a href="classstrus_1_1TokenizerExecutionContextInterface.html#a23f32568b7bc866f1d932cc1d1239144">strus::TokenizerExecutionContextInterface::~TokenizerExecutionContextInterface</a></div><div class="ttdeci">virtual ~TokenizerExecutionContextInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> tokenizerExecutionContextInterface.hpp:46</div></div>
+<div class="ttc" id="token_8hpp_html"><div class="ttname"><a href="token_8hpp.html">token.hpp</a></div><div class="ttdoc">Structure describing a token in the document by its start and end position. </div></div>
+<div class="ttc" id="classstrus_1_1TokenizerExecutionContextInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerExecutionContextInterface.html">strus::TokenizerExecutionContextInterface</a></div><div class="ttdoc">Interface to the context (state) for the execution of a tokenizer for one unit (document,query) </div><div class="ttdef"><b>Definition:</b> tokenizerExecutionContextInterface.hpp:42</div></div>
 <div class="ttc" id="classstrus_1_1TokenizerExecutionContextInterface_html_a22c8e730e743dc81024be26d163869d2"><div class="ttname"><a href="classstrus_1_1TokenizerExecutionContextInterface.html#a22c8e730e743dc81024be26d163869d2">strus::TokenizerExecutionContextInterface::tokenize</a></div><div class="ttdeci">virtual std::vector&lt; analyzer::Token &gt; tokenize(const char *src, std::size_t srcsize)=0</div><div class="ttdoc">Tokenize a segment into a list of tokens. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 6 2015 18:21:01 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jun 6 2015 19:41:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

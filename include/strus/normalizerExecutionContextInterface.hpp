@@ -26,11 +26,14 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for the execution context of a normalizer function
+/// \file normalizerExecutionContextInterface.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 

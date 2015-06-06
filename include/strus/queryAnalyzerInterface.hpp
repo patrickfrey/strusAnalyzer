@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Parameterizable query analyzer interface
+/// \file queryAnalyzerInterface.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
@@ -34,6 +36,7 @@
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 

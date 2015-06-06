@@ -27,10 +27,12 @@
 --------------------------------------------------------------------
 */
 /// \brief Exported functions of the strus analyzer library
+/// \file analyzer.hpp
 #ifndef _STRUS_ANALYZER_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_LIB_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus {
 
 /// \brief Forward declaration

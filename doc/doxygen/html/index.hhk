@@ -330,8 +330,6 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__word_8hpp.html#a8c7d7040aed8932735cbcfe9e1ef02ad"><param name="Name" value="getTokenizer_whitespace"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__word_8hpp.html#a145ea0b862da34f5b83d17b2d032b4a8"><param name="Name" value="getTokenizer_word"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classTokenizerInstanceInterface.html"><param name="Name" value="TokenizerInstanceInterface"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classTokenizerInterface.html"><param name="Name" value="TokenizerInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#ae995e07bb41171fbdc4523fb981af9a3"><param name="Name" value="type"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Attribute.html#a9713090379f3b4eb0bc28bde12ffd7a6"><param name="Name" value="value"></OBJECT>
   <UL>

@@ -26,10 +26,13 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Exported functions of the strus text processor library (container for all types of functions needed for document and query analysis)
+/// \file textproc.hpp
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_LIB_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus {
 
 /// \brief Forward declaration analyze processor

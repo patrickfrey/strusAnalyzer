@@ -41,31 +41,20 @@
 <div class="title">strusAnalyzer </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>The project strusAnalyzer provides some libraries for processing documents for feeding a search engine. This process, also called document document analysis splits a document into normalized atomic terms that can be insterted into a strus storage for retrieval. As counterpart strusAnalyzer provides also the methods to normalize query terms and phrases for the search in a strus storage.</p>
+<div class="textblock"><p>The project strusAnalyzer provides some libraries for processing documents for feeding a search engine. This process, also called document analysis splits a document into normalized atomic terms that can be insterted into a strus storage for retrieval. As counterpart strusAnalyzer provides also the methods to normalize query terms and phrases for the search in an information retrieval storage.</p>
 <h2>Document analysis process: </h2>
 <p>Document anaylsis is seen as a process involving the following steps.</p>
 <ol type="1">
-<li><a class="el" href="classstrus_1_1SegmenterInterface.html">Document segmentation</a> A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivation of abbreviated syntax of XPath to select the segments.</li>
-<li>Segment tokenization A segment delivered by the segmenter is split into tokens. The tokenization does not change the items selected. It just marks them by start and end position in the original source.</li>
-<li>Token normalization A token delivered by the tokenization is passed to a normalizer function. By normalizing terms you can impose rules of how to unify terms that should be mapped to the same value in the storage. Normalizer functions can be chained together to define normalization as composition of normalizers.</li>
+<li><a class="el" href="classstrus_1_1SegmenterInterface.html">Document segmentation</a> A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivation of abbreviated syntax of XPath to select the segments. But you can define your own segmenter for any document format if it is possible to provide the segmenter interface for it.</li>
+<li><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">Tokenization</a> A segment delivered by the document segmenter or a query phrase is split into tokens. The tokenization does not change the items selected. It just provides the start and end position in the original source.</li>
+<li><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">Normalization</a> A token delivered by the tokenization is passed to a normalizer function. By normalizing terms you can impose rules of how to unify terms that should be mapped to the same value in the storage. Normalizer functions can be chained together to describe normalization in multiple steps where the input of a normalization function can be the output of a previous normalization step.</li>
 </ol>
 <h2>Main interfaces and expandability: </h2>
-<p>The main interfaces of the strusAnalyzer are <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">document analyzer interface</a> and the <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">query analyzer interface</a>. These two components use functions provided by the <a class="el" href="classstrus_1_1TextProcessorInterface.html">text processor</a>. You can define new functions and add them to the text processor and you can substitute existing functions by alternative implementations. The document segmenter is passed the the document analyzer when creating it. You can define your own for any document format if it is possible to implement the segmenter interface for it. To define the components of your analyzer dynamically and driven by runtime settings, have a look at the project <a href="https://github.com/patrickfrey/strusModule">strusModule</a>.</p>
-<h2>List of libraries: </h2>
-<ul>
-<li>libstrus_analyzer Analyzer</li>
-<li>libstrus_textproc Container for text processing functions.</li>
-<li>libstrus_segmenter_textwolf XML document segmenter (textwolf)</li>
-<li>libstrus_normalizer_snowball Normalizer for stemming (snowball)</li>
-<li>libstrus_normalizer_dictmap Mapping of values with help of a map</li>
-<li>libstrus_normalizer_charconv Character conversions like for example to lower case (lc).</li>
-<li>libstrus_tokenizer_word Tokenizer to split a text into words</li>
-<li>libstrus_tokenizer_punctuation Tokenizer for end of sentence markers (for german only, using some silly heuristics that are not verified) </li>
-</ul>
+<p>The main interfaces of the strusAnalyzer are <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">document analyzer interface</a> and the <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">query analyzer interface</a>. These two components can be instantiated with functions provided by the <a class="el" href="classstrus_1_1TextProcessorInterface.html">text processor</a>. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jun 6 2015 18:21:01 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jun 6 2015 19:41:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

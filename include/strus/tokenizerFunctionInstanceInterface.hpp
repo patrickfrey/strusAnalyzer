@@ -26,15 +26,17 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a parameterized tokenizer function
+/// \file tokenizerFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus {
 
 /// \brief Forward declaration
 class TokenizerExecutionContextInterface;
 
-/// \class TokenizerInterface
 /// \brief Interface for tokenization
 class TokenizerFunctionInstanceInterface
 {

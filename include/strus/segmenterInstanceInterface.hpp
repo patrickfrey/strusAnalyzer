@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for the execution context of a document segmenter
+/// \file segmenterInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include <utility>
@@ -47,6 +49,7 @@ namespace strus {
 }//namespace
 #endif
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 

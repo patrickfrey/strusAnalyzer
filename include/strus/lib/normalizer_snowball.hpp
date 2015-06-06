@@ -26,15 +26,20 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Exported functions of the strus analyzer snowball stemmer normalization library
+/// \file normalizer_snowball.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_SNOWBALL_LIB_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 
+/// \brief Get the normalizer that returns the stemming of the input with the snowball stemmer as result
+/// \return the normalization function
 const NormalizerFunctionInterface* getNormalizer_snowball();
 
 }//namespace

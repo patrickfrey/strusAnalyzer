@@ -26,15 +26,20 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Exported functions of the strus analyzer dictionary word map normalization library
+/// \file normalizer_dictmap.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 
+/// \brief Get the normalizer that returns the mapping of the input with a dictionary as result
+/// \return the normalization function
 const NormalizerFunctionInterface* getNormalizer_dictmap();
 
 }//namespace

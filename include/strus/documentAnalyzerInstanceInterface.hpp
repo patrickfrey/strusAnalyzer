@@ -26,12 +26,15 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for the execution context of a document analyzer
+/// \file documentAnalyzerInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/document.hpp"
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 

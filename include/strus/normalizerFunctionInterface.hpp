@@ -26,11 +26,14 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a normalizer function type
+/// \file normalizerFunctionInterface.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
