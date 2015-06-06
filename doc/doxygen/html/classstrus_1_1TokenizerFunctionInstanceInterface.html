@@ -69,10 +69,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a094e03ef84bc3398f67676adf4bfa72e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#a094e03ef84bc3398f67676adf4bfa72e">concatBeforeTokenize</a> () const </td></tr>
 <tr class="memdesc:a094e03ef84bc3398f67676adf4bfa72e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag defined by tokenizer indicating that different segments defined by the tag hierarchy should be concatenated before tokenization.  <a href="#a094e03ef84bc3398f67676adf4bfa72e">More...</a><br/></td></tr>
 <tr class="separator:a094e03ef84bc3398f67676adf4bfa72e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8e8506f01e6ac09b3d8f2605cdda585"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
-<a class="el" href="classstrus_1_1TokenizerExecutionContextInterface.html">TokenizerExecutionContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#af8e8506f01e6ac09b3d8f2605cdda585">createExecutionContext</a> () const =0</td></tr>
-<tr class="memdesc:af8e8506f01e6ac09b3d8f2605cdda585"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an instance (context for one document) for tokenization.  <a href="#af8e8506f01e6ac09b3d8f2605cdda585">More...</a><br/></td></tr>
-<tr class="separator:af8e8506f01e6ac09b3d8f2605cdda585"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3c344b0fad44fbfb78002fd85351da7"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html">TokenizerFunctionContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#af3c344b0fad44fbfb78002fd85351da7">createFunctionContext</a> () const =0</td></tr>
+<tr class="memdesc:af3c344b0fad44fbfb78002fd85351da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an instance (context for one document) for tokenization.  <a href="#af3c344b0fad44fbfb78002fd85351da7">More...</a><br/></td></tr>
+<tr class="separator:af3c344b0fad44fbfb78002fd85351da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for tokenization. </p>
@@ -130,7 +130,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af8e8506f01e6ac09b3d8f2605cdda585"></a>
+<a class="anchor" id="af3c344b0fad44fbfb78002fd85351da7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -138,7 +138,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1TokenizerExecutionContextInterface.html">TokenizerExecutionContextInterface</a>* strus::TokenizerFunctionInstanceInterface::createExecutionContext </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html">TokenizerFunctionContextInterface</a>* strus::TokenizerFunctionInstanceInterface::createFunctionContext </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -162,7 +162,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 7 2015 00:42:53 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 7 2015 00:49:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

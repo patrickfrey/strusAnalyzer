@@ -91,10 +91,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa5db0b051c95cb65e39ee3aa4a5c271c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1Document.html">analyzer::Document</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#aa5db0b051c95cb65e39ee3aa4a5c271c">analyze</a> (const std::string &amp;content) const =0</td></tr>
 <tr class="memdesc:aa5db0b051c95cb65e39ee3aa4a5c271c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Segment and tokenize a document, assign types to tokens and metadata and normalize their values.  <a href="#aa5db0b051c95cb65e39ee3aa4a5c271c">More...</a><br/></td></tr>
 <tr class="separator:aa5db0b051c95cb65e39ee3aa4a5c271c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a036c7c8f4921e4fdc140faf0894034f3"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
-<a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html">DocumentAnalyzerInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a036c7c8f4921e4fdc140faf0894034f3">createInstance</a> () const =0</td></tr>
-<tr class="memdesc:a036c7c8f4921e4fdc140faf0894034f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an instance of the context used for analyzing multipart or very big documents.  <a href="#a036c7c8f4921e4fdc140faf0894034f3">More...</a><br/></td></tr>
-<tr class="separator:a036c7c8f4921e4fdc140faf0894034f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6265905d5d4d10b7f998d0ae00d7534"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1DocumentAnalyzerContextInterface.html">DocumentAnalyzerContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac6265905d5d4d10b7f998d0ae00d7534">createContext</a> () const =0</td></tr>
+<tr class="memdesc:ac6265905d5d4d10b7f998d0ae00d7534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the context used for analyzing multipart or very big documents.  <a href="#ac6265905d5d4d10b7f998d0ae00d7534">More...</a><br/></td></tr>
+<tr class="separator:ac6265905d5d4d10b7f998d0ae00d7534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine. </p>
@@ -283,11 +283,11 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the analyzed document </dd></dl>
-<dl class="section remark"><dt>Remarks</dt><dd>Do not use this function in case of a multipart document (defined with '<a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7" title="Declare a sub document for the handling of multi part documents in an analyzed content. ">defineSubDocument(const std::string&amp;,const std::string&amp;)</a>') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerInstance(std::istream&amp;)const' instead. </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>Do not use this function in case of a multipart document (defined with '<a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7" title="Declare a sub document for the handling of multi part documents in an analyzed content. ">defineSubDocument(const std::string&amp;,const std::string&amp;)</a>') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerContext(std::istream&amp;)const' instead. </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a036c7c8f4921e4fdc140faf0894034f3"></a>
+<a class="anchor" id="ac6265905d5d4d10b7f998d0ae00d7534"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -295,7 +295,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html">DocumentAnalyzerInstanceInterface</a>* strus::DocumentAnalyzerInterface::createInstance </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerContextInterface.html">DocumentAnalyzerContextInterface</a>* strus::DocumentAnalyzerInterface::createContext </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -308,7 +308,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Create an instance of the context used for analyzing multipart or very big documents. </p>
+<p>Create the context used for analyzing multipart or very big documents. </p>
 <dl class="section return"><dt>Returns</dt><dd>the analyzer context (ownership to caller) </dd></dl>
 
 </div>
@@ -479,7 +479,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 7 2015 00:42:53 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 7 2015 00:49:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -72,10 +72,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#ab90dcdd936ecb1521c26e9faca9bb2dc">defineSubSection</a> (int startId, int endId, const std::string &amp;expression)=0</td></tr>
 <tr class="memdesc:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an expression for identifying a sub section of the document.  <a href="#ab90dcdd936ecb1521c26e9faca9bb2dc">More...</a><br/></td></tr>
 <tr class="separator:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa417e4e2db1402440684ffb29727e682"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
-<a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682">createInstance</a> () const =0</td></tr>
-<tr class="memdesc:aa417e4e2db1402440684ffb29727e682"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an instance of the segmenter.  <a href="#aa417e4e2db1402440684ffb29727e682">More...</a><br/></td></tr>
-<tr class="separator:aa417e4e2db1402440684ffb29727e682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3526e829e51dee279a5266e080c13818"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a3526e829e51dee279a5266e080c13818">createContext</a> () const =0</td></tr>
+<tr class="memdesc:a3526e829e51dee279a5266e080c13818"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an instance of the segmenter.  <a href="#a3526e829e51dee279a5266e080c13818">More...</a><br/></td></tr>
+<tr class="separator:a3526e829e51dee279a5266e080c13818"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression. </p>
@@ -106,7 +105,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aa417e4e2db1402440684ffb29727e682"></a>
+<a class="anchor" id="a3526e829e51dee279a5266e080c13818"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -114,7 +113,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a>* strus::SegmenterInterface::createInstance </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a>* strus::SegmenterInterface::createContext </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -231,7 +230,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jun 7 2015 00:42:53 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 7 2015 00:49:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
