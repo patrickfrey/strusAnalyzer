@@ -35,7 +35,7 @@ using namespace strus;
 #undef STRUS_LOWLEVEL_DEBUG
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerExecutionContext_de::tokenize(
+	PunctuationTokenizerFunctionContext_de::tokenize(
 		const char* src, std::size_t srcsize)
 {
 	std::vector<analyzer::Token> rt;

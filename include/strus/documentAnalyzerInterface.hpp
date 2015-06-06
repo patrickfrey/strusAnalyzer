@@ -43,7 +43,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class DocumentAnalyzerInstanceInterface;
+class DocumentAnalyzerContextInterface;
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
 class DocumentAnalyzerInterface
@@ -157,12 +157,12 @@ public:
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
 	/// \return the analyzed document
-	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerInstance(std::istream&)const' instead.
+	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerContext(std::istream&)const' instead.
 	virtual analyzer::Document analyze( const std::string& content) const=0;
 
-	/// \brief Create an instance of the context used for analyzing multipart or very big documents
+	/// \brief Create the context used for analyzing multipart or very big documents
 	/// \return the analyzer context (ownership to caller)
-	virtual DocumentAnalyzerInstanceInterface* createInstance() const=0;
+	virtual DocumentAnalyzerContextInterface* createContext() const=0;
 };
 
 }//namespace

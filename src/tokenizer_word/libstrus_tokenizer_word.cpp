@@ -29,7 +29,7 @@
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
 #include "textwolf/charset_utf8.hpp"
@@ -41,11 +41,11 @@ using namespace strus::analyzer;
 
 typedef bool (*TokenDelimiter)( char const* si, const char* se);
 
-class SeparationTokenizerExecutionContext
-	:public TokenizerExecutionContextInterface
+class SeparationTokenizerFunctionContext
+	:public TokenizerFunctionContextInterface
 {
 public:
-	SeparationTokenizerExecutionContext( TokenDelimiter delim)
+	SeparationTokenizerFunctionContext( TokenDelimiter delim)
 		:m_delim(delim){}
 
 	const char* skipToToken( char const* si, const char* se) const;
@@ -64,9 +64,9 @@ public:
 	SeparationTokenizerInstance( TokenDelimiter delim)
 		:m_delim(delim){}
 
-	TokenizerExecutionContextInterface* createExecutionContext() const
+	TokenizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new SeparationTokenizerExecutionContext( m_delim);
+		return new SeparationTokenizerFunctionContext( m_delim);
 	}
 
 private:
@@ -191,13 +191,13 @@ static bool whiteSpaceDelimiter( char const* si, const char* se)
 	}
 }
 
-const char* SeparationTokenizerExecutionContext::skipToToken( char const* si, const char* se) const
+const char* SeparationTokenizerFunctionContext::skipToToken( char const* si, const char* se) const
 {
 	for (; si < se && m_delim( si, se); si = skipChar( si)){}
 	return si;
 }
 
-std::vector<Token> SeparationTokenizerExecutionContext::tokenize( const char* src, std::size_t srcsize)
+std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src, std::size_t srcsize)
 {
 	std::vector<Token> rt;
 	char const* si = skipToToken( src, src+srcsize);

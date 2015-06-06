@@ -29,9 +29,9 @@
 #ifndef _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
 #include "strus/documentAnalyzerInterface.hpp"
-#include "strus/documentAnalyzerInstanceInterface.hpp"
+#include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterInterface.hpp"
-#include "strus/segmenterInstanceInterface.hpp"
+#include "strus/segmenterContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
@@ -100,7 +100,7 @@ public:
 
 	virtual analyzer::Document analyze( const std::string& content) const;
 
-	virtual DocumentAnalyzerInstanceInterface* createInstance() const;
+	virtual DocumentAnalyzerContextInterface* createContext() const;
 
 public:
 	enum FeatureClass
@@ -161,7 +161,7 @@ private:
 	const FeatureConfig& featureConfig( int featidx) const;
 
 private:
-	friend class DocumentAnalyzerInstance;
+	friend class DocumentAnalyzerContext;
 	SegmenterInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
@@ -178,9 +178,9 @@ public:
 
 	struct FeatureContext
 	{
-		typedef utils::SharedPtr<NormalizerExecutionContextInterface> NormalizerExecutionContextReference;
-		typedef std::vector<NormalizerExecutionContextReference> NormalizerExecutionContextArray;
-		typedef utils::SharedPtr<TokenizerExecutionContextInterface> TokenizerExecutionContextReference;
+		typedef utils::SharedPtr<NormalizerFunctionContextInterface> NormalizerFunctionContextReference;
+		typedef std::vector<NormalizerFunctionContextReference> NormalizerFunctionContextArray;
+		typedef utils::SharedPtr<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
 
 		FeatureContext( const DocumentAnalyzer::FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
@@ -191,8 +191,8 @@ public:
 		std::string normalize( const char* tok, std::size_t toksize);
 
 		const DocumentAnalyzer::FeatureConfig* m_config;
-		NormalizerExecutionContextArray m_normalizerContextAr;
-		TokenizerExecutionContextReference m_tokenizerContext;
+		NormalizerFunctionContextArray m_normalizerContextAr;
+		TokenizerFunctionContextReference m_tokenizerContext;
 	};
 
 	FeatureContext& featureContext( int featidx)
@@ -206,13 +206,13 @@ private:
 };
 
 
-class DocumentAnalyzerInstance
-	:public DocumentAnalyzerInstanceInterface
+class DocumentAnalyzerContext
+	:public DocumentAnalyzerContextInterface
 {
 public:
-	explicit DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_);
+	explicit DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_);
 
-	virtual ~DocumentAnalyzerInstance()
+	virtual ~DocumentAnalyzerContext()
 	{
 		delete m_segmenter;
 	}
@@ -256,7 +256,7 @@ private:
 
 private:
 	const DocumentAnalyzer* m_analyzer;
-	SegmenterInstanceInterface* m_segmenter;
+	SegmenterContextInterface* m_segmenter;
 	ParserContext m_parserContext;
 	std::vector<analyzer::Document> m_subdocstack;
 

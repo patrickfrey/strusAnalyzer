@@ -29,7 +29,7 @@
 #ifndef _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"

@@ -26,31 +26,32 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for the execution context of a normalizer function
-/// \file normalizerExecutionContextInterface.hpp
-#ifndef _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
+/// \brief Interface for the execution context of a tokenizer function
+/// \file tokenizerFunctionContextInterface.hpp
+#ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKENIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/token.hpp"
+#include <utility>
+#include <cstddef>
 #include <vector>
-#include <string>
 
 /// \brief strus toplevel namespace
-namespace strus
-{
+namespace strus {
 
-/// \brief Interface to the context (state) for the execution of a normalizer for one unit (document,query)
-class NormalizerExecutionContextInterface
+/// \brief Interface to the context (state) for the execution of a tokenizer for one unit (document,query)
+class TokenizerFunctionContextInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~NormalizerExecutionContextInterface(){}
+	virtual ~TokenizerFunctionContextInterface(){}
 
-	/// \brief Normalization of a token
-	/// \param[in] src start of the token to normalize
-	/// \param[in] srcsize size of the token in bytes
-	/// \return list of normalized tokens
-	virtual std::string normalize( const char* src, std::size_t srcsize)=0;
+	/// \brief Tokenize a segment into a list of tokens
+	/// \param[in] src pointer to segment to tokenize
+	/// \param[in] srcsize size of the segment to tokenize in bytes
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)=0;
 };
 
 }//namespace
 #endif
+
 

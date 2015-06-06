@@ -27,12 +27,12 @@
 --------------------------------------------------------------------
 */
 #include "documentAnalyzer.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
-#include "strus/segmenterInstanceInterface.hpp"
+#include "strus/segmenterContextInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
@@ -117,7 +117,7 @@ void DocumentAnalyzer::defineSubDocument(
 
 ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext(config.tokenizer()->createExecutionContext())
+	,m_tokenizerContext(config.tokenizer()->createFunctionContext())
 {
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
@@ -125,13 +125,13 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( (*ni)->createExecutionContext());
+		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
 	}
 }
 
 std::string ParserContext::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	NormalizerExecutionContextArray::iterator
+	NormalizerFunctionContextArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 
@@ -163,8 +163,8 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 {
 	analyzer::Document rt;
-	std::auto_ptr<DocumentAnalyzerInstance>
-		analyzerInstance( new DocumentAnalyzerInstance( this));
+	std::auto_ptr<DocumentAnalyzerContext>
+		analyzerInstance( new DocumentAnalyzerContext( this));
 	analyzerInstance->putInput( content.c_str(), content.size(), true);
 	if (!analyzerInstance->analyzeNext( rt))
 	{
@@ -173,14 +173,14 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 	return rt;
 }
 
-DocumentAnalyzerInstanceInterface* DocumentAnalyzer::createInstance() const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext() const
 {
-	return new DocumentAnalyzerInstance( this);
+	return new DocumentAnalyzerContext( this);
 }
 
 
 /// \brief Map byte offset positions to token occurrence positions:
-void DocumentAnalyzerInstance::mapPositions( analyzer::Document& res) const
+void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 {
 	std::set<unsigned int> pset;
 	std::vector<analyzer::Term>::const_iterator ri = m_searchTerms.begin(), re = m_searchTerms.end();
@@ -221,7 +221,7 @@ void DocumentAnalyzerInstance::mapPositions( analyzer::Document& res) const
 	}
 }
 
-void DocumentAnalyzerInstance::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 
@@ -298,7 +298,7 @@ struct Segment
 		:pos(o.pos),size(o.size){}
 };
 
-void DocumentAnalyzerInstance::processConcatenated(
+void DocumentAnalyzerContext::processConcatenated(
 		analyzer::Document& res)
 {
 	ConcatenatedMap::const_iterator
@@ -312,7 +312,7 @@ void DocumentAnalyzerInstance::processConcatenated(
 	}
 }
 
-void DocumentAnalyzerInstance::concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerContext::concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
 	ConcatenatedMap::iterator ci = m_concatenatedMap.find( featidx);
 	if (ci == m_concatenatedMap.end())
@@ -329,16 +329,16 @@ void DocumentAnalyzerInstance::concatDocumentSegment( int featidx, std::size_t r
 	}
 }
 
-void DocumentAnalyzerInstance::clearTermMaps()
+void DocumentAnalyzerContext::clearTermMaps()
 {
 	m_concatenatedMap.clear();
 	m_searchTerms.clear();
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerInstance::DocumentAnalyzerInstance( const DocumentAnalyzer* analyzer_)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_)
 	:m_analyzer(analyzer_)
-	,m_segmenter(m_analyzer->m_segmenter->createInstance())
+	,m_segmenter(m_analyzer->m_segmenter->createContext())
 	,m_parserContext(analyzer_->m_featurear)
 	,m_eof(false)
 	,m_last_position(0)
@@ -348,13 +348,13 @@ DocumentAnalyzerInstance::DocumentAnalyzerInstance( const DocumentAnalyzer* anal
 	m_subdocstack.push_back( analyzer::Document());
 }
 
-void DocumentAnalyzerInstance::putInput( const char* chunk, std::size_t chunksize, bool eof)
+void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
 {
 	m_segmenter->putInput( chunk, chunksize, eof);
 	m_eof = eof;
 }
 
-bool DocumentAnalyzerInstance::analyzeNext( analyzer::Document& doc)
+bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
 	if (m_subdocstack.empty())
 	{

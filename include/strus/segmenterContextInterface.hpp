@@ -27,9 +27,9 @@
 --------------------------------------------------------------------
 */
 /// \brief Interface for the execution context of a document segmenter
-/// \file segmenterInstanceInterface.hpp
-#ifndef _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
+/// \file segmenterContextInterface.hpp
+#ifndef _STRUS_ANALYZER_SEGMENTER_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_SEGMENTER_CONTEXT_INTERFACE_HPP_INCLUDED
 #include <utility>
 #include <string>
 
@@ -53,13 +53,13 @@ namespace strus {
 namespace strus
 {
 
-/// \class SegmenterInstanceInterface
+/// \class SegmenterContextInterface
 /// \brief Defines an instance of a segmenter program
-class SegmenterInstanceInterface
+class SegmenterContextInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~SegmenterInstanceInterface(){}
+	virtual ~SegmenterContextInterface(){}
 
 	/// \brief Feed the segmenter with the next chunk of input to process
 	/// \param[in] chunk pointer to input chunk to process

@@ -27,7 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "segmenter.hpp"
-#include "segmenterInstance.hpp"
+#include "segmenterContext.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
 
@@ -162,9 +162,9 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterInstanceInterface* Segmenter::createInstance() const
+SegmenterContextInterface* Segmenter::createContext() const
 {
-	return new SegmenterInstance( &m_automaton);
+	return new SegmenterContext( &m_automaton);
 }
 
 

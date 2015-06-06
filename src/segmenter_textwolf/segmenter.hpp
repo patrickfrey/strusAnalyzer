@@ -46,7 +46,7 @@ public:
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
-	virtual SegmenterInstanceInterface* createInstance() const;
+	virtual SegmenterContextInterface* createContext() const;
 
 private:
 	void addExpression( int id, const std::string& expression);

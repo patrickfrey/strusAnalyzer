@@ -28,7 +28,7 @@
 */
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "compactNodeTrie.hpp"
 #include "punctuation_utils.hpp"
@@ -36,11 +36,11 @@
 namespace strus
 {
 
-class PunctuationTokenizerExecutionContext_en
-	:public TokenizerExecutionContextInterface
+class PunctuationTokenizerFunctionContext_en
+	:public TokenizerFunctionContextInterface
 {
 public:
-	PunctuationTokenizerExecutionContext_en(
+	PunctuationTokenizerFunctionContext_en(
 			const conotrie::CompactNodeTrie* abbrevDict_,
 			const CharTable* punctuation_char_)
 		:m_abbrevDict(abbrevDict_),m_punctuation_char(punctuation_char_){}
@@ -68,9 +68,9 @@ public:
 		return true;
 	}
 
-	TokenizerExecutionContextInterface* createExecutionContext() const
+	TokenizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new PunctuationTokenizerExecutionContext_en( &m_abbrevDict, &m_punctuation_char);
+		return new PunctuationTokenizerFunctionContext_en( &m_abbrevDict, &m_punctuation_char);
 	}
 
 private:

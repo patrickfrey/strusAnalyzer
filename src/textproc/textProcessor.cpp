@@ -29,10 +29,10 @@
 #include "textProcessor.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "resourceDirectory.hpp"
@@ -44,11 +44,11 @@ using namespace strus::analyzer;
 
 #undef STRUS_LOWLEVEL_DEBUG
 
-class EmptyNormalizerExecutionContext
-	:public NormalizerExecutionContextInterface
+class EmptyNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
 {
 public:
-	EmptyNormalizerExecutionContext(){}
+	EmptyNormalizerFunctionContext(){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
 	{
@@ -62,9 +62,9 @@ class EmptyNormalizerInstance
 public:
 	EmptyNormalizerInstance(){}
 
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new EmptyNormalizerExecutionContext();
+		return new EmptyNormalizerFunctionContext();
 	}
 };
 
@@ -79,11 +79,11 @@ public:
 	}
 };
 
-class OrigNormalizerExecutionContext
-	:public NormalizerExecutionContextInterface
+class OrigNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
 {
 public:
-	OrigNormalizerExecutionContext(){}
+	OrigNormalizerFunctionContext(){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
 	{
@@ -111,9 +111,9 @@ class OrigNormalizerInstance
 public:
 	OrigNormalizerInstance(){}
 
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new OrigNormalizerExecutionContext();
+		return new OrigNormalizerFunctionContext();
 	}
 };
 
@@ -128,11 +128,11 @@ public:
 	}
 };
 
-class ContentTokenizerExecutionContext
-	:public TokenizerExecutionContextInterface
+class ContentTokenizerFunctionContext
+	:public TokenizerFunctionContextInterface
 {
 public:
-	ContentTokenizerExecutionContext(){}
+	ContentTokenizerFunctionContext(){}
 
 	virtual std::vector<analyzer::Token>
 			tokenize( const char* src, std::size_t srcsize)
@@ -147,9 +147,9 @@ class ContentTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	virtual TokenizerExecutionContextInterface* createExecutionContext() const
+	virtual TokenizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new ContentTokenizerExecutionContext();
+		return new ContentTokenizerFunctionContext();
 	}
 };
 

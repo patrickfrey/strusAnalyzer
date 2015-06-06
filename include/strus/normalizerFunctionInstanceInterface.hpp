@@ -35,7 +35,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class NormalizerExecutionContextInterface;
+class NormalizerFunctionContextInterface;
 
 /// \class NormalizerFunctionInstanceInterface
 /// \brief Interface for a parameterizable normalization function
@@ -47,7 +47,7 @@ public:
 
 	/// \brief Create an instance (context for one document) for normalization
 	/// \return the created normalizer instance (with ownership)
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const=0;
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const=0;
 };
 
 }//namespace
