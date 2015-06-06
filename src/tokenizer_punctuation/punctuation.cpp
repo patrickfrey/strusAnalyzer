@@ -29,7 +29,7 @@
 #include "punctuation.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "private/utils.hpp"
 #include "punctuation_de.hpp"
 #include "punctuation_en.hpp"

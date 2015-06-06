@@ -26,29 +26,53 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for the execution context of a tokenizer function
-/// \file tokenizerExecutionContextInterface.hpp
-#ifndef _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/token.hpp"
-#include <utility>
-#include <cstddef>
-#include <vector>
+#ifndef _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
+#define _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
+#include "strus/segmenterContextInterface.hpp"
+#include "textwolf/xmlpathselect.hpp"
+#include "textwolf/charset.hpp"
+#include "textwolf/sourceiterator.hpp"
+#include <stdint.h>
 
-/// \brief strus toplevel namespace
-namespace strus {
+namespace strus
+{
 
-/// \brief Interface to the context (state) for the execution of a tokenizer for one unit (document,query)
-class TokenizerExecutionContextInterface
+class SegmenterContext
+	:public SegmenterContextInterface
 {
 public:
-	/// \brief Destructor
-	virtual ~TokenizerExecutionContextInterface(){}
+	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
-	/// \brief Tokenize a segment into a list of tokens
-	/// \param[in] src pointer to segment to tokenize
-	/// \param[in] srcsize size of the segment to tokenize in bytes
-	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)=0;
+public:
+	explicit SegmenterContext( const Automaton* automaton_);
+
+	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof);
+
+	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize);
+
+private:
+	typedef textwolf::XMLPathSelect<
+			textwolf::charset::UTF8
+		> XMLPathSelect;
+	typedef textwolf::XMLScanner<
+			textwolf::SrcIterator,
+			textwolf::charset::UTF8,
+			textwolf::charset::UTF8,
+			std::string
+		> XMLScanner;
+
+	const Automaton* m_automaton;
+	textwolf::SrcIterator m_srciter;
+	XMLScanner m_scanner;
+	XMLPathSelect m_pathselect;
+	XMLScanner::iterator m_itr;
+	XMLScanner::iterator m_end;
+	XMLPathSelect::iterator m_selitr;
+	XMLPathSelect::iterator m_selend;
+	const char* m_chunk;
+	std::size_t m_chunksize;
+	bool m_eof;
+	bool m_done;
 };
 
 }//namespace

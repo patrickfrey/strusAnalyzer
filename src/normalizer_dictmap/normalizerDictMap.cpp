@@ -29,7 +29,7 @@
 #include "normalizerDictMap.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include <cstring>
 #include <cstring>
 #include <cstdio>
@@ -160,11 +160,11 @@ void DictMap::loadFile( const std::string& filename)
 }
 
 
-class DictMapNormalizerExecutionContext
-	:public NormalizerExecutionContextInterface
+class DictMapNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
 {
 public:
-	DictMapNormalizerExecutionContext( const DictMap* map_)
+	DictMapNormalizerFunctionContext( const DictMap* map_)
 		:m_map( map_){}
 	
 	virtual std::string normalize(
@@ -199,9 +199,9 @@ public:
 		m_map.loadFile( textproc->getResourcePath( filename));
 	}
 
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new DictMapNormalizerExecutionContext( &m_map);
+		return new DictMapNormalizerFunctionContext( &m_map);
 	}
 
 private:

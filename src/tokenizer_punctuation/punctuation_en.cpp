@@ -1076,7 +1076,7 @@ PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en( const char* pu
 
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerExecutionContext_en::tokenize(
+	PunctuationTokenizerFunctionContext_en::tokenize(
 		const char* src, std::size_t srcsize)
 {
 	std::vector<analyzer::Token> rt;

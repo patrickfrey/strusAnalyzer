@@ -27,9 +27,9 @@
 --------------------------------------------------------------------
 */
 /// \brief Interface for the execution context of a document analyzer
-/// \file documentAnalyzerInstanceInterface.hpp
-#ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INSTANCE_INTERFACE_HPP_INCLUDED
+/// \file documentAnalyzerContextInterface.hpp
+#ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/document.hpp"
 #include <vector>
 #include <string>
@@ -39,11 +39,11 @@ namespace strus
 {
 
 /// \brief Defines the context for analyzing multi part documents, iterating on the sub documents defined, splitting them into normalized terms that can be fed to the strus IR engine
-class DocumentAnalyzerInstanceInterface
+class DocumentAnalyzerContextInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~DocumentAnalyzerInstanceInterface(){}
+	virtual ~DocumentAnalyzerContextInterface(){}
 
 	/// \brief Feed the analyzer with the next chunk of input to process
 	/// \param[in] chunk pointer to input chunk to process

@@ -26,56 +26,31 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_INSTANCE_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_INSTANCE_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInstanceInterface.hpp"
-#include "textwolf/xmlpathselect.hpp"
-#include "textwolf/charset.hpp"
-#include "textwolf/sourceiterator.hpp"
-#include <stdint.h>
+/// \brief Interface for the execution context of a normalizer function
+/// \file normalizerFunctionContextInterface.hpp
+#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED
+#include <vector>
+#include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
-class SegmenterInstance
-	:public SegmenterInstanceInterface
+/// \brief Interface to the context (state) for the execution of a normalizer for one unit (document,query)
+class NormalizerFunctionContextInterface
 {
 public:
-	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
+	/// \brief Destructor
+	virtual ~NormalizerFunctionContextInterface(){}
 
-public:
-	explicit SegmenterInstance( const Automaton* automaton_);
-
-	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof);
-
-	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize);
-
-private:
-	typedef textwolf::XMLPathSelect<
-			textwolf::charset::UTF8
-		> XMLPathSelect;
-	typedef textwolf::XMLScanner<
-			textwolf::SrcIterator,
-			textwolf::charset::UTF8,
-			textwolf::charset::UTF8,
-			std::string
-		> XMLScanner;
-
-	const Automaton* m_automaton;
-	textwolf::SrcIterator m_srciter;
-	XMLScanner m_scanner;
-	XMLPathSelect m_pathselect;
-	XMLScanner::iterator m_itr;
-	XMLScanner::iterator m_end;
-	XMLPathSelect::iterator m_selitr;
-	XMLPathSelect::iterator m_selend;
-	const char* m_chunk;
-	std::size_t m_chunksize;
-	bool m_eof;
-	bool m_done;
+	/// \brief Normalization of a token
+	/// \param[in] src start of the token to normalize
+	/// \param[in] srcsize size of the token in bytes
+	/// \return list of normalized tokens
+	virtual std::string normalize( const char* src, std::size_t srcsize)=0;
 };
 
 }//namespace
 #endif
-
 

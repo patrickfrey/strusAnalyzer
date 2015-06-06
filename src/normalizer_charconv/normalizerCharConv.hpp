@@ -30,7 +30,7 @@
 #define _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include <string>
 #include <vector>
 #include <map>

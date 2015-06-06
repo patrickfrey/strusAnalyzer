@@ -27,9 +27,9 @@
 --------------------------------------------------------------------
 */
 #include "queryAnalyzer.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerExecutionContextInterface.hpp"
+#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
@@ -55,7 +55,7 @@ QueryAnalyzer::FeatureConfig::FeatureConfig(
 
 QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfig& config)
 	:m_config(&config)
-	,m_tokenizerContext( config.tokenizer()->createExecutionContext())
+	,m_tokenizerContext( config.tokenizer()->createFunctionContext())
 {
 	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
@@ -63,7 +63,7 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 	
 	for (; ni != ne; ++ni)
 	{
-		m_normalizerContextAr.push_back( (*ni)->createExecutionContext());
+		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
 	}
 }
 
@@ -74,7 +74,7 @@ std::vector<analyzer::Token> QueryAnalyzer::FeatureContext::tokenize( char const
 
 std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
-	NormalizerExecutionContextArray::iterator
+	NormalizerFunctionContextArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
 

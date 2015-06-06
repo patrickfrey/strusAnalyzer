@@ -28,7 +28,7 @@
 */
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerExecutionContextInterface.hpp"
+#include "strus/normalizerFunctionContextInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "textwolf/charset_utf8.hpp"
@@ -38,16 +38,16 @@
 
 using namespace strus;
 
-class StemNormalizerExecutionContext
-	:public NormalizerExecutionContextInterface
+class StemNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
 {
 public:
-	StemNormalizerExecutionContext( const struct sb_stemmer* stemmer_)
+	StemNormalizerFunctionContext( const struct sb_stemmer* stemmer_)
 		:m_stemmer(stemmer_)
 		,m_env( sb_stemmer_create_env( stemmer_))
 	{}
 
-	virtual ~StemNormalizerExecutionContext()
+	virtual ~StemNormalizerFunctionContext()
 	{
 		sb_stemmer_delete_env( m_stemmer, m_env);
 	}
@@ -91,9 +91,9 @@ public:
 		}
 	}
 
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new StemNormalizerExecutionContext( m_stemmer);
+		return new StemNormalizerFunctionContext( m_stemmer);
 	}
 
 private:

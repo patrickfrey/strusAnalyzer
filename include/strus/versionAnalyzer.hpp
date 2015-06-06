@@ -27,11 +27,10 @@
 --------------------------------------------------------------------
 */
 /// \brief Version of the strus analyzer project
-/// \file "versionAnalyzer.hpp"
+/// \file versionAnalyzer.hpp
 #ifndef _STRUS_ANALYZER_VERSION_HPP_INCLUDED
 #define _STRUS_ANALYZER_VERSION_HPP_INCLUDED
 
-/// \brief strus toplevel namespace
 namespace strus
 {
 

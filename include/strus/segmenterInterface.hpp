@@ -37,7 +37,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class SegmenterInstanceInterface;
+class SegmenterContextInterface;
 
 /// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
 class SegmenterInterface
@@ -59,7 +59,7 @@ public:
 
 	/// \brief Creates an instance of the segmenter
 	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterInstanceInterface* createInstance() const=0;
+	virtual SegmenterContextInterface* createContext() const=0;
 };
 
 }//namespace

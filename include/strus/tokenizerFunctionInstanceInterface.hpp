@@ -35,7 +35,7 @@
 namespace strus {
 
 /// \brief Forward declaration
-class TokenizerExecutionContextInterface;
+class TokenizerFunctionContextInterface;
 
 /// \brief Interface for tokenization
 class TokenizerFunctionInstanceInterface
@@ -51,7 +51,7 @@ public:
 
 	/// \brief Create an instance (context for one document) for tokenization
 	/// \return the created tokenizer instance (with ownership)
-	virtual TokenizerExecutionContextInterface* createExecutionContext() const=0;
+	virtual TokenizerFunctionContextInterface* createFunctionContext() const=0;
 };
 
 }//namespace

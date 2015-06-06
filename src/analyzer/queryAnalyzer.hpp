@@ -93,9 +93,9 @@ private:
 
 	struct FeatureContext
 	{
-		typedef utils::SharedPtr<NormalizerExecutionContextInterface> NormalizerExecutionContextReference;
-		typedef std::vector<NormalizerExecutionContextReference> NormalizerExecutionContextArray;
-		typedef utils::SharedPtr<TokenizerExecutionContextInterface> TokenizerExecutionContextReference;
+		typedef utils::SharedPtr<NormalizerFunctionContextInterface> NormalizerFunctionContextReference;
+		typedef std::vector<NormalizerFunctionContextReference> NormalizerFunctionContextArray;
+		typedef utils::SharedPtr<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
 
 		FeatureContext( const FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
@@ -107,8 +107,8 @@ private:
 		std::string normalize( const char* tok, std::size_t toksize);
 
 		const FeatureConfig* m_config;
-		NormalizerExecutionContextArray m_normalizerContextAr;
-		TokenizerExecutionContextReference m_tokenizerContext;
+		NormalizerFunctionContextArray m_normalizerContextAr;
+		TokenizerFunctionContextReference m_tokenizerContext;
 	};
 
 	/// \brief Get the feature configuration for a named phrase type

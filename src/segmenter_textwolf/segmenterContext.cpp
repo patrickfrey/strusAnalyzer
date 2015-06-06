@@ -26,13 +26,13 @@
 
 --------------------------------------------------------------------
 */
-#include "segmenterInstance.hpp"
+#include "segmenterContext.hpp"
 #include "segmenter.hpp"
 #include <setjmp.h>
 
 using namespace strus;
 
-SegmenterInstance::SegmenterInstance( const Automaton* automaton_)
+SegmenterContext::SegmenterContext( const Automaton* automaton_)
 	:m_automaton(automaton_)
 	,m_scanner(textwolf::SrcIterator())
 	,m_pathselect(automaton_)
@@ -41,7 +41,7 @@ SegmenterInstance::SegmenterInstance( const Automaton* automaton_)
 	m_selitr = m_selend = m_pathselect.end();
 }
 
-void SegmenterInstance::putInput( const char* chunk, std::size_t chunksize, bool eof)
+void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
 {
 	if (m_eof)
 	{
@@ -56,7 +56,7 @@ void SegmenterInstance::putInput( const char* chunk, std::size_t chunksize, bool
 	m_eof = eof;
 }
 
-bool SegmenterInstance::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
+bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 {
 	jmp_buf eom;
 	if (setjmp(eom) != 0)

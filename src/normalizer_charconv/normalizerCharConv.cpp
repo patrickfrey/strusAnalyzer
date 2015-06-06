@@ -61,11 +61,11 @@ private:
 	std::string m_strings;
 };
 
-class CharMapNormalizerExecutionContext
-	:public NormalizerExecutionContextInterface
+class CharMapNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
 {
 public:
-	CharMapNormalizerExecutionContext( const CharMap* map_)
+	CharMapNormalizerFunctionContext( const CharMap* map_)
 		:m_map( map_){}
 	
 	virtual std::string normalize(
@@ -86,9 +86,9 @@ public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype)
 		:m_map(maptype){}
 
-	virtual NormalizerExecutionContextInterface* createExecutionContext() const
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new CharMapNormalizerExecutionContext( &m_map);
+		return new CharMapNormalizerFunctionContext( &m_map);
 	}
 
 private:
