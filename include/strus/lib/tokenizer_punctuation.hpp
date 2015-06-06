@@ -26,15 +26,20 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Exported functions of the strus analyzer punctuation tokenization library
+/// \file tokenizer_punctuation.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_PUNCTUATION_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_PUNCTUATION_LIB_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 
+/// \brief Get the tokenizer type that creates the tokenization of punctuation elements in the input
+/// \return the tokenization function
 const TokenizerFunctionInterface* getTokenizer_punctuation();
 
 }//namespace

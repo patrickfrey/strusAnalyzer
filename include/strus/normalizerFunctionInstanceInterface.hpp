@@ -26,9 +26,12 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a parameterized normalizer function
+/// \file normalizerFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 /// \brief Forward declaration

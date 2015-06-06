@@ -26,18 +26,20 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus segmenter library
+/// \brief Exported functions of the strus XML segmenter library based on textwolf
+/// \file segmenter_textwolf.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_TEXTWOLF_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_TEXTWOLF_LIB_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus {
 
 /// \brief Forward declaration
 class SegmenterInterface;
 
-/// \brief Create an automaton for segmenting a document
-/// \return the automaton reference
+/// \brief Create a document XML segmenter based on textwolf
+/// \return the segmenter
 SegmenterInterface* createSegmenter_textwolf();
 
 }//namespace

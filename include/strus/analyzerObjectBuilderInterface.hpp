@@ -26,10 +26,13 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Builder object for all toplevel interfaces related to the analyzer. Used by components acting as proxy (calling strus with RPC) or by components that build the analyzer universe from external components (loading objects from dynamically loadable modules)
+/// \file analyzerObjectBuilderInterface.hpp
 #ifndef _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 

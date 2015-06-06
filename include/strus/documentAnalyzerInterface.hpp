@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a parametrizable document analyzer instance
+/// \file documentAnalyzerInterface.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/term.hpp"
@@ -37,6 +39,7 @@
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 /// \brief Forward declaration

@@ -26,11 +26,14 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a tokenizer function type
+/// \file tokenizerFunctionInterface.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus {
 
 /// \brief Forward declaration

@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for the execution context of a tokenizer function
+/// \file tokenizerExecutionContextInterface.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_EXECUTION_CONTEXT_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/token.hpp"
@@ -33,9 +35,9 @@
 #include <cstddef>
 #include <vector>
 
+/// \brief strus toplevel namespace
 namespace strus {
 
-/// \class TokenizerInstanceInterface
 /// \brief Interface to the context (state) for the execution of a tokenizer for one unit (document,query)
 class TokenizerExecutionContextInterface
 {

@@ -26,11 +26,14 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for a parameterizable instance of a document segmenter
+/// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #include <utility>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 /// \brief Forward declaration

@@ -26,16 +26,23 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Exported functions of the strus analyzer word tokenization library
+/// \file tokenizer_word.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_WORD_LIB_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 
+/// \brief Get the tokenizer type that creates the tokenization of words in the input
+/// \return the tokenization function
 const TokenizerFunctionInterface* getTokenizer_word();
+/// \brief Get the tokenizer type that creates the tokenization as splitting of the input by whitespaces 
+/// \return the tokenization function
 const TokenizerFunctionInterface* getTokenizer_whitespace();
 
 }//namespace

@@ -26,6 +26,8 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Structure of a document as result of document analysis
+/// \file document.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #include <string>
@@ -34,10 +36,12 @@
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 
+/// \brief strus toplevel namespace
 namespace strus {
+/// \brief analyzer parameter and return value objects namespace
 namespace analyzer {
 
-/// \brief Document structure created by a document analyzer
+/// \brief Structure of a document created as result of a document analysis
 class Document
 {
 public:

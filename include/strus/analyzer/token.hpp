@@ -26,21 +26,31 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Structure describing a token in the document by its start and end position
+/// \file token.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus {
+/// \brief analyzer parameter and return value objects namespace
 namespace analyzer {
 
+/// \brief Structure describing a token in the document by its start and end position
 struct Token
 {
 	unsigned int docpos;	///< logical byte position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
 	unsigned int strpos;	///< start byte position of the token string in the original document segment
 	unsigned int strsize;	///< byte size of the token string in the original document segment
 
+	/// \brief Constructor
+	/// \param[in] docpos_, word position of the token starred
+	/// \param[in] strpos_ byte position of the token start
+	/// \param[in] strsize_ size of the token in bytes
 	Token( unsigned int docpos_, unsigned int strpos_, unsigned int strsize_)
 		:docpos(docpos_),strpos(strpos_),strsize(strsize_){}
+	/// \brief Copy constructor
 	Token( const Token& o)
 		:docpos(o.docpos),strpos(o.strpos),strsize(o.strsize){}
 };

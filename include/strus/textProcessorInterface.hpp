@@ -26,10 +26,13 @@
 
 --------------------------------------------------------------------
 */
+/// \brief Interface for the container of all types of functions provided for document and query analysis.
+/// \file textProcessorInterface.hpp
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
 /// \brief Forward declaration
