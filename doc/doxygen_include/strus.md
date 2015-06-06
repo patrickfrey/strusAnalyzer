@@ -8,10 +8,10 @@ As counterpart strusAnalyzer provides also the methods to normalize query terms 
 
 Document analysis process:
 --------------------------
-Document anaylsis is seen as a process involving the following steps.
+Document anaylsis is seen as a process involving the following three steps.
 
-1. [Document segmentation](@ref strus::SegmenterInterface)
-	A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus (libstrus_segmenter_textwolf) uses a derivation of abbreviated syntax of XPath to select the segments.
+1. [Segmentation](@ref strus::SegmenterInterface)
+	A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus uses a derivation of abbreviated syntax of XPath to select the segments.
 	But you can define your own segmenter for any document format if it is possible to provide the segmenter interface for it.
 
 2. [Tokenization](@ref strus::TokenizerFunctionInterface)
