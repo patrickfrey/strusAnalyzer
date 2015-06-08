@@ -175,14 +175,16 @@ public:
 	template <class Buffer>
 	inline void copychar( CharSet& output_, Buffer& buf_)
 	{
-		/// \todo more efficient solution of copy character to sink with same encoding here
 		/// \remark a check if the character sets fulfill is_equal(..) (IsoLatin code page !)
 		if (CharSet::is_equal( charset, output_))
 		{
 			// ... if the character sets are equal and of the same subclass (code pages)
 			//	then we do not decode/encode the character but copy it directly to the output
 			charset.fetchbytes( buf, state, input);
-			for (unsigned int ii=0; ii<state; ++ii) buf_.push_back(buf[ii]);
+			for (std::size_t ii=0; ii<state; ++ii)
+			{
+				buf_.push_back( buf[ ii]);
+			}
 		}
 		else
 		{
