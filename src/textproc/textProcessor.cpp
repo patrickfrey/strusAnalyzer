@@ -220,7 +220,7 @@ TextProcessor::TextProcessor()
 	defineTokenizer( "content", &contentTokenizer);
 	defineNormalizer( "orig", &origNormalizer);
 	defineNormalizer( "empty", &emptyNormalizer);
-	defineStatistics( "count", &countStatistics);
+	defineStatisticsFunction( "count", &countStatistics);
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
@@ -245,7 +245,7 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 	return ni->second;
 }
 
-const StatisticsFunctionInterface* TextProcessor::getStatistics( const std::string& name) const
+const StatisticsFunctionInterface* TextProcessor::getStatisticsFunction( const std::string& name) const
 {
 	std::map<std::string,const StatisticsFunctionInterface*>::const_iterator
 		ni = m_statistics_map.find( utils::tolower( name));
@@ -267,7 +267,7 @@ void TextProcessor::defineNormalizer( const std::string& name, const NormalizerF
 	m_normalizer_map[ utils::tolower( name)] = normalizer;
 }
 
-void TextProcessor::defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc)
+void TextProcessor::defineStatisticsFunction( const std::string& name, const StatisticsFunctionInterface* statfunc)
 {
 	m_statistics_map[ utils::tolower( name)] = statfunc;
 }

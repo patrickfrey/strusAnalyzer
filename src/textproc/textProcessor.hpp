@@ -47,13 +47,13 @@ public:
 
 	virtual const NormalizerFunctionInterface* getNormalizer( const std::string& name) const;
 
-	virtual const StatisticsFunctionInterface* getStatistics( const std::string& name) const;
+	virtual const StatisticsFunctionInterface* getStatisticsFunction( const std::string& name) const;
 
 	virtual void defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer);
 
 	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer);
 
-	virtual void defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc);
+	virtual void defineStatisticsFunction( const std::string& name, const StatisticsFunctionInterface* statfunc);
 
 private:
 	std::map<std::string,const TokenizerFunctionInterface*> m_tokenizer_map;
