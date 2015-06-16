@@ -86,7 +86,7 @@ public:
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
 	}
 
-	virtual void defineStatisticsMetaData(
+	virtual void defineAggregatedMetaData(
 			const std::string& fieldname,
 			AggregatorFunctionInstanceInterface* statfunc)
 	{
