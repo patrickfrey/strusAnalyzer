@@ -79,10 +79,11 @@ public:
 	/// \brief Define a meta data element of the document
 	/// \param[in] t name of the meta data element
 	/// \param[in] v value of the meta data element
-	void setMetaData( const std::string& t, const std::string& v)
+	void setMetaData( const std::string& t, double v)
 	{
 		m_metadata.push_back( MetaData( t,v));
 	}
+
 	/// \brief Define a search index term of the document
 	/// \param[in] t type name of the search index term
 	/// \param[in] v value of the search index term

@@ -221,6 +221,16 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 	}
 }
 
+void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
+{
+	std::vector<DocumentAnalyzer::StatisticsConfig>::const_iterator
+		si = m_analyzer->m_statistics.begin(), se = m_analyzer->m_statistics.end();
+	for (; si != se; ++si)
+	{
+		res.setMetaData( si->name(), si->statfunc()->evaluate( res));
+	}
+}
+
 void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
@@ -235,7 +245,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			{
 				res.setMetaData(
 					feat.m_config->name(),
-					feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
+					utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize)));
 			}
 			if (tokens.size() > 1)
 			{
@@ -398,6 +408,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					// process what is left to process for the current sub document:
 					processConcatenated( doc);
 					mapPositions( doc);
+					mapStatistics( doc);
 					clearTermMaps();
 
 					// create new sub document:
@@ -482,6 +493,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 
 	// create real positions for output:
 	mapPositions( doc);
+	mapStatistics( doc);
 	clearTermMaps();
 
 	if (!doc.attributes().empty()) return true;

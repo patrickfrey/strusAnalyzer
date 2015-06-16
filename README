@@ -2,6 +2,6 @@ strusAnalyzer
 =============
 
 Library for document analysis that splits a document into normalized atomic terms that can be insterted into a search engine for retrieval. Also some functions for analysing tokens or phrases of the strus query are provided.
-You will find more documentation at http://patrickfrey.github.io/strusAnalyzer.
-See also the project homepage http://project-strus.net.
+The project homepage can be found at http://project-strus.net.
+
 

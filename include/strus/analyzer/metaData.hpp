@@ -45,22 +45,24 @@ public:
 	/// \brief Copy constructor
 	MetaData( const MetaData& o)
 		:m_name(o.m_name),m_value(o.m_value){}
+
 	/// \brief Constructor
 	/// \param[in] n name of the meta data element
 	/// \param[in] v value of the meta data element
-	MetaData( const std::string& n, const std::string& v)
+	MetaData( const std::string& n, double v)
 		:m_name(n),m_value(v){}
 
 	/// \brief Get the name of the meta data element
 	/// \return Name of the meta data element
 	const std::string& name() const		{return m_name;}
+
 	/// \brief Get the value of the meta data element
 	/// \return Value of the meta data element
-	const std::string& value() const	{return m_value;}
+	double value() const			{return m_value;}
 
 private:
 	std::string m_name;
-	std::string m_value;
+	double m_value;
 };
 
 }}//namespace
