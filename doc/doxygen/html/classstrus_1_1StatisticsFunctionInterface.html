@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: strus::NormalizerFunctionInterface Class Reference</title>
+<title>strusAnalyzer: strus::StatisticsFunctionInterface Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -53,37 +53,37 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacestrus.html">strus</a></li><li class="navelem"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacestrus.html">strus</a></li><li class="navelem"><a class="el" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classstrus_1_1NormalizerFunctionInterface-members.html">List of all members</a>  </div>
+<a href="classstrus_1_1StatisticsFunctionInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">strus::NormalizerFunctionInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">strus::StatisticsFunctionInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Interface for the normalizer constructor.  
- <a href="classstrus_1_1NormalizerFunctionInterface.html#details">More...</a></p>
+<p>Interface for the statistics collection function constructor.  
+ <a href="classstrus_1_1StatisticsFunctionInterface.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="normalizerFunctionInterface_8hpp_source.html">normalizerFunctionInterface.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="statisticsFunctionInterface_8hpp_source.html">statisticsFunctionInterface.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a572d50bfdc1d40f83ca2dbce16e30ed3"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">~NormalizerFunctionInterface</a> ()</td></tr>
-<tr class="memdesc:a572d50bfdc1d40f83ca2dbce16e30ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a572d50bfdc1d40f83ca2dbce16e30ed3">More...</a><br/></td></tr>
-<tr class="separator:a572d50bfdc1d40f83ca2dbce16e30ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a167945da094ef0642066266ddaf86cc6"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
-<a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">createInstance</a> (const std::vector&lt; std::string &gt; &amp;args, const <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *tp) const =0</td></tr>
-<tr class="memdesc:a167945da094ef0642066266ddaf86cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a parameterizable normalizer function instance.  <a href="#a167945da094ef0642066266ddaf86cc6">More...</a><br/></td></tr>
-<tr class="separator:a167945da094ef0642066266ddaf86cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a293b8a01a4cab838797690cc07caf948"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">~StatisticsFunctionInterface</a> ()</td></tr>
+<tr class="memdesc:a293b8a01a4cab838797690cc07caf948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a293b8a01a4cab838797690cc07caf948">More...</a><br/></td></tr>
+<tr class="separator:a293b8a01a4cab838797690cc07caf948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53762f33f91c643614b503ea1c293171"><td class="memItemLeft" align="right" valign="top">virtual const <br class="typebreak"/>
+<a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html">StatisticsFunctionInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171">createInstance</a> (const std::vector&lt; std::string &gt; &amp;args) const =0</td></tr>
+<tr class="memdesc:a53762f33f91c643614b503ea1c293171"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a parameterized statistics collection function instance.  <a href="#a53762f33f91c643614b503ea1c293171">More...</a><br/></td></tr>
+<tr class="separator:a53762f33f91c643614b503ea1c293171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Interface for the normalizer constructor. </p>
+<div class="textblock"><p>Interface for the statistics collection function constructor. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a572d50bfdc1d40f83ca2dbce16e30ed3"></a>
+<a class="anchor" id="a293b8a01a4cab838797690cc07caf948"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -91,7 +91,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual strus::NormalizerFunctionInterface::~NormalizerFunctionInterface </td>
+          <td class="memname">virtual strus::StatisticsFunctionInterface::~StatisticsFunctionInterface </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -109,7 +109,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a167945da094ef0642066266ddaf86cc6"></a>
+<a class="anchor" id="a53762f33f91c643614b503ea1c293171"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -117,21 +117,11 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a>* strus::NormalizerFunctionInterface::createInstance </td>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html">StatisticsFunctionInstanceInterface</a>* strus::StatisticsFunctionInterface::createInstance </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>args</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *&#160;</td>
-          <td class="paramname"><em>tp</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -141,11 +131,10 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Create a parameterizable normalizer function instance. </p>
+<p>Create a parameterized statistics collection function instance. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">args</td><td>arguments for the normalizer function </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tp</td><td>text processor reference (for loading resources) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">args</td><td>arguments for the statistics collection function </td></tr>
   </table>
   </dd>
 </dl>
@@ -153,7 +142,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="normalizerFunctionInterface_8hpp_source.html">normalizerFunctionInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="statisticsFunctionInterface_8hpp_source.html">statisticsFunctionInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->

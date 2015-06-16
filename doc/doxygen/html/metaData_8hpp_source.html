@@ -100,31 +100,33 @@
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca">   44</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca">MetaData</a>(){}</div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a0ea7fb177b1b200960977de9fa4be4ff">   46</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a0ea7fb177b1b200960977de9fa4be4ff">MetaData</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html">MetaData</a>&amp; o)</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                :m_name(o.m_name),m_value(o.m_value){}</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a7a4f263f4f11156a3c4e8164766d82fd">   51</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a7a4f263f4f11156a3c4e8164766d82fd">MetaData</a>( <span class="keyword">const</span> std::string&amp; n, <span class="keyword">const</span> std::string&amp; v)</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                :m_name(n),m_value(v){}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">   56</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">name</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_name;}</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2">   59</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2">value</a>()<span class="keyword"> const        </span>{<span class="keywordflow">return</span> m_value;}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        std::string m_name;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        std::string m_value;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a9c73ccbf83e1a01c0096e575ae73e1ac">   52</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a9c73ccbf83e1a01c0096e575ae73e1ac">MetaData</a>( <span class="keyword">const</span> std::string&amp; n, <span class="keywordtype">double</span> v)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                :m_name(n),m_value(v){}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">   57</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">name</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_name;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27">   61</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27">value</a>()<span class="keyword"> const                    </span>{<span class="keywordflow">return</span> m_value;}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        std::string m_name;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">double</span> m_value;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a0ea7fb177b1b200960977de9fa4be4ff"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a0ea7fb177b1b200960977de9fa4be4ff">strus::analyzer::MetaData::MetaData</a></div><div class="ttdeci">MetaData(const MetaData &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:46</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a20ab595f4b372ca9b4f12432331f1db2"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2">strus::analyzer::MetaData::value</a></div><div class="ttdeci">const std::string &amp; value() const </div><div class="ttdoc">Get the value of the meta data element. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:59</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a7a4f263f4f11156a3c4e8164766d82fd"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a7a4f263f4f11156a3c4e8164766d82fd">strus::analyzer::MetaData::MetaData</a></div><div class="ttdeci">MetaData(const std::string &amp;n, const std::string &amp;v)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:51</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html">strus::analyzer::MetaData</a></div><div class="ttdoc">Structure describing a document meta data element. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:40</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a038b03dd0c816c12817e9cf274678f97"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">strus::analyzer::MetaData::name</a></div><div class="ttdeci">const std::string &amp; name() const </div><div class="ttdoc">Get the name of the meta data element. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:56</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a9c73ccbf83e1a01c0096e575ae73e1ac"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a9c73ccbf83e1a01c0096e575ae73e1ac">strus::analyzer::MetaData::MetaData</a></div><div class="ttdeci">MetaData(const std::string &amp;n, double v)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:52</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a038b03dd0c816c12817e9cf274678f97"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97">strus::analyzer::MetaData::name</a></div><div class="ttdeci">const std::string &amp; name() const </div><div class="ttdoc">Get the name of the meta data element. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:57</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a7de5842b7cf897191f75b53b9d602eca"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca">strus::analyzer::MetaData::MetaData</a></div><div class="ttdeci">MetaData()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:44</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1MetaData_html_a621452450bdcdfd1dd264d7316918b27"><div class="ttname"><a href="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27">strus::analyzer::MetaData::value</a></div><div class="ttdeci">double value() const </div><div class="ttdoc">Get the value of the meta data element. </div><div class="ttdef"><b>Definition:</b> metaData.hpp:61</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 01:07:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

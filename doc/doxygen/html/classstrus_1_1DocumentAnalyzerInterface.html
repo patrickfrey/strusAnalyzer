@@ -91,6 +91,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3101a91e1c9c5583c1659aa83e855912"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a3101a91e1c9c5583c1659aa83e855912">defineMetaData</a> (const std::string &amp;fieldname, const std::string &amp;selectexpr, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
 <tr class="memdesc:a3101a91e1c9c5583c1659aa83e855912"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.  <a href="#a3101a91e1c9c5583c1659aa83e855912">More...</a><br/></td></tr>
 <tr class="separator:a3101a91e1c9c5583c1659aa83e855912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77cb8366cce4ffeac554b325157a36fa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a77cb8366cce4ffeac554b325157a36fa">defineStatisticsMetaData</a> (const std::string &amp;fieldname, <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html">StatisticsFunctionInstanceInterface</a> *statfunc)=0</td></tr>
+<tr class="memdesc:a77cb8366cce4ffeac554b325157a36fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare some collected statistics of the document to be put into the meta data table used for restrictions, weighting and summarization.  <a href="#a77cb8366cce4ffeac554b325157a36fa">More...</a><br/></td></tr>
+<tr class="separator:a77cb8366cce4ffeac554b325157a36fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f661f39c2018d7e49cfa4edb385c658"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a2f661f39c2018d7e49cfa4edb385c658">defineAttribute</a> (const std::string &amp;attribname, const std::string &amp;selectexpr, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
 <tr class="memdesc:a2f661f39c2018d7e49cfa4edb385c658"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)  <a href="#a2f661f39c2018d7e49cfa4edb385c658">More...</a><br/></td></tr>
 <tr class="separator:a2f661f39c2018d7e49cfa4edb385c658"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -434,7 +437,51 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section remark"><dt>Remarks</dt><dd>The field in the meta data table must exist before calling this function </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>The field in the meta data table must exist before this function is called </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a77cb8366cce4ffeac554b325157a36fa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::DocumentAnalyzerInterface::defineStatisticsMetaData </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>fieldname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html">StatisticsFunctionInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>statfunc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare some collected statistics of the document to be put into the meta data table used for restrictions, weighting and summarization. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fieldname</td><td>name of the field in the meta data table this feature is written to </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">statfunc</td><td>function (ownership passed to this) that decribes how the value to be inserted is calculated from a document </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section remark"><dt>Remarks</dt><dd>The field in the meta data table must exist before this function is called </dd></dl>
 
 </div>
 </div>
@@ -489,7 +536,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 01:07:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

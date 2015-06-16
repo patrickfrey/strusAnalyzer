@@ -96,31 +96,30 @@
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>strus</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">class </span>NormalizerInterface;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">class </span>TextProcessorInterface;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">class </span>NormalizerFunctionInstanceInterface;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionInterface.html">   49</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">   53</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">~NormalizerFunctionInterface</a>(){}</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">createInstance</a>( <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args, <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html_a572d50bfdc1d40f83ca2dbce16e30ed3"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">strus::NormalizerFunctionInterface::~NormalizerFunctionInterface</a></div><div class="ttdeci">virtual ~NormalizerFunctionInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInterface.hpp:53</div></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInstanceInterface.html">strus::NormalizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterizable normalization function. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInstanceInterface.hpp:42</div></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">class </span>TextProcessorInterface;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">class </span>NormalizerFunctionInstanceInterface;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionInterface.html">   47</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;{</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">   51</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">~NormalizerFunctionInterface</a>(){}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">createInstance</a>( <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args, <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html_a572d50bfdc1d40f83ca2dbce16e30ed3"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">strus::NormalizerFunctionInterface::~NormalizerFunctionInterface</a></div><div class="ttdeci">virtual ~NormalizerFunctionInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInterface.hpp:51</div></div>
+<div class="ttc" id="classstrus_1_1NormalizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInstanceInterface.html">strus::NormalizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterized normalization function. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInstanceInterface.hpp:42</div></div>
 <div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html_a167945da094ef0642066266ddaf86cc6"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">strus::NormalizerFunctionInterface::createInstance</a></div><div class="ttdeci">virtual NormalizerFunctionInstanceInterface * createInstance(const std::vector&lt; std::string &gt; &amp;args, const TextProcessorInterface *tp) const =0</div><div class="ttdoc">Create a parameterizable normalizer function instance. </div></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html">strus::NormalizerFunctionInterface</a></div><div class="ttdoc">Interface for the normalizer constructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInterface.hpp:49</div></div>
-<div class="ttc" id="classstrus_1_1TextProcessorInterface_html"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html">strus::TextProcessorInterface</a></div><div class="ttdoc">Interface for the object providing tokenizers and normalizers used for creating terms from segments o...</div><div class="ttdef"><b>Definition:</b> textProcessorInterface.hpp:45</div></div>
+<div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html">strus::NormalizerFunctionInterface</a></div><div class="ttdoc">Interface for the normalizer constructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInterface.hpp:47</div></div>
+<div class="ttc" id="classstrus_1_1TextProcessorInterface_html"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html">strus::TextProcessorInterface</a></div><div class="ttdoc">Interface for the object providing tokenizers and normalizers used for creating terms from segments o...</div><div class="ttdef"><b>Definition:</b> textProcessorInterface.hpp:48</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 01:07:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

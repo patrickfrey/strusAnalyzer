@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/normalizerFunctionContextInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/statisticsFunctionInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -57,10 +57,10 @@
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">normalizerFunctionContextInterface.hpp</div>  </div>
+<div class="title">statisticsFunctionInterface.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="normalizerFunctionContextInterface_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="statisticsFunctionInterface_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">---------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">    The C++ library strus implements basic operations to build</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">    a search engine for structured search on unstructured data.</span></div>
@@ -88,28 +88,31 @@
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"></span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">--------------------------------------------------------------------</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_CONTEXT_INTERFACE_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">namespace </span>strus</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionContextInterface.html">   41</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1NormalizerFunctionContextInterface.html">NormalizerFunctionContextInterface</a></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionContextInterface.html#a7767c656fcc79cbb8cbdc906fe9c0ac0">   45</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionContextInterface.html#a7767c656fcc79cbb8cbdc906fe9c0ac0">~NormalizerFunctionContextInterface</a>(){}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1NormalizerFunctionContextInterface.html#afa89aecbb8ba4a20300ecc0f13e6f37b">normalize</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* src, std::size_t srcsize)=0;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionContextInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionContextInterface.html">strus::NormalizerFunctionContextInterface</a></div><div class="ttdoc">Interface to the context (state) for the execution of a normalizer for one unit (document,query) </div><div class="ttdef"><b>Definition:</b> normalizerFunctionContextInterface.hpp:41</div></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionContextInterface_html_afa89aecbb8ba4a20300ecc0f13e6f37b"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionContextInterface.html#afa89aecbb8ba4a20300ecc0f13e6f37b">strus::NormalizerFunctionContextInterface::normalize</a></div><div class="ttdeci">virtual std::string normalize(const char *src, std::size_t srcsize)=0</div><div class="ttdoc">Normalization of a token. </div></div>
-<div class="ttc" id="classstrus_1_1NormalizerFunctionContextInterface_html_a7767c656fcc79cbb8cbdc906fe9c0ac0"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionContextInterface.html#a7767c656fcc79cbb8cbdc906fe9c0ac0">strus::NormalizerFunctionContextInterface::~NormalizerFunctionContextInterface</a></div><div class="ttdeci">virtual ~NormalizerFunctionContextInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionContextInterface.hpp:45</div></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">class </span>StatisticsFunctionInstanceInterface;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classstrus_1_1StatisticsFunctionInterface.html">   45</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">   49</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">~StatisticsFunctionInterface</a>(){}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classstrus_1_1StatisticsFunctionInstanceInterface.html">StatisticsFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171">createInstance</a>( <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1StatisticsFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1StatisticsFunctionInterface.html">strus::StatisticsFunctionInterface</a></div><div class="ttdoc">Interface for the statistics collection function constructor. </div><div class="ttdef"><b>Definition:</b> statisticsFunctionInterface.hpp:45</div></div>
+<div class="ttc" id="classstrus_1_1StatisticsFunctionInterface_html_a53762f33f91c643614b503ea1c293171"><div class="ttname"><a href="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171">strus::StatisticsFunctionInterface::createInstance</a></div><div class="ttdeci">virtual const StatisticsFunctionInstanceInterface * createInstance(const std::vector&lt; std::string &gt; &amp;args) const =0</div><div class="ttdoc">Create a parameterized statistics collection function instance. </div></div>
+<div class="ttc" id="classstrus_1_1StatisticsFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1StatisticsFunctionInstanceInterface.html">strus::StatisticsFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterized statistics collection function. </div><div class="ttdef"><b>Definition:</b> statisticsFunctionInstanceInterface.hpp:41</div></div>
+<div class="ttc" id="classstrus_1_1StatisticsFunctionInterface_html_a293b8a01a4cab838797690cc07caf948"><div class="ttname"><a href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">strus::StatisticsFunctionInterface::~StatisticsFunctionInterface</a></div><div class="ttdeci">virtual ~StatisticsFunctionInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> statisticsFunctionInterface.hpp:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->

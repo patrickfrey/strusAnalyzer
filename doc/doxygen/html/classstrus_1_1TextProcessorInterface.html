@@ -65,7 +65,7 @@
 </div><!--header-->
 <div class="contents">
 
-<p>Interface for the object providing tokenizers and normalizers used for creating terms from segments of text.  
+<p>Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics.  
  <a href="classstrus_1_1TextProcessorInterface.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="textProcessorInterface_8hpp_source.html">textProcessorInterface.hpp</a>&gt;</code></p>
@@ -95,9 +95,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abd609c9bf4e7c2827d3be2d35a88646a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#abd609c9bf4e7c2827d3be2d35a88646a">defineNormalizer</a> (const std::string &amp;name, const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *normalizer)=0</td></tr>
 <tr class="memdesc:abd609c9bf4e7c2827d3be2d35a88646a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a normalizer by name.  <a href="#abd609c9bf4e7c2827d3be2d35a88646a">More...</a><br/></td></tr>
 <tr class="separator:abd609c9bf4e7c2827d3be2d35a88646a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0858c0b71239af9808e5d2725f9cc84"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#aa0858c0b71239af9808e5d2725f9cc84">defineStatistics</a> (const std::string &amp;name, const <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a> *statfunc)=0</td></tr>
+<tr class="memdesc:aa0858c0b71239af9808e5d2725f9cc84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a statistics collector function by name.  <a href="#aa0858c0b71239af9808e5d2725f9cc84">More...</a><br/></td></tr>
+<tr class="separator:aa0858c0b71239af9808e5d2725f9cc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03bd28276f03bd55125af8fd92f33e4c"><td class="memItemLeft" align="right" valign="top">virtual const <br class="typebreak"/>
+<a class="el" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a03bd28276f03bd55125af8fd92f33e4c">getStatistics</a> (const std::string &amp;name) const =0</td></tr>
+<tr class="memdesc:a03bd28276f03bd55125af8fd92f33e4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to a statistics collector function object that implements the collection of some counting of document parts.  <a href="#a03bd28276f03bd55125af8fd92f33e4c">More...</a><br/></td></tr>
+<tr class="separator:a03bd28276f03bd55125af8fd92f33e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Interface for the object providing tokenizers and normalizers used for creating terms from segments of text. </p>
+<div class="textblock"><p>Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a72b5be9507463bb7af2cc4442e9ba58f"></a>
 <div class="memitem">
@@ -194,6 +201,49 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the normalizer to define </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">normalizer</td><td>a static const reference to a normalizer object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa0858c0b71239af9808e5d2725f9cc84"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::TextProcessorInterface::defineStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a> *&#160;</td>
+          <td class="paramname"><em>statfunc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define a statistics collector function by name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the statistics collector function to define </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">statfunc</td><td>a static const reference to a statistics collector function object </td></tr>
   </table>
   </dd>
 </dl>
@@ -302,6 +352,33 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a03bd28276f03bd55125af8fd92f33e4c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html">StatisticsFunctionInterface</a>* strus::TextProcessorInterface::getStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a const reference to a statistics collector function object that implements the collection of some counting of document parts. </p>
+<dl class="section return"><dt>Returns</dt><dd>the statistics collector function reference </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a12be7c7a76632607dad91d8208c120c3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -336,7 +413,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 01:07:34 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

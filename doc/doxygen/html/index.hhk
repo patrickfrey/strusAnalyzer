@@ -43,6 +43,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6"><param name="Name" value="createInstance"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6"><param name="Name" value="strus::NormalizerFunctionInterface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171"><param name="Name" value="strus::StatisticsFunctionInterface"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311"><param name="Name" value="strus::TokenizerFunctionInterface"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a239a20c4750ab1146db053fbc1516049"><param name="Name" value="createQueryAnalyzer"></OBJECT>
@@ -68,11 +69,14 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1QueryAnalyzerInterface.html#af5e654e1e8d51ee148bdc9a5fa8670dc"><param name="Name" value="definePhraseType"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#aa3e8a30f3e2e5cc9492b16abe11fd7b5"><param name="Name" value="definePositionBind"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#af2a465090f783176d249201cd024cc3a"><param name="Name" value="defineSelectorExpression"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#aa0858c0b71239af9808e5d2725f9cc84"><param name="Name" value="defineStatistics"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a77cb8366cce4ffeac554b325157a36fa"><param name="Name" value="defineStatisticsMetaData"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7"><param name="Name" value="defineSubDocument"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#ab90dcdd936ecb1521c26e9faca9bb2dc"><param name="Name" value="defineSubSection"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a9f3334e52219861cc21110d8b543eafb"><param name="Name" value="defineTokenizer"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97"><param name="Name" value="docpos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ae6d17571b5ebd50f19df0c1cff3a42a8"><param name="Name" value="Document"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInstanceInterface.html#a479b5e2b6ae02b178ad6329397ecb75d"><param name="Name" value="evaluate"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#ae730b5c31e65ebfb072d165bbcf30ddd"><param name="Name" value="FeatureOptions"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ae2074345422ae5aee2128bf02641f4bb"><param name="Name" value="forwardIndexTerms"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b"><param name="Name" value="getNext"></OBJECT>
@@ -103,6 +107,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#af64c6a3c1604d2193546b07e92fd8f94"><param name="Name" value="strus"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821"><param name="Name" value="getResourcePath"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a03bd28276f03bd55125af8fd92f33e4c"><param name="Name" value="getStatistics"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834"><param name="Name" value="getTextProcessor"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3"><param name="Name" value="getTokenizer"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a6c141c754f3072bbf4cfcd5c78cfdad0"><param name="Name" value="getTokenizer_punctuation"></OBJECT>
@@ -154,7 +159,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd"><param name="Name" value="strus"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a8df384932afadd7854fb1a68767ee225"><param name="Name" value="setAttribute"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ac81100b325ebf79521a6a62ffcdced81"><param name="Name" value="setMetaData"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a499778880197f2eabf96b5b00edfa96f"><param name="Name" value="setMetaData"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#a8b3dcc34527d818cacaf4fa28ccad3e5"><param name="Name" value="setPos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a27922a2afe0abb080591d09ddcac17ac"><param name="Name" value="setSubDocumentTypeName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c"><param name="Name" value="strpos"></OBJECT>
@@ -178,7 +183,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a704f4103959a7cb5c0b0aa3a698149d2"><param name="Name" value="metadata"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a5aba99f02bbaac463589edc0540db48e"><param name="Name" value="searchIndexTerms"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a8df384932afadd7854fb1a68767ee225"><param name="Name" value="setAttribute"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ac81100b325ebf79521a6a62ffcdced81"><param name="Name" value="setMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a499778880197f2eabf96b5b00edfa96f"><param name="Name" value="setMetaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a27922a2afe0abb080591d09ddcac17ac"><param name="Name" value="setSubDocumentTypeName"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a7eef235ae7df82b0fd71dd7a43ca468d"><param name="Name" value="subDocumentTypeName"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ad5815b8932fc14d05a356287fc403fff"><param name="Name" value="swap"></OBJECT>
@@ -187,7 +192,7 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca"><param name="Name" value="MetaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a038b03dd0c816c12817e9cf274678f97"><param name="Name" value="name"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2"><param name="Name" value="value"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27"><param name="Name" value="value"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html"><param name="Name" value="strus::analyzer::Term"></OBJECT>
   <UL>
@@ -238,6 +243,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#ac6265905d5d4d10b7f998d0ae00d7534"><param name="Name" value="createContext"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a2f661f39c2018d7e49cfa4edb385c658"><param name="Name" value="defineAttribute"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a3101a91e1c9c5583c1659aa83e855912"><param name="Name" value="defineMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a77cb8366cce4ffeac554b325157a36fa"><param name="Name" value="defineStatisticsMetaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7"><param name="Name" value="defineSubDocument"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a2be88f92e5fa1773843ced02d5d87b7b"><param name="Name" value="~DocumentAnalyzerInterface"></OBJECT>
   </UL>
@@ -275,13 +281,25 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#ab90dcdd936ecb1521c26e9faca9bb2dc"><param name="Name" value="defineSubSection"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="Name" value="~SegmenterInterface"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInstanceInterface.html"><param name="Name" value="strus::StatisticsFunctionInstanceInterface"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInstanceInterface.html#a479b5e2b6ae02b178ad6329397ecb75d"><param name="Name" value="evaluate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInstanceInterface.html#ab55d648c4807b1fa938a324e6a743d1f"><param name="Name" value="~StatisticsFunctionInstanceInterface"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInterface.html"><param name="Name" value="strus::StatisticsFunctionInterface"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171"><param name="Name" value="createInstance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948"><param name="Name" value="~StatisticsFunctionInterface"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html"><param name="Name" value="strus::TextProcessorInterface"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a06cfcdb70457021ba311dec67e7bc55e"><param name="Name" value="addResourcePath"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#abd609c9bf4e7c2827d3be2d35a88646a"><param name="Name" value="defineNormalizer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#aa0858c0b71239af9808e5d2725f9cc84"><param name="Name" value="defineStatistics"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a9f3334e52219861cc21110d8b543eafb"><param name="Name" value="defineTokenizer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#aebb44ce7df71966c22250488d7cf74ae"><param name="Name" value="getNormalizer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821"><param name="Name" value="getResourcePath"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a03bd28276f03bd55125af8fd92f33e4c"><param name="Name" value="getStatistics"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3"><param name="Name" value="getTokenizer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f"><param name="Name" value="~TextProcessorInterface"></OBJECT>
   </UL>
@@ -337,7 +355,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Attribute.html#a9713090379f3b4eb0bc28bde12ffd7a6"><param name="Name" value="value"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Attribute.html#a9713090379f3b4eb0bc28bde12ffd7a6"><param name="Name" value="strus::analyzer::Attribute"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2"><param name="Name" value="strus::analyzer::MetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27"><param name="Name" value="strus::analyzer::MetaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#a4f28852af4b0b6c656a0e9379e79dc02"><param name="Name" value="strus::analyzer::Term"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html"><param name="Name" value="versionAnalyzer.hpp"></OBJECT>
@@ -356,6 +374,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1"><param name="Name" value="~QueryAnalyzerInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a767e7f224a8c19a1170b90de82ce27b6"><param name="Name" value="~SegmenterContextInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="Name" value="~SegmenterInterface"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInstanceInterface.html#ab55d648c4807b1fa938a324e6a743d1f"><param name="Name" value="~StatisticsFunctionInstanceInterface"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948"><param name="Name" value="~StatisticsFunctionInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f"><param name="Name" value="~TextProcessorInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionContextInterface.html#abffc9c6d1fe5fa291794aa434adaded5"><param name="Name" value="~TokenizerFunctionContextInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionInstanceInterface.html#a859b6a4664a21084ec91bf8a682282e4"><param name="Name" value="~TokenizerFunctionInstanceInterface"></OBJECT>

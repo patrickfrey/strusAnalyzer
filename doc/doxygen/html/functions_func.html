@@ -65,6 +65,7 @@
       <li><a href="#index_a"><span>a</span></a></li>
       <li><a href="#index_c"><span>c</span></a></li>
       <li><a href="#index_d"><span>d</span></a></li>
+      <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_f"><span>f</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
@@ -107,7 +108,7 @@
 : <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">strus::QueryAnalyzerInterface</a>
 </li>
 <li>Attribute()
-: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a3a48662f43b0c7a630384e83f1974eb2">strus::analyzer::Attribute</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a9cf2841b1a6c34bb86880ef09b072d6e">strus::analyzer::Attribute</a>
 </li>
 <li>attributes()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a6210190181412859c53846fe3b55d0ef">strus::analyzer::Document</a>
@@ -135,6 +136,7 @@
 </li>
 <li>createInstance()
 : <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">strus::NormalizerFunctionInterface</a>
+, <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171">strus::StatisticsFunctionInterface</a>
 , <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311">strus::TokenizerFunctionInterface</a>
 </li>
 <li>createQueryAnalyzer()
@@ -165,6 +167,12 @@
 <li>defineSelectorExpression()
 : <a class="el" href="classstrus_1_1SegmenterInterface.html#af2a465090f783176d249201cd024cc3a">strus::SegmenterInterface</a>
 </li>
+<li>defineStatistics()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#aa0858c0b71239af9808e5d2725f9cc84">strus::TextProcessorInterface</a>
+</li>
+<li>defineStatisticsMetaData()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a77cb8366cce4ffeac554b325157a36fa">strus::DocumentAnalyzerInterface</a>
+</li>
 <li>defineSubDocument()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7">strus::DocumentAnalyzerInterface</a>
 </li>
@@ -176,6 +184,13 @@
 </li>
 <li>Document()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ae6d17571b5ebd50f19df0c1cff3a42a8">strus::analyzer::Document</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
+<li>evaluate()
+: <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html#a479b5e2b6ae02b178ad6329397ecb75d">strus::StatisticsFunctionInstanceInterface</a>
 </li>
 </ul>
 
@@ -200,6 +215,9 @@
 <li>getResourcePath()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">strus::TextProcessorInterface</a>
 </li>
+<li>getStatistics()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a03bd28276f03bd55125af8fd92f33e4c">strus::TextProcessorInterface</a>
+</li>
 <li>getTextProcessor()
 : <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834">strus::AnalyzerObjectBuilderInterface</a>
 </li>
@@ -214,7 +232,7 @@
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a704f4103959a7cb5c0b0aa3a698149d2">strus::analyzer::Document</a>
 </li>
 <li>MetaData()
-: <a class="el" href="classstrus_1_1analyzer_1_1MetaData.html#a0ea7fb177b1b200960977de9fa4be4ff">strus::analyzer::MetaData</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca">strus::analyzer::MetaData</a>
 </li>
 </ul>
 
@@ -262,7 +280,7 @@
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a8df384932afadd7854fb1a68767ee225">strus::analyzer::Document</a>
 </li>
 <li>setMetaData()
-: <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ac81100b325ebf79521a6a62ffcdced81">strus::analyzer::Document</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a499778880197f2eabf96b5b00edfa96f">strus::analyzer::Document</a>
 </li>
 <li>setPos()
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a8b3dcc34527d818cacaf4fa28ccad3e5">strus::analyzer::Term</a>
@@ -284,7 +302,7 @@
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a7c33b6877fd4805b41dc0c2c03f6ad61">strus::analyzer::Term</a>
 </li>
 <li>Token()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655">strus::analyzer::Token</a>
+: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6">strus::analyzer::Token</a>
 </li>
 <li>tokenize()
 : <a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html#a13a589ddb7f43bca77d17a227b4d0c10">strus::TokenizerFunctionContextInterface</a>
@@ -298,7 +316,7 @@
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>value()
 : <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a9713090379f3b4eb0bc28bde12ffd7a6">strus::analyzer::Attribute</a>
-, <a class="el" href="classstrus_1_1analyzer_1_1MetaData.html#a20ab595f4b372ca9b4f12432331f1db2">strus::analyzer::MetaData</a>
+, <a class="el" href="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27">strus::analyzer::MetaData</a>
 , <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a4f28852af4b0b6c656a0e9379e79dc02">strus::analyzer::Term</a>
 </li>
 </ul>
@@ -332,6 +350,12 @@
 <li>~SegmenterInterface()
 : <a class="el" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">strus::SegmenterInterface</a>
 </li>
+<li>~StatisticsFunctionInstanceInterface()
+: <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html#ab55d648c4807b1fa938a324e6a743d1f">strus::StatisticsFunctionInstanceInterface</a>
+</li>
+<li>~StatisticsFunctionInterface()
+: <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">strus::StatisticsFunctionInterface</a>
+</li>
 <li>~TextProcessorInterface()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f">strus::TextProcessorInterface</a>
 </li>
@@ -349,7 +373,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 8 2015 01:07:35 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
