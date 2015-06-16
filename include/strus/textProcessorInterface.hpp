@@ -39,9 +39,12 @@ namespace strus
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
+/// \brief Forward declaration
+class StatisticsFunctionInterface;
+
 
 /// \class TextProcessorInterface
-/// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text
+/// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics
 class TextProcessorInterface
 {
 public:
@@ -73,6 +76,15 @@ public:
 	/// \param[in] name name of the normalizer to define
 	/// \param[in] normalizer a static const reference to a normalizer object
 	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)=0;
+
+	/// \brief Define a statistics collector function by name
+	/// \param[in] name name of the statistics collector function to define
+	/// \param[in] statfunc a static const reference to a statistics collector function object
+	virtual void defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc)=0;
+
+	/// \brief Get a const reference to a statistics collector function object that implements the collection of some counting of document parts
+	/// \return the statistics collector function reference
+	virtual const StatisticsFunctionInterface* getStatistics( const std::string& name) const=0;
 };
 
 }//namespace

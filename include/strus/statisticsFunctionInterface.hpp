@@ -26,10 +26,10 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for a normalizer function type
-/// \file normalizerFunctionInterface.hpp
-#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
+/// \brief Interface for a statistics collection function type
+/// \file statisticsFunctionInterface.hpp
+#ifndef _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
@@ -38,22 +38,19 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class TextProcessorInterface;
-/// \brief Forward declaration
-class NormalizerFunctionInstanceInterface;
+class StatisticsFunctionInstanceInterface;
 
-/// \class NormalizerFunctionInterface
-/// \brief Interface for the normalizer constructor
-class NormalizerFunctionInterface
+/// \class StatisticsFunctionInterface
+/// \brief Interface for the statistics collection function constructor
+class StatisticsFunctionInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~NormalizerFunctionInterface(){}
+	virtual ~StatisticsFunctionInterface(){}
 
-	/// \brief Create a parameterizable normalizer function instance
-	/// \param[in] args arguments for the normalizer function
-	/// \param[in] tp text processor reference (for loading resources)
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	/// \brief Create a parameterized statistics collection function instance
+	/// \param[in] args arguments for the statistics collection function
+	virtual const StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 };
 
 }//namespace

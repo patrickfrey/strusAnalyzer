@@ -34,6 +34,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/statisticsFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -83,6 +84,13 @@ public:
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 	{
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
+	}
+
+	virtual void defineMetaData(
+			const std::string& fieldname,
+			StatisticsFunctionInstanceInterface* statfunc)
+	{
+		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
 	}
 
 	virtual void defineAttribute(
@@ -149,6 +157,28 @@ public:
 		FeatureOptions m_options;
 	};
 
+	typedef utils::SharedPtr<StatisticsFunctionInstanceInterface> StatisticsReference;
+	class StatisticsConfig
+	{
+	public:
+		StatisticsConfig(
+				const std::string& name_,
+				StatisticsFunctionInstanceInterface* statfunc_)
+			:m_name(name_)
+			,m_statfunc(statfunc_){}
+
+		StatisticsConfig( const StatisticsConfig& o)
+			:m_name(o.m_name)
+			,m_statfunc(o.m_statfunc){}
+
+		const std::string& name() const					{return m_name;}
+		const StatisticsReference& statfunc() const			{return m_statfunc;}
+
+	private:
+		std::string m_name;
+		StatisticsReference m_statfunc;
+	};
+
 private:
 	void defineFeature(
 		FeatureClass featureClass,
@@ -165,6 +195,7 @@ private:
 	SegmenterInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
+	std::vector<StatisticsConfig> m_statistics;
 };
 
 
@@ -224,6 +255,7 @@ public:
 private:
 	void clearTermMaps();
 	void mapPositions( analyzer::Document& res) const;
+	void mapStatistics( analyzer::Document& res) const;
 	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void processConcatenated( analyzer::Document& res);

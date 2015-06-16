@@ -38,7 +38,7 @@ namespace strus
 class NormalizerFunctionContextInterface;
 
 /// \class NormalizerFunctionInstanceInterface
-/// \brief Interface for a parameterizable normalization function
+/// \brief Interface for a parameterized normalization function
 class NormalizerFunctionInstanceInterface
 {
 public:

@@ -26,34 +26,28 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for a normalizer function type
-/// \file normalizerFunctionInterface.hpp
-#ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INTERFACE_HPP_INCLUDED
-#include <vector>
-#include <string>
+/// \brief Interface for a parameterized statistics collection function
+/// \file statisticsFunctionInstanceInterface.hpp
+#ifndef _STRUS_ANALYZER_STATISTICS_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_STATISTICS_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "analyzer/document.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
 {
 
-/// \brief Forward declaration
-class TextProcessorInterface;
-/// \brief Forward declaration
-class NormalizerFunctionInstanceInterface;
-
-/// \class NormalizerFunctionInterface
-/// \brief Interface for the normalizer constructor
-class NormalizerFunctionInterface
+/// \class StatisticsFunctionInstanceInterface
+/// \brief Interface for a parameterized statistics collection function
+class StatisticsFunctionInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~NormalizerFunctionInterface(){}
+	virtual ~StatisticsFunctionInstanceInterface(){}
 
-	/// \brief Create a parameterizable normalizer function instance
-	/// \param[in] args arguments for the normalizer function
-	/// \param[in] tp text processor reference (for loading resources)
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	/// \brief Collection function for document statistics
+	/// \param[in] document document to inspect
+	/// \return document statitics value
+	virtual const double evaluate( const analyzer::Document& document) const=0;
 };
 
 }//namespace

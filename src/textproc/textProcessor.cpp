@@ -33,6 +33,8 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
+#include "strus/statisticsFunctionInterface.hpp"
+#include "strus/statisticsFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "resourceDirectory.hpp"
@@ -165,9 +167,52 @@ public:
 };
 
 
+class CountStatisticsFunctionInstance
+	:public StatisticsFunctionInstanceInterface
+{
+public:
+	/// \brief Constructor
+	CountStatisticsFunctionInstance( const std::string& featuretype_)
+		:m_featuretype( utils::tolower( featuretype_)){}
+
+	virtual const double evaluate( const analyzer::Document& document) const
+	{
+		double rt = 0.0;
+		std::vector<Term>::const_iterator
+			si = document.searchIndexTerms().begin(),
+			se = document.searchIndexTerms().end();
+
+		for (; si != se; ++si)
+		{
+			if (si->type() == m_featuretype) ++rt;
+		}
+		return rt;
+	}
+
+private:
+	std::string m_featuretype;
+};
+
+class CountStatisticsFunction
+	:public StatisticsFunctionInterface
+{
+public:
+	/// \brief Constructor
+	CountStatisticsFunction(){}
+
+	virtual const StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
+	{
+		if (args.size() == 0) throw std::runtime_error( "feature type name as argument expected for 'count' statistics function");
+		if (args.size() > 1) throw std::runtime_error( "too many arguments passed to 'count' statistics function");
+		return new CountStatisticsFunctionInstance( args[0]);
+	}
+};
+
+
 static ContentTokenizerFunction contentTokenizer;
 static OrigNormalizerFunction origNormalizer;
 static EmptyNormalizerFunction emptyNormalizer;
+static CountStatisticsFunction countStatistics;
 
 
 TextProcessor::TextProcessor()
@@ -175,6 +220,7 @@ TextProcessor::TextProcessor()
 	defineTokenizer( "content", &contentTokenizer);
 	defineNormalizer( "orig", &origNormalizer);
 	defineNormalizer( "empty", &emptyNormalizer);
+	defineStatistics( "count", &countStatistics);
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
@@ -199,6 +245,18 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 	return ni->second;
 }
 
+const StatisticsFunctionInterface* TextProcessor::getStatistics( const std::string& name) const
+{
+	std::map<std::string,const StatisticsFunctionInterface*>::const_iterator
+		ni = m_statistics_map.find( utils::tolower( name));
+	if (ni == m_statistics_map.end())
+	{
+		throw std::runtime_error(std::string("no statistics collector function defined with name '") + name + "'");
+	}
+	return ni->second;
+}
+
+
 void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)
 {
 	m_tokenizer_map[ utils::tolower( name)] = tokenizer;
@@ -208,6 +266,12 @@ void TextProcessor::defineNormalizer( const std::string& name, const NormalizerF
 {
 	m_normalizer_map[ utils::tolower( name)] = normalizer;
 }
+
+void TextProcessor::defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc)
+{
+	m_statistics_map[ utils::tolower( name)] = statfunc;
+}
+
 
 void TextProcessor::addResourcePath( const std::string& path)
 {

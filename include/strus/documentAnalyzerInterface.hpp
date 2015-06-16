@@ -34,16 +34,22 @@
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
-#include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include <vector>
 #include <string>
 
 /// \brief strus toplevel namespace
 namespace strus
 {
+
 /// \brief Forward declaration
 class DocumentAnalyzerContextInterface;
+/// \brief Forward declaration
+class NormalizerFunctionInstanceInterface;
+/// \brief Forward declaration
+class TokenizerFunctionInstanceInterface;
+/// \brief Forward declaration
+class StatisticsFunctionInstanceInterface;
+
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
 class DocumentAnalyzerInterface
@@ -127,12 +133,20 @@ public:
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
-	/// \remark The field in the meta data table must exist before calling this function
+	/// \remark The field in the meta data table must exist before this function is called
 	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
+
+	/// \brief Declare some collected statistics of the document to be put into the meta data table used for restrictions, weighting and summarization.
+	/// \param[in] fieldname name of the field in the meta data table this feature is written to
+	/// \param[in] statfunc function (ownership passed to this) that decribes how the value to be inserted is calculated from a document
+	/// \remark The field in the meta data table must exist before this function is called
+	virtual void defineMetaData(
+			const std::string& fieldname,
+			StatisticsFunctionInstanceInterface* statfunc)=0;
 
 	/// \brief Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)
 	/// \param[in] attribname name of the document attribute this feature is written as.
