@@ -40,7 +40,7 @@ class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
-class StatisticsFunctionInterface;
+class AggregatorFunctionInterface;
 
 
 /// \class TextProcessorInterface
@@ -69,7 +69,7 @@ public:
 
 	/// \brief Get a const reference to a statistics collector function object that implements the collection of some counting of document parts
 	/// \return the statistics collector function reference
-	virtual const StatisticsFunctionInterface* getStatisticsFunction( const std::string& name) const=0;
+	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const=0;
 
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the normalizer to define
@@ -81,10 +81,10 @@ public:
 	/// \param[in] normalizer a static const reference to a normalizer object
 	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)=0;
 
-	/// \brief Define a statistics collector function by name
-	/// \param[in] name name of the statistics collector function to define
-	/// \param[in] statfunc a static const reference to a statistics collector function object
-	virtual void defineStatisticsFunction( const std::string& name, const StatisticsFunctionInterface* statfunc)=0;
+	/// \brief Define an aggregator function by name
+	/// \param[in] name name of the aggregator function to define
+	/// \param[in] aggregator a static const reference to an aggregator function object
+	virtual void defineAggregator( const std::string& name, const AggregatorFunctionInterface* aggregator)=0;
 };
 
 }//namespace

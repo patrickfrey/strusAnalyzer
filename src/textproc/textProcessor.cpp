@@ -33,8 +33,8 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
-#include "strus/statisticsFunctionInterface.hpp"
-#include "strus/statisticsFunctionInstanceInterface.hpp"
+#include "strus/aggregatorFunctionInterface.hpp"
+#include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "resourceDirectory.hpp"
@@ -167,12 +167,12 @@ public:
 };
 
 
-class CountStatisticsFunctionInstance
-	:public StatisticsFunctionInstanceInterface
+class CountAggregatorFunctionInstance
+	:public AggregatorFunctionInstanceInterface
 {
 public:
 	/// \brief Constructor
-	CountStatisticsFunctionInstance( const std::string& featuretype_)
+	CountAggregatorFunctionInstance( const std::string& featuretype_)
 		:m_featuretype( utils::tolower( featuretype_)){}
 
 	virtual double evaluate( const analyzer::Document& document) const
@@ -193,18 +193,18 @@ private:
 	std::string m_featuretype;
 };
 
-class CountStatisticsFunction
-	:public StatisticsFunctionInterface
+class CountAggregatorFunction
+	:public AggregatorFunctionInterface
 {
 public:
 	/// \brief Constructor
-	CountStatisticsFunction(){}
+	CountAggregatorFunction(){}
 
-	virtual StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
 	{
-		if (args.size() == 0) throw std::runtime_error( "feature type name as argument expected for 'count' statistics function");
-		if (args.size() > 1) throw std::runtime_error( "too many arguments passed to 'count' statistics function");
-		return new CountStatisticsFunctionInstance( args[0]);
+		if (args.size() == 0) throw std::runtime_error( "feature type name as argument expected for 'count' aggregator function");
+		if (args.size() > 1) throw std::runtime_error( "too many arguments passed to 'count' aggregator function");
+		return new CountAggregatorFunctionInstance( args[0]);
 	}
 };
 
@@ -212,7 +212,7 @@ public:
 static ContentTokenizerFunction contentTokenizer;
 static OrigNormalizerFunction origNormalizer;
 static EmptyNormalizerFunction emptyNormalizer;
-static CountStatisticsFunction countStatistics;
+static CountAggregatorFunction countAggregator;
 
 
 TextProcessor::TextProcessor()
@@ -220,7 +220,7 @@ TextProcessor::TextProcessor()
 	defineTokenizer( "content", &contentTokenizer);
 	defineNormalizer( "orig", &origNormalizer);
 	defineNormalizer( "empty", &emptyNormalizer);
-	defineStatisticsFunction( "count", &countStatistics);
+	defineAggregator( "count", &countAggregator);
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
@@ -229,7 +229,7 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
-		throw std::runtime_error(std::string("no tokenizer defined with name '") + name + "'");
+		throw std::runtime_error( std::string( "no tokenizer defined with name '") + name + "'");
 	}
 	return ti->second;
 }
@@ -240,18 +240,18 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
-		throw std::runtime_error(std::string("no normalizer defined with name '") + name + "'");
+		throw std::runtime_error( std::string( "no normalizer defined with name '") + name + "'");
 	}
 	return ni->second;
 }
 
-const StatisticsFunctionInterface* TextProcessor::getStatisticsFunction( const std::string& name) const
+const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::string& name) const
 {
-	std::map<std::string,const StatisticsFunctionInterface*>::const_iterator
-		ni = m_statistics_map.find( utils::tolower( name));
-	if (ni == m_statistics_map.end())
+	std::map<std::string,const AggregatorFunctionInterface*>::const_iterator
+		ni = m_aggregator_map.find( utils::tolower( name));
+	if (ni == m_aggregator_map.end())
 	{
-		throw std::runtime_error(std::string("no statistics collector function defined with name '") + name + "'");
+		throw std::runtime_error( std::string( "no aggregator function defined with name '") + name + "'");
 	}
 	return ni->second;
 }
@@ -267,9 +267,9 @@ void TextProcessor::defineNormalizer( const std::string& name, const NormalizerF
 	m_normalizer_map[ utils::tolower( name)] = normalizer;
 }
 
-void TextProcessor::defineStatisticsFunction( const std::string& name, const StatisticsFunctionInterface* statfunc)
+void TextProcessor::defineAggregator( const std::string& name, const AggregatorFunctionInterface* statfunc)
 {
-	m_statistics_map[ utils::tolower( name)] = statfunc;
+	m_aggregator_map[ utils::tolower( name)] = statfunc;
 }
 
 

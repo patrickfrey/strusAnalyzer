@@ -48,7 +48,7 @@ class NormalizerFunctionInstanceInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInstanceInterface;
 /// \brief Forward declaration
-class StatisticsFunctionInstanceInterface;
+class AggregatorFunctionInstanceInterface;
 
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
@@ -146,7 +146,7 @@ public:
 	/// \remark The field in the meta data table must exist before this function is called
 	virtual void defineStatisticsMetaData(
 			const std::string& fieldname,
-			StatisticsFunctionInstanceInterface* statfunc)=0;
+			AggregatorFunctionInstanceInterface* statfunc)=0;
 
 	/// \brief Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)
 	/// \param[in] attribname name of the document attribute this feature is written as.
