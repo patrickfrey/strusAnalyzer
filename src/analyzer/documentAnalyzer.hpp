@@ -86,7 +86,7 @@ public:
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
 	}
 
-	virtual void defineMetaData(
+	virtual void defineStatisticsMetaData(
 			const std::string& fieldname,
 			StatisticsFunctionInstanceInterface* statfunc)
 	{

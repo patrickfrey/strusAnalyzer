@@ -144,7 +144,7 @@ public:
 	/// \param[in] fieldname name of the field in the meta data table this feature is written to
 	/// \param[in] statfunc function (ownership passed to this) that decribes how the value to be inserted is calculated from a document
 	/// \remark The field in the meta data table must exist before this function is called
-	virtual void defineMetaData(
+	virtual void defineStatisticsMetaData(
 			const std::string& fieldname,
 			StatisticsFunctionInstanceInterface* statfunc)=0;
 

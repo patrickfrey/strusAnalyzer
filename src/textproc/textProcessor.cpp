@@ -175,7 +175,7 @@ public:
 	CountStatisticsFunctionInstance( const std::string& featuretype_)
 		:m_featuretype( utils::tolower( featuretype_)){}
 
-	virtual const double evaluate( const analyzer::Document& document) const
+	virtual double evaluate( const analyzer::Document& document) const
 	{
 		double rt = 0.0;
 		std::vector<Term>::const_iterator

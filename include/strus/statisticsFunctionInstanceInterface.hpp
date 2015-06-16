@@ -47,7 +47,7 @@ public:
 	/// \brief Collection function for document statistics
 	/// \param[in] document document to inspect
 	/// \return document statitics value
-	virtual const double evaluate( const analyzer::Document& document) const=0;
+	virtual double evaluate( const analyzer::Document& document) const=0;
 };
 
 }//namespace
