@@ -50,7 +50,7 @@ public:
 
 	/// \brief Create a parameterized statistics collection function instance
 	/// \param[in] args arguments for the statistics collection function
-	virtual const StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
+	virtual StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 };
 
 }//namespace

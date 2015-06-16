@@ -200,7 +200,7 @@ public:
 	/// \brief Constructor
 	CountStatisticsFunction(){}
 
-	virtual const StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
+	virtual StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
 	{
 		if (args.size() == 0) throw std::runtime_error( "feature type name as argument expected for 'count' statistics function");
 		if (args.size() > 1) throw std::runtime_error( "too many arguments passed to 'count' statistics function");

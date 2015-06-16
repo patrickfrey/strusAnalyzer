@@ -67,6 +67,10 @@ public:
 	/// \return the normalizer reference
 	virtual const NormalizerFunctionInterface* getNormalizer( const std::string& name) const=0;
 
+	/// \brief Get a const reference to a statistics collector function object that implements the collection of some counting of document parts
+	/// \return the statistics collector function reference
+	virtual const StatisticsFunctionInterface* getStatistics( const std::string& name) const=0;
+
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the normalizer to define
 	/// \param[in] tokenizer a static const reference to a tokenizer object
@@ -81,10 +85,6 @@ public:
 	/// \param[in] name name of the statistics collector function to define
 	/// \param[in] statfunc a static const reference to a statistics collector function object
 	virtual void defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc)=0;
-
-	/// \brief Get a const reference to a statistics collector function object that implements the collection of some counting of document parts
-	/// \return the statistics collector function reference
-	virtual const StatisticsFunctionInterface* getStatistics( const std::string& name) const=0;
 };
 
 }//namespace
