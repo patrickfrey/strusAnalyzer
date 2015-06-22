@@ -20,6 +20,8 @@ Document anaylsis is seen as a process involving the following three steps.
 3. [Normalization](@ref strus::NormalizerFunctionInterface)
 	A token delivered by the tokenization is passed to a normalizer function. By normalizing terms you can impose rules of how to unify terms that should be mapped to the same value in the storage. Normalizer functions can be chained together to describe normalization in multiple steps where the input of a normalization function can be the output of a previous normalization step.
 
+4. [Aggregation](@ref strus::AggregatorFunctionInterface)
+	A document processed with all segmenters,tokenizers,normalizers defined can be passed to an aggregator function creating a numeric value. This numeric value can be used to represent some document statistics. Aggregator results are stored as meta data in the document.
 
 Main interfaces and expandability:
 ----------------------------------
