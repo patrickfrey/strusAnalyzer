@@ -34,7 +34,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/statisticsFunctionInstanceInterface.hpp"
+#include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -86,9 +86,9 @@ public:
 		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
 	}
 
-	virtual void defineStatisticsMetaData(
+	virtual void defineAggregatedMetaData(
 			const std::string& fieldname,
-			StatisticsFunctionInstanceInterface* statfunc)
+			AggregatorFunctionInstanceInterface* statfunc)
 	{
 		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
 	}
@@ -157,13 +157,13 @@ public:
 		FeatureOptions m_options;
 	};
 
-	typedef utils::SharedPtr<StatisticsFunctionInstanceInterface> StatisticsReference;
+	typedef utils::SharedPtr<AggregatorFunctionInstanceInterface> StatisticsReference;
 	class StatisticsConfig
 	{
 	public:
 		StatisticsConfig(
 				const std::string& name_,
-				StatisticsFunctionInstanceInterface* statfunc_)
+				AggregatorFunctionInstanceInterface* statfunc_)
 			:m_name(name_)
 			,m_statfunc(statfunc_){}
 

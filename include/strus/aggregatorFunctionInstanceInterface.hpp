@@ -26,27 +26,27 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for a parameterized statistics collection function
-/// \file statisticsFunctionInstanceInterface.hpp
-#ifndef _STRUS_ANALYZER_STATISTICS_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_STATISTICS_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+/// \brief Interface for an aggregator function instance
+/// \file aggregatorFunctionInstanceInterface.hpp
+#ifndef _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "analyzer/document.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
 {
 
-/// \class StatisticsFunctionInstanceInterface
-/// \brief Interface for a parameterized statistics collection function
-class StatisticsFunctionInstanceInterface
+/// \class AggregatorFunctionInstanceInterface
+/// \brief Interface for a parameterized aggregator function
+class AggregatorFunctionInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~StatisticsFunctionInstanceInterface(){}
+	virtual ~AggregatorFunctionInstanceInterface(){}
 
-	/// \brief Collection function for document statistics
+	/// \brief Aggregator function for document statistics
 	/// \param[in] document document to inspect
-	/// \return document statitics value
+	/// \return aggregated value
 	virtual double evaluate( const analyzer::Document& document) const=0;
 };
 

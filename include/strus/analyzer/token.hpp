@@ -45,7 +45,7 @@ struct Token
 	unsigned int strsize;	///< byte size of the token string in the original document segment
 
 	/// \brief Constructor
-	/// \param[in] docpos_, word position of the token starred
+	/// \param[in] docpos_ word position of the token starred
 	/// \param[in] strpos_ byte position of the token start
 	/// \param[in] strsize_ size of the token in bytes
 	Token( unsigned int docpos_, unsigned int strpos_, unsigned int strsize_)

@@ -26,10 +26,10 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for a statistics collection function type
-/// \file statisticsFunctionInterface.hpp
-#ifndef _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_STATISTICS_FUNCTION_INTERFACE_HPP_INCLUDED
+/// \brief Interface for an aggregator function type
+/// \file aggregatorFunctionInterface.hpp
+#ifndef _STRUS_ANALYZER_AGGREGATOR_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_AGGREGATOR_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 
@@ -38,19 +38,19 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class StatisticsFunctionInstanceInterface;
+class AggregatorFunctionInstanceInterface;
 
-/// \class StatisticsFunctionInterface
-/// \brief Interface for the statistics collection function constructor
-class StatisticsFunctionInterface
+/// \class AggregatorFunctionInterface
+/// \brief Interface for the aggregator function constructor
+class AggregatorFunctionInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~StatisticsFunctionInterface(){}
+	virtual ~AggregatorFunctionInterface(){}
 
-	/// \brief Create a parameterized statistics collection function instance
-	/// \param[in] args arguments for the statistics collection function
-	virtual const StatisticsFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
+	/// \brief Create a parameterized aggregator function instance
+	/// \param[in] args arguments for the aggregator function
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 };
 
 }//namespace

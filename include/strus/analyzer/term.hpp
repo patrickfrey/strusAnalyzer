@@ -65,7 +65,7 @@ public:
 	unsigned int pos() const		{return m_pos;}
 
 	/// \brief Set the word position of the term
-	/// \param[in] Word position of the term in the document
+	/// \param[in] pos_ position (word count index) of the term in the document
 	void setPos( unsigned int pos_)		{m_pos = pos_;}
 
 private:

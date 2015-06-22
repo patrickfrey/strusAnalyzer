@@ -47,18 +47,18 @@ public:
 
 	virtual const NormalizerFunctionInterface* getNormalizer( const std::string& name) const;
 
-	virtual const StatisticsFunctionInterface* getStatistics( const std::string& name) const;
+	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const;
 
 	virtual void defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer);
 
 	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer);
 
-	virtual void defineStatistics( const std::string& name, const StatisticsFunctionInterface* statfunc);
+	virtual void defineAggregator( const std::string& name, const AggregatorFunctionInterface* statfunc);
 
 private:
 	std::map<std::string,const TokenizerFunctionInterface*> m_tokenizer_map;
 	std::map<std::string,const NormalizerFunctionInterface*> m_normalizer_map;
-	std::map<std::string,const StatisticsFunctionInterface*> m_statistics_map;
+	std::map<std::string,const AggregatorFunctionInterface*> m_aggregator_map;
 	std::vector<std::string> m_resourcePaths;
 };
 
