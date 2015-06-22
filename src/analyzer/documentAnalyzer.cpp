@@ -66,23 +66,25 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 		FeatureClass featureClass_,
 		const FeatureOptions& options_)
 	:m_name(name_)
-	,m_tokenizer(tokenizer_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	if (m_tokenizer->concatBeforeTokenize())
+	if (tokenizer_->concatBeforeTokenize())
 	{
 		if (m_options.positionBind() != FeatureOptions::BindContent)
 		{
 			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
 		}
 	}
+	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
+	m_normalizerlist.reserve( normalizers_.size());
 	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
 		ci = normalizers_.begin(), ce = normalizers_.end();
 	for (; ci != ce; ++ci)
 	{
 		m_normalizerlist.push_back( *ci);
 	}
+	m_tokenizer.reset( tokenizer_);
 }
 
 void DocumentAnalyzer::defineFeature(
@@ -93,12 +95,12 @@ void DocumentAnalyzer::defineFeature(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const FeatureOptions& options)
 {
-	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
-	if (m_featurear.size() >= MaxNofFeatures)
+	if (m_featurear.size()+1 >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
 	}
-	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
+	m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
+	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
 }
 
 void DocumentAnalyzer::defineSubDocument(
