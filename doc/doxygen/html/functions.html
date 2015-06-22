@@ -149,8 +149,8 @@
 , <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#af3c344b0fad44fbfb78002fd85351da7">strus::TokenizerFunctionInstanceInterface</a>
 </li>
 <li>createInstance()
-: <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">strus::NormalizerFunctionInterface</a>
-, <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a53762f33f91c643614b503ea1c293171">strus::StatisticsFunctionInterface</a>
+: <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html#a7f007cdef33bb869987e6b323ea83459">strus::AggregatorFunctionInterface</a>
+, <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">strus::NormalizerFunctionInterface</a>
 , <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311">strus::TokenizerFunctionInterface</a>
 </li>
 <li>createQueryAnalyzer()
@@ -163,6 +163,12 @@
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>defineAggregatedMetaData()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a267e90e31dbdc123432ebbaae08238e0">strus::DocumentAnalyzerInterface</a>
+</li>
+<li>defineAggregator()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a0f4768c6c0255a0b6cb1407406369d48">strus::TextProcessorInterface</a>
+</li>
 <li>defineAttribute()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a2f661f39c2018d7e49cfa4edb385c658">strus::DocumentAnalyzerInterface</a>
 </li>
@@ -180,12 +186,6 @@
 </li>
 <li>defineSelectorExpression()
 : <a class="el" href="classstrus_1_1SegmenterInterface.html#af2a465090f783176d249201cd024cc3a">strus::SegmenterInterface</a>
-</li>
-<li>defineStatistics()
-: <a class="el" href="classstrus_1_1TextProcessorInterface.html#aa0858c0b71239af9808e5d2725f9cc84">strus::TextProcessorInterface</a>
-</li>
-<li>defineStatisticsMetaData()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a77cb8366cce4ffeac554b325157a36fa">strus::DocumentAnalyzerInterface</a>
 </li>
 <li>defineSubDocument()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7">strus::DocumentAnalyzerInterface</a>
@@ -207,7 +207,7 @@
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
 <li>evaluate()
-: <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html#a479b5e2b6ae02b178ad6329397ecb75d">strus::StatisticsFunctionInstanceInterface</a>
+: <a class="el" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a487f79e8e86431dcb07b89403b26cb18">strus::AggregatorFunctionInstanceInterface</a>
 </li>
 </ul>
 
@@ -223,6 +223,9 @@
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>getAggregator()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">strus::TextProcessorInterface</a>
+</li>
 <li>getNext()
 : <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
 </li>
@@ -231,9 +234,6 @@
 </li>
 <li>getResourcePath()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">strus::TextProcessorInterface</a>
-</li>
-<li>getStatistics()
-: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a03bd28276f03bd55125af8fd92f33e4c">strus::TextProcessorInterface</a>
 </li>
 <li>getTextProcessor()
 : <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834">strus::AnalyzerObjectBuilderInterface</a>
@@ -276,11 +276,11 @@
 <li>pos()
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a3dcf10302667f5d22221f0178477137d">strus::analyzer::Term</a>
 </li>
-<li>positionBind()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc">strus::DocumentAnalyzerInterface::FeatureOptions</a>
-</li>
 <li>PositionBind
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">strus::DocumentAnalyzerInterface::FeatureOptions</a>
+</li>
+<li>positionBind()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc">strus::DocumentAnalyzerInterface::FeatureOptions</a>
 </li>
 <li>positionBindName()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#aa8145d03e04bfd4ff0cd38b9d2d14d38">strus::DocumentAnalyzerInterface::FeatureOptions</a>
@@ -349,6 +349,12 @@
 
 
 <h3><a class="anchor" id="index_~"></a>- ~ -</h3><ul>
+<li>~AggregatorFunctionInstanceInterface()
+: <a class="el" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">strus::AggregatorFunctionInstanceInterface</a>
+</li>
+<li>~AggregatorFunctionInterface()
+: <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html#a7f9c38c0fa96c64f23735b2ccb863e57">strus::AggregatorFunctionInterface</a>
+</li>
 <li>~AnalyzerObjectBuilderInterface()
 : <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a718b6baa62a286c3b86a366310a62b61">strus::AnalyzerObjectBuilderInterface</a>
 </li>
@@ -376,12 +382,6 @@
 <li>~SegmenterInterface()
 : <a class="el" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">strus::SegmenterInterface</a>
 </li>
-<li>~StatisticsFunctionInstanceInterface()
-: <a class="el" href="classstrus_1_1StatisticsFunctionInstanceInterface.html#ab55d648c4807b1fa938a324e6a743d1f">strus::StatisticsFunctionInstanceInterface</a>
-</li>
-<li>~StatisticsFunctionInterface()
-: <a class="el" href="classstrus_1_1StatisticsFunctionInterface.html#a293b8a01a4cab838797690cc07caf948">strus::StatisticsFunctionInterface</a>
-</li>
 <li>~TextProcessorInterface()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f">strus::TextProcessorInterface</a>
 </li>
@@ -399,7 +399,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jun 22 2015 09:38:38 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

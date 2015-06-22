@@ -57,6 +57,7 @@
 <li><a class="el" href="classstrus_1_1SegmenterInterface.html">Segmentation</a> A document is splitted into segments of text. The segmentation is defined by expressions selecting the segments for further processing. The standard segmenter of strus uses a derivation of abbreviated syntax of XPath to select the segments. But you can define your own segmenter for any document format if it is possible to provide the segmenter interface for it.</li>
 <li><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">Tokenization</a> A segment delivered by the document segmenter or a query phrase is split into tokens. The tokenization does not change the items selected. It just provides the start and end position in the original source.</li>
 <li><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">Normalization</a> A token delivered by the tokenization is passed to a normalizer function. By normalizing terms you can impose rules of how to unify terms that should be mapped to the same value in the storage. Normalizer functions can be chained together to describe normalization in multiple steps where the input of a normalization function can be the output of a previous normalization step.</li>
+<li><a class="el" href="classstrus_1_1AggregatorFunctionInterface.html">Aggregation</a> A document processed with all segmenters,tokenizers,normalizers defined can be passed to an aggregator function creating a numeric value. This numeric value can be used to represent some document statistics. Aggregator results are stored as meta data in the document.</li>
 </ol>
 <h2>Main interfaces and expandability: </h2>
 <p>The main interfaces of the strusAnalyzer are <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">document analyzer interface</a> and the <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">query analyzer interface</a>. These two components can be instantiated with functions provided by the <a class="el" href="classstrus_1_1TextProcessorInterface.html">text processor</a>. </p>
@@ -64,7 +65,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jun 16 2015 13:53:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jun 22 2015 09:38:38 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -13,6 +13,8 @@ Title=strusAnalyzer
 main="strusAnalyzer","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x10387e,,,,,,,,0
 
 [FILES]
+aggregatorFunctionInstanceInterface_8hpp_source.html
+aggregatorFunctionInterface_8hpp_source.html
 attribute_8hpp_source.html
 document_8hpp_source.html
 metaData_8hpp_source.html
@@ -35,14 +37,14 @@ normalizerFunctionInterface_8hpp_source.html
 queryAnalyzerInterface_8hpp_source.html
 segmenterContextInterface_8hpp_source.html
 segmenterInterface_8hpp_source.html
-statisticsFunctionInstanceInterface_8hpp_source.html
-statisticsFunctionInterface_8hpp_source.html
 textProcessorInterface_8hpp_source.html
 tokenizerFunctionContextInterface_8hpp_source.html
 tokenizerFunctionInstanceInterface_8hpp_source.html
 tokenizerFunctionInterface_8hpp_source.html
 versionAnalyzer_8hpp_source.html
 strus_8md.html
+aggregatorFunctionInstanceInterface_8hpp.html
+aggregatorFunctionInterface_8hpp.html
 attribute_8hpp.html
 document_8hpp.html
 metaData_8hpp.html
@@ -65,14 +67,16 @@ normalizerFunctionInterface_8hpp.html
 queryAnalyzerInterface_8hpp.html
 segmenterContextInterface_8hpp.html
 segmenterInterface_8hpp.html
-statisticsFunctionInstanceInterface_8hpp.html
-statisticsFunctionInterface_8hpp.html
 textProcessorInterface_8hpp.html
 tokenizerFunctionContextInterface_8hpp.html
 tokenizerFunctionInstanceInterface_8hpp.html
 tokenizerFunctionInterface_8hpp.html
 versionAnalyzer_8hpp.html
 namespacestrus.html
+classstrus_1_1AggregatorFunctionInstanceInterface.html
+classstrus_1_1AggregatorFunctionInstanceInterface-members.html
+classstrus_1_1AggregatorFunctionInterface.html
+classstrus_1_1AggregatorFunctionInterface-members.html
 classstrus_1_1AnalyzerObjectBuilderInterface.html
 classstrus_1_1AnalyzerObjectBuilderInterface-members.html
 classstrus_1_1DocumentAnalyzerContextInterface.html
@@ -93,10 +97,6 @@ classstrus_1_1SegmenterContextInterface.html
 classstrus_1_1SegmenterContextInterface-members.html
 classstrus_1_1SegmenterInterface.html
 classstrus_1_1SegmenterInterface-members.html
-classstrus_1_1StatisticsFunctionInstanceInterface.html
-classstrus_1_1StatisticsFunctionInstanceInterface-members.html
-classstrus_1_1StatisticsFunctionInterface.html
-classstrus_1_1StatisticsFunctionInterface-members.html
 classstrus_1_1TextProcessorInterface.html
 classstrus_1_1TextProcessorInterface-members.html
 classstrus_1_1TokenizerFunctionContextInterface.html
