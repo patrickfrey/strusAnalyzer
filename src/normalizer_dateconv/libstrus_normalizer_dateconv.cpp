@@ -26,46 +26,16 @@
 
 --------------------------------------------------------------------
 */
-#include "strus/lib/textproc.hpp"
-#include "strus/lib/normalizer_snowball.hpp"
-#include "strus/lib/normalizer_dictmap.hpp"
-#include "strus/lib/normalizer_charconv.hpp"
 #include "strus/lib/normalizer_dateconv.hpp"
-#include "strus/lib/tokenizer_punctuation.hpp"
-#include "strus/lib/tokenizer_word.hpp"
-#include "textProcessor.hpp"
 #include "private/dll_tags.hpp"
-#include <stdexcept>
+#include "normalizerDateConv.hpp"
 
 using namespace strus;
 
-DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor()
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_date2int()
 {
-	TextProcessor* rt = new TextProcessor();
-	try
-	{
-		rt->defineNormalizer( "stem", getNormalizer_snowball());
-		rt->defineNormalizer( "dictmap", getNormalizer_dictmap());
-		rt->defineNormalizer( "lc", getNormalizer_lowercase());
-		rt->defineNormalizer( "uc", getNormalizer_uppercase());
-		rt->defineNormalizer( "convdia", getNormalizer_convdia());
-		rt->defineNormalizer( "date2int", getNormalizer_date2int());
-		rt->defineTokenizer( "punctuation", getTokenizer_punctuation());
-		rt->defineTokenizer( "word", getTokenizer_word());
-		rt->defineTokenizer( "split", getTokenizer_whitespace());
-		return rt;
-	}
-	catch (const std::runtime_error& err)
-	{
-		delete rt;
-		throw err;
-	}
-	catch (const std::bad_alloc& err)
-	{
-		delete rt;
-		throw err;
-	}
+	static const Date2IntNormalizerFunction rt;
+	return &rt;
 }
 
 
