@@ -64,21 +64,22 @@ struct DateNumGranularity
 
 	boost::int64_t getValue( const boost::posix_time::ptime& timstmp)
 	{
-		boost::posix_time::time_duration diff = timstmp - m_start;
+		typedef boost::posix_time::time_duration time_duration;
+		time_duration diff = timstmp - m_start;
 		switch (m_type)
 		{
 			case Microsecond:
-				return (boost::int64_t)diff.total_microseconds() / m_factor;
+				return diff.ticks() / ((time_duration::ticks_per_second() / 1000000) * m_factor);
 			case Millisecond:
-				return (boost::int64_t)diff.total_milliseconds() / m_factor;
+				return diff.ticks() / ((time_duration::ticks_per_second() / 1000) * m_factor);
 			case Second:
-				return (boost::int64_t)diff.total_seconds() / m_factor;
+				return diff.ticks() / ((time_duration::ticks_per_second()) * m_factor);
 			case Minute:
-				return (boost::int64_t)diff.total_seconds() / (60 * m_factor);
+				return diff.ticks() / ((time_duration::ticks_per_second()) * (60 * m_factor));
 			case Hour:
-				return (boost::int64_t)diff.total_seconds() / (3600 * m_factor);
+				return diff.ticks() / ((time_duration::ticks_per_second()) * (3600 * m_factor));
 			case Day:
-				return (boost::int64_t)diff.total_seconds() / (3600*24 * m_factor);
+				return diff.ticks() / ((time_duration::ticks_per_second()) * (24 * 3600 * m_factor));
 		}
 		throw std::runtime_error("unexpected error in time calculation");
 	}
@@ -142,8 +143,8 @@ static const char* skipSpaces( char const* gi)
 
 static bool isAlphaNum( char ch)
 {
-	if ((ch|32) >= 'a' || (ch|32) <= 'z') return true;
-	if (ch >= '0' || ch <= '9') return true;
+	if ((ch|32) >= 'a' && (ch|32) <= 'z') return true;
+	if (ch >= '0' && ch <= '9') return true;
 	if (ch == '_') return true;
 	return false;
 }
@@ -156,37 +157,37 @@ static DateNumGranularity::Type parseGranularityType( char const*& gi)
 		gi+=2;
 		return DateNumGranularity::Microsecond;
 	}
-	if (gi[0] == 'm' && gi[1] == 's')
+	else if (gi[0] == 'm' && gi[1] == 's')
 	{
 		if (isAlphaNum(gi[2])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi+=2;
 		return DateNumGranularity::Millisecond;
 	}
-	if (*gi == 's')
+	else if (*gi == 's')
 	{
 		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi++;
 		return DateNumGranularity::Second;
 	}
-	if (*gi == 'm')
+	else if (*gi == 'm')
 	{
 		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi++;
 		return DateNumGranularity::Minute;
 	}
-	if (*gi == 'h')
+	else if (*gi == 'h')
 	{
 		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi++;
 		return DateNumGranularity::Hour;
 	}
-	if (*gi == 'd')
+	else if (*gi == 'd')
 	{
 		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi++;
 		return DateNumGranularity::Day;
 	}
-	if (*gi == 'y')
+	else if (*gi == 'y')
 	{
 		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
 		gi++;
@@ -228,7 +229,19 @@ DateNumGranularity parseGranularity( char const* gi)
 	if (*gi == '>')
 	{
 		gi = skipSpaces( gi+1);
-		start = boost::posix_time::time_from_string( gi);
+		std::string fromDate( gi);
+		if (std::strchr( gi, ' ') == 0)
+		{
+			fromDate.append( " 00:00:00");
+		}
+		try
+		{
+			start = boost::posix_time::time_from_string( fromDate);
+		}
+		catch (...)
+		{
+			throw std::runtime_error( "error in date2int result definition: illegal start time");
+		}
 	}
 	else if (!*gi)
 	{
