@@ -226,9 +226,8 @@ DateNumGranularity parseGranularity( char const* gi)
 		factor = parseNumber( gi);
 	}
 	gi = skipSpaces( gi);
-	if (*gi == '>')
+	if (*gi)
 	{
-		gi = skipSpaces( gi+1);
 		std::string fromDate( gi);
 		if (std::strchr( gi, ' ') == 0)
 		{
@@ -243,13 +242,9 @@ DateNumGranularity parseGranularity( char const* gi)
 			throw std::runtime_error( "error in date2int result definition: illegal start time");
 		}
 	}
-	else if (!*gi)
-	{
-		start = boost::posix_time::ptime( boost::gregorian::date( 1970, 1, 1));
-	}
 	else
 	{
-		throw std::runtime_error( "error in date2int result definition: unexpected token");
+		start = boost::posix_time::ptime( boost::gregorian::date( 1970, 1, 1));
 	}
 	return DateNumGranularity( type, start, factor);
 }
