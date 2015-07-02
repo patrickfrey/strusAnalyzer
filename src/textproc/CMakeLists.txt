@@ -30,6 +30,7 @@ target_link_libraries( strus_textproc
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
+	strus_normalizer_dateconv
 	strus_tokenizer_punctuation
 	strus_tokenizer_word
 	strus_private_utils )
