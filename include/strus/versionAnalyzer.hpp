@@ -39,7 +39,7 @@ namespace strus
 #define STRUS_ANALYZER_VERSION (\
 	0 * 1000000\
 	+ 1 * 10000\
-	+ 1\
+	+ 2\
 )
 
 /// \brief Major version number of the strus analyzer
@@ -48,7 +48,7 @@ namespace strus
 #define STRUS_ANALYZER_VERSION_MINOR 1
 
 /// \brief The version of the strus core (storage) as string
-#define STRUS_ANALYZER_VERSION_STRING "0.1.1"
+#define STRUS_ANALYZER_VERSION_STRING "0.1.2"
 
 }//namespace
 #endif
