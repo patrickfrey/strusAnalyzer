@@ -34,6 +34,7 @@
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
+#include "strus/segmenter/contentDescription.hpp"
 #include <vector>
 #include <string>
 
@@ -41,8 +42,6 @@
 namespace strus
 {
 
-/// \brief Forward declaration
-class ContentDescriptionInterface;
 /// \brief Forward declaration
 class DocumentAnalyzerContextInterface;
 /// \brief Forward declaration
@@ -177,13 +176,13 @@ public:
 	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerContext(std::istream&)const' instead.
 	virtual analyzer::Document analyze(
 			const std::string& content,
-			const ContentDescriptionInterface* descr) const=0;
+			const segmenter::ContentDescription& descr) const=0;
 
 	/// \brief Create the context used for analyzing multipart or very big documents
 	/// \param[in] descr description of the content to process
 	/// \return the analyzer context (ownership to caller)
 	virtual DocumentAnalyzerContextInterface* createContext(
-			const ContentDescriptionInterface* descr) const=0;
+			const segmenter::ContentDescription& descr) const=0;
 };
 
 }//namespace

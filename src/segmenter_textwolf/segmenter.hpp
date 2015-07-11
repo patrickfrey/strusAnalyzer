@@ -30,13 +30,11 @@
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
+#include "strus/segmenter/contentDescription.hpp"
 #include <string>
 
 namespace strus
 {
-/// \brief Forward declaration
-class ContentDescriptionInterface;
-
 /// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
 class Segmenter
 	:public SegmenterInterface
@@ -48,7 +46,7 @@ public:
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
-	virtual SegmenterContextInterface* createContext( const ContentDescriptionInterface* descr) const;
+	virtual SegmenterContextInterface* createContext( const segmenter::ContentDescription& descr) const;
 
 private:
 	void addExpression( int id, const std::string& expression);

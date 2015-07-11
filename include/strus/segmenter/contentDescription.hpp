@@ -26,24 +26,22 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface to describe the content type and format of an original document
-/// \file contentDescriptionInterface.hpp
-#ifndef _STRUS_ANALYZER_CONTENT_DESCRIPTION_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_CONTENT_DESCRIPTION_INTERFACE_HPP_INCLUDED
+/// \brief Structure describing the content type and format of an original document
+/// \file contentDescription.hpp
+#ifndef _STRUS_ANALYZER_CONTENT_DESCRIPTION_HPP_INCLUDED
+#define _STRUS_ANALYZER_CONTENT_DESCRIPTION_HPP_INCLUDED
 #include <vector>
 #include <string>
 
 /// \brief strus toplevel namespace
-namespace strus
-{
+namespace strus {
+/// \brief analyzer parameter and return value objects namespace
+namespace segmenter {
 
-/// \brief Defines a description of the properties of an original document processed by the analyzer
-class ContentDescriptionInterface
+/// \brief Defines a description of the properties of an original document processed by the segmenter
+class ContentDescription
 {
 public:
-	/// \brief Destructor
-	virtual ~ContentDescriptionInterface(){}
-
 	/// \brief Properties of a content
 	enum Property
 	{
@@ -52,13 +50,52 @@ public:
 		ColumnName		///< name of a column, for content with an external table description
 	};
 
-	/// \brief Get a property of the content
+	/// \brief Default constructor
+	ContentDescription(){}
+	/// \brief Copy constructor
+	ContentDescription( const ContentDescription& o)
+		:m_descr(o.m_descr){}
+
+	/// \brief Set a property of the associated content
 	/// \param[in] p property identifier
-	/// \param[in] i index of property
+	/// \param[in] v value of property
+	void setProperty( const Property& p, const std::string& value)
+	{
+		m_descr.push_back( Element( p, value));
+	}
+
+	/// \brief Get a property of the associated content
+	/// \param[in] p property identifier
 	/// \return value of property or NULL, if it does not exist
-	virtual const char* getProperty( const Property& p, int i=0) const=0;
+	const char* getProperty( const Property& p) const
+	{
+		std::vector<Element>::const_iterator pi = m_descr.begin(), pe = m_descr.end();
+		for (; pi != pe; ++pi)
+		{
+			if (p == pi->first) return pi->second.c_str();
+		}
+		return 0;
+	}
+
+	/// \brief Get a multi value property of the associated content
+	/// \param[in] p property identifier
+	/// \return list of properties or empty, if it does not exist
+	std::vector<std::string> getProperties( const Property& p) const
+	{
+		std::vector<std::string> rt;
+		std::vector<Element>::const_iterator pi = m_descr.begin(), pe = m_descr.end();
+		for (; pi != pe; ++pi)
+		{
+			if (p == pi->first) rt.push_back( pi->second);
+		}
+		return rt;
+	}
+
+private:
+	typedef std::pair<Property,std::string> Element;
+	std::vector<Element> m_descr;
 };
 
-}//namespace
+}}//namespace
 #endif
 

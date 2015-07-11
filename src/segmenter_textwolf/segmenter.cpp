@@ -28,7 +28,7 @@
 */
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
-#include "strus/contentDescriptionInterface.hpp"
+#include "strus/segmenter/contentDescription.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
 #include "private/utils.hpp"
@@ -164,9 +164,9 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterContextInterface* Segmenter::createContext( const ContentDescriptionInterface* descr) const
+SegmenterContextInterface* Segmenter::createContext( const segmenter::ContentDescription& descr) const
 {
-	const char* encoding = descr->getProperty( ContentDescriptionInterface::Encoding);
+	const char* encoding = descr.getProperty( segmenter::ContentDescription::Encoding);
 	if (encoding != 0)
 	{
 		if (!utils::caseInsensitiveEquals( encoding, "UTF-8"))
