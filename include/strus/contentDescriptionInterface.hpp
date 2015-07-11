@@ -26,36 +26,37 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
+/// \brief Interface to describe the content type and format of an original document
+/// \file contentDescriptionInterface.hpp
+#ifndef _STRUS_ANALYZER_CONTENT_DESCRIPTION_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_CONTENT_DESCRIPTION_INTERFACE_HPP_INCLUDED
+#include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Forward declaration
-class ContentDescriptionInterface;
 
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+/// \brief Defines a description of the properties of an original document processed by the analyzer
+class ContentDescriptionInterface
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	/// \brief Destructor
+	virtual ~ContentDescriptionInterface(){}
 
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
+	/// \brief Properties of a content
+	enum Property
+	{
+		ContentType,		///< content MIME type
+		Encoding,		///< character set encoding ("UTF-8", "UTF-16BE", etc...)
+		ColumnName		///< name of a column, for content with an external table description
+	};
 
-	virtual SegmenterContextInterface* createContext( const ContentDescriptionInterface& descr) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
+	/// \brief Get a property of the content
+	/// \param[in] p property identifier
+	/// \param[in] i index of property
+	/// \return value of property or NULL, if it does not exist
+	virtual const char* getProperty( const Property& p, int i=0) const=0;
 };
 
 }//namespace

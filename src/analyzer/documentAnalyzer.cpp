@@ -33,6 +33,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/contentDescriptionInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
@@ -162,11 +163,13 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 	}
 }
 
-analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
+analyzer::Document DocumentAnalyzer::analyze(
+		const std::string& content,
+		const ContentDescriptionInterface& descr) const
 {
 	analyzer::Document rt;
 	std::auto_ptr<DocumentAnalyzerContext>
-		analyzerInstance( new DocumentAnalyzerContext( this));
+		analyzerInstance( new DocumentAnalyzerContext( this, descr));
 	analyzerInstance->putInput( content.c_str(), content.size(), true);
 	if (!analyzerInstance->analyzeNext( rt))
 	{
@@ -175,9 +178,9 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 	return rt;
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext() const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const ContentDescriptionInterface& descr) const
 {
-	return new DocumentAnalyzerContext( this);
+	return new DocumentAnalyzerContext( this, descr);
 }
 
 
@@ -348,9 +351,9 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface& descr)
 	:m_analyzer(analyzer_)
-	,m_segmenter(m_analyzer->m_segmenter->createContext())
+	,m_segmenter(m_analyzer->m_segmenter->createContext( descr))
 	,m_parserContext(analyzer_->m_featurear)
 	,m_eof(false)
 	,m_last_position(0)

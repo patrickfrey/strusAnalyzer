@@ -28,8 +28,10 @@
 */
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
+#include "strus/contentDescriptionInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
+#include "private/utils.hpp"
 
 using namespace strus;
 
@@ -162,8 +164,16 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterContextInterface* Segmenter::createContext() const
+SegmenterContextInterface* Segmenter::createContext( const ContentDescriptionInterface& descr) const
 {
+	const char* encoding = descr.getProperty( ContentDescriptionInterface::Encoding);
+	if (encoding != 0)
+	{
+		if (!utils::caseInsensitiveEquals( encoding, "UTF-8"))
+		{
+			throw std::runtime_error( "the XML segmenter based on textwolf currently supports only UTF-8 as character set encoding");
+		}
+	}
 	return new SegmenterContext( &m_automaton);
 }
 

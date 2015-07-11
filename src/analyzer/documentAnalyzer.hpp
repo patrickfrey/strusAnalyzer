@@ -106,9 +106,12 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
 
-	virtual analyzer::Document analyze( const std::string& content) const;
+	virtual analyzer::Document analyze(
+			const std::string& content,
+			const ContentDescriptionInterface& descr) const;
 
-	virtual DocumentAnalyzerContextInterface* createContext() const;
+	virtual DocumentAnalyzerContextInterface* createContext(
+			const ContentDescriptionInterface& descr) const;
 
 public:
 	enum FeatureClass
@@ -241,7 +244,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	explicit DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface& descr);
 
 	virtual ~DocumentAnalyzerContext()
 	{
