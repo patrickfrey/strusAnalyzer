@@ -108,10 +108,10 @@ public:
 
 	virtual analyzer::Document analyze(
 			const std::string& content,
-			const ContentDescriptionInterface& descr) const;
+			const ContentDescriptionInterface* descr) const;
 
 	virtual DocumentAnalyzerContextInterface* createContext(
-			const ContentDescriptionInterface& descr) const;
+			const ContentDescriptionInterface* descr) const;
 
 public:
 	enum FeatureClass
@@ -244,7 +244,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface& descr);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface* descr);
 
 	virtual ~DocumentAnalyzerContext()
 	{

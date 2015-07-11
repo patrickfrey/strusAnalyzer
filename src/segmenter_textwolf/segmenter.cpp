@@ -164,9 +164,9 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterContextInterface* Segmenter::createContext( const ContentDescriptionInterface& descr) const
+SegmenterContextInterface* Segmenter::createContext( const ContentDescriptionInterface* descr) const
 {
-	const char* encoding = descr.getProperty( ContentDescriptionInterface::Encoding);
+	const char* encoding = descr->getProperty( ContentDescriptionInterface::Encoding);
 	if (encoding != 0)
 	{
 		if (!utils::caseInsensitiveEquals( encoding, "UTF-8"))

@@ -165,7 +165,7 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 
 analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
-		const ContentDescriptionInterface& descr) const
+		const ContentDescriptionInterface* descr) const
 {
 	analyzer::Document rt;
 	std::auto_ptr<DocumentAnalyzerContext>
@@ -178,7 +178,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 	return rt;
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const ContentDescriptionInterface& descr) const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const ContentDescriptionInterface* descr) const
 {
 	return new DocumentAnalyzerContext( this, descr);
 }
@@ -351,7 +351,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface& descr)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const ContentDescriptionInterface* descr)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( descr))
 	,m_parserContext(analyzer_->m_featurear)

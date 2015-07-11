@@ -62,7 +62,7 @@ public:
 	/// \brief Creates an instance of the segmenter
 	/// \param[in] descr description of the content to process
 	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterContextInterface* createContext( const ContentDescriptionInterface& descr) const=0;
+	virtual SegmenterContextInterface* createContext( const ContentDescriptionInterface* descr) const=0;
 };
 
 }//namespace
