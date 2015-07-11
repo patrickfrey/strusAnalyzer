@@ -32,6 +32,7 @@
 #define _STRUS_ANALYZER_CONTENT_DESCRIPTION_HPP_INCLUDED
 #include <vector>
 #include <string>
+#include <cstring>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -45,9 +46,9 @@ public:
 	/// \brief Properties of a content
 	enum Property
 	{
-		ContentType,		///< content MIME type
-		Encoding,		///< character set encoding ("UTF-8", "UTF-16BE", etc...)
-		ColumnName		///< name of a column, for content with an external table description
+		ContentType='t',	///< content MIME type
+		Encoding='e',		///< character set encoding ("UTF-8", "UTF-16BE", etc...)
+		ColumnName='c'		///< name of a column, for content with an external table description
 	};
 
 	/// \brief Default constructor
@@ -88,6 +89,31 @@ public:
 		{
 			if (p == pi->first) rt.push_back( pi->second);
 		}
+		return rt;
+	}
+
+	std::string serialize() const
+	{
+		std::string rt;
+		std::vector<Element>::const_iterator pi = m_descr.begin(), pe = m_descr.end();
+		for (; pi != pe; ++pi)
+		{
+			rt.push_back( (char)pi->first);
+			rt.append( pi->second);
+			rt.push_back( '\0');
+		}
+		return rt;
+	}
+
+	static ContentDescription deserialize( const std::string v)
+	{
+		ContentDescription rt;
+		char const* cc = v.c_str();
+		while (*cc)
+		{
+			rt.m_descr.push_back( Element( (Property)*cc, cc+1));
+			cc = std::strchr( cc+1, '\0')+1;
+		} 
 		return rt;
 	}
 
