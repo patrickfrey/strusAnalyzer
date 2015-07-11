@@ -20,7 +20,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf )
+target_link_libraries( strus_segmenter_textwolf strus_private_utils )
 set_target_properties(
     strus_segmenter_textwolf
     PROPERTIES
