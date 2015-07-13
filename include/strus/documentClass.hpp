@@ -26,34 +26,41 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include "strus/segmenter/contentDescription.hpp"
+/// \brief Structure describing the MIME type plus some attributes that could be relevant for analysis of a document
+/// \file documentClass.hpp
+#ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_CLASS_HPP_INCLUDED
+#include <vector>
 #include <string>
+#include <cstring>
 
-namespace strus
-{
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+/// \brief strus toplevel namespace
+namespace strus {
+
+/// \brief Defines a description of the properties of an original document processed by the segmenter
+class DocumentClass
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	DocumentClass(){}
+	explicit DocumentClass(
+			const std::string& mimeType_)		:m_mimeType(mimeType_){}
+	DocumentClass(
+			const std::string& mimeType_,
+			const std::string& encoding_)		:m_mimeType(mimeType_),m_encoding(encoding_){}
+	DocumentClass( const DocumentClass& o)			:m_mimeType(o.m_mimeType),m_scheme(o.m_scheme),m_encoding(o.m_encoding){}
 
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
+	void setMimeType( const std::string& mimeType_)		{m_mimeType = mimeType_;}
+	void setScheme( const std::string& scheme_)		{m_scheme = scheme_;}
+	void setEncoding( const std::string& encoding_)		{m_encoding = encoding_;}
 
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
+	const std::string& mimeType() const			{return m_mimeType;}
+	const std::string& scheme() const			{return m_scheme;}
+	const std::string& encoding() const			{return m_encoding;}
 
 private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
+	std::string m_mimeType;
+	std::string m_scheme;
+	std::string m_encoding;
 };
 
 }//namespace

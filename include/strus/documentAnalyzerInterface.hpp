@@ -34,7 +34,7 @@
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
-#include "strus/segmenter/contentDescription.hpp"
+#include "strus/documentClass.hpp"
 #include <vector>
 #include <string>
 
@@ -171,18 +171,18 @@ public:
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
-	/// \param[in] descr description of the content to process
+	/// \param[in] dclass description of the content type and encoding to process
 	/// \return the analyzed document
 	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerContext(std::istream&)const' instead.
 	virtual analyzer::Document analyze(
 			const std::string& content,
-			const segmenter::ContentDescription& descr) const=0;
+			const DocumentClass& dclass) const=0;
 
 	/// \brief Create the context used for analyzing multipart or very big documents
-	/// \param[in] descr description of the content to process
+	/// \param[in] dclass description of the content type and encoding to process
 	/// \return the analyzer context (ownership to caller)
 	virtual DocumentAnalyzerContextInterface* createContext(
-			const segmenter::ContentDescription& descr) const=0;
+			const DocumentClass& dclass) const=0;
 };
 
 }//namespace

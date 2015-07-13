@@ -36,6 +36,8 @@
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/documentClassDetectorInterface.hpp"
+#include "strus/lib/detector_std.hpp"
 #include "private/utils.hpp"
 #include "resourceDirectory.hpp"
 #include <stdexcept>
@@ -217,6 +219,7 @@ static CountAggregatorFunction countAggregator;
 
 TextProcessor::TextProcessor()
 {
+	defineDocumentClassDetector( getDetector_std());
 	defineTokenizer( "content", &contentTokenizer);
 	defineNormalizer( "orig", &origNormalizer);
 	defineNormalizer( "empty", &emptyNormalizer);
@@ -256,6 +259,22 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 	return ni->second;
 }
 
+
+bool TextProcessor::detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+{
+	bool rt = false;
+	std::vector<const DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
+	for (; ci != ce; ++ci)
+	{
+		rt |= (*ci)->detect( dclass, contentBegin, contentBeginSize);
+	}
+	return rt;
+}
+
+void TextProcessor::defineDocumentClassDetector( const DocumentClassDetectorInterface* detector)
+{
+	m_detectors.push_back( detector);
+}
 
 void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)
 {

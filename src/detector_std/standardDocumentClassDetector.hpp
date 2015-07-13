@@ -26,36 +26,29 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include "strus/segmenter/contentDescription.hpp"
+/// \brief Standard document class detector declaration
+/// \file detectorStd.hpp
+#ifndef _STRUS_ANALYZER_STANDARD_DOCUMENT_DETECTOR_HPP_INCLUDED
+#define _STRUS_ANALYZER_STANDARD_DOCUMENT_DETECTOR_HPP_INCLUDED
+#include "strus/documentClass.hpp"
+#include "strus/documentClassDetectorInterface.hpp"
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+
+class StandardDocumentClassDetector
+	:public DocumentClassDetectorInterface
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	StandardDocumentClassDetector(){}
+	virtual ~StandardDocumentClassDetector(){}
 
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
-
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
+	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 };
 
 }//namespace
 #endif
+
 

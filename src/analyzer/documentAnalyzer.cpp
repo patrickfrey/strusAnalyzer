@@ -164,11 +164,11 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 
 analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
-		const segmenter::ContentDescription& descr) const
+		const DocumentClass& dclass) const
 {
 	analyzer::Document rt;
 	std::auto_ptr<DocumentAnalyzerContext>
-		analyzerInstance( new DocumentAnalyzerContext( this, descr));
+		analyzerInstance( new DocumentAnalyzerContext( this, dclass));
 	analyzerInstance->putInput( content.c_str(), content.size(), true);
 	if (!analyzerInstance->analyzeNext( rt))
 	{
@@ -177,9 +177,9 @@ analyzer::Document DocumentAnalyzer::analyze(
 	return rt;
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const segmenter::ContentDescription& descr) const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
 {
-	return new DocumentAnalyzerContext( this, descr);
+	return new DocumentAnalyzerContext( this, dclass);
 }
 
 
@@ -350,9 +350,9 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const segmenter::ContentDescription& descr)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass)
 	:m_analyzer(analyzer_)
-	,m_segmenter(m_analyzer->m_segmenter->createContext( descr))
+	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)
 	,m_eof(false)
 	,m_last_position(0)

@@ -26,7 +26,9 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_textproc SHARED ${source_files} )
-target_link_libraries( strus_textproc
+target_link_libraries(
+	strus_textproc
+	strus_detector_std
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
