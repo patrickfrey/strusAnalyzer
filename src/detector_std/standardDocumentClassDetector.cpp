@@ -47,14 +47,14 @@ static const unsigned char BOM_UTF16LE[] = {2,0xFF,0xFE};
 static const unsigned char BOM_UTF32BE[] = {4,0,0,0xFE,0xFF};
 static const unsigned char BOM_UTF32LE[] = {4,0xFF,0xFE,0,0};
 
-const char* detectBOM( const std::string& contentBegin)
+const char* detectBOM( const char* str, std::size_t strsize)
 {
-	if (contentBegin.size() < 4) return 0;
-	if (std::memcmp( BOM_UTF8+1, contentBegin.c_str(), BOM_UTF8[0]) == 0) return "UTF-8";
-	if (std::memcmp( BOM_UTF16BE+1, contentBegin.c_str(), BOM_UTF16BE[0]) == 0) return "UTF-16BE";
-	if (std::memcmp( BOM_UTF16LE+1, contentBegin.c_str(), BOM_UTF16LE[0]) == 0) return "UTF-16LE";
-	if (std::memcmp( BOM_UTF32BE+1, contentBegin.c_str(), BOM_UTF32BE[0]) == 0) return "UTF-32BE";
-	if (std::memcmp( BOM_UTF32LE+1, contentBegin.c_str(), BOM_UTF32LE[0]) == 0) return "UTF-32LE";
+	if (strsize < 4) return 0;
+	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0) return "UTF-8";
+	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0) return "UTF-16BE";
+	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0) return "UTF-16LE";
+	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0) return "UTF-32BE";
+	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0) return "UTF-32LE";
 	return 0;
 }
 
@@ -84,7 +84,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 	unsigned int nullCnt = 0;
 	unsigned int maxNullCnt = 0;
 	State state = ParseStart;
-	const char* BOM = detectBOM( contentBegin);
+	const char* BOM = detectBOM( contentBegin, contentBeginSize);
 	std::string encoding_buf;
 	const char* encoding = 0;
 

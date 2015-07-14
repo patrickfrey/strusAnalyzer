@@ -92,6 +92,7 @@ bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& se
 	while (m_selitr == m_selend)
 	{
 		++m_itr;
+		if (m_itr == m_end) return false;
 
 		XMLScanner::ElementType et = m_itr->type();
 		if (et == XMLScanner::ErrorOccurred)
