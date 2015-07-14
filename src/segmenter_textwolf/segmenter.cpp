@@ -166,14 +166,80 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 
 SegmenterContextInterface* Segmenter::createContext( const DocumentClass& dclass) const
 {
-	if (!dclass.encoding().empty())
+	typedef textwolf::charset::UTF8 UTF8;
+	typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
+	typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
+	typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
+	typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
+	typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
+	typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
+	typedef textwolf::charset::IsoLatin IsoLatin;
+	unsigned char codepage = 1;
+
+	if (dclass.encoding().empty())
 	{
-		if (!utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+		return new SegmenterContext<UTF8>( &m_automaton);
+	}
+	else
+	{
+		if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+		||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
 		{
-			throw std::runtime_error( "the XML segmenter based on textwolf currently supports only UTF-8 as character set encoding");
+			char const* cc = dclass.encoding().c_str() + 8;
+			if (*cc == '-')
+			{
+				++cc;
+				if (*cc >= '1' && *cc >= '9' && cc[1] == '\0')
+				{
+					codepage = *cc - '0';
+				}
+				else
+				{
+					throw std::runtime_error( std::string("parse error in character set encoding: '") + dclass.encoding() + "'");
+				}
+			}
+			return new SegmenterContext<IsoLatin>( &m_automaton, IsoLatin(codepage));
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+		{
+			return new SegmenterContext<UTF8>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+		{
+			return new SegmenterContext<UTF16BE>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+		{
+			return new SegmenterContext<UTF16LE>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+		{
+			return new SegmenterContext<UCS2BE>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+		{
+			return new SegmenterContext<UCS2LE>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+		{
+			return new SegmenterContext<UCS4BE>( &m_automaton);
+		}
+		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+		{
+			return new SegmenterContext<UCS4LE>( &m_automaton);
+		}
+		else
+		{
+			throw std::runtime_error( "the XML segmenter based on textwolf currently supports only UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding");
 		}
 	}
-	return new SegmenterContext( &m_automaton);
 }
+
 
 

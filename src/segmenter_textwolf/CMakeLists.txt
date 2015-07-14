@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 set(source_files
 	segmenter.cpp
-	segmenterContext.cpp
 	libstrus_segmenter_textwolf.cpp
 )
 
