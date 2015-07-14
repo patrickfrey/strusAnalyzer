@@ -114,6 +114,8 @@ public:
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const DocumentClass& dclass) const;
 
+	virtual std::string mimeType() const;
+
 public:
 	enum FeatureClass
 	{

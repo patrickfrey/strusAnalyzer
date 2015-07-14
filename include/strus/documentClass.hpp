@@ -41,20 +41,41 @@ namespace strus {
 class DocumentClass
 {
 public:
+	/// \brief Default constructor
 	DocumentClass(){}
+	/// \brief Constructor
 	explicit DocumentClass(
 			const std::string& mimeType_)		:m_mimeType(mimeType_){}
+	/// \brief Constructor
 	DocumentClass(
 			const std::string& mimeType_,
 			const std::string& encoding_)		:m_mimeType(mimeType_),m_encoding(encoding_){}
+	/// \brief Constructor
+	DocumentClass(
+			const std::string& mimeType_,
+			const std::string& encoding_,
+			const std::string& scheme_)		:m_mimeType(mimeType_),m_scheme(scheme_),m_encoding(encoding_){}
+	/// \brief Copy constructor
 	DocumentClass( const DocumentClass& o)			:m_mimeType(o.m_mimeType),m_scheme(o.m_scheme),m_encoding(o.m_encoding){}
 
+	/// \brief Set the MIME type of the document class
+	/// \param[in] the document MIME type string
 	void setMimeType( const std::string& mimeType_)		{m_mimeType = mimeType_;}
+	/// \brief Set the scheme identifier of the document class
+	/// \param[in] the document scheme identifier
 	void setScheme( const std::string& scheme_)		{m_scheme = scheme_;}
+	/// \brief Set the character set encoding of the document class
+	/// \param[in] the character set encoding string
 	void setEncoding( const std::string& encoding_)		{m_encoding = encoding_;}
 
+	/// \brief Get the MIME type of the document class
+	/// \return the document MIME type string
 	const std::string& mimeType() const			{return m_mimeType;}
+	/// \brief Get the scheme identifier of the document class
+	/// \return the document scheme identifier
 	const std::string& scheme() const			{return m_scheme;}
+	/// \brief Get the character set encoding of the document class
+	/// \return the character set encoding string
 	const std::string& encoding() const			{return m_encoding;}
 
 private:

@@ -178,6 +178,10 @@ public:
 			const std::string& content,
 			const DocumentClass& dclass) const=0;
 
+	/// \brief Get the mime type accepted by this segmenter
+	/// \return the mime type string
+	virtual std::string mimeType() const=0;
+
 	/// \brief Create the context used for analyzing multipart or very big documents
 	/// \param[in] dclass description of the content type and encoding to process
 	/// \return the analyzer context (ownership to caller)

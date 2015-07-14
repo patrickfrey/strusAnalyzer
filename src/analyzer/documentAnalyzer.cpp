@@ -48,6 +48,11 @@ DocumentAnalyzer::DocumentAnalyzer( SegmenterInterface* segmenter_)
 	:m_segmenter(segmenter_){}
 
 
+std::string DocumentAnalyzer::mimeType() const
+{
+	return m_segmenter->mimeType();
+}
+
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())

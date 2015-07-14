@@ -30,7 +30,7 @@
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
-#include "strus/segmenter/contentDescription.hpp"
+#include "strus/documentClass.hpp"
 #include <string>
 
 namespace strus
@@ -42,6 +42,11 @@ class Segmenter
 public:
 	Segmenter(){}
 	virtual ~Segmenter(){}
+
+	virtual std::string mimeType() const
+	{
+		return "text/xml";
+	}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);

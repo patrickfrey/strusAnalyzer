@@ -48,6 +48,10 @@ public:
 	/// \brief Destructor
 	virtual ~SegmenterInterface(){}
 
+	/// \brief Get the mime type accepted by this segmenter
+	/// \return the mime type string
+	virtual std::string mimeType() const=0;
+
 	/// \brief Defines an expression for selecting chunks from a document
 	/// \param[in] id identifier of the chunks that match to expression
 	/// \param[in] expression expression for selecting chunks
