@@ -88,6 +88,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine.  <a href="classstrus_1_1DocumentAnalyzerInterface.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a description of the properties of an original document processed by the segmenter.  <a href="classstrus_1_1DocumentClass.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a detector that returns a content description for a document content it recognizes.  <a href="classstrus_1_1DocumentClassDetectorInterface.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1NormalizerFunctionContextInterface.html">NormalizerFunctionContextInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface to the context (state) for the execution of a normalizer for one unit (document,query)  <a href="classstrus_1_1NormalizerFunctionContextInterface.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,6 +139,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a239a20c4750ab1146db053fbc1516049"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">QueryAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a239a20c4750ab1146db053fbc1516049">createQueryAnalyzer</a> ()</td></tr>
 <tr class="memdesc:a239a20c4750ab1146db053fbc1516049"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing queries.  <a href="#a239a20c4750ab1146db053fbc1516049">More...</a><br/></td></tr>
 <tr class="separator:a239a20c4750ab1146db053fbc1516049"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5f0791b0e679312155534865d6d5330"><td class="memItemLeft" align="right" valign="top">const <br class="typebreak"/>
+<a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#ae5f0791b0e679312155534865d6d5330">getDetector_std</a> ()</td></tr>
+<tr class="memdesc:ae5f0791b0e679312155534865d6d5330"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the standard content detector.  <a href="#ae5f0791b0e679312155534865d6d5330">More...</a><br/></td></tr>
+<tr class="separator:ae5f0791b0e679312155534865d6d5330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43a487a0b572e2011a6310321876f3f8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a43a487a0b572e2011a6310321876f3f8">getNormalizer_lowercase</a> ()</td></tr>
 <tr class="memdesc:a43a487a0b572e2011a6310321876f3f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the lower case of the input as result.  <a href="#a43a487a0b572e2011a6310321876f3f8">More...</a><br/></td></tr>
 <tr class="separator:a43a487a0b572e2011a6310321876f3f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,6 +152,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5263f2c622696b0acc86fd693c201c7d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a5263f2c622696b0acc86fd693c201c7d">getNormalizer_convdia</a> ()</td></tr>
 <tr class="memdesc:a5263f2c622696b0acc86fd693c201c7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the conversion of diacritical characters to ascii of the input as result.  <a href="#a5263f2c622696b0acc86fd693c201c7d">More...</a><br/></td></tr>
 <tr class="separator:a5263f2c622696b0acc86fd693c201c7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54a996ab479f8fb6ea0c3481cd36d141"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a54a996ab479f8fb6ea0c3481cd36d141">getNormalizer_date2int</a> ()</td></tr>
+<tr class="memdesc:a54a996ab479f8fb6ea0c3481cd36d141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the conversion of the input date as number (various units configurable base)  <a href="#a54a996ab479f8fb6ea0c3481cd36d141">More...</a><br/></td></tr>
+<tr class="separator:a54a996ab479f8fb6ea0c3481cd36d141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad22bff08716e711bf6a01195c1651d6c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#ad22bff08716e711bf6a01195c1651d6c">getNormalizer_dictmap</a> ()</td></tr>
 <tr class="memdesc:ad22bff08716e711bf6a01195c1651d6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the mapping of the input with a dictionary as result.  <a href="#ad22bff08716e711bf6a01195c1651d6c">More...</a><br/></td></tr>
 <tr class="separator:ad22bff08716e711bf6a01195c1651d6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -261,6 +274,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae5f0791b0e679312155534865d6d5330"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a>* strus::getDetector_std </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the standard content detector. </p>
+<dl class="section return"><dt>Returns</dt><dd>the content detector class </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a5263f2c622696b0acc86fd693c201c7d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -275,6 +306,24 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get the normalizer that returns the conversion of diacritical characters to ascii of the input as result. </p>
+<dl class="section return"><dt>Returns</dt><dd>the normalization function </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a54a996ab479f8fb6ea0c3481cd36d141"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a>* strus::getNormalizer_date2int </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the normalizer that returns the conversion of the input date as number (various units configurable base) </p>
 <dl class="section return"><dt>Returns</dt><dd>the normalization function </dd></dl>
 
 </div>
@@ -409,7 +458,7 @@ Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 22 2015 09:38:38 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

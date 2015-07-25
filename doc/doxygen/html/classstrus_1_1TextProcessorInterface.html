@@ -93,6 +93,12 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html">AggregatorFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">getAggregator</a> (const std::string &amp;name) const =0</td></tr>
 <tr class="memdesc:a91caaf2e2f07a840efa507c080ef9383"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to a statistics collector function object that implements the collection of some counting of document parts.  <a href="#a91caaf2e2f07a840efa507c080ef9383">More...</a><br/></td></tr>
 <tr class="separator:a91caaf2e2f07a840efa507c080ef9383"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af76c31c5908ba4f6dff0598a6b51150c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#af76c31c5908ba4f6dff0598a6b51150c">detectDocumentClass</a> (<a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;dclass, const char *contentBegin, std::size_t contentBeginSize) const =0</td></tr>
+<tr class="memdesc:af76c31c5908ba4f6dff0598a6b51150c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect the document class from a document start chunk and set the content description attributes.  <a href="#af76c31c5908ba4f6dff0598a6b51150c">More...</a><br/></td></tr>
+<tr class="separator:af76c31c5908ba4f6dff0598a6b51150c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34046f20b8d0229a69bddb42b716aafc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a34046f20b8d0229a69bddb42b716aafc">defineDocumentClassDetector</a> (const <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *detector)=0</td></tr>
+<tr class="memdesc:a34046f20b8d0229a69bddb42b716aafc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a content detector.  <a href="#a34046f20b8d0229a69bddb42b716aafc">More...</a><br/></td></tr>
+<tr class="separator:a34046f20b8d0229a69bddb42b716aafc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f3334e52219861cc21110d8b543eafb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a9f3334e52219861cc21110d8b543eafb">defineTokenizer</a> (const std::string &amp;name, const <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *tokenizer)=0</td></tr>
 <tr class="memdesc:a9f3334e52219861cc21110d8b543eafb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a tokenizer by name.  <a href="#a9f3334e52219861cc21110d8b543eafb">More...</a><br/></td></tr>
 <tr class="separator:a9f3334e52219861cc21110d8b543eafb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,6 +213,38 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a34046f20b8d0229a69bddb42b716aafc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::TextProcessorInterface::defineDocumentClassDetector </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *&#160;</td>
+          <td class="paramname"><em>detector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define a content detector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>a static const reference to a tokenizer object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="abd609c9bf4e7c2827d3be2d35a88646a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -290,6 +328,56 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="af76c31c5908ba4f6dff0598a6b51150c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool strus::TextProcessorInterface::detectDocumentClass </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;&#160;</td>
+          <td class="paramname"><em>dclass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>contentBegin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>contentBeginSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Detect the document class from a document start chunk and set the content description attributes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">dclass</td><td>content document class </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">contentBegin</td><td>start chunk of the document with a reasonable size (e.g. max 1K) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true, if the document format was recognized, false else </dd></dl>
 
 </div>
 </div>
@@ -413,7 +501,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jun 22 2015 09:38:38 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
