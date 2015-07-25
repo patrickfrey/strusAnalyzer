@@ -26,39 +26,32 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
+/// \brief Interface for detecting the document class of a content
+/// \file documentClassDetectorInterface.hpp
+#ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
 #include "strus/documentClass.hpp"
+#include <vector>
 #include <string>
 
+/// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+
+/// \brief Defines a detector that returns a content description for a document content it recognizes
+class DocumentClassDetectorInterface
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	/// \brief Destructor
+	virtual ~DocumentClassDetectorInterface(){}
 
-	virtual std::string mimeType() const
-	{
-		return "text/xml";
-	}
-
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
-
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
+	/// \brief Scans the start of a document to detect its classification attributes (mime type, etc.)
+	/// \param[in,out] dclass document class to edit
+	/// \param[in] contentBegin start of content begin chunk
+	/// \param[in] contentBeginSize size of content begin chunk
+	/// \return true, if the document class was recognized
+	/// \note It is assumed that a reasonable size of the document chunk (e.g. 1K) is enough to detect the document class. This is an assumption that is wrong for many MIME types, but it should work for text content. At least it should be enough to recognize the segmenter to use.
+	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
 };
 
 }//namespace

@@ -36,11 +36,15 @@
 namespace strus
 {
 /// \brief Forward declaration
+class DocumentClassDetectorInterface;
+/// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInterface;
+/// \brief Forward declaration
+class DocumentClass;
 
 
 /// \class TextProcessorInterface
@@ -70,6 +74,16 @@ public:
 	/// \brief Get a const reference to a statistics collector function object that implements the collection of some counting of document parts
 	/// \return the statistics collector function reference
 	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const=0;
+
+	/// \brief Detect the document class from a document start chunk and set the content description attributes 
+	/// \param[in,out] dclass content document class
+	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
+	/// \return true, if the document format was recognized, false else
+	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+
+	/// \brief Define a content detector
+	/// \param[in] tokenizer a static const reference to a tokenizer object
+	virtual void defineDocumentClassDetector( const DocumentClassDetectorInterface* detector)=0;
 
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the normalizer to define

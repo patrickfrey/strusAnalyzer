@@ -48,6 +48,11 @@ DocumentAnalyzer::DocumentAnalyzer( SegmenterInterface* segmenter_)
 	:m_segmenter(segmenter_){}
 
 
+std::string DocumentAnalyzer::mimeType() const
+{
+	return m_segmenter->mimeType();
+}
+
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
@@ -66,23 +71,25 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 		FeatureClass featureClass_,
 		const FeatureOptions& options_)
 	:m_name(name_)
-	,m_tokenizer(tokenizer_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	if (m_tokenizer->concatBeforeTokenize())
+	if (tokenizer_->concatBeforeTokenize())
 	{
 		if (m_options.positionBind() != FeatureOptions::BindContent)
 		{
 			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
 		}
 	}
+	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
+	m_normalizerlist.reserve( normalizers_.size());
 	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
 		ci = normalizers_.begin(), ce = normalizers_.end();
 	for (; ci != ce; ++ci)
 	{
 		m_normalizerlist.push_back( *ci);
 	}
+	m_tokenizer.reset( tokenizer_);
 }
 
 void DocumentAnalyzer::defineFeature(
@@ -93,12 +100,12 @@ void DocumentAnalyzer::defineFeature(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const FeatureOptions& options)
 {
-	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
-	if (m_featurear.size() >= MaxNofFeatures)
+	if (m_featurear.size()+1 >= MaxNofFeatures)
 	{
 		throw std::runtime_error( "number of features defined exceeds maximum limit");
 	}
-	m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
+	m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
+	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
 }
 
 void DocumentAnalyzer::defineSubDocument(
@@ -160,11 +167,13 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 	}
 }
 
-analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
+analyzer::Document DocumentAnalyzer::analyze(
+		const std::string& content,
+		const DocumentClass& dclass) const
 {
 	analyzer::Document rt;
 	std::auto_ptr<DocumentAnalyzerContext>
-		analyzerInstance( new DocumentAnalyzerContext( this));
+		analyzerInstance( new DocumentAnalyzerContext( this, dclass));
 	analyzerInstance->putInput( content.c_str(), content.size(), true);
 	if (!analyzerInstance->analyzeNext( rt))
 	{
@@ -173,9 +182,9 @@ analyzer::Document DocumentAnalyzer::analyze( const std::string& content) const
 	return rt;
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext() const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
 {
-	return new DocumentAnalyzerContext( this);
+	return new DocumentAnalyzerContext( this, dclass);
 }
 
 
@@ -346,9 +355,9 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass)
 	:m_analyzer(analyzer_)
-	,m_segmenter(m_analyzer->m_segmenter->createContext())
+	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)
 	,m_eof(false)
 	,m_last_position(0)

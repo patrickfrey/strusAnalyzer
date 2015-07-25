@@ -26,41 +26,16 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include "strus/documentClass.hpp"
-#include <string>
+#include "strus/lib/normalizer_dateconv.hpp"
+#include "private/dll_tags.hpp"
+#include "normalizerDateConv.hpp"
 
-namespace strus
+using namespace strus;
+
+DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_date2int()
 {
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
-{
-public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
+	static const Date2IntNormalizerFunction rt;
+	return &rt;
+}
 
-	virtual std::string mimeType() const
-	{
-		return "text/xml";
-	}
-
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
-
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
-};
-
-}//namespace
-#endif
 

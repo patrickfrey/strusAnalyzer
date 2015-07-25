@@ -4,13 +4,12 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 set(source_files
-	segmenter.cpp
-	libstrus_segmenter_textwolf.cpp
+	standardDocumentClassDetector.cpp
+	libstrus_detector_std.cpp
 )
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 )
 link_directories(
 )
@@ -18,10 +17,9 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf strus_private_utils )
+add_library( strus_detector_std SHARED ${source_files} )
 set_target_properties(
-    strus_segmenter_textwolf
+    strus_detector_std
     PROPERTIES
     DEBUG_POSTFIX "_d"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
@@ -31,6 +29,6 @@ set_target_properties(
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strus_segmenter_textwolf
+install( TARGETS strus_detector_std
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

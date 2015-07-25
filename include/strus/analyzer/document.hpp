@@ -76,6 +76,7 @@ public:
 	{
 		m_attributes.push_back( Attribute( t,v));
 	}
+
 	/// \brief Define a meta data element of the document
 	/// \param[in] t name of the meta data element
 	/// \param[in] v value of the meta data element
@@ -92,6 +93,7 @@ public:
 	{
 		m_searchIndexTerms.push_back( Term( t, v, p));
 	}
+
 	/// \brief Define a forward index term of the document
 	/// \param[in] t type name of the forward index term
 	/// \param[in] v value of the forward index term
@@ -100,6 +102,7 @@ public:
 	{
 		m_forwardIndexTerms.push_back( Term( t, v, p));
 	}
+
 	/// \brief Clear the document content
 	void clear()
 	{

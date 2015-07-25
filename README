@@ -1,7 +1,5 @@
-strusAnalyzer
-=============
+Library for document analysis that splits a document into normalized atomic terms that can be insterted into a search engine for retrieval. Also some functions for analyzing tokens or phrases of the strus query are provided.
+Interface documentation at http://patrickfrey.github.io/strusAnalyzer/doc/doxygen/html/index.html.
 
-Library for document analysis that splits a document into normalized atomic terms that can be insterted into a search engine for retrieval. Also some functions for analysing tokens or phrases of the strus query are provided.
-The project homepage can be found at http://project-strus.net.
-
+Strus project homepage at http://project-strus.net.
 

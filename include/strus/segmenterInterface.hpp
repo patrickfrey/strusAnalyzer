@@ -30,7 +30,7 @@
 /// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
-#include <utility>
+#include <vector>
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -38,6 +38,8 @@ namespace strus
 {
 /// \brief Forward declaration
 class SegmenterContextInterface;
+/// \brief Forward declaration
+class DocumentClass;
 
 /// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
 class SegmenterInterface
@@ -45,6 +47,10 @@ class SegmenterInterface
 public:
 	/// \brief Destructor
 	virtual ~SegmenterInterface(){}
+
+	/// \brief Get the mime type accepted by this segmenter
+	/// \return the mime type string
+	virtual std::string mimeType() const=0;
 
 	/// \brief Defines an expression for selecting chunks from a document
 	/// \param[in] id identifier of the chunks that match to expression
@@ -58,8 +64,9 @@ public:
 	virtual void defineSubSection( int startId, int endId, const std::string& expression)=0;
 
 	/// \brief Creates an instance of the segmenter
+	/// \param[in] dclass description of the document type and encoding to process
 	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterContextInterface* createContext() const=0;
+	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const=0;
 };
 
 }//namespace

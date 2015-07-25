@@ -32,6 +32,7 @@
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/documentClass.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
@@ -106,9 +107,14 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
 
-	virtual analyzer::Document analyze( const std::string& content) const;
+	virtual analyzer::Document analyze(
+			const std::string& content,
+			const DocumentClass& dclass) const;
 
-	virtual DocumentAnalyzerContextInterface* createContext() const;
+	virtual DocumentAnalyzerContextInterface* createContext(
+			const DocumentClass& dclass) const;
+
+	virtual std::string mimeType() const;
 
 public:
 	enum FeatureClass
@@ -241,7 +247,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	explicit DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass);
 
 	virtual ~DocumentAnalyzerContext()
 	{

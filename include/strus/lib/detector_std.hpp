@@ -26,41 +26,22 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#include "strus/segmenterInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
-#include "strus/documentClass.hpp"
-#include <string>
+/// \brief Exported functions of the strus standard content detector library
+/// \file detector_std.hpp
+#ifndef _STRUS_ANALYZER_CONTENT_DETECTOR_STD_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_CONTENT_DETECTOR_STD_LIB_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
-{
-public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
 
-	virtual std::string mimeType() const
-	{
-		return "text/xml";
-	}
+/// \brief Forward declaration
+class DocumentClassDetectorInterface;
 
-	virtual void defineSelectorExpression( int id, const std::string& expression);
-	virtual void defineSubSection( int startId, int endId, const std::string& expression);
+/// \brief Get the standard content detector
+/// \return the content detector class
+const DocumentClassDetectorInterface* getDetector_std();
 
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
-
-private:
-	void addExpression( int id, const std::string& expression);
-
-private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
-};
-
-}//namespace
+}
 #endif
 
