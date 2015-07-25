@@ -106,7 +106,6 @@ public:
 		else
 		{
 			m_srciter.setErrorExit( &eom);
-			m_scanner.setSource( m_srciter);
 		}
 		if (m_itr == m_end) return false;
 		while (m_selitr == m_selend)
