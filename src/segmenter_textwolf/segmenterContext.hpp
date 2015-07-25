@@ -103,6 +103,10 @@ public:
 			m_itr = m_scanner.begin(false);
 			m_end = m_scanner.end();
 		}
+		else
+		{
+			m_srciter.setErrorExit( &eom);
+		}
 		if (m_itr == m_end) return false;
 		while (m_selitr == m_selend)
 		{
