@@ -62,10 +62,11 @@ public:
 	virtual ~SegmenterContextInterface(){}
 
 	/// \brief Feed the segmenter with the next chunk of input to process
-	/// \param[in] chunk pointer to input chunk to process
+	/// \param[in] chunk pointer to input chunk to process (to copy by this)
 	/// \param[in] chunksize size of input chunk to process in bytes
 	/// \param[in] eof true, if this is the last chunk to feed
-	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof)=0;
+	/// \remark the buffer passed to this must be copied by the segmenter, because it is not guaranteed to survive till the next call of putInput.
+	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof)=0;
 
 	/// \brief Fetch the next text segment
 	/// \param[out] id identifier of the expression that addresses the text segment (defined with SegmenterInterface::defineSelectorExpression(int, const std::string&) or with SegmenterInterface::defineSubSection(int,int,const std::string&))
