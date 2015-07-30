@@ -59,6 +59,9 @@ public:
 			const std::string& phraseType,
 			const std::string& content) const;
 
+	virtual std::vector<TermVector> analyzePhraseBulk(
+			const std::vector<Phrase>& phraseBulk) const;
+
 private:
 	class FeatureConfig
 	{

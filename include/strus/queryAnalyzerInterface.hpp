@@ -66,6 +66,40 @@ public:
 	virtual std::vector<analyzer::Term> analyzePhrase(
 			const std::string& phraseType,
 			const std::string& content) const=0;
+
+	/// \brief Definition of a phrase to analyze
+	class Phrase
+	{
+	public:
+		/// \brief Constructor
+		/// \param[in] type_ the phrase type
+		/// \param[in] content_ the phrase content
+		Phrase( const std::string& type_, const std::string& content_)
+			:m_type(type_),m_content(content_){}
+		/// \brief Copy constructor
+		Phrase( const Phrase& o)
+			:m_type(o.m_type),m_content(o.m_content){}
+
+		/// \brief Get the phrase type
+		/// \return the phrase type value
+		const std::string& type() const		{return m_type;}
+		/// \brief Get the phrase content
+		/// \return the phrase content value
+		const std::string& content() const	{return m_content;}
+
+	private:
+		std::string m_type;
+		std::string m_content;
+	};
+
+
+	typedef std::vector<analyzer::Term> TermVector;
+
+	/// \brief Analyze a bulk of phrases
+	/// \param[in] phraseBulk vector of phrase defoinitions to analyze
+	/// \return a vector of analyzed phrases, parallel to the passed phrase bulk
+	virtual std::vector<TermVector> analyzePhraseBulk(
+			const std::vector<Phrase>& phraseBulk) const=0;
 };
 
 }//namespace
