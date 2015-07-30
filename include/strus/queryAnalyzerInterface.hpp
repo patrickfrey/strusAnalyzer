@@ -92,13 +92,10 @@ public:
 		std::string m_content;
 	};
 
-
-	typedef std::vector<analyzer::Term> TermVector;
-
 	/// \brief Analyze a bulk of phrases
 	/// \param[in] phraseBulk vector of phrase defoinitions to analyze
 	/// \return a vector of analyzed phrases, parallel to the passed phrase bulk
-	virtual std::vector<TermVector> analyzePhraseBulk(
+	virtual std::vector<analyzer::TermVector> analyzePhraseBulk(
 			const std::vector<Phrase>& phraseBulk) const=0;
 };
 

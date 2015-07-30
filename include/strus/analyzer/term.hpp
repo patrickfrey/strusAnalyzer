@@ -31,6 +31,7 @@
 #ifndef _STRUS_ANALYZER_TERM_HPP_INCLUDED
 #define _STRUS_ANALYZER_TERM_HPP_INCLUDED
 #include <string>
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -73,6 +74,8 @@ private:
 	std::string m_value;
 	unsigned int m_pos;
 };
+
+typedef std::vector<Term> TermVector;
 
 }}//namespace
 #endif
