@@ -144,5 +144,16 @@ std::vector<analyzer::Term>
 	return rt;
 }
 
+std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
+		const std::vector<Phrase>& phraseBulk) const
+{
+	std::vector<analyzer::TermVector> rt;
+	std::vector<Phrase>::const_iterator pi = phraseBulk.begin(), pe = phraseBulk.end();
+	for (; pi != pe; ++pi)
+	{
+		rt.push_back( analyzePhrase( pi->type(), pi->content()));
+	}
+	return rt;
+}
 
 

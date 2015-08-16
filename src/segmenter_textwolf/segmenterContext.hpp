@@ -33,6 +33,7 @@
 #include "textwolf/xmlpathselect.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
+#include <cstdlib>
 #include <stdint.h>
 #include <setjmp.h>
 
@@ -51,9 +52,18 @@ public:
 		:m_automaton(automaton_)
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_pathselect(automaton_)
-		,m_chunk(0),m_chunksize(0),m_eof(false),m_done(false)
+		,m_chunk(0)
+		,m_chunksize(0)
+		,m_chunkbufsize(0)
+		,m_eof(false)
+		,m_got_eom(true)
 	{
 		m_selitr = m_selend = m_pathselect.end();
+	}
+
+	virtual ~SegmenterContext()
+	{
+		if (m_chunk) std::free( m_chunk);
 	}
 
 	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof)
@@ -62,46 +72,50 @@ public:
 		{
 			throw std::runtime_error("feeded chunk after declared end of input");
 		}
-		if (m_chunk != 0 || !m_scanner.getIterator().endOfChunk())
+		if (!m_got_eom)
 		{
 			throw std::runtime_error("feeded chunk to segmenter while previous chunk is still processed");
 		}
-		m_chunk = chunk;
-		m_chunksize = chunksize;
+		std::size_t chunkallocsize = chunksize + 4;
+		if (chunkallocsize > m_chunkbufsize)
+		{
+			void* chunkmem = std::realloc( m_chunk, chunkallocsize);
+			if (!chunkmem) throw std::bad_alloc();
+			m_chunk = (char*)chunkmem;
+			m_chunkbufsize = chunkallocsize;
+		}
 		m_eof = eof;
+		if (eof)
+		{
+			m_chunksize = chunkallocsize;
+			std::memcpy( m_chunk, chunk, chunksize);
+			std::memset( m_chunk + chunksize, 0, 4);
+		}
+		else
+		{
+			m_chunksize = chunksize;
+			std::memcpy( m_chunk, chunk, chunksize);
+		}
+		m_srciter.putInput( m_chunk, m_chunksize, &m_eom);
+		m_scanner.setSource( m_srciter);
+		m_itr = m_scanner.begin(false);
+		m_end = m_scanner.end();
+		m_got_eom = (m_chunksize == 0);
 	}
 
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 	{
-		jmp_buf eom;
-		if (setjmp(eom) != 0)
+		if (setjmp(m_eom) != 0)
 		{
 			if (m_eof)
 			{
-				if (!m_done)
-				{
-					m_chunk = "";
-					m_chunksize = 1;
-					m_done = true;
-				}
-				else
-				{
-					throw std::runtime_error( "unexpected end of input");
-				}
+				throw std::runtime_error( "unexpected end of input");
 			}
 			else
 			{
+				m_got_eom = true;
 				return false; //... do call the function with the next chunk or exit (eof)
 			}
-		}
-		if (m_chunk)
-		{
-			m_srciter.putInput( m_chunk, m_chunksize, &eom);
-			m_scanner.setSource( m_srciter);
-			m_chunk = 0;
-			m_chunksize = 0;
-			m_itr = m_scanner.begin(false);
-			m_end = m_scanner.end();
 		}
 		if (m_itr == m_end) return false;
 		while (m_selitr == m_selend)
@@ -150,10 +164,12 @@ private:
 	typename XMLScanner::iterator m_end;
 	XMLPathSelect::iterator m_selitr;
 	XMLPathSelect::iterator m_selend;
-	const char* m_chunk;
+	char* m_chunk;
 	std::size_t m_chunksize;
+	std::size_t m_chunkbufsize;
 	bool m_eof;
-	bool m_done;
+	bool m_got_eom;
+	jmp_buf m_eom;
 };
 
 }//namespace
