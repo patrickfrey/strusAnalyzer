@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.0</span>
+   &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
  </tr>
@@ -113,14 +113,14 @@
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterContextInterface.html#a767e7f224a8c19a1170b90de82ce27b6">   62</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html#a767e7f224a8c19a1170b90de82ce27b6">~SegmenterContextInterface</a>(){}</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc">putInput</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* chunk, std::size_t chunksize, <span class="keywordtype">bool</span> eof)=0;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">getNext</a>( <span class="keywordtype">int</span>&amp; <span class="keywordtype">id</span>, <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; pos, <span class="keyword">const</span> <span class="keywordtype">char</span>*&amp; segment, std::size_t&amp; segmentsize)=0;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc">putInput</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* chunk, std::size_t chunksize, <span class="keywordtype">bool</span> eof)=0;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">getNext</a>( <span class="keywordtype">int</span>&amp; <span class="keywordtype">id</span>, <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; pos, <span class="keyword">const</span> <span class="keywordtype">char</span>*&amp; segment, std::size_t&amp; segmentsize)=0;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="namespacestrus_html_a05fcc28752b8350a51a94f3149f38dfd"><div class="ttname"><a href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">strus::SegmenterPosition</a></div><div class="ttdeci">int64_t SegmenterPosition</div><div class="ttdoc">Byte position in scanned source. </div><div class="ttdef"><b>Definition:</b> segmenterContextInterface.hpp:48</div></div>
 <div class="ttc" id="classstrus_1_1SegmenterContextInterface_html_a51026fdd4e0cc32b5215f420256e4ddc"><div class="ttname"><a href="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc">strus::SegmenterContextInterface::putInput</a></div><div class="ttdeci">virtual void putInput(const char *chunk, std::size_t chunksize, bool eof)=0</div><div class="ttdoc">Feed the segmenter with the next chunk of input to process. </div></div>
 <div class="ttc" id="classstrus_1_1SegmenterContextInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterContextInterface.html">strus::SegmenterContextInterface</a></div><div class="ttdoc">Defines an instance of a segmenter program. </div><div class="ttdef"><b>Definition:</b> segmenterContextInterface.hpp:58</div></div>
@@ -130,7 +130,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 16 2015 21:07:30 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

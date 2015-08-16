@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.0</span>
+   &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
  </tr>
@@ -113,24 +113,49 @@
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::Term&gt; <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">analyzePhrase</a>(</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keyword">const</span> std::string&amp; phraseType,</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">   71</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a958cfa5c0ee25e01b967d74acf26b02d">   77</a></span>&#160;                <a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a958cfa5c0ee25e01b967d74acf26b02d">Phrase</a>( <span class="keyword">const</span> std::string&amp; type_, <span class="keyword">const</span> std::string&amp; content_)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                        :m_type(type_),m_content(content_){}</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a1c82bfa5b8f293dd27a26a85dd56c031">   80</a></span>&#160;                <a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a1c82bfa5b8f293dd27a26a85dd56c031">Phrase</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a>&amp; o)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        :m_type(o.m_type),m_content(o.m_content){}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a15d769a2624a0df24fa27e244942c214">   85</a></span>&#160;                <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a15d769a2624a0df24fa27e244942c214">type</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_type;}</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#aa5b36486dfd89628fa8e34cb28e95913">   88</a></span>&#160;                <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#aa5b36486dfd89628fa8e34cb28e95913">content</a>()<span class="keyword"> const      </span>{<span class="keywordflow">return</span> m_content;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                std::string m_type;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                std::string m_content;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        };</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::TermVector&gt; <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">analyzePhraseBulk</a>(</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                        <span class="keyword">const</span> std::vector&lt;Phrase&gt;&amp; phraseBulk) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;};</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_1_1Phrase_html_a958cfa5c0ee25e01b967d74acf26b02d"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a958cfa5c0ee25e01b967d74acf26b02d">strus::QueryAnalyzerInterface::Phrase::Phrase</a></div><div class="ttdeci">Phrase(const std::string &amp;type_, const std::string &amp;content_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:77</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_1_1Phrase_html_a1c82bfa5b8f293dd27a26a85dd56c031"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a1c82bfa5b8f293dd27a26a85dd56c031">strus::QueryAnalyzerInterface::Phrase::Phrase</a></div><div class="ttdeci">Phrase(const Phrase &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:80</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a7432bf4754e5f339ec2671a439a2170f"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">strus::QueryAnalyzerInterface::analyzePhrase</a></div><div class="ttdeci">virtual std::vector&lt; analyzer::Term &gt; analyzePhrase(const std::string &amp;phraseType, const std::string &amp;content) const =0</div><div class="ttdoc">Analyze a single phrase of query. </div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_1_1Phrase_html_a15d769a2624a0df24fa27e244942c214"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a15d769a2624a0df24fa27e244942c214">strus::QueryAnalyzerInterface::Phrase::type</a></div><div class="ttdeci">const std::string &amp; type() const </div><div class="ttdoc">Get the phrase type. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:85</div></div>
 <div class="ttc" id="normalizerFunctionInstanceInterface_8hpp_html"><div class="ttname"><a href="normalizerFunctionInstanceInterface_8hpp.html">normalizerFunctionInstanceInterface.hpp</a></div><div class="ttdoc">Interface for a parameterized normalizer function. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_af5e654e1e8d51ee148bdc9a5fa8670dc"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#af5e654e1e8d51ee148bdc9a5fa8670dc">strus::QueryAnalyzerInterface::definePhraseType</a></div><div class="ttdeci">virtual void definePhraseType(const std::string &amp;phraseType, const std::string &amp;featureType, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare how a set of query features is produced out from a phrase of a certain type. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a8970fb0702519b73bf1ac15fe57b4ad1"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">strus::QueryAnalyzerInterface::~QueryAnalyzerInterface</a></div><div class="ttdeci">virtual ~QueryAnalyzerInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:48</div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInstanceInterface.html">strus::TokenizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for tokenization. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInstanceInterface.hpp:41</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></div><div class="ttdoc">Defines a program for analyzing chunks of a query. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:44</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a14e58bfc43096a09d4cd0f3d54af3ed8"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">strus::QueryAnalyzerInterface::analyzePhraseBulk</a></div><div class="ttdeci">virtual std::vector&lt; analyzer::TermVector &gt; analyzePhraseBulk(const std::vector&lt; Phrase &gt; &amp;phraseBulk) const =0</div><div class="ttdoc">Analyze a bulk of phrases. </div></div>
 <div class="ttc" id="tokenizerFunctionInstanceInterface_8hpp_html"><div class="ttname"><a href="tokenizerFunctionInstanceInterface_8hpp.html">tokenizerFunctionInstanceInterface.hpp</a></div><div class="ttdoc">Interface for a parameterized tokenizer function. </div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_1_1Phrase_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">strus::QueryAnalyzerInterface::Phrase</a></div><div class="ttdoc">Definition of a phrase to analyze. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:71</div></div>
 <div class="ttc" id="term_8hpp_html"><div class="ttname"><a href="term_8hpp.html">term.hpp</a></div><div class="ttdoc">Structure describing a typed document term. </div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_1_1Phrase_html_aa5b36486dfd89628fa8e34cb28e95913"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#aa5b36486dfd89628fa8e34cb28e95913">strus::QueryAnalyzerInterface::Phrase::content</a></div><div class="ttdeci">const std::string &amp; content() const </div><div class="ttdoc">Get the phrase content. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:88</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 16 2015 21:07:30 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

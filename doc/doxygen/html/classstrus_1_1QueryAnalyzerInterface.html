@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.0</span>
+   &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
  </tr>
@@ -58,6 +58,7 @@
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classstrus_1_1QueryAnalyzerInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -70,6 +71,12 @@
 
 <p><code>#include &lt;<a class="el" href="queryAnalyzerInterface_8hpp_source.html">queryAnalyzerInterface.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Definition of a phrase to analyze.  <a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8970fb0702519b73bf1ac15fe57b4ad1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a> ()</td></tr>
@@ -82,6 +89,10 @@ Public Member Functions</h2></td></tr>
 &lt; <a class="el" href="classstrus_1_1analyzer_1_1Term.html">analyzer::Term</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">analyzePhrase</a> (const std::string &amp;phraseType, const std::string &amp;content) const =0</td></tr>
 <tr class="memdesc:a7432bf4754e5f339ec2671a439a2170f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze a single phrase of query.  <a href="#a7432bf4754e5f339ec2671a439a2170f">More...</a><br/></td></tr>
 <tr class="separator:a7432bf4754e5f339ec2671a439a2170f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="memItemLeft" align="right" valign="top">virtual std::vector<br class="typebreak"/>
+&lt; <a class="el" href="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0">analyzer::TermVector</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">analyzePhraseBulk</a> (const std::vector&lt; <a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a> &gt; &amp;phraseBulk) const =0</td></tr>
+<tr class="memdesc:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze a bulk of phrases.  <a href="#a14e58bfc43096a09d4cd0f3d54af3ed8">More...</a><br/></td></tr>
+<tr class="separator:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a program for analyzing chunks of a query. </p>
@@ -156,6 +167,39 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a14e58bfc43096a09d4cd0f3d54af3ed8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0">analyzer::TermVector</a>&gt; strus::QueryAnalyzerInterface::analyzePhraseBulk </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>phraseBulk</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Analyze a bulk of phrases. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">phraseBulk</td><td>vector of phrase defoinitions to analyze </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a vector of analyzed phrases, parallel to the passed phrase bulk </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="af5e654e1e8d51ee148bdc9a5fa8670dc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -221,7 +265,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 16 2015 21:07:30 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

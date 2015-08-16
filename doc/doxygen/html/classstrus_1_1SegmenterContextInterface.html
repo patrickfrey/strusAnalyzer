@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.0</span>
+   &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
  </tr>
@@ -213,12 +213,13 @@ the segments must be delivered in ascending order of positions. Segments with sa
 <p>Feed the segmenter with the next chunk of input to process. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">chunk</td><td>pointer to input chunk to process </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">chunk</td><td>pointer to input chunk to process (to copy by this) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">chunksize</td><td>size of input chunk to process in bytes </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">eof</td><td>true, if this is the last chunk to feed </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section remark"><dt>Remarks</dt><dd>the buffer passed to this must be copied by the segmenter, because it is not guaranteed to survive till the next call of putInput. </dd></dl>
 
 </div>
 </div>
@@ -229,7 +230,7 @@ the segments must be delivered in ascending order of positions. Segments with sa
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 25 2015 12:20:39 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 16 2015 21:07:30 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
