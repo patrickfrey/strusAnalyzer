@@ -240,7 +240,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	}
 }
 
-void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, bool samePosition)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 
@@ -277,28 +277,28 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		case DocumentAnalyzer::FeatSearchIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				ti = tokens.begin(), te = tokens.end();
+				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
 				m_searchTerms.push_back(
 					analyzer::Term(
 						feat.m_config->name(),
 						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + ti->docpos));
+						rel_position + (samePosition?ts->docpos:ti->docpos)));
 			}
 			break;
 		}
 		case DocumentAnalyzer::FeatForwardIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				ti = tokens.begin(), te = tokens.end();
+				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
 				m_forwardTerms.push_back(
 					analyzer::Term(
 						feat.m_config->name(),
 						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + ti->docpos));
+						rel_position + (samePosition?ts->docpos:ti->docpos)));
 			}
 			break;
 		}
@@ -327,7 +327,7 @@ void DocumentAnalyzerContext::processConcatenated(
 	for (; ci != ce; ++ci)
 	{
 		processDocumentSegment(
-			res, ci->first, ci->second.position, ci->second.content.c_str(), ci->second.content.size());
+			res, ci->first, ci->second.position, ci->second.content.c_str(), ci->second.content.size(), false);
 	}
 }
 
@@ -410,7 +410,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						= (std::size_t)(m_curr_position - m_start_position);
 					for (; si != se; ++si)
 					{
-						processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+						processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
 					}
 					m_succChunks.clear();
 
@@ -450,13 +450,13 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 								= (std::size_t)(m_curr_position - m_start_position);
 							for (; si != se; ++si)
 							{
-								processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+								processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
 							}
 							m_succChunks.clear();
 
 							// process this chunk:
 							m_last_position = m_curr_position;
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
+							processDocumentSegment( doc, featidx, rel_position, elem, elemsize, false);
 							break;
 						}
 						case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
@@ -468,7 +468,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						{
 							std::size_t rel_position
 								= (std::size_t)(m_last_position - m_start_position);
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
+							processDocumentSegment( doc, featidx, rel_position, elem, elemsize, true);
 							break;
 						}
 					}
@@ -494,7 +494,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		= (std::size_t)(m_curr_position - m_start_position);
 	for (; si != se; ++si)
 	{
-		processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
+		processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
 	}
 
 	// process concatenated chunks:

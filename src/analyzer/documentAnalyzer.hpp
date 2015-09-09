@@ -262,7 +262,8 @@ private:
 	void clearTermMaps();
 	void mapPositions( analyzer::Document& res) const;
 	void mapStatistics( analyzer::Document& res) const;
-	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
+	///\param[in] samePosition true, if all elements get the same position (bind predecessor, bind successor)
+	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, bool samePosition);
 	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void processConcatenated( analyzer::Document& res);
 
