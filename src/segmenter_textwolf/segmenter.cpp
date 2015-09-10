@@ -189,7 +189,7 @@ SegmenterContextInterface* Segmenter::createContext( const DocumentClass& dclass
 			if (*cc == '-')
 			{
 				++cc;
-				if (*cc >= '1' && *cc >= '9' && cc[1] == '\0')
+				if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
 				{
 					codepage = *cc - '0';
 				}
