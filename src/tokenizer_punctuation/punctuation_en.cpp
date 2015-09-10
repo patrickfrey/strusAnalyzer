@@ -1094,16 +1094,7 @@ std::vector<analyzer::Token>
 		}
 		else if (ch0 == '.')
 		{
-			textwolf::UChar ch1 = scanner.chr(1);
-			if (isDigit( ch1))
-			{
-				// dot in a number belongs to the number
-#ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ABBREV " << scanner.tostring() << std::endl;
-#endif
-				continue;
-			}
-			if (isDigit( ch1) || wordlen == 1)
+			if (wordlen == 1)
 			{
 				// single characters followed by a dot.
 #ifdef STRUS_LOWLEVEL_DEBUG
@@ -1111,7 +1102,43 @@ std::vector<analyzer::Token>
 #endif
 				continue;
 			}
-			if (isAlpha( ch1))
+			textwolf::UChar ch1 = scanner.chr(1);
+			if (isDigit( ch1))
+			{
+				if (wordlen == 2 && isDigit(scanner.chr(2)))
+				{
+					// two digits followed by a dot
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				// lookahead for number (dot part of number)
+				wordlen = scanner.wordlen();
+				scanner.skip();
+				ch0 = scanner.chr(0);
+				if (0==ch0)
+				{
+					// push punctuation for other case for previous character position (end of file)
+					rt.push_back( analyzer::Token( scanner.pos()-1, scanner.pos()-1, 1));
+					break;
+				}
+				if (isDigit( ch0))
+				{
+					// dot in a number belongs to the number
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "ABBREV " << scanner.tostring() << std::endl;
+#endif
+					continue;
+				}
+				// push punctuation for other case for previous character position (lookahead)
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+#endif
+				rt.push_back( analyzer::Token( scanner.pos()-1, scanner.pos()-1, 1));
+				continue;
+			}
+			else if (isAlpha( ch1))
 			{
 				// Check, if it is an abbreviation listed in the dictonary:
 				char word[ CharWindow::NofPrevChar+1];
