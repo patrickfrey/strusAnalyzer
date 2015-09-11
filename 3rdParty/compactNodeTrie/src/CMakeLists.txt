@@ -13,7 +13,7 @@ include_directories(
 )
 
 # -------------------------------------------
-# SNOWBALL STEMMER LIBRARY
+# COMPACT NODE TRIE LIBRARY
 # -------------------------------------------
 add_library( compactnodetrie_static STATIC ${source_files})
 
