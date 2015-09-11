@@ -29,24 +29,23 @@
 #ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
+#include "strus/segmenterInstanceInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "strus/documentClass.hpp"
 #include <string>
 
 namespace strus
 {
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
-class Segmenter
-	:public SegmenterInterface
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
+
+class SegmenterInstance
+	:public SegmenterInstanceInterface
 {
 public:
-	Segmenter(){}
-	virtual ~Segmenter(){}
-
-	virtual std::string mimeType() const
-	{
-		return "text/xml";
-	}
+	SegmenterInstance( AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
+	virtual ~SegmenterInstance(){}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
@@ -59,6 +58,23 @@ private:
 private:
 	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	Automaton m_automaton;
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+
+class Segmenter
+	:public SegmenterInterface
+{
+public:
+	Segmenter(){}
+	virtual ~Segmenter(){}
+
+	virtual const char* mimeType() const
+	{
+		return "text/xml";
+	}
+
+	virtual SegmenterInstanceInterface* createInstance( AnalyzerErrorBufferInterface* errorhnd) const;
 };
 
 }//namespace

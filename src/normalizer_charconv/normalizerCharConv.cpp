@@ -27,6 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "normalizerCharConv.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/utils.hpp"
@@ -46,7 +47,7 @@ public:
 	}
 
 	void load( ConvType type);
-	std::string rewrite( const char* src, std::size_t srcsize) const;
+	std::string rewrite( const char* src, std::size_t srcsize, AnalyzerErrorBufferInterface* errorhnd) const;
 
 private:
 	void set( unsigned int chr, const char* value);
@@ -65,34 +66,36 @@ class CharMapNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	CharMapNormalizerFunctionContext( const CharMap* map_)
-		:m_map( map_){}
+	CharMapNormalizerFunctionContext( const CharMap* map_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_map( map_),m_errorhnd(errorhnd){}
 	
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize)
 	{
-		return m_map->rewrite( src, srcsize);
+		return m_map->rewrite( src, srcsize, m_errorhnd);
 	}
 
 private:
 	const CharMap* m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class CharMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	CharMapNormalizerInstance( CharMap::ConvType maptype)
-		:m_map(maptype){}
+	CharMapNormalizerInstance( CharMap::ConvType maptype, AnalyzerErrorBufferInterface* errorhnd)
+		:m_map(maptype),m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new CharMapNormalizerFunctionContext( &m_map);
+		return new CharMapNormalizerFunctionContext( &m_map, m_errorhnd);
 	}
 
 private:
 	CharMap m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -392,61 +395,115 @@ void CharMap::load( ConvType type)
 	}
 }
 
-std::string CharMap::rewrite( const char* src, std::size_t srcsize) const
+std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErrorBufferInterface* errorhnd) const
 {
-	std::string rt;
-	textwolf::charset::UTF8 utf8;
-	char buf[16];
-	unsigned int bufpos;
-	textwolf::CStringIterator itr( src, srcsize);
-
-	while (*itr)
+	try
 	{
-		bufpos = 0;
-		textwolf::UChar value = utf8.value( buf, bufpos, itr);
-		std::map<unsigned int,std::size_t>::const_iterator mi = m_map.find( value);
-		if (mi == m_map.end())
+		std::string rt;
+		textwolf::charset::UTF8 utf8;
+		char buf[16];
+		unsigned int bufpos;
+		textwolf::CStringIterator itr( src, srcsize);
+	
+		while (*itr)
 		{
-			rt.append( buf, bufpos);
+			bufpos = 0;
+			textwolf::UChar value = utf8.value( buf, bufpos, itr);
+			std::map<unsigned int,std::size_t>::const_iterator mi = m_map.find( value);
+			if (mi == m_map.end())
+			{
+				rt.append( buf, bufpos);
+			}
+			else
+			{
+				rt.append( m_strings.c_str() + mi->second);
+			}
+		}
+		return rt;
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "memory allocation error in normalizer");
+		return 0;
+	}
+	catch (const std::runtime_error& err)
+	{
+		errorhnd->report( std::string(err.what()) + " in normalizer");
+		return 0;
+	}
+	catch (...)
+	{
+		errorhnd->report( "uncaught exception in normalizer");
+		return 0;
+	}
+}
+
+NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+{
+	if (args.size())
+	{
+		errorhnd->report( "unexpected arguments passed to normalizer 'lc'");
+		return 0;
+	}
+	try
+	{
+		return new CharMapNormalizerInstance( CharMap::Lowercase, errorhnd);
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in 'lc'");
+		return 0;
+	}
+}
+
+NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+{
+	if (args.size())
+	{
+		errorhnd->report( "unexpected arguments passed to normalizer 'uc'");
+		return 0;
+	}
+	try
+	{
+		return new CharMapNormalizerInstance( CharMap::Uppercase, errorhnd);
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in 'uc'");
+		return 0;
+	}
+}
+
+NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+{
+	try
+	{
+		if (args.size() > 1)
+		{
+			errorhnd->report( "too many arguments passed to normalizer 'convdia'");
+			return 0;
+		}
+		if (args.size() == 0)
+		{
+			return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, errorhnd);
 		}
 		else
 		{
-			rt.append( m_strings.c_str() + mi->second);
+			std::string language_lo = utils::tolower( args[0]);
+			if (language_lo == "de")
+			{
+				return new CharMapNormalizerInstance( CharMap::DiacriticalGerman, errorhnd);
+			}
+			else
+			{
+				return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, errorhnd);
+			}
 		}
 	}
-	return rt;
-}
-
-NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
-{
-	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'lc'");
-	return new CharMapNormalizerInstance( CharMap::Lowercase);
-}
-
-NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
-{
-	if (args.size()) throw std::runtime_error( "unexpected arguments passed to normalizer 'uc'");
-	return new CharMapNormalizerInstance( CharMap::Uppercase);
-}
-
-NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
-{
-	if (args.size() > 1) throw std::runtime_error( "too many arguments passed to normalizer 'convdia'");
-	if (args.size() == 0)
+	catch (const std::bad_alloc&)
 	{
-		return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown);
-	}
-	else
-	{
-		std::string language_lo = utils::tolower( args[0]);
-		if (language_lo == "de")
-		{
-			return new CharMapNormalizerInstance( CharMap::DiacriticalGerman);
-		}
-		else
-		{
-			return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown);
-		}
+		errorhnd->report( "out of memory");
+		return 0;
 	}
 }
 

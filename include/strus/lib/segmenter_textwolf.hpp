@@ -38,9 +38,9 @@ namespace strus {
 /// \brief Forward declaration
 class SegmenterInterface;
 
-/// \brief Create a document XML segmenter based on textwolf
+/// \brief Get a document XML segmenter based on textwolf
 /// \return the segmenter
-SegmenterInterface* createSegmenter_textwolf();
+const SegmenterInterface* getSegmenter_textwolf();
 
 }//namespace
 #endif

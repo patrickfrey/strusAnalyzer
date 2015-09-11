@@ -41,6 +41,8 @@ namespace strus
 class TextProcessorInterface;
 /// \brief Forward declaration
 class NormalizerFunctionInstanceInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \class NormalizerFunctionInterface
 /// \brief Interface for the normalizer constructor
@@ -53,7 +55,8 @@ public:
 	/// \brief Create a parameterizable normalizer function instance
 	/// \param[in] args arguments for the normalizer function
 	/// \param[in] tp text processor reference (for loading resources)
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp, AnalyzerErrorBufferInterface* errorhnd) const=0;
 };
 
 }//namespace

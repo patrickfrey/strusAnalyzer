@@ -30,6 +30,7 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "documentAnalyzer.hpp"
 #include "queryAnalyzer.hpp"
 #include "private/dll_tags.hpp"
@@ -38,15 +39,15 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( SegmenterInterface* segmenter)
+	strus::createDocumentAnalyzer( SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd)
 {
-	return new DocumentAnalyzer( segmenter);
+	return new DocumentAnalyzer( segmenter, errorhnd);
 }
 
 
-DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer()
+DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return new QueryAnalyzer();
+	return new QueryAnalyzer( errorhnd);
 }
 
 

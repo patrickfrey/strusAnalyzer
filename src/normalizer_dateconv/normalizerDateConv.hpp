@@ -37,6 +37,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class Date2IntNormalizerFunction
 	:public NormalizerFunctionInterface
@@ -44,7 +46,7 @@ class Date2IntNormalizerFunction
 public:
 	Date2IntNormalizerFunction(){}
 
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
 };
 
 }//namespace

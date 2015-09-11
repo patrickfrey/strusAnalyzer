@@ -40,6 +40,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class DictMapNormalizerFunction
 	:public NormalizerFunctionInterface
@@ -47,7 +49,7 @@ class DictMapNormalizerFunction
 public:
 	DictMapNormalizerFunction(){}
 
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
 };
 
 }//namespace

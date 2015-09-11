@@ -29,6 +29,7 @@
 #ifndef _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #define _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "segmenter.hpp"
 #include "textwolf/xmlpathselect.hpp"
 #include "textwolf/charset.hpp"
@@ -48,7 +49,7 @@ public:
 	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
 public:
-	explicit SegmenterContext( const Automaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
+	explicit SegmenterContext( AnalyzerErrorBufferInterface* errorhnd, const Automaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_automaton(automaton_)
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_pathselect(automaton_)
@@ -57,6 +58,7 @@ public:
 		,m_chunkbufsize(0)
 		,m_eof(false)
 		,m_got_eom(true)
+		,m_errorhnd(errorhnd)
 	{
 		m_selitr = m_selend = m_pathselect.end();
 	}
@@ -70,17 +72,23 @@ public:
 	{
 		if (m_eof)
 		{
-			throw std::runtime_error("feeded chunk after declared end of input");
+			m_errorhnd->report( "feeded chunk after declared end of input");
+			return;
 		}
 		if (!m_got_eom)
 		{
-			throw std::runtime_error("feeded chunk to segmenter while previous chunk is still processed");
+			m_errorhnd->report( "feeded chunk to segmenter while previous chunk is still processed");
+			return;
 		}
 		std::size_t chunkallocsize = chunksize + 4;
 		if (chunkallocsize > m_chunkbufsize)
 		{
 			void* chunkmem = std::realloc( m_chunk, chunkallocsize);
-			if (!chunkmem) throw std::bad_alloc();
+			if (!chunkmem)
+			{
+				m_errorhnd->report( "out of memory in 'textwolf' segmenter");
+				return;
+			}
 			m_chunk = (char*)chunkmem;
 			m_chunkbufsize = chunkallocsize;
 		}
@@ -109,7 +117,8 @@ public:
 		{
 			if (m_eof)
 			{
-				throw std::runtime_error( "unexpected end of input");
+				m_errorhnd->report( "unexpected end of input");
+				return false;
 			}
 			else
 			{
@@ -128,7 +137,8 @@ public:
 			{
 				const char* errstr = "";
 				m_scanner.getError( &errstr);
-				throw std::runtime_error( std::string( "error in XML document: ") + errstr);
+				m_errorhnd->report( std::string( "error in XML document: ") + errstr);
+				return false;
 			}
 			else if (et == XMLScanner::Exit)
 			{
@@ -170,6 +180,7 @@ private:
 	bool m_eof;
 	bool m_got_eom;
 	jmp_buf m_eom;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

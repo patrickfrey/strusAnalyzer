@@ -33,8 +33,9 @@
 
 using namespace strus;
 
-DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf()
+DLL_PUBLIC const SegmenterInterface* strus::getSegmenter_textwolf()
 {
-	return new Segmenter();
+	static const Segmenter rt;
+	return &rt;
 }
 

@@ -35,6 +35,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class PunctuationTokenizerFunctionContext_en
 	:public TokenizerFunctionContextInterface
@@ -42,8 +44,9 @@ class PunctuationTokenizerFunctionContext_en
 public:
 	PunctuationTokenizerFunctionContext_en(
 			const conotrie::CompactNodeTrie* abbrevDict_,
-			const CharTable* punctuation_char_)
-		:m_abbrevDict(abbrevDict_),m_punctuation_char(punctuation_char_){}
+			const CharTable* punctuation_char_,
+			AnalyzerErrorBufferInterface* errorhnd)
+		:m_abbrevDict(abbrevDict_),m_punctuation_char(punctuation_char_),m_errorhnd(errorhnd){}
 
 	inline bool isPunctuation( textwolf::UChar ch)
 	{
@@ -55,27 +58,28 @@ public:
 private:
 	const conotrie::CompactNodeTrie* m_abbrevDict;
 	const CharTable* m_punctuation_char;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class PunctuationTokenizerInstance_en
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	PunctuationTokenizerInstance_en( const char* punctuationCharList);
+	PunctuationTokenizerInstance_en(
+			const char* punctuationCharList,
+			AnalyzerErrorBufferInterface* errorhnd);
 
 	virtual bool concatBeforeTokenize() const
 	{
 		return true;
 	}
 
-	TokenizerFunctionContextInterface* createFunctionContext() const
-	{
-		return new PunctuationTokenizerFunctionContext_en( &m_abbrevDict, &m_punctuation_char);
-	}
+	TokenizerFunctionContextInterface* createFunctionContext() const;
 
 private:
 	conotrie::CompactNodeTrie m_abbrevDict;
 	CharTable m_punctuation_char;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

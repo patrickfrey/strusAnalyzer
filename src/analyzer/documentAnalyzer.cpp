@@ -33,6 +33,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
@@ -44,14 +45,9 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( SegmenterInterface* segmenter_)
-	:m_segmenter(segmenter_){}
+DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
+	:m_segmenter(segmenter_->createInstance(errorhnd)),m_errorhnd(errorhnd){}
 
-
-std::string DocumentAnalyzer::mimeType() const
-{
-	return m_segmenter->mimeType();
-}
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
@@ -100,25 +96,55 @@ void DocumentAnalyzer::defineFeature(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const FeatureOptions& options)
 {
-	if (m_featurear.size()+1 >= MaxNofFeatures)
+	try
 	{
-		throw std::runtime_error( "number of features defined exceeds maximum limit");
+		if (m_featurear.size()+1 >= MaxNofFeatures)
+		{
+			m_errorhnd->report( "number of features defined exceeds maximum limit");
+		}
+		m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
+		m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
 	}
-	m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
-	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in define feature");
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in define feature");
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in define feature");
+	}
 }
 
 void DocumentAnalyzer::defineSubDocument(
 		const std::string& subDocumentTypeName,
 		const std::string& selectexpr)
 {
-	unsigned int subDocumentType = m_subdoctypear.size();
-	m_subdoctypear.push_back( subDocumentTypeName);
-	if (subDocumentType >= MaxNofSubDocuments)
+	try
 	{
-		throw std::runtime_error( "too many sub documents defined");
+		unsigned int subDocumentType = m_subdoctypear.size();
+		m_subdoctypear.push_back( subDocumentTypeName);
+		if (subDocumentType >= MaxNofSubDocuments)
+		{
+			throw std::runtime_error( "too many sub documents defined");
+		}
+		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
 	}
-	m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in define sub document");
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in define sub document");
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in define sub document");
+	}
 }
 
 
@@ -171,20 +197,56 @@ analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
 		const DocumentClass& dclass) const
 {
-	analyzer::Document rt;
-	std::auto_ptr<DocumentAnalyzerContext>
-		analyzerInstance( new DocumentAnalyzerContext( this, dclass));
-	analyzerInstance->putInput( content.c_str(), content.size(), true);
-	if (!analyzerInstance->analyzeNext( rt))
+	try
 	{
-		throw std::runtime_error( "analyzed content incomplete or empty");
+		analyzer::Document rt;
+		std::auto_ptr<DocumentAnalyzerContext>
+			analyzerInstance( new DocumentAnalyzerContext( this, dclass, m_errorhnd));
+		analyzerInstance->putInput( content.c_str(), content.size(), true);
+		if (!analyzerInstance->analyzeNext( rt))
+		{
+			throw std::runtime_error( "analyzed content incomplete or empty");
+		}
+		return rt;
 	}
-	return rt;
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in define sub document");
+		return analyzer::Document();
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in define sub document");
+		return analyzer::Document();
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in define sub document");
+		return analyzer::Document();
+	}
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
 {
-	return new DocumentAnalyzerContext( this, dclass);
+	try
+	{
+		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
+	}
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in create analyzer context");
+		return 0;
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in create analyzer context");
+		return 0;
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in create analyzer context");
+		return 0;
+	}
 }
 
 
@@ -355,7 +417,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)
@@ -363,6 +425,7 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_last_position(0)
 	,m_curr_position(0)
 	,m_start_position(0)
+	,m_errorhnd(errorhnd)
 {
 	m_subdocstack.push_back( analyzer::Document());
 }
@@ -375,140 +438,158 @@ void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize
 
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
-	if (m_subdocstack.empty())
+	try
 	{
-		return false;
-	}
-	bool have_document = false;
-	doc.clear();
-	m_subdocstack.back().swap( doc);
-	m_subdocstack.pop_back();
-	const char* elem = 0;
-	std::size_t elemsize = 0;
-	int featidx = 0;
-
-	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
-	{
-		try
+		if (m_subdocstack.empty())
 		{
-			if (featidx >= EndOfSubDocument)
-			{
-				//... start or end of document marker
-				if (featidx == EndOfSubDocument)
-				{
-					//... end of sub document -> out of loop and return document
-					have_document = true;
-					break;
-				}
-				else
-				{
-					// process chunks bound to successor not processed yet (without successor):
-					std::vector<SuccPositionChunk>::const_iterator
-						si = m_succChunks.begin(), se = m_succChunks.end();
-					std::size_t rel_position
-						= (std::size_t)(m_curr_position - m_start_position);
-					for (; si != se; ++si)
-					{
-						processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
-					}
-					m_succChunks.clear();
-
-					// process what is left to process for the current sub document:
-					processConcatenated( doc);
-					mapPositions( doc);
-					mapStatistics( doc);
-					clearTermMaps();
-
-					// create new sub document:
-					m_subdocstack.push_back( doc);
-					doc.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
-					m_start_position = m_curr_position;
-				}
-			}
-			else
-			{
-				const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
-
-				if (feat.tokenizer()->concatBeforeTokenize())
-				{
-					// concat chunks that need to be concatenated before tokenization:
-					std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-					concatDocumentSegment( featidx, rel_position, elem, elemsize);
-					continue;
-				}
-				else
-				{
-					switch (feat.options().positionBind())
-					{
-						case DocumentAnalyzerInterface::FeatureOptions::BindContent:
-						{
-							// process chunks bound to successor (this chunk):
-							std::vector<SuccPositionChunk>::const_iterator
-								si = m_succChunks.begin(), se = m_succChunks.end();
-							std::size_t rel_position
-								= (std::size_t)(m_curr_position - m_start_position);
-							for (; si != se; ++si)
-							{
-								processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
-							}
-							m_succChunks.clear();
-
-							// process this chunk:
-							m_last_position = m_curr_position;
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize, false);
-							break;
-						}
-						case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
-						{
-							m_succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
-							break;
-						}
-						case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
-						{
-							std::size_t rel_position
-								= (std::size_t)(m_last_position - m_start_position);
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize, true);
-							break;
-						}
-					}
-				}
-			}
+			return false;
 		}
-		catch (const std::runtime_error& err)
-		{
-			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
-		}
-	}
-	if (!m_eof && !have_document)
-	{
-		m_subdocstack.push_back( analyzer::Document());
+		bool have_document = false;
+		doc.clear();
 		m_subdocstack.back().swap( doc);
+		m_subdocstack.pop_back();
+		const char* elem = 0;
+		std::size_t elemsize = 0;
+		int featidx = 0;
+	
+		// [1] Scan the document and push the normalized tokenization of the elements to the result:
+		while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
+		{
+			try
+			{
+				if (featidx >= EndOfSubDocument)
+				{
+					//... start or end of document marker
+					if (featidx == EndOfSubDocument)
+					{
+						//... end of sub document -> out of loop and return document
+						have_document = true;
+						break;
+					}
+					else
+					{
+						// process chunks bound to successor not processed yet (without successor):
+						std::vector<SuccPositionChunk>::const_iterator
+							si = m_succChunks.begin(), se = m_succChunks.end();
+						std::size_t rel_position
+							= (std::size_t)(m_curr_position - m_start_position);
+						for (; si != se; ++si)
+						{
+							processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+						}
+						m_succChunks.clear();
+	
+						// process what is left to process for the current sub document:
+						processConcatenated( doc);
+						mapPositions( doc);
+						mapStatistics( doc);
+						clearTermMaps();
+	
+						// create new sub document:
+						m_subdocstack.push_back( doc);
+						doc.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
+						m_start_position = m_curr_position;
+					}
+				}
+				else
+				{
+					const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
+	
+					if (feat.tokenizer()->concatBeforeTokenize())
+					{
+						// concat chunks that need to be concatenated before tokenization:
+						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+						concatDocumentSegment( featidx, rel_position, elem, elemsize);
+						continue;
+					}
+					else
+					{
+						switch (feat.options().positionBind())
+						{
+							case DocumentAnalyzerInterface::FeatureOptions::BindContent:
+							{
+								// process chunks bound to successor (this chunk):
+								std::vector<SuccPositionChunk>::const_iterator
+									si = m_succChunks.begin(), se = m_succChunks.end();
+								std::size_t rel_position
+									= (std::size_t)(m_curr_position - m_start_position);
+								for (; si != se; ++si)
+								{
+									processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+								}
+								m_succChunks.clear();
+	
+								// process this chunk:
+								m_last_position = m_curr_position;
+								processDocumentSegment( doc, featidx, rel_position, elem, elemsize, false);
+								break;
+							}
+							case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
+							{
+								m_succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
+								break;
+							}
+							case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
+							{
+								std::size_t rel_position
+									= (std::size_t)(m_last_position - m_start_position);
+								processDocumentSegment( doc, featidx, rel_position, elem, elemsize, true);
+								break;
+							}
+						}
+					}
+				}
+			}
+			catch (const std::runtime_error& err)
+			{
+				throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
+			}
+		}
+		if (!m_eof && !have_document)
+		{
+			m_subdocstack.push_back( analyzer::Document());
+			m_subdocstack.back().swap( doc);
+			return false;
+		}
+	
+		// process chunks bound to successor not processed yet (without successor):
+		std::vector<SuccPositionChunk>::const_iterator
+			si = m_succChunks.begin(), se = m_succChunks.end();
+		std::size_t rel_position
+			= (std::size_t)(m_curr_position - m_start_position);
+		for (; si != se; ++si)
+		{
+			processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+		}
+	
+		// process concatenated chunks:
+		processConcatenated( doc);
+	
+		// create real positions for output:
+		mapPositions( doc);
+		mapStatistics( doc);
+		clearTermMaps();
+	
+		if (!doc.attributes().empty()) return true;
+		if (!doc.metadata().empty()) return true;
+		if (!doc.searchIndexTerms().empty()) return true;
+		if (!doc.forwardIndexTerms().empty()) return true;
 		return false;
 	}
-
-	// process chunks bound to successor not processed yet (without successor):
-	std::vector<SuccPositionChunk>::const_iterator
-		si = m_succChunks.begin(), se = m_succChunks.end();
-	std::size_t rel_position
-		= (std::size_t)(m_curr_position - m_start_position);
-	for (; si != se; ++si)
+	catch (const std::bad_alloc& err)
 	{
-		processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+		m_errorhnd->report( "memory alloc error in analyze next");
+		return false;
 	}
-
-	// process concatenated chunks:
-	processConcatenated( doc);
-
-	// create real positions for output:
-	mapPositions( doc);
-	mapStatistics( doc);
-	clearTermMaps();
-
-	if (!doc.attributes().empty()) return true;
-	if (!doc.metadata().empty()) return true;
-	if (!doc.searchIndexTerms().empty()) return true;
-	if (!doc.forwardIndexTerms().empty()) return true;
-	return false;
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in create analyze next");
+		return false;
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in analyze next");
+		return false;
+	}
 }
 

@@ -26,22 +26,21 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for a parameterizable instance of a document segmenter
+/// \brief Interface for the document segmenter
 /// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
-#include <vector>
-#include <string>
 
 /// \brief strus toplevel namespace
 namespace strus
 {
 /// \brief Forward declaration
-class SegmenterContextInterface;
+class SegmenterInstanceInterface;
 /// \brief Forward declaration
-class DocumentClass;
+class AnalyzerErrorBufferInterface;
 
-/// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
+/// \class SegmenterInterface
+/// \brief Defines an interface for creating instances of programs for document segmentation
 class SegmenterInterface
 {
 public:
@@ -50,25 +49,14 @@ public:
 
 	/// \brief Get the mime type accepted by this segmenter
 	/// \return the mime type string
-	virtual std::string mimeType() const=0;
+	virtual const char* mimeType() const=0;
 
-	/// \brief Defines an expression for selecting chunks from a document
-	/// \param[in] id identifier of the chunks that match to expression
-	/// \param[in] expression expression for selecting chunks
-	virtual void defineSelectorExpression( int id, const std::string& expression)=0;
-
-	/// \brief Defines an expression for identifying a sub section of the document.
-	/// \param[in] startId identifier to be returned when a sub section of this type starts
-	/// \param[in] endId identifier to be returned when a sub section of this type ends
-	/// \param[in] expression expression for selecting the sub section
-	virtual void defineSubSection( int startId, int endId, const std::string& expression)=0;
-
-	/// \brief Creates an instance of the segmenter
-	/// \param[in] dclass description of the document type and encoding to process
-	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const=0;
+	/// \brief Create a parameterizable segmenter instance
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
+	virtual SegmenterInstanceInterface* createInstance( AnalyzerErrorBufferInterface* errorhnd) const=0;
 };
 
 }//namespace
 #endif
+
 

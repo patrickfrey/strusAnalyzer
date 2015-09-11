@@ -35,12 +35,14 @@
 /// \brief strus toplevel namespace
 namespace strus {
 
-/// \brief Forward declaration analyze processor
+/// \brief Forward declaration
 class TextProcessorInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Create a text processor
 /// \return the constructed text processor
-TextProcessorInterface* createTextProcessor();
+TextProcessorInterface* createTextProcessor( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

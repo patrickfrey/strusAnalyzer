@@ -33,6 +33,7 @@
 #include "strus/lib/normalizer_dateconv.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "textProcessor.hpp"
 #include "private/dll_tags.hpp"
 #include <stdexcept>
@@ -40,9 +41,9 @@
 using namespace strus;
 
 DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor()
+	strus::createTextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 {
-	TextProcessor* rt = new TextProcessor();
+	TextProcessor* rt = new TextProcessor( errorhnd);
 	try
 	{
 		rt->defineNormalizer( "stem", getNormalizer_snowball());
@@ -59,12 +60,14 @@ DLL_PUBLIC strus::TextProcessorInterface*
 	catch (const std::runtime_error& err)
 	{
 		delete rt;
-		throw err;
+		errorhnd->report( err.what());
+		return 0;
 	}
 	catch (const std::bad_alloc& err)
 	{
 		delete rt;
-		throw err;
+		errorhnd->report( err.what());
+		return 0;
 	}
 }
 

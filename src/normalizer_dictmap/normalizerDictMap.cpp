@@ -30,6 +30,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include <cstring>
 #include <cstring>
 #include <cstdio>
@@ -164,27 +165,46 @@ class DictMapNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	DictMapNormalizerFunctionContext( const DictMap* map_)
-		:m_map( map_){}
+	DictMapNormalizerFunctionContext( const DictMap* map_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_map( map_),m_errorhnd(errorhnd){}
 	
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize)
 	{
-		std::string key( src, srcsize);
-		std::string rt;
-		if (m_map->get( key, rt))
+		try
 		{
-			return rt;
+			std::string key( src, srcsize);
+			std::string rt;
+			if (m_map->get( key, rt))
+			{
+				return rt;
+			}
+			else
+			{
+				return key;
+			}
 		}
-		else
+		catch (const std::runtime_error& err)
 		{
-			return key;
+			m_errorhnd->report( std::string( err.what()) + " in 'dictmap' normalizer");
+			return std::string();
+		}
+		catch (const std::bad_alloc&)
+		{
+			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
+			return std::string();
+		}
+		catch (...)
+		{
+			m_errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+			return std::string();
 		}
 	}
 
 private:
 	const DictMap* m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class DictMapNormalizerInstance
@@ -194,26 +214,72 @@ public:
 	/// \brief Destructor
 	virtual ~DictMapNormalizerInstance(){}
 
-	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc)
+	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc, AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd)
 	{
 		m_map.loadFile( textproc->getResourcePath( filename));
 	}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new DictMapNormalizerFunctionContext( &m_map);
+		try
+		{
+			return new DictMapNormalizerFunctionContext( &m_map, m_errorhnd);
+		}
+		catch (const std::runtime_error& err)
+		{
+			m_errorhnd->report( std::string( err.what()) + " in 'dictmap' normalizer");
+			return 0;
+		}
+		catch (const std::bad_alloc&)
+		{
+			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
+			return 0;
+		}
+		catch (...)
+		{
+			m_errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+			return 0;
+		}
 	}
 
 private:
 	DictMap m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
-NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
+NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc, AnalyzerErrorBufferInterface* errorhnd) const
 {
-	if (args.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
-	if (args.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
-	return new DictMapNormalizerInstance( args[0], textproc);
+	if (args.size() == 0)
+	{
+		errorhnd->report( "name of file with key values expected as argument for 'DictMap' normalizer");
+		return 0;
+	}
+	if (args.size() > 1)
+	{
+		errorhnd->report( "too many arguments for 'DictMap' normalizer");
+		return 0;
+	}
+	try
+	{
+		return new DictMapNormalizerInstance( args[0], textproc, errorhnd);
+	}
+	catch (const std::runtime_error& err)
+	{
+		errorhnd->report( std::string( err.what()) + " in 'dictmap' normalizer");
+		return 0;
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in 'dictmap' normalizer");
+		return 0;
+	}
+	catch (...)
+	{
+		errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+		return 0;
+	}
 }
 
 

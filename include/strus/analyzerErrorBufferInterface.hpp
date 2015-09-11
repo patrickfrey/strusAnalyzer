@@ -26,45 +26,42 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
-#define _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
-#include "strus/normalizerFunctionInterface.hpp"
-#include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
-#include <string>
-#include <vector>
-#include <map>
+/// \brief Interface for reporting and catching errors
+/// \file analyzerErrorBufferInterface.hpp
+#ifndef _STRUS_ANALYZER_ERROR_BUFFER_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_ERROR_BUFFER_INTERFACE_HPP_INCLUDED
 
+/// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
 
-class LowercaseNormalizerFunction
-	:public NormalizerFunctionInterface
+/// \class AnalyzerErrorBufferInterface
+/// \brief Interface for reporting and catching errors in the analyzer
+class AnalyzerErrorBufferInterface
 {
 public:
-	LowercaseNormalizerFunction(){}
+	enum ErrorClass
+	{
+		None,		///< no error
+		RuntimeError,	///< runtime error
+		BadAlloc	///< memory allocation error
+	};
 
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
-};
+	/// \brief Destructor
+	virtual ~AnalyzerErrorBufferInterface(){}
 
-class UppercaseNormalizerFunction
-	:public NormalizerFunctionInterface
-{
-public:
-	UppercaseNormalizerFunction(){}
+	/// \brief Report an error
+	/// \param[in] errmsg_ error message
+	virtual void report( const std::string& errmsg_) const=0;
 
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
-};
+	/// \brief Check, if an error has occurred and return it
+	/// \return an error string, if defined, NULL else
+	/// \remark resets the error
+	virtual const char* getError()=0;
 
-class DiacriticalNormalizerFunction
-	:public NormalizerFunctionInterface
-{
-public:
-	DiacriticalNormalizerFunction(){}
-
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
+	/// \brief Check, if an error has occurred
+	/// \return an error string, if defined, NULL else
+	virtual bool hasError() const=0;
 };
 
 }//namespace

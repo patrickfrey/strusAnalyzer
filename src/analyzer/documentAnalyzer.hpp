@@ -31,6 +31,7 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/documentClass.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -45,13 +46,15 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( SegmenterInterface* segmenter_);
+	DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzer()
 	{
@@ -113,8 +116,6 @@ public:
 
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const DocumentClass& dclass) const;
-
-	virtual std::string mimeType() const;
 
 public:
 	enum FeatureClass
@@ -198,10 +199,11 @@ private:
 
 private:
 	friend class DocumentAnalyzerContext;
-	SegmenterInterface* m_segmenter;
+	SegmenterInstanceInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -247,7 +249,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzerContext()
 	{
@@ -308,6 +310,7 @@ private:
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
 	std::vector<SuccPositionChunk> m_succChunks;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

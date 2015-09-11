@@ -30,6 +30,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
 #include "textwolf/charset_utf8.hpp"
@@ -45,8 +46,8 @@ class SeparationTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
 public:
-	SeparationTokenizerFunctionContext( TokenDelimiter delim)
-		:m_delim(delim){}
+	SeparationTokenizerFunctionContext( TokenDelimiter delim, AnalyzerErrorBufferInterface* errorhnd)
+		:m_delim(delim),m_errorhnd(errorhnd){}
 
 	const char* skipToToken( char const* si, const char* se) const;
 
@@ -54,6 +55,7 @@ public:
 
 private:
 	TokenDelimiter m_delim;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -61,16 +63,35 @@ class SeparationTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	SeparationTokenizerInstance( TokenDelimiter delim)
-		:m_delim(delim){}
+	SeparationTokenizerInstance( TokenDelimiter delim, AnalyzerErrorBufferInterface* errorhnd)
+		:m_delim(delim),m_errorhnd(errorhnd){}
 
 	TokenizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new SeparationTokenizerFunctionContext( m_delim);
+		try
+		{
+			return new SeparationTokenizerFunctionContext( m_delim, m_errorhnd);
+		}
+		catch (const std::runtime_error& err)
+		{
+			m_errorhnd->report( std::string( err.what()) + " in tokenizer");
+			return 0;
+		}
+		catch (const std::bad_alloc&)
+		{
+			m_errorhnd->report( "out of memory in tokenizer");
+			return 0;
+		}
+		catch (...)
+		{
+			m_errorhnd->report( "uncaught exception in tokenizer");
+			return 0;
+		}
 	}
 
 private:
 	TokenDelimiter m_delim;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class SeparationTokenizerFunction
@@ -80,10 +101,32 @@ public:
 	SeparationTokenizerFunction( TokenDelimiter delim)
 		:m_delim(delim){}
 
-	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
 	{
-		if (args.size()) throw std::runtime_error( "no arguments expected for word separation tokenizer");
-		return new SeparationTokenizerInstance( m_delim);
+		if (args.size())
+		{
+			errorhnd->report( "no arguments expected for tokenizer");
+			return 0;
+		}
+		try
+		{
+			return new SeparationTokenizerInstance( m_delim, errorhnd);
+		}
+		catch (const std::runtime_error& err)
+		{
+			errorhnd->report( std::string( err.what()) + " in tokenizer");
+			return 0;
+		}
+		catch (const std::bad_alloc&)
+		{
+			errorhnd->report( "out of memory in tokenizer");
+			return 0;
+		}
+		catch (...)
+		{
+			errorhnd->report( "uncaught exception in tokenizer");
+			return 0;
+		}
 	}
 
 private:
@@ -199,20 +242,38 @@ const char* SeparationTokenizerFunctionContext::skipToToken( char const* si, con
 
 std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src, std::size_t srcsize)
 {
-	std::vector<Token> rt;
-	char const* si = skipToToken( src, src+srcsize);
-	const char* se = src+srcsize;
-
-	for (;si < se; si = skipToToken(si,se))
+	try
 	{
-		const char* start = si;
-		while (si < se && !m_delim( si, se))
+		std::vector<Token> rt;
+		char const* si = skipToToken( src, src+srcsize);
+		const char* se = src+srcsize;
+	
+		for (;si < se; si = skipToToken(si,se))
 		{
-			si = skipChar( si);
+			const char* start = si;
+			while (si < se && !m_delim( si, se))
+			{
+				si = skipChar( si);
+			}
+			rt.push_back( Token( start-src, start-src, si-start));
 		}
-		rt.push_back( Token( start-src, start-src, si-start));
+		return rt;
 	}
-	return rt;
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string( err.what()) + " in tokenizer");
+		return std::vector<Token>();
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( "out of memory in tokenizer");
+		return std::vector<Token>();
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in tokenizer");
+		return std::vector<Token>();
+	}
 }
 
 static const SeparationTokenizerFunction wordSeparationTokenizer( wordBoundaryDelimiter);

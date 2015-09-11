@@ -27,6 +27,7 @@
 --------------------------------------------------------------------
 */
 #include "normalizerDateConv.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include <cstring>
 #include <string>
@@ -90,49 +91,87 @@ class Date2IntNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_)
-		:m_granularity(granularity_),m_lcar(lcar_)
+	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd)
 	{}
 
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize)
 	{
-		std::string inputstr( src, srcsize);
-		boost::posix_time::ptime pt;
-		std::vector<std::locale>::const_iterator li = m_lcar.begin(), le = m_lcar.end();
-		for (; li != le; ++li)
+		try
 		{
-			std::istringstream is( inputstr);
-			is.imbue( *li);
-			is >> pt;
-			if(pt != boost::posix_time::ptime()) break;
+			std::string inputstr( src, srcsize);
+			boost::posix_time::ptime pt;
+			std::vector<std::locale>::const_iterator li = m_lcar.begin(), le = m_lcar.end();
+			for (; li != le; ++li)
+			{
+				std::istringstream is( inputstr);
+				is.imbue( *li);
+				is >> pt;
+				if(pt != boost::posix_time::ptime()) break;
+			}
+			std::ostringstream out;
+			out << m_granularity.getValue( pt);
+			return out.str();
 		}
-		std::ostringstream out;
-		out << m_granularity.getValue( pt);
-		return out.str();
+		catch (const std::runtime_error& err)
+		{
+			m_errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+			return std::string();
+		}
+		catch (const std::bad_alloc&)
+		{
+			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
+			return std::string();
+		}
+		catch (...)
+		{
+			m_errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+			return std::string();
+		}
 	}
 
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class Date2IntNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_)
-		:m_granularity(granularity_),m_lcar(lcar_){}
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar);
+		try
+		{
+			return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar, m_errorhnd);
+		}
+		catch (const std::runtime_error& err)
+		{
+			m_errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+			return 0;
+		}
+		catch (const std::bad_alloc&)
+		{
+			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
+			return 0;
+		}
+		catch (...)
+		{
+			m_errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+			return 0;
+		}
 	}
 
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 static const char* skipSpaces( char const* gi)
@@ -250,21 +289,43 @@ DateNumGranularity parseGranularity( char const* gi)
 }
 
 
-NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
 {
-	if (args.size() < 2) throw std::runtime_error( "too few arguments passed to normalizer 'date2int'");
-	std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-
-	DateNumGranularity granularity( parseGranularity( ai->c_str()));
-
-	std::vector<std::locale> lcar;
-	for (++ai; ai != ae; ++ai)
+	try
 	{
-		lcar.push_back(
-			std::locale(std::locale::classic(),
-			new boost::posix_time::time_input_facet( ai->c_str())));
+		if (args.size() < 2)
+		{
+			errorhnd->report( "too few arguments passed to normalizer 'date2int'");
+			return 0;
+		}
+		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
+	
+		DateNumGranularity granularity( parseGranularity( ai->c_str()));
+	
+		std::vector<std::locale> lcar;
+		for (++ai; ai != ae; ++ai)
+		{
+			lcar.push_back(
+				std::locale(std::locale::classic(),
+				new boost::posix_time::time_input_facet( ai->c_str())));
+		}
+		return new Date2IntNormalizerFunctionInstance( granularity, lcar, errorhnd);
 	}
-	return new Date2IntNormalizerFunctionInstance( granularity, lcar);
+	catch (const std::runtime_error& err)
+	{
+		errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+		return 0;
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in 'dateconv' normalizer");
+		return 0;
+	}
+	catch (...)
+	{
+		errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+		return 0;
+	}
 }
 
 

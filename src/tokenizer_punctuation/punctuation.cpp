@@ -30,6 +30,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include "punctuation_de.hpp"
 #include "punctuation_en.hpp"
@@ -46,32 +47,53 @@ class PunctuationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
 	{
-		if (args.size() > 2)
+		try
 		{
-			throw std::runtime_error( "too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)");
+			if (args.size() > 2)
+			{
+				errorhnd->report( "too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)");
+				return 0;
+			}
+			if (args.size() < 1)
+			{
+				errorhnd->report( "too few arguments for punctuation tokenizer (language as mandatory argument expected)");
+				return 0;
+			}
+			const char* punctChar = 0;
+			if (args.size() == 2)
+			{
+				punctChar = args[1].c_str();
+			}
+			if (utils::caseInsensitiveEquals( args[0], "de"))
+			{
+				return new PunctuationTokenizerInstance_de( punctChar, errorhnd);
+			}
+			else if (utils::caseInsensitiveEquals( args[0], "en"))
+			{
+				return new PunctuationTokenizerInstance_en( punctChar, errorhnd);
+			}
+			else
+			{
+				errorhnd->report( std::string( "unsupported language passed to punctuation tokenizer ('") + args[0] +"')");
+				return 0;
+			}
 		}
-		if (args.size() < 1)
+		catch (const std::runtime_error& err)
 		{
-			throw std::runtime_error( "too few arguments for punctuation tokenizer (language as mandatory argument expected)");
+			errorhnd->report( std::string( err.what()) + " in 'punctuation' tokenizer");
+			return 0;
 		}
-		const char* punctChar = 0;
-		if (args.size() == 2)
+		catch (const std::bad_alloc&)
 		{
-			punctChar = args[1].c_str();
+			errorhnd->report( "out of memory in 'punctuation' tokenizer");
+			return 0;
 		}
-		if (utils::caseInsensitiveEquals( args[0], "de"))
+		catch (...)
 		{
-			return new PunctuationTokenizerInstance_de( punctChar);
-		}
-		else if (utils::caseInsensitiveEquals( args[0], "en"))
-		{
-			return new PunctuationTokenizerInstance_en( punctChar);
-		}
-		else
-		{
-			throw std::runtime_error( std::string( "unsupported language passed to punctuation tokenizer ('") + args[0] +"')");
+			errorhnd->report( "uncaught exception in 'punctuation' tokenizer");
+			return 0;
 		}
 	}
 };

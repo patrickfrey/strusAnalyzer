@@ -45,7 +45,7 @@ public:
 	StandardDocumentClassDetector(){}
 	virtual ~StandardDocumentClassDetector(){}
 
-	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, AnalyzerErrorBufferInterface* errorhnd) const;
 };
 
 }//namespace

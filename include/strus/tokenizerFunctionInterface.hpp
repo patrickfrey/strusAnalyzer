@@ -40,6 +40,8 @@ namespace strus {
 class TokenizerFunctionInstanceInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \class TokenizerFunctionInterface
 /// \brief Interface for a tokenizer function
@@ -52,7 +54,8 @@ public:
 	/// \brief Create a parameterizable tokenizer function instance
 	/// \param[in] args arguments for the tokenizer function
 	/// \param[in] tp text processor reference (for loading resources)
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp, AnalyzerErrorBufferInterface* errorhnd) const=0;
 };
 
 }//namespace

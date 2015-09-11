@@ -31,6 +31,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include <stdexcept>
 #include <set>
@@ -100,8 +101,23 @@ void QueryAnalyzer::definePhraseType(
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
-	m_featuremap[ utils::tolower( phraseType)]
-		= FeatureConfig( featureType, tokenizer, normalizers);
+	try
+	{
+		m_featuremap[ utils::tolower( phraseType)]
+			= FeatureConfig( featureType, tokenizer, normalizers);
+	}
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in define phrase type");
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in define phrase type");
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in define phrase type");
+	}
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
@@ -120,40 +136,66 @@ std::vector<analyzer::Term>
 		const std::string& phraseType,
 		const std::string& content) const
 {
-	std::vector<analyzer::Term> rt;
-	const FeatureConfig& feat = featureConfig( phraseType);
-	FeatureContext ctx( feat);
-
-	std::vector<analyzer::Token>
-		pos = ctx.tokenize( content.c_str(), content.size());
-	std::vector<analyzer::Token>::const_iterator
-		pi = pos.begin(), pe = pos.end();
-
-	if (pi == pe) return rt;
-	unsigned int prevpos = pi->docpos;
-	for (unsigned int posidx=1; pi != pe; ++pi)
+	try
 	{
-		if (pi->docpos > prevpos)
+		std::vector<analyzer::Term> rt;
+		const FeatureConfig& feat = featureConfig( phraseType);
+		FeatureContext ctx( feat);
+	
+		std::vector<analyzer::Token>
+			pos = ctx.tokenize( content.c_str(), content.size());
+		std::vector<analyzer::Token>::const_iterator
+			pi = pos.begin(), pe = pos.end();
+	
+		if (pi == pe) return rt;
+		unsigned int prevpos = pi->docpos;
+		for (unsigned int posidx=1; pi != pe; ++pi)
 		{
-			posidx += 1;
-			prevpos = pi->docpos;
+			if (pi->docpos > prevpos)
+			{
+				posidx += 1;
+				prevpos = pi->docpos;
+			}
+			std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
+			rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
 		}
-		std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
-		rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
+		return rt;
 	}
-	return rt;
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in analyze phrase");
+		return std::vector<analyzer::Term>();
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string(err.what()) + " in analyze phrase");
+		return std::vector<analyzer::Term>();
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in analyze phrase");
+		return std::vector<analyzer::Term>();
+	}
 }
 
 std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
 		const std::vector<Phrase>& phraseBulk) const
 {
-	std::vector<analyzer::TermVector> rt;
-	std::vector<Phrase>::const_iterator pi = phraseBulk.begin(), pe = phraseBulk.end();
-	for (; pi != pe; ++pi)
+	try
 	{
-		rt.push_back( analyzePhrase( pi->type(), pi->content()));
+		std::vector<analyzer::TermVector> rt;
+		std::vector<Phrase>::const_iterator pi = phraseBulk.begin(), pe = phraseBulk.end();
+		for (; pi != pe; ++pi)
+		{
+			rt.push_back( analyzePhrase( pi->type(), pi->content()));
+		}
+		return rt;
 	}
-	return rt;
+	catch (const std::bad_alloc& err)
+	{
+		m_errorhnd->report( "memory alloc error in analyze phrase bulk");
+		return std::vector<analyzer::TermVector>();
+	}
 }
 
 

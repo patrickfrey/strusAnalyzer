@@ -37,6 +37,8 @@
 /// \brief strus toplevel namespace
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Defines a detector that returns a content description for a document content it recognizes
 class DocumentClassDetectorInterface
@@ -49,9 +51,10 @@ public:
 	/// \param[in,out] dclass document class to edit
 	/// \param[in] contentBegin start of content begin chunk
 	/// \param[in] contentBeginSize size of content begin chunk
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	/// \return true, if the document class was recognized
 	/// \note It is assumed that a reasonable size of the document chunk (e.g. 1K) is enough to detect the document class. This is an assumption that is wrong for many MIME types, but it should work for text content. At least it should be enough to recognize the segmenter to use.
-	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, AnalyzerErrorBufferInterface* errorhnd) const=0;
 };
 
 }//namespace

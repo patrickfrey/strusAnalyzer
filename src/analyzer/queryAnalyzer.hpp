@@ -40,13 +40,16 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Query analyzer implementation
 class QueryAnalyzer
 	:public QueryAnalyzerInterface
 {
 public:
-	QueryAnalyzer(){}
+	explicit QueryAnalyzer( AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
 	virtual void definePhraseType(
@@ -119,6 +122,7 @@ private:
 
 private:
 	std::map<std::string,FeatureConfig> m_featuremap;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

@@ -29,6 +29,7 @@
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
 #include "strus/documentClass.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
 #include "private/utils.hpp"
@@ -119,7 +120,7 @@ static ExpressionClass getExpressionClass( const std::string& expression, std::v
 	return rt;
 }
 
-void Segmenter::addExpression( int id, const std::string& expression)
+void SegmenterInstance::addExpression( int id, const std::string& expression)
 {
 	int errorpos = m_automaton.addExpression( id, expression.c_str(), expression.size());
 	if (errorpos)
@@ -146,13 +147,13 @@ void Segmenter::addExpression( int id, const std::string& expression)
 	}
 }
 
-void Segmenter::defineSelectorExpression( int id, const std::string& expression)
+void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
 	addExpression( id, expression);
 }
 
 
-void Segmenter::defineSubSection( int startId, int endId, const std::string& expression)
+void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
 	std::vector<std::string> tags;
 	if (getExpressionClass( expression, tags) != TagSelection)
@@ -164,82 +165,124 @@ void Segmenter::defineSubSection( int startId, int endId, const std::string& exp
 }
 
 
-SegmenterContextInterface* Segmenter::createContext( const DocumentClass& dclass) const
+SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass& dclass) const
 {
-	typedef textwolf::charset::UTF8 UTF8;
-	typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
-	typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
-	typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
-	typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
-	typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
-	typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
-	typedef textwolf::charset::IsoLatin IsoLatin;
-	unsigned char codepage = 1;
-
-	if (dclass.encoding().empty())
+	try
 	{
-		return new SegmenterContext<UTF8>( &m_automaton);
-	}
-	else
-	{
-		if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
-		||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+		typedef textwolf::charset::UTF8 UTF8;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
+		typedef textwolf::charset::IsoLatin IsoLatin;
+		unsigned char codepage = 1;
+	
+		if (dclass.encoding().empty())
 		{
-			char const* cc = dclass.encoding().c_str() + 8;
-			if (*cc == '-')
-			{
-				++cc;
-				if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
-				{
-					codepage = *cc - '0';
-				}
-				else
-				{
-					throw std::runtime_error( std::string("parse error in character set encoding: '") + dclass.encoding() + "'");
-				}
-			}
-			return new SegmenterContext<IsoLatin>( &m_automaton, IsoLatin(codepage));
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
-		{
-			return new SegmenterContext<UTF8>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
-		{
-			return new SegmenterContext<UTF16BE>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
-		{
-			return new SegmenterContext<UTF16LE>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
-		{
-			return new SegmenterContext<UCS2BE>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
-		{
-			return new SegmenterContext<UCS2LE>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
-		{
-			return new SegmenterContext<UCS4BE>( &m_automaton);
-		}
-		else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
-		||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
-		{
-			return new SegmenterContext<UCS4LE>( &m_automaton);
+			return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
 		}
 		else
 		{
-			throw std::runtime_error( "the XML segmenter based on textwolf currently supports only UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding");
+			if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+			||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+			{
+				char const* cc = dclass.encoding().c_str() + 8;
+				if (*cc == '-')
+				{
+					++cc;
+					if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
+					{
+						codepage = *cc - '0';
+					}
+					else
+					{
+						m_errorhnd->report( std::string("parse error in character set encoding: '") + dclass.encoding() + "'");
+						return 0;
+					}
+				}
+				return new SegmenterContext<IsoLatin>( m_errorhnd, &m_automaton, IsoLatin(codepage));
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+			{
+				return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+			{
+				return new SegmenterContext<UTF16BE>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+			{
+				return new SegmenterContext<UTF16LE>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+			{
+				return new SegmenterContext<UCS2BE>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+			{
+				return new SegmenterContext<UCS2LE>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+			{
+				return new SegmenterContext<UCS4BE>( m_errorhnd, &m_automaton);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+			{
+				return new SegmenterContext<UCS4LE>( m_errorhnd, &m_automaton);
+			}
+			else
+			{
+				m_errorhnd->report( "the XML segmenter based on textwolf currently supports only UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding");
+				return 0;
+			}
 		}
+	}
+	catch (const std::runtime_error& err)
+	{
+		m_errorhnd->report( std::string( err.what()) + " in 'textwolf' segmenter");
+		return 0;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( "out of memory in 'textwolf' segmenter");
+		return 0;
+	}
+	catch (...)
+	{
+		m_errorhnd->report( "uncaught exception in 'textwolf' segmenter");
+		return 0;
 	}
 }
 
+SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterface* errorhnd) const
+{
+	try
+	{
+		return new SegmenterInstance( errorhnd);
+	}
+	catch (const std::runtime_error& err)
+	{
+		errorhnd->report( std::string( err.what()) + " in 'textwolf' segmenter");
+		return 0;
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in 'textwolf' segmenter");
+		return 0;
+	}
+	catch (...)
+	{
+		errorhnd->report( "uncaught exception in 'textwolf' segmenter");
+		return 0;
+	}
+}
 
 

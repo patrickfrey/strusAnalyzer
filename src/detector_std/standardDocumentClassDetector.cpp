@@ -29,7 +29,9 @@
 /// \brief Standard document class detector implementation
 /// \file standardDocumentClassDetector.hpp
 #include "standardDocumentClassDetector.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include <cstring>
+#include <stdexcept>
 
 using namespace strus;
 
@@ -76,104 +78,122 @@ static void initDocumentClass( DocumentClass& dclass, const char* mimeType, cons
 }
 
 
-bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, AnalyzerErrorBufferInterface* errorhnd) const
 {
-	char const* ci = contentBegin;
-	char const* ce = contentBegin + contentBeginSize;
-	std::string hdr;
-	unsigned int nullCnt = 0;
-	unsigned int maxNullCnt = 0;
-	State state = ParseStart;
-	const char* BOM = detectBOM( contentBegin, contentBeginSize);
-	std::string encoding_buf;
-	const char* encoding = 0;
-
-	for (;ci != ce; ++ci)
+	try
 	{
-		if (*ci == 0)
+		char const* ci = contentBegin;
+		char const* ce = contentBegin + contentBeginSize;
+		std::string hdr;
+		unsigned int nullCnt = 0;
+		unsigned int maxNullCnt = 0;
+		State state = ParseStart;
+		const char* BOM = detectBOM( contentBegin, contentBeginSize);
+		std::string encoding_buf;
+		const char* encoding = 0;
+	
+		for (;ci != ce; ++ci)
 		{
-			++nullCnt;
-			if (nullCnt > 3) return false;
-			continue;
-		}
-		if (nullCnt > maxNullCnt)
-		{
-			maxNullCnt = nullCnt;
-		}
-		nullCnt = 0;
-		switch (state)
-		{
-			case ParseStart:
-				if (*ci == '<')
-				{
+			if (*ci == 0)
+			{
+				++nullCnt;
+				if (nullCnt > 3) return false;
+				continue;
+			}
+			if (nullCnt > maxNullCnt)
+			{
+				maxNullCnt = nullCnt;
+			}
+			nullCnt = 0;
+			switch (state)
+			{
+				case ParseStart:
+					if (*ci == '<')
+					{
+						if (!BOM)
+						{
+							if (maxNullCnt == 3) BOM = "UTF-32BE";
+							if (maxNullCnt == 1) BOM = "UTF-16BE";
+						}
+						state = ParseXMLHeader0;
+					}
+					else
+					{
+						return false;
+					}
+					break;
+	
+				case ParseXMLHeader0:
 					if (!BOM)
 					{
-						if (maxNullCnt == 3) BOM = "UTF-32BE";
-						if (maxNullCnt == 1) BOM = "UTF-16BE";
+						if (maxNullCnt == 3) BOM = "UTF-32LE";
+						if (maxNullCnt == 1) BOM = "UTF-16LE";
 					}
-					state = ParseXMLHeader0;
-				}
-				else
-				{
-					return false;
-				}
-				break;
-
-			case ParseXMLHeader0:
-				if (!BOM)
-				{
-					if (maxNullCnt == 3) BOM = "UTF-32LE";
-					if (maxNullCnt == 1) BOM = "UTF-16LE";
-				}
-				if (*ci == '?')
-				{
-					state = ParseXMLHeader;
-				}
-				else
-				{
-					state = ParseXMLTag;
-				}
-				break;
-
-			case ParseXMLHeader:
-				if (*ci == '<') return false;
-				if (*ci == '>')
-				{
-					char const* ei = std::strstr( hdr.c_str(), "encoding=");
-					if (ei)
+					if (*ci == '?')
 					{
-						ei += 9;
-						if (*ei == '\"' || *ei == '\'')
+						state = ParseXMLHeader;
+					}
+					else
+					{
+						state = ParseXMLTag;
+					}
+					break;
+	
+				case ParseXMLHeader:
+					if (*ci == '<') return false;
+					if (*ci == '>')
+					{
+						char const* ei = std::strstr( hdr.c_str(), "encoding=");
+						if (ei)
 						{
-							char eb = *ei++;
-							char const* ee = std::strchr( ei, eb);
-							if (ee)
+							ei += 9;
+							if (*ei == '\"' || *ei == '\'')
 							{
-								encoding_buf.append( ei, ee-ei);
-								encoding = encoding_buf.c_str();
+								char eb = *ei++;
+								char const* ee = std::strchr( ei, eb);
+								if (ee)
+								{
+									encoding_buf.append( ei, ee-ei);
+									encoding = encoding_buf.c_str();
+								}
 							}
 						}
+						initDocumentClass( dclass, "text/xml", encoding, BOM);
+						return true;
 					}
-					initDocumentClass( dclass, "text/xml", encoding, BOM);
-					return true;
-				}
-				else if ((unsigned char)*ci > 32)
-				{
-					hdr.push_back(*ci);
-				}
-				break;
-
-			case ParseXMLTag:
-				if (*ci == '<') return false;
-				if (*ci == '>')
-				{
-					initDocumentClass( dclass, "text/xml", 0, BOM);
-					return true;
-				}
-				break;
+					else if ((unsigned char)*ci > 32)
+					{
+						hdr.push_back(*ci);
+					}
+					break;
+	
+				case ParseXMLTag:
+					if (*ci == '<') return false;
+					if (*ci == '>')
+					{
+						initDocumentClass( dclass, "text/xml", 0, BOM);
+						return true;
+					}
+					break;
+			}
 		}
+		return false;
 	}
-	return false;
+	catch (const std::runtime_error& err)
+	{
+		errorhnd->report( std::string( err.what()) + " in standard document class detector");
+		return false;
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( "out of memory in standard document class detector");
+		return false;
+	}
+	catch (...)
+	{
+		errorhnd->report( "uncaught exception in standard document class detector");
+		return false;
+	}
 }
 
 
