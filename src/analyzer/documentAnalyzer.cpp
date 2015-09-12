@@ -46,7 +46,13 @@
 using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
-	:m_segmenter(segmenter_->createInstance(errorhnd)),m_errorhnd(errorhnd){}
+	:m_segmenter(segmenter_->createInstance(errorhnd)),m_errorhnd(errorhnd)
+{
+	if (!m_segmenter)
+	{
+		throw std::runtime_error( "failed to create segmenter context");
+	}
+}
 
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
@@ -152,6 +158,10 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	:m_config(&config)
 	,m_tokenizerContext(config.tokenizer()->createFunctionContext())
 {
+	if (!m_tokenizerContext.get())
+	{
+		throw std::runtime_error( "failed to create tokenizer context");
+	}
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
@@ -159,6 +169,10 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	for (; ni != ne; ++ni)
 	{
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
+		if (!m_normalizerContextAr.back().get())
+		{
+			throw std::runtime_error( "failed to create normalizer context");
+		}
 	}
 }
 
@@ -427,6 +441,10 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_start_position(0)
 	,m_errorhnd(errorhnd)
 {
+	if (!m_segmenter)
+	{
+		throw std::runtime_error( "failed to create document analyzer context");
+	}
 	m_subdocstack.push_back( analyzer::Document());
 }
 

@@ -58,6 +58,10 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 	:m_config(&config)
 	,m_tokenizerContext( config.tokenizer()->createFunctionContext())
 {
+	if (!m_tokenizerContext.get())
+	{
+		throw std::runtime_error( "failed to create tokenizer context");
+	}
 	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
@@ -65,6 +69,10 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 	for (; ni != ne; ++ni)
 	{
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
+		if (!m_normalizerContextAr.back().get())
+		{
+			throw std::runtime_error( "failed to create normalizer context");
+		}
 	}
 }
 
