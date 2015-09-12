@@ -431,9 +431,9 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 		errorhnd->report( std::string(err.what()) + " in normalizer");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		errorhnd->report( "uncaught exception in normalizer");
+		errorhnd->report( std::string(err.what()) + " uncaught exception in normalizer");
 		return 0;
 	}
 }

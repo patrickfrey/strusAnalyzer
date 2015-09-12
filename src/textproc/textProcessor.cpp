@@ -88,9 +88,9 @@ public:
 			m_errorhnd->report( "out of memory in 'empty' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'empty' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'empty' normalizer");
 			return 0;
 		}
 	}
@@ -123,9 +123,9 @@ public:
 			errorhnd->report( "out of memory in 'empty' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in 'empty' normalizer");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in 'empty' normalizer");
 			return 0;
 		}
 	}
@@ -168,9 +168,9 @@ public:
 			m_errorhnd->report( "out of memory in 'orig' normalizer");
 			return std::string();
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'orig' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
 			return std::string();
 		}
 	}
@@ -201,9 +201,9 @@ public:
 			m_errorhnd->report( "out of memory in 'orig' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'orig' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
 			return 0;
 		}
 	}
@@ -236,9 +236,9 @@ public:
 			errorhnd->report( "out of memory in 'orig' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in 'orig' normalizer");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
 			return 0;
 		}
 	}
@@ -270,9 +270,9 @@ public:
 			m_errorhnd->report( "out of memory in 'content' tokenizer");
 			return std::vector<analyzer::Token>();
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'content' tokenizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
 			return std::vector<analyzer::Token>();
 		}
 	}
@@ -304,12 +304,13 @@ public:
 			m_errorhnd->report( "out of memory in 'content' tokenizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'content' tokenizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
 			return 0;
 		}
 	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -339,9 +340,9 @@ public:
 			errorhnd->report( "out of memory in 'content' tokenizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in 'content' tokenizer");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
 			return 0;
 		}
 	}
@@ -408,9 +409,9 @@ public:
 			errorhnd->report( "out of memory in 'count' aggregator");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in 'count' aggregator");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in 'count' aggregator");
 			return 0;
 		}
 	}

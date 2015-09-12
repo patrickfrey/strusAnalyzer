@@ -90,9 +90,9 @@ public:
 			errorhnd->report( "out of memory in 'punctuation' tokenizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in 'punctuation' tokenizer");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
 			return 0;
 		}
 	}

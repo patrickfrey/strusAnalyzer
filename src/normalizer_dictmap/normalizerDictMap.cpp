@@ -195,9 +195,9 @@ public:
 			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
 			return std::string();
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dictmap' normalizer");
 			return std::string();
 		}
 	}
@@ -236,9 +236,9 @@ public:
 			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dictmap' normalizer");
 			return 0;
 		}
 	}
@@ -275,9 +275,9 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 		errorhnd->report( "out of memory in 'dictmap' normalizer");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		errorhnd->report( "uncaught exception in 'dictmap' normalizer");
+		errorhnd->report( std::string(err.what()) + " uncaught exception in 'dictmap' normalizer");
 		return 0;
 	}
 }

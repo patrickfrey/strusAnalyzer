@@ -189,9 +189,9 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 		errorhnd->report( "out of memory in standard document class detector");
 		return false;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		errorhnd->report( "uncaught exception in standard document class detector");
+		errorhnd->report( std::string(err.what()) + " uncaught exception in standard document class detector");
 		return false;
 	}
 }

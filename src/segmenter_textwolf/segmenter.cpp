@@ -255,9 +255,9 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 		m_errorhnd->report( "out of memory in 'textwolf' segmenter");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in 'textwolf' segmenter");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'textwolf' segmenter");
 		return 0;
 	}
 }
@@ -278,9 +278,9 @@ SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterf
 		errorhnd->report( "out of memory in 'textwolf' segmenter");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		errorhnd->report( "uncaught exception in 'textwolf' segmenter");
+		errorhnd->report( std::string(err.what()) + " uncaught exception in 'textwolf' segmenter");
 		return 0;
 	}
 }

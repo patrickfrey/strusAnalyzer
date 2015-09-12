@@ -52,12 +52,13 @@ public:
 
 	/// \brief Report an error
 	/// \param[in] errmsg_ error message
+	/// \remark must not throw
 	virtual void report( const std::string& errmsg_) const=0;
 
 	/// \brief Check, if an error has occurred and return it
 	/// \return an error string, if defined, NULL else
 	/// \remark resets the error
-	virtual const char* getError()=0;
+	virtual const char* fetchError()=0;
 
 	/// \brief Check, if an error has occurred
 	/// \return an error string, if defined, NULL else

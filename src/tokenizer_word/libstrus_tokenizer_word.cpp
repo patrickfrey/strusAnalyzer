@@ -82,9 +82,9 @@ public:
 			m_errorhnd->report( "out of memory in tokenizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in tokenizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
 			return 0;
 		}
 	}
@@ -122,9 +122,9 @@ public:
 			errorhnd->report( "out of memory in tokenizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			errorhnd->report( "uncaught exception in tokenizer");
+			errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
 			return 0;
 		}
 	}
@@ -269,9 +269,9 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 		m_errorhnd->report( "out of memory in tokenizer");
 		return std::vector<Token>();
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in tokenizer");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
 		return std::vector<Token>();
 	}
 }

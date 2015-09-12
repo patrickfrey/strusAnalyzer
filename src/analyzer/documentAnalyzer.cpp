@@ -119,9 +119,9 @@ void DocumentAnalyzer::defineFeature(
 	{
 		m_errorhnd->report( std::string(err.what()) + " in define feature");
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in define feature");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define feature");
 	}
 }
 
@@ -147,9 +147,9 @@ void DocumentAnalyzer::defineSubDocument(
 	{
 		m_errorhnd->report( std::string(err.what()) + " in define sub document");
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in define sub document");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define sub document");
 	}
 }
 
@@ -233,9 +233,9 @@ analyzer::Document DocumentAnalyzer::analyze(
 		m_errorhnd->report( std::string(err.what()) + " in define sub document");
 		return analyzer::Document();
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in define sub document");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define sub document");
 		return analyzer::Document();
 	}
 }
@@ -256,9 +256,9 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const Documen
 		m_errorhnd->report( std::string(err.what()) + " in create analyzer context");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in create analyzer context");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in create analyzer context");
 		return 0;
 	}
 }
@@ -601,12 +601,12 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in create analyze next");
+		m_errorhnd->report( std::string(err.what()) + " in analyze next");
 		return false;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in analyze next");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in analyze next");
 		return false;
 	}
 }

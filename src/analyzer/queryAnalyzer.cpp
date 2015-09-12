@@ -122,9 +122,9 @@ void QueryAnalyzer::definePhraseType(
 	{
 		m_errorhnd->report( std::string(err.what()) + " in define phrase type");
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in define phrase type");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define phrase type");
 	}
 }
 
@@ -179,9 +179,9 @@ std::vector<analyzer::Term>
 		m_errorhnd->report( std::string(err.what()) + " in analyze phrase");
 		return std::vector<analyzer::Term>();
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in analyze phrase");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in analyze phrase");
 		return std::vector<analyzer::Term>();
 	}
 }

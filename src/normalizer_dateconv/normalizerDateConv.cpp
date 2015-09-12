@@ -125,9 +125,9 @@ public:
 			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
 			return std::string();
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
 			return std::string();
 		}
 	}
@@ -161,9 +161,9 @@ public:
 			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
 			return 0;
 		}
-		catch (...)
+		catch (const std::exception& err)
 		{
-			m_errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
 			return 0;
 		}
 	}
@@ -321,9 +321,9 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 		errorhnd->report( "out of memory in 'dateconv' normalizer");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		errorhnd->report( "uncaught exception in 'dateconv' normalizer");
+		errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
 		return 0;
 	}
 }

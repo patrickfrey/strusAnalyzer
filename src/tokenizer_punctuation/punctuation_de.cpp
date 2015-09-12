@@ -191,9 +191,9 @@ std::vector<analyzer::Token>
 		m_errorhnd->report( "out of memory in 'punctuation' tokenizer");
 		return std::vector<analyzer::Token>();
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in 'punctuation' tokenizer");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
 		return std::vector<analyzer::Token>();
 	}
 }
@@ -215,9 +215,9 @@ TokenizerFunctionContextInterface* PunctuationTokenizerInstance_de::createFuncti
 		m_errorhnd->report( "out of memory in 'punctuation' tokenizer");
 		return 0;
 	}
-	catch (...)
+	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "uncaught exception in 'punctuation' tokenizer");
+		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
 		return 0;
 	}
 }
