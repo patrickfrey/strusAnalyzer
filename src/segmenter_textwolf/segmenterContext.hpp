@@ -137,7 +137,7 @@ public:
 			{
 				const char* errstr = "";
 				m_scanner.getError( &errstr);
-				m_errorhnd->report( std::string( "error in XML document: ") + errstr);
+				m_errorhnd->report( "error in XML document: %s", errstr);
 				return false;
 			}
 			else if (et == XMLScanner::Exit)

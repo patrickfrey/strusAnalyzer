@@ -117,11 +117,11 @@ void DocumentAnalyzer::defineFeature(
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in define feature");
+		m_errorhnd->report( "%s in define feature",err.what());
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define feature");
+		m_errorhnd->report( "%s uncaught exception in define feature", err.what());
 	}
 }
 
@@ -145,11 +145,11 @@ void DocumentAnalyzer::defineSubDocument(
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in define sub document");
+		m_errorhnd->report( "%s in define sub document", err.what());
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define sub document");
+		m_errorhnd->report( "%s uncaught exception in define sub document", err.what());
 	}
 }
 
@@ -230,12 +230,12 @@ analyzer::Document DocumentAnalyzer::analyze(
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in define sub document");
+		m_errorhnd->report( "%s in define sub document", err.what());
 		return analyzer::Document();
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define sub document");
+		m_errorhnd->report( "%s uncaught exception in define sub document", err.what());
 		return analyzer::Document();
 	}
 }
@@ -253,12 +253,12 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const Documen
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in create analyzer context");
+		m_errorhnd->report( "%s in create analyzer context", err.what());
 		return 0;
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in create analyzer context");
+		m_errorhnd->report( "%s uncaught exception in create analyzer context", err.what());
 		return 0;
 	}
 }
@@ -601,12 +601,12 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in analyze next");
+		m_errorhnd->report( "%s in analyze next", err.what());
 		return false;
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in analyze next");
+		m_errorhnd->report( "%s uncaught exception in analyze next", err.what());
 		return false;
 	}
 }

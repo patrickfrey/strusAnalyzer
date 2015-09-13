@@ -120,11 +120,11 @@ void QueryAnalyzer::definePhraseType(
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in define phrase type");
+		m_errorhnd->report( "%s in define phrase type", err.what());
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in define phrase type");
+		m_errorhnd->report( "%s uncaught exception in define phrase type", err.what());
 	}
 }
 
@@ -176,12 +176,12 @@ std::vector<analyzer::Term>
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " in analyze phrase");
+		m_errorhnd->report( "%s in analyze phrase", err.what());
 		return std::vector<analyzer::Term>();
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in analyze phrase");
+		m_errorhnd->report( "%s uncaught exception in analyze phrase",err.what());
 		return std::vector<analyzer::Term>();
 	}
 }

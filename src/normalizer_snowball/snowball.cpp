@@ -94,7 +94,7 @@ public:
 		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
 		if (!m_stemmer)
 		{
-			errorhnd->report( std::string( "language '") + language + "' unknown for snowball stemmer");
+			errorhnd->report( "language '%s' unknown for snowball stemmer", language.c_str());
 		}
 	}
 

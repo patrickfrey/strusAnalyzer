@@ -117,7 +117,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+			m_errorhnd->report( "%s in 'dateconv' normalizer", err.what());
 			return std::string();
 		}
 		catch (const std::bad_alloc&)
@@ -127,7 +127,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
+			m_errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
 			return std::string();
 		}
 	}
@@ -153,7 +153,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+			m_errorhnd->report( "%s in 'dateconv' normalizer",err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -163,7 +163,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
+			m_errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
 			return 0;
 		}
 	}
@@ -313,7 +313,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 	}
 	catch (const std::runtime_error& err)
 	{
-		errorhnd->report( std::string( err.what()) + " in 'dateconv' normalizer");
+		errorhnd->report( "%s in 'dateconv' normalizer", err.what());
 		return 0;
 	}
 	catch (const std::bad_alloc&)
@@ -323,7 +323,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 	}
 	catch (const std::exception& err)
 	{
-		errorhnd->report( std::string(err.what()) + " uncaught exception in 'dateconv' normalizer");
+		errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
 		return 0;
 	}
 }

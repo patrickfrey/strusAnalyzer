@@ -1281,7 +1281,7 @@ std::vector<analyzer::Token>
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string( err.what()) + " in 'punctuation' tokenizer");
+		m_errorhnd->report( "%s in 'punctuation' tokenizer", err.what());
 		return std::vector<analyzer::Token>();
 	}
 	catch (const std::bad_alloc&)
@@ -1291,7 +1291,7 @@ std::vector<analyzer::Token>
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
+		m_errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
 		return std::vector<analyzer::Token>();
 	}
 }
@@ -1305,7 +1305,7 @@ TokenizerFunctionContextInterface* PunctuationTokenizerInstance_en::createFuncti
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string( err.what()) + " in 'punctuation' tokenizer");
+		m_errorhnd->report( "%s in 'punctuation' tokenizer", err.what());
 		return 0;
 	}
 	catch (const std::bad_alloc&)
@@ -1315,7 +1315,7 @@ TokenizerFunctionContextInterface* PunctuationTokenizerInstance_en::createFuncti
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
+		m_errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
 		return 0;
 	}
 }

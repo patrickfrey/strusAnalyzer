@@ -198,7 +198,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 					}
 					else
 					{
-						m_errorhnd->report( std::string("parse error in character set encoding: '") + dclass.encoding() + "'");
+						m_errorhnd->report( "parse error in character set encoding: '%s'", dclass.encoding().c_str());
 						return 0;
 					}
 				}
@@ -247,7 +247,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string( err.what()) + " in 'textwolf' segmenter");
+		m_errorhnd->report( "%s in 'textwolf' segmenter", err.what());
 		return 0;
 	}
 	catch (const std::bad_alloc&)
@@ -257,7 +257,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'textwolf' segmenter");
+		m_errorhnd->report( "%s uncaught exception in 'textwolf' segmenter", err.what());
 		return 0;
 	}
 }
@@ -270,7 +270,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterf
 	}
 	catch (const std::runtime_error& err)
 	{
-		errorhnd->report( std::string( err.what()) + " in 'textwolf' segmenter");
+		errorhnd->report( "%s in 'textwolf' segmenter", err.what());
 		return 0;
 	}
 	catch (const std::bad_alloc&)
@@ -280,7 +280,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterf
 	}
 	catch (const std::exception& err)
 	{
-		errorhnd->report( std::string(err.what()) + " uncaught exception in 'textwolf' segmenter");
+		errorhnd->report( "%s uncaught exception in 'textwolf' segmenter", err.what());
 		return 0;
 	}
 }

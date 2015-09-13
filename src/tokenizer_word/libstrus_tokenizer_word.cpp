@@ -74,7 +74,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in tokenizer");
+			m_errorhnd->report( "%s in tokenizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -84,7 +84,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
+			m_errorhnd->report( "%s uncaught exception in tokenizer", err.what());
 			return 0;
 		}
 	}
@@ -114,7 +114,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in tokenizer");
+			errorhnd->report( "%s in tokenizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -124,7 +124,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
+			errorhnd->report( "%s uncaught exception in tokenizer", err.what());
 			return 0;
 		}
 	}
@@ -261,7 +261,7 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 	}
 	catch (const std::runtime_error& err)
 	{
-		m_errorhnd->report( std::string( err.what()) + " in tokenizer");
+		m_errorhnd->report( "%s in tokenizer", err.what());
 		return std::vector<Token>();
 	}
 	catch (const std::bad_alloc&)
@@ -271,7 +271,7 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( std::string(err.what()) + " uncaught exception in tokenizer");
+		m_errorhnd->report( "%s uncaught exception in tokenizer", err.what());
 		return std::vector<Token>();
 	}
 }

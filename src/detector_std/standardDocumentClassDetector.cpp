@@ -181,7 +181,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 	}
 	catch (const std::runtime_error& err)
 	{
-		errorhnd->report( std::string( err.what()) + " in standard document class detector");
+		errorhnd->report( "%s in standard document class detector", err.what());
 		return false;
 	}
 	catch (const std::bad_alloc&)
@@ -191,7 +191,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 	}
 	catch (const std::exception& err)
 	{
-		errorhnd->report( std::string(err.what()) + " uncaught exception in standard document class detector");
+		errorhnd->report( "%s uncaught exception in standard document class detector", err.what());
 		return false;
 	}
 }

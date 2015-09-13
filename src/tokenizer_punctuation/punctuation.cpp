@@ -76,13 +76,13 @@ public:
 			}
 			else
 			{
-				errorhnd->report( std::string( "unsupported language passed to punctuation tokenizer ('") + args[0] +"')");
+				errorhnd->report( "unsupported language passed to punctuation tokenizer ('%s')", args[0].c_str());
 				return 0;
 			}
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in 'punctuation' tokenizer");
+			errorhnd->report( "%s in 'punctuation' tokenizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -92,7 +92,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in 'punctuation' tokenizer");
+			errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
 			return 0;
 		}
 	}

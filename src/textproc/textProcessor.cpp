@@ -80,7 +80,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'empty' normalizer");
+			m_errorhnd->report( "%s in 'empty' normalizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -90,7 +90,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'empty' normalizer");
+			m_errorhnd->report( "%s uncaught exception in 'empty' normalizer", err.what());
 			return 0;
 		}
 	}
@@ -115,7 +115,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in 'empty' normalizer");
+			errorhnd->report( "%s in 'empty' normalizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -125,7 +125,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in 'empty' normalizer");
+			errorhnd->report( "%s uncaught exception in 'empty' normalizer", err.what());
 			return 0;
 		}
 	}
@@ -160,7 +160,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'orig' normalizer");
+			m_errorhnd->report( "%s in 'orig' normalizer", err.what());
 			return std::string();
 		}
 		catch (const std::bad_alloc&)
@@ -170,7 +170,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
+			m_errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
 			return std::string();
 		}
 	}
@@ -193,7 +193,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'orig' normalizer");
+			m_errorhnd->report( "%s in 'orig' normalizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -203,7 +203,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
+			m_errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
 			return 0;
 		}
 	}
@@ -228,7 +228,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in 'orig' normalizer");
+			errorhnd->report( "%s in 'orig' normalizer",err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -238,7 +238,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in 'orig' normalizer");
+			errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
 			return 0;
 		}
 	}
@@ -262,7 +262,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'content' tokenizer");
+			m_errorhnd->report( "%s in 'content' tokenizer", err.what());
 			return std::vector<analyzer::Token>();
 		}
 		catch (const std::bad_alloc&)
@@ -272,7 +272,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
+			m_errorhnd->report( "%s uncaught exception in 'content' tokenizer", err.what());
 			return std::vector<analyzer::Token>();
 		}
 	}
@@ -296,7 +296,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			m_errorhnd->report( std::string( err.what()) + " in 'content' tokenizer");
+			m_errorhnd->report( "%s in 'content' tokenizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -306,7 +306,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			m_errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
+			m_errorhnd->report( "%s uncaught exception in 'content' tokenizer",err.what());
 			return 0;
 		}
 	}
@@ -332,7 +332,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in 'content' tokenizer");
+			errorhnd->report( "%s in 'content' tokenizer", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -342,7 +342,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in 'content' tokenizer");
+			errorhnd->report( "%s uncaught exception in 'content' tokenizer", err.what());
 			return 0;
 		}
 	}
@@ -401,7 +401,7 @@ public:
 		}
 		catch (const std::runtime_error& err)
 		{
-			errorhnd->report( std::string( err.what()) + " in 'count' aggregator");
+			errorhnd->report( "%s in 'count' aggregator", err.what());
 			return 0;
 		}
 		catch (const std::bad_alloc&)
@@ -411,7 +411,7 @@ public:
 		}
 		catch (const std::exception& err)
 		{
-			errorhnd->report( std::string(err.what()) + " uncaught exception in 'count' aggregator");
+			errorhnd->report( "%s uncaught exception in 'count' aggregator", err.what());
 			return 0;
 		}
 	}
@@ -440,7 +440,7 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
-		m_errorhnd->report( std::string( "no tokenizer defined with name '") + name + "'");
+		m_errorhnd->report( "no tokenizer defined with name '%s'", name.c_str());
 		return 0;
 	}
 	return ti->second;
@@ -452,7 +452,7 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
-		m_errorhnd->report( std::string( "no normalizer defined with name '") + name + "'");
+		m_errorhnd->report( "no normalizer defined with name '%s'", name.c_str());
 		return 0;
 	}
 	return ni->second;
@@ -464,7 +464,7 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 		ni = m_aggregator_map.find( utils::tolower( name));
 	if (ni == m_aggregator_map.end())
 	{
-		m_errorhnd->report( std::string( "no aggregator function defined with name '") + name + "'");
+		m_errorhnd->report( "no aggregator function defined with name '%s'", name.c_str());
 		return 0;
 	}
 	return ni->second;
