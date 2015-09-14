@@ -181,7 +181,7 @@ std::vector<analyzer::Term>
 	}
 	catch (const std::exception& err)
 	{
-		m_errorhnd->report( "%s uncaught exception in analyze phrase",err.what());
+		m_errorhnd->report( "%s uncaught exception in analyze phrase", err.what());
 		return std::vector<analyzer::Term>();
 	}
 }
