@@ -33,6 +33,8 @@
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include <vector>
 #include <string>
@@ -72,21 +74,7 @@ public:
 		{
 			return new SeparationTokenizerFunctionContext( m_delim, m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in tokenizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in tokenizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in tokenizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("cannot create tokenizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -112,21 +100,7 @@ public:
 		{
 			return new SeparationTokenizerInstance( m_delim, errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in tokenizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in tokenizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in tokenizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *errorhnd, 0);
 	}
 
 private:
@@ -259,21 +233,7 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 		}
 		return rt;
 	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in tokenizer", err.what());
-		return std::vector<Token>();
-	}
-	catch (const std::bad_alloc&)
-	{
-		m_errorhnd->report( "out of memory in tokenizer");
-		return std::vector<Token>();
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in tokenizer", err.what());
-		return std::vector<Token>();
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, std::vector<Token>());
 }
 
 static const SeparationTokenizerFunction wordSeparationTokenizer( wordBoundaryDelimiter);

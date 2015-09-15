@@ -43,9 +43,10 @@ using namespace strus;
 DLL_PUBLIC strus::TextProcessorInterface*
 	strus::createTextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 {
-	TextProcessor* rt = new TextProcessor( errorhnd);
+	TextProcessor* rt = 0;
 	try
 	{
+		rt = new TextProcessor( errorhnd);
 		rt->defineNormalizer( "stem", getNormalizer_snowball());
 		rt->defineNormalizer( "dictmap", getNormalizer_dictmap());
 		rt->defineNormalizer( "lc", getNormalizer_lowercase());
@@ -59,13 +60,13 @@ DLL_PUBLIC strus::TextProcessorInterface*
 	}
 	catch (const std::runtime_error& err)
 	{
-		delete rt;
+		if (rt) delete rt;
 		errorhnd->report( err.what());
 		return 0;
 	}
 	catch (const std::bad_alloc& err)
 	{
-		delete rt;
+		if (rt) delete rt;
 		errorhnd->report( err.what());
 		return 0;
 	}

@@ -35,6 +35,8 @@
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <stdexcept>
 
 using namespace strus;
@@ -105,8 +107,12 @@ public:
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		if (!m_stemmer) return 0;
-		return new StemNormalizerFunctionContext( m_stemmer, m_errorhnd);
+		try
+		{
+			if (!m_stemmer) return 0;
+			return new StemNormalizerFunctionContext( m_stemmer, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -123,12 +129,16 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
 	{
-		if (args.size() != 1)
+		try
 		{
-			errorhnd->report( "illegal number of arguments passed to snowball stemmer");
-			return 0;
+			if (args.size() != 1)
+			{
+				errorhnd->report( "illegal number of arguments passed to snowball stemmer");
+				return 0;
+			}
+			return new StemNormalizerFunctionInstance( args[0], errorhnd);
 		}
-		return new StemNormalizerFunctionInstance( args[0], errorhnd);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *errorhnd, 0);
 	}
 };
 

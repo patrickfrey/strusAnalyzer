@@ -92,7 +92,11 @@ public:
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new CharMapNormalizerFunctionContext( &m_map, m_errorhnd);
+		try
+		{
+			return new CharMapNormalizerFunctionContext( &m_map, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
