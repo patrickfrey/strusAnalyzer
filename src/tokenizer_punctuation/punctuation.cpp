@@ -32,6 +32,8 @@
 #include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include "punctuation_de.hpp"
 #include "punctuation_en.hpp"
 #include <cstring>
@@ -53,12 +55,12 @@ public:
 		{
 			if (args.size() > 2)
 			{
-				errorhnd->report( "too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)");
+				errorhnd->report( _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
 				return 0;
 			}
 			if (args.size() < 1)
 			{
-				errorhnd->report( "too few arguments for punctuation tokenizer (language as mandatory argument expected)");
+				errorhnd->report( _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
 				return 0;
 			}
 			const char* punctChar = 0;
@@ -76,25 +78,11 @@ public:
 			}
 			else
 			{
-				errorhnd->report( "unsupported language passed to punctuation tokenizer ('%s')", args[0].c_str());
+				errorhnd->report( _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
 				return 0;
 			}
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in 'punctuation' tokenizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in 'punctuation' tokenizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *errorhnd, 0);
 	}
 };
 

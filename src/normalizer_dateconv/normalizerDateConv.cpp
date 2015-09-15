@@ -29,6 +29,8 @@
 #include "normalizerDateConv.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -82,7 +84,7 @@ struct DateNumGranularity
 			case Day:
 				return diff.ticks() / ((time_duration::ticks_per_second()) * (24 * 3600 * m_factor));
 		}
-		throw std::runtime_error("unexpected error in time calculation");
+		throw strus::runtime_error(_TXT("unexpected error in time calculation"));
 	}
 };
 
@@ -115,21 +117,7 @@ public:
 			out << m_granularity.getValue( pt);
 			return out.str();
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'dateconv' normalizer", err.what());
-			return std::string();
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
-			return std::string();
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
-			return std::string();
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:
@@ -151,21 +139,7 @@ public:
 		{
 			return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar, m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'dateconv' normalizer",err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'dateconv' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -192,47 +166,47 @@ static DateNumGranularity::Type parseGranularityType( char const*& gi)
 {
 	if (gi[0] == 'u' && gi[1] == 's')
 	{
-		if (isAlphaNum(gi[2])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi+=2;
 		return DateNumGranularity::Microsecond;
 	}
 	else if (gi[0] == 'm' && gi[1] == 's')
 	{
-		if (isAlphaNum(gi[2])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi+=2;
 		return DateNumGranularity::Millisecond;
 	}
 	else if (*gi == 's')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Second;
 	}
 	else if (*gi == 'm')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Minute;
 	}
 	else if (*gi == 'h')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Hour;
 	}
 	else if (*gi == 'd')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
 	else if (*gi == 'y')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
-	throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+	throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 }
 
 static unsigned int parseNumber( char const*& gi)
@@ -243,11 +217,11 @@ static unsigned int parseNumber( char const*& gi)
 	{
 		unsigned int fo = rt;
 		rt = rt * 10 + (*gi - '0');
-		if (fo < rt) throw std::runtime_error( "error in date2int result definition: number out of range");
+		if (fo < rt) throw strus::runtime_error( _TXT("error in result definition: number out of range"));
 	}
 	if (!rt)
 	{
-		throw std::runtime_error( "error in date2int result definition: number expected");
+		throw strus::runtime_error( _TXT("error in result definition: number expected"));
 	}
 	return rt;
 }
@@ -278,7 +252,7 @@ DateNumGranularity parseGranularity( char const* gi)
 		}
 		catch (...)
 		{
-			throw std::runtime_error( "error in date2int result definition: illegal start time");
+			throw strus::runtime_error( _TXT("error in result definition: illegal start time"));
 		}
 	}
 	else
@@ -295,7 +269,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 	{
 		if (args.size() < 2)
 		{
-			errorhnd->report( "too few arguments passed to normalizer 'date2int'");
+			errorhnd->report( _TXT("too few arguments passed to '%s' normalizer"), "dateconv");
 			return 0;
 		}
 		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
@@ -311,21 +285,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 		}
 		return new Date2IntNormalizerFunctionInstance( granularity, lcar, errorhnd);
 	}
-	catch (const std::runtime_error& err)
-	{
-		errorhnd->report( "%s in 'dateconv' normalizer", err.what());
-		return 0;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( "out of memory in 'dateconv' normalizer");
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		errorhnd->report( "%s uncaught exception in 'dateconv' normalizer", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *errorhnd, 0);
 }
 
 

@@ -66,45 +66,30 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options)
-	{
-		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
-	}
+			const FeatureOptions& options);
 
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options)
-	{
-		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
-	}
+			const FeatureOptions& options);
 
 	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-	{
-		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
-	}
-
-	virtual void defineAggregatedMetaData(
-			const std::string& fieldname,
-			AggregatorFunctionInstanceInterface* statfunc)
-	{
-		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
-	}
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
 	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-	{
-		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, FeatureOptions());
-	}
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineAggregatedMetaData(
+			const std::string& fieldname,
+			AggregatorFunctionInstanceInterface* statfunc);
 
 	virtual void defineSubDocument(
 			const std::string& subDocumentTypeName,

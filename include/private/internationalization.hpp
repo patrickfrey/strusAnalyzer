@@ -26,49 +26,28 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Interface for reporting and catching errors
-/// \file analyzerErrorBufferInterface.hpp
-#ifndef _STRUS_ANALYZER_ERROR_BUFFER_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_ERROR_BUFFER_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_INTERNATIONALIZATION_HPP_INCLUDED
+#define _STRUS_INTERNATIONALIZATION_HPP_INCLUDED
+#include <libintl.h>
+#include <stdexcept>
 
-/// \brief strus toplevel namespace
+#define _TXT(STRING) gettext(STRING)
+
 namespace strus
 {
 
-/// \class AnalyzerErrorBufferInterface
-/// \brief Interface for reporting and catching errors in the analyzer
-class AnalyzerErrorBufferInterface
-{
-public:
-	enum ErrorClass
-	{
-		None,		///< no error
-		RuntimeError,	///< runtime error
-		BadAlloc	///< memory allocation error
-	};
+/// \brief Substitute for std::runtime_error with arguments
+/// \param[in] msg c printf format string
+/// \param[in] nofargs number of arguments passed to be substituted in the format string
+std::runtime_error runtime_error( const char* format, ...);
 
-	/// \brief Destructor
-	virtual ~AnalyzerErrorBufferInterface(){}
+/// \brief Substitute for std::logic_error with arguments
+/// \param[in] msg c printf format string
+/// \param[in] nofargs number of arguments passed to be substituted in the format string
+std::logic_error logic_error( const char* format, ...);
 
-	/// \brief Report an error
-	/// \param[in] format error message format string
-	/// \remark must not throw
-	virtual void report( const char* format, ...) const=0;
-
-	/// \brief Report an error, overwriting the previous error
-	/// \param[in] format error message format string
-	/// \remark must not throw
-	virtual void explain( const char* format, ...) const=0;
-
-	/// \brief Check, if an error has occurred and return it
-	/// \return an error string, if defined, NULL else
-	/// \remark resets the error
-	virtual const char* fetchError()=0;
-
-	/// \brief Check, if an error has occurred
-	/// \return an error string, if defined, NULL else
-	virtual bool hasError() const=0;
-};
+/// \brief Declare the message domain used by this package for the exception constructors declared in this module for gettext
+void initMessageTextDomain();
 
 }//namespace
 #endif

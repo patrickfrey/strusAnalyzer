@@ -30,6 +30,8 @@
 /// \file standardDocumentClassDetector.hpp
 #include "standardDocumentClassDetector.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 #include <stdexcept>
 
@@ -179,21 +181,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 		}
 		return false;
 	}
-	catch (const std::runtime_error& err)
-	{
-		errorhnd->report( "%s in standard document class detector", err.what());
-		return false;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( "out of memory in standard document class detector");
-		return false;
-	}
-	catch (const std::exception& err)
-	{
-		errorhnd->report( "%s uncaught exception in standard document class detector", err.what());
-		return false;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in standard document class detector: %s"), *errorhnd, false);
 }
 
 

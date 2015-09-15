@@ -29,6 +29,8 @@
 #include "punctuation_de.hpp"
 #include "punctuation_utils.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <iostream>
 
 using namespace strus;
@@ -181,21 +183,7 @@ std::vector<analyzer::Token>
 		}
 		return rt;
 	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in 'punctuation' tokenizer", err.what());
-		return std::vector<analyzer::Token>();
-	}
-	catch (const std::bad_alloc&)
-	{
-		m_errorhnd->report( "out of memory in 'punctuation' tokenizer");
-		return std::vector<analyzer::Token>();
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
-		return std::vector<analyzer::Token>();
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 }
 
 
@@ -205,20 +193,6 @@ TokenizerFunctionContextInterface* PunctuationTokenizerInstance_de::createFuncti
 	{
 		return new PunctuationTokenizerFunctionContext_de( &m_punctuation_char, m_errorhnd);
 	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in 'punctuation' tokenizer",err.what());
-		return 0;
-	}
-	catch (const std::bad_alloc&)
-	{
-		m_errorhnd->report( "out of memory in 'punctuation' tokenizer");
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in 'punctuation' tokenizer", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 }
 

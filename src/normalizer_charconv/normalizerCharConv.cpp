@@ -31,6 +31,8 @@
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -421,28 +423,14 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 		}
 		return rt;
 	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( "memory allocation error in normalizer");
-		return 0;
-	}
-	catch (const std::runtime_error& err)
-	{
-		errorhnd->report( "%s in normalizer", err.what());
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		errorhnd->report( "%s uncaught exception in normalizer", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in normalizer: %s"), *errorhnd, std::string());
 }
 
 NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
 {
 	if (args.size())
 	{
-		errorhnd->report( "unexpected arguments passed to normalizer 'lc'");
+		errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
 		return 0;
 	}
 	try
@@ -451,7 +439,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( "out of memory in 'lc'");
+		errorhnd->report( _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
 }
@@ -460,7 +448,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		errorhnd->report( "unexpected arguments passed to normalizer 'uc'");
+		errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
 		return 0;
 	}
 	try
@@ -469,7 +457,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( "out of memory in 'uc'");
+		errorhnd->report( _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
 }
@@ -480,7 +468,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	{
 		if (args.size() > 1)
 		{
-			errorhnd->report( "too many arguments passed to normalizer 'convdia'");
+			errorhnd->report( _TXT("too many arguments passed to normalizer '%s'"), "convdia");
 			return 0;
 		}
 		if (args.size() == 0)

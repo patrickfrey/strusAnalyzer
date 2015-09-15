@@ -40,6 +40,8 @@
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include "resourceDirectory.hpp"
 #include <stdexcept>
 #include <cstring>
@@ -78,21 +80,7 @@ public:
 		{
 			return new EmptyNormalizerFunctionContext( m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'empty' normalizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'empty' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'empty' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
 	}
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
@@ -113,21 +101,7 @@ public:
 		{
 			return new EmptyNormalizerInstance( errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in 'empty' normalizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in 'empty' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in 'empty' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *errorhnd, 0);
 	}
 };
 
@@ -158,21 +132,7 @@ public:
 			}
 			return rt;
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'orig' normalizer", err.what());
-			return std::string();
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'orig' normalizer");
-			return std::string();
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
-			return std::string();
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
@@ -191,21 +151,7 @@ public:
 		{
 			return new OrigNormalizerFunctionContext( m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'orig' normalizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'orig' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
 	}
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
@@ -226,21 +172,7 @@ public:
 		{
 			return new OrigNormalizerInstance( errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in 'orig' normalizer",err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in 'orig' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in 'orig' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *errorhnd, 0);
 	}
 };
 
@@ -260,21 +192,7 @@ public:
 			rt.push_back( analyzer::Token( 0, 0, srcsize));
 			return rt;
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'content' tokenizer", err.what());
-			return std::vector<analyzer::Token>();
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'content' tokenizer");
-			return std::vector<analyzer::Token>();
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'content' tokenizer", err.what());
-			return std::vector<analyzer::Token>();
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
 private:
@@ -294,21 +212,7 @@ public:
 		{
 			return new ContentTokenizerFunctionContext( m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'content' tokenizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'content' tokenizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'content' tokenizer",err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -330,21 +234,7 @@ public:
 		{
 			return new ContentTokenizerInstance( errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in 'content' tokenizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in 'content' tokenizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in 'content' tokenizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *errorhnd, 0);
 	}
 };
 
@@ -399,21 +289,7 @@ public:
 		{
 			return new CountAggregatorFunctionInstance( args[0], errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			errorhnd->report( "%s in 'count' aggregator", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			errorhnd->report( "out of memory in 'count' aggregator");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			errorhnd->report( "%s uncaught exception in 'count' aggregator", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'count' aggregator: %s"), *errorhnd, 0);
 	}
 };
 
@@ -440,7 +316,7 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
-		m_errorhnd->report( "no tokenizer defined with name '%s'", name.c_str());
+		m_errorhnd->report( _TXT("no tokenizer defined with name '%s'"), name.c_str());
 		return 0;
 	}
 	return ti->second;
@@ -452,7 +328,7 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
-		m_errorhnd->report( "no normalizer defined with name '%s'", name.c_str());
+		m_errorhnd->report( _TXT("no normalizer defined with name '%s'"), name.c_str());
 		return 0;
 	}
 	return ni->second;
@@ -464,7 +340,7 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 		ni = m_aggregator_map.find( utils::tolower( name));
 	if (ni == m_aggregator_map.end())
 	{
-		m_errorhnd->report( "no aggregator function defined with name '%s'", name.c_str());
+		m_errorhnd->report( _TXT("no aggregator function defined with name '%s'"), name.c_str());
 		return 0;
 	}
 	return ni->second;
@@ -490,58 +366,94 @@ bool TextProcessor::detectDocumentClass( DocumentClass& dclass, const char* cont
 
 void TextProcessor::defineDocumentClassDetector( const DocumentClassDetectorInterface* detector)
 {
-	m_detectors.push_back( detector);
+	try
+	{
+		m_detectors.push_back( detector);
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
 }
 
 void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)
 {
-	m_tokenizer_map[ utils::tolower( name)] = tokenizer;
+	try
+	{
+		m_tokenizer_map[ utils::tolower( name)] = tokenizer;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
 }
 
 void TextProcessor::defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)
 {
-	m_normalizer_map[ utils::tolower( name)] = normalizer;
+	try
+	{
+		m_normalizer_map[ utils::tolower( name)] = normalizer;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
 }
 
 void TextProcessor::defineAggregator( const std::string& name, const AggregatorFunctionInterface* statfunc)
 {
-	m_aggregator_map[ utils::tolower( name)] = statfunc;
+	try
+	{
+		m_aggregator_map[ utils::tolower( name)] = statfunc;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
 }
 
 
 void TextProcessor::addResourcePath( const std::string& path)
 {
-	char const* cc = path.c_str();
-	char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
-	for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
+	try
 	{
-		m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
+		char const* cc = path.c_str();
+		char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
+		for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
+		{
+			m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
 #ifdef STRUS_LOWLEVEL_DEBUG
-	std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
+		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
+#endif
+		}
+		m_resourcePaths.push_back( utils::trim( std::string( cc)));
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
 #endif
 	}
-	m_resourcePaths.push_back( utils::trim( std::string( cc)));
-#ifdef STRUS_LOWLEVEL_DEBUG
-	std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
-#endif
+	CATCH_ERROR_MAP( _TXT("error in 'TextProcessor::addResourcePath': %s"), *m_errorhnd);
 }
 
 std::string TextProcessor::getResourcePath( const std::string& filename) const
 {
-	std::vector<std::string>::const_iterator
-		pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
-	for (; pi != pe; ++pi)
+	try
 	{
-		std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "check resource path '" << absfilename << "'" << std::endl;
-#endif
-		if (utils::isFile( absfilename))
+		std::vector<std::string>::const_iterator
+			pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
+		for (; pi != pe; ++pi)
 		{
-			return absfilename;
+			std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "check resource path '" << absfilename << "'" << std::endl;
+#endif
+			if (utils::isFile( absfilename))
+			{
+				return absfilename;
+			}
 		}
+		throw strus::runtime_error( "resource file '%s' not found", filename.c_str());
 	}
-	throw std::runtime_error( std::string( "resource file '") + filename + "' not found");
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
 }
 
 

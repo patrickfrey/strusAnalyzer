@@ -31,6 +31,8 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 #include <cstring>
 #include <cstdio>
@@ -82,9 +84,7 @@ static std::string readFile( const std::string& filename)
 	FILE* fh = ::fopen( filename.c_str(), "rb");
 	if (!fh)
 	{
-		std::ostringstream msg;
-		msg << errno;
-		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
 	}
 	unsigned int nn;
 	enum {bufsize=(1<<12)};
@@ -108,7 +108,7 @@ static std::string readFile( const std::string& filename)
 		::fclose( fh);
 		std::ostringstream msg;
 		msg << ec;
-		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
 	}
 	else
 	{
@@ -154,7 +154,7 @@ void DictMap::loadFile( const std::string& filename)
 		}
 		if (!set( key, val))
 		{
-			throw std::runtime_error("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'");
+			throw strus::runtime_error(_TXT("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'"));
 		}
 		cc = (*eoln)?(eoln+1):eoln;
 	}
@@ -185,21 +185,7 @@ public:
 				return key;
 			}
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'dictmap' normalizer", err.what());
-			return std::string();
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
-			return std::string();
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'dictmap' normalizer", err.what());
-			return std::string();
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:
@@ -226,21 +212,7 @@ public:
 		{
 			return new DictMapNormalizerFunctionContext( &m_map, m_errorhnd);
 		}
-		catch (const std::runtime_error& err)
-		{
-			m_errorhnd->report( "%s in 'dictmap' normalizer", err.what());
-			return 0;
-		}
-		catch (const std::bad_alloc&)
-		{
-			m_errorhnd->report( "out of memory in 'dictmap' normalizer");
-			return 0;
-		}
-		catch (const std::exception& err)
-		{
-			m_errorhnd->report( "%s uncaught exception in 'dictmap' normalizer", err.what());
-			return 0;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -253,33 +225,19 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 {
 	if (args.size() == 0)
 	{
-		errorhnd->report( "name of file with key values expected as argument for 'DictMap' normalizer");
+		errorhnd->report( _TXT("name of file with key values expected as argument for 'DictMap' normalizer"));
 		return 0;
 	}
 	if (args.size() > 1)
 	{
-		errorhnd->report( "too many arguments for 'DictMap' normalizer");
+		errorhnd->report( _TXT("too many arguments for 'DictMap' normalizer"));
 		return 0;
 	}
 	try
 	{
 		return new DictMapNormalizerInstance( args[0], textproc, errorhnd);
 	}
-	catch (const std::runtime_error& err)
-	{
-		errorhnd->report( "%s in 'dictmap' normalizer", err.what());
-		return 0;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( "out of memory in 'dictmap' normalizer");
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		errorhnd->report( "%s uncaught exception in 'dictmap' normalizer", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *errorhnd, 0);
 }
 
 

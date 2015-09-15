@@ -36,6 +36,8 @@
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -50,7 +52,7 @@ DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, Analyz
 {
 	if (!m_segmenter)
 	{
-		throw std::runtime_error( "failed to create segmenter context");
+		throw strus::runtime_error( _TXT("failed to create segmenter context: %s"), errorhnd->fetchError());
 	}
 }
 
@@ -59,7 +61,7 @@ const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int feat
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
 	{
-		throw std::runtime_error( "internal: unknown index of feature");
+		throw strus::runtime_error( _TXT("internal: unknown index of feature"));
 	}
 	return m_featurear[ featidx-1];
 }
@@ -80,7 +82,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	{
 		if (m_options.positionBind() != FeatureOptions::BindContent)
 		{
-			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
+			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
 		}
 	}
 	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
@@ -106,23 +108,61 @@ void DocumentAnalyzer::defineFeature(
 	{
 		if (m_featurear.size()+1 >= MaxNofFeatures)
 		{
-			m_errorhnd->report( "number of features defined exceeds maximum limit");
+			m_errorhnd->report( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
 		m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
 	}
-	catch (const std::bad_alloc& err)
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineFeature: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::addSearchIndexFeature(
+		const std::string& type,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const FeatureOptions& options)
+{
+	defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+}
+
+void DocumentAnalyzer::addForwardIndexFeature(
+		const std::string& type,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const FeatureOptions& options)
+{
+	defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+}
+
+void DocumentAnalyzer::defineMetaData(
+		const std::string& fieldname,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
+}
+
+void DocumentAnalyzer::defineAttribute(
+		const std::string& attribname,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, FeatureOptions());
+}
+
+void DocumentAnalyzer::defineAggregatedMetaData(
+		const std::string& fieldname,
+		AggregatorFunctionInstanceInterface* statfunc)
+{
+	try
 	{
-		m_errorhnd->report( "memory alloc error in define feature");
+		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
 	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in define feature",err.what());
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in define feature", err.what());
-	}
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineAggregatedMetaData: %s"), *m_errorhnd);
 }
 
 void DocumentAnalyzer::defineSubDocument(
@@ -135,22 +175,11 @@ void DocumentAnalyzer::defineSubDocument(
 		m_subdoctypear.push_back( subDocumentTypeName);
 		if (subDocumentType >= MaxNofSubDocuments)
 		{
-			throw std::runtime_error( "too many sub documents defined");
+			throw strus::runtime_error( _TXT("too many sub documents defined"));
 		}
 		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in define sub document");
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in define sub document", err.what());
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in define sub document", err.what());
-	}
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
 }
 
 
@@ -171,7 +200,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
 		if (!m_normalizerContextAr.back().get())
 		{
-			throw std::runtime_error( "failed to create normalizer context");
+			throw strus::runtime_error( _TXT("failed to create normalizer context"));
 		}
 	}
 }
@@ -223,21 +252,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		}
 		return rt;
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in define sub document");
-		return analyzer::Document();
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in define sub document", err.what());
-		return analyzer::Document();
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in define sub document", err.what());
-		return analyzer::Document();
-	}
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::defineSubDocument: %s", *m_errorhnd, analyzer::Document());
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
@@ -246,21 +261,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const Documen
 	{
 		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in create analyzer context");
-		return 0;
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in create analyzer context", err.what());
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in create analyzer context", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::createContext: %s", *m_errorhnd, 0);
 }
 
 
@@ -334,7 +335,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			}
 			if (tokens.size() > 1)
 			{
-				throw std::runtime_error( "metadata feature tokenized to to more than one part");
+				throw strus::runtime_error( _TXT("metadata feature tokenized to to more than one part"));
 			}
 			break;
 		}
@@ -594,20 +595,6 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		if (!doc.forwardIndexTerms().empty()) return true;
 		return false;
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in analyze next");
-		return false;
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in analyze next", err.what());
-		return false;
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in analyze next", err.what());
-		return false;
-	}
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzerContext::analyzeNext: %s", *m_errorhnd, false);
 }
 

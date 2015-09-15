@@ -33,6 +33,8 @@
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 
 using namespace strus;
 
@@ -115,7 +117,7 @@ static ExpressionClass getExpressionClass( const std::string& expression, std::v
 			}
 			continue;
 		}
-		throw std::runtime_error( std::string( "error in path expression at '") + si + "' (expression '" + expression + "')");
+		throw strus::runtime_error( _TXT("error in path expression at '%s' (expression '%s')"), si, expression.c_str());
 	}
 	return rt;
 }
@@ -143,7 +145,7 @@ void SegmenterInstance::addExpression( int id, const std::string& expression)
 				locstr = std::string("'...") + std::string( expression.c_str() + (errorpos - 1), errorsize) + "'";
 			}
 		}
-		throw std::runtime_error( std::string( "error in selection expression '") + expression + "' at " + locstr);
+		throw strus::runtime_error( _TXT("error in selection expression '%s' at %s"), expression.c_str(), locstr.c_str());
 	}
 }
 
@@ -158,7 +160,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 	std::vector<std::string> tags;
 	if (getExpressionClass( expression, tags) != TagSelection)
 	{
-		throw std::runtime_error( std::string( "tag selection expected for defining a sub section of the document: '") + expression + "'");
+		throw strus::runtime_error( _TXT("tag selection expected for defining a sub section of the document: '%s'"), expression.c_str());
 	}
 	addExpression( startId, expression);
 	addExpression( endId, expression + "~");
@@ -198,7 +200,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 					}
 					else
 					{
-						m_errorhnd->report( "parse error in character set encoding: '%s'", dclass.encoding().c_str());
+						m_errorhnd->report( _TXT("parse error in character set encoding: '%s'"), dclass.encoding().c_str());
 						return 0;
 					}
 				}
@@ -240,26 +242,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 			}
 			else
 			{
-				m_errorhnd->report( "the XML segmenter based on textwolf currently supports only UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding");
+				m_errorhnd->report( _TXT("the XML segmenter based on textwolf currently supports only UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
 				return 0;
 			}
 		}
 	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in 'textwolf' segmenter", err.what());
-		return 0;
-	}
-	catch (const std::bad_alloc&)
-	{
-		m_errorhnd->report( "out of memory in 'textwolf' segmenter");
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in 'textwolf' segmenter", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'textwolf' segmenter: %s"), *m_errorhnd, 0);
 }
 
 SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterface* errorhnd) const
@@ -268,21 +256,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterf
 	{
 		return new SegmenterInstance( errorhnd);
 	}
-	catch (const std::runtime_error& err)
-	{
-		errorhnd->report( "%s in 'textwolf' segmenter", err.what());
-		return 0;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( "out of memory in 'textwolf' segmenter");
-		return 0;
-	}
-	catch (const std::exception& err)
-	{
-		errorhnd->report( "%s uncaught exception in 'textwolf' segmenter", err.what());
-		return 0;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'textwolf' segmenter: %s"), *errorhnd, 0);
 }
 
 

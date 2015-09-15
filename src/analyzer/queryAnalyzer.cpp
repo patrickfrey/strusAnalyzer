@@ -33,6 +33,8 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <stdexcept>
 #include <set>
 #include <map>
@@ -71,7 +73,7 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
 		if (!m_normalizerContextAr.back().get())
 		{
-			throw std::runtime_error( "failed to create normalizer context");
+			throw strus::runtime_error( _TXT("failed to create normalizer context"));
 		}
 	}
 }
@@ -114,18 +116,7 @@ void QueryAnalyzer::definePhraseType(
 		m_featuremap[ utils::tolower( phraseType)]
 			= FeatureConfig( featureType, tokenizer, normalizers);
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in define phrase type");
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in define phrase type", err.what());
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in define phrase type", err.what());
-	}
+	CATCH_ERROR_MAP( _TXT("error in 'QueryAnalyzer::definePhraseType': %s"), *m_errorhnd);
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
@@ -134,7 +125,7 @@ const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::str
 		fi = m_featuremap.find( utils::tolower( phraseType));
 	if (fi == m_featuremap.end())
 	{
-		throw std::runtime_error(std::string( "query feature constructor for phrase type '") + phraseType + "' is not defined");
+		throw strus::runtime_error(_TXT( "query feature constructor for phrase type '%s' is not defined"), phraseType.c_str());
 	}
 	return fi->second;
 }
@@ -169,21 +160,7 @@ std::vector<analyzer::Term>
 		}
 		return rt;
 	}
-	catch (const std::bad_alloc& err)
-	{
-		m_errorhnd->report( "memory alloc error in analyze phrase");
-		return std::vector<analyzer::Term>();
-	}
-	catch (const std::runtime_error& err)
-	{
-		m_errorhnd->report( "%s in analyze phrase", err.what());
-		return std::vector<analyzer::Term>();
-	}
-	catch (const std::exception& err)
-	{
-		m_errorhnd->report( "%s uncaught exception in analyze phrase", err.what());
-		return std::vector<analyzer::Term>();
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'QueryAnalyzer::analyzePhrase': %s"), *m_errorhnd, std::vector<analyzer::Term>());
 }
 
 std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
@@ -201,7 +178,7 @@ std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
 	}
 	catch (const std::bad_alloc& err)
 	{
-		m_errorhnd->report( "memory alloc error in analyze phrase bulk");
+		m_errorhnd->report( _TXT("memory alloc error in '%s'"), "QueryAnalyzer::analyzePhraseBulk");
 		return std::vector<analyzer::TermVector>();
 	}
 }
