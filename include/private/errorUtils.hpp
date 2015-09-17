@@ -31,6 +31,7 @@
 #ifndef _STRUS_ANALYZER_ERROR_UTILITIES_HPP_INCLUDED
 #define _STRUS_ANALYZER_ERROR_UTILITIES_HPP_INCLUDED
 #include <stdexcept>
+#include "private/internationalization.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
@@ -39,7 +40,7 @@ namespace strus
 #define CATCH_ERROR_MAP( contextExplainText, errorBuffer)\
 	catch (const std::bad_alloc&)\
 	{\
-		(errorBuffer).report( "memory allocation error");\
+		(errorBuffer).report( _TXT("memory allocation error"));\
 	}\
 	catch (const std::runtime_error& err)\
 	{\
@@ -47,13 +48,13 @@ namespace strus
 	}\
 	catch (const std::exception& err)\
 	{\
-		(errorBuffer).report( "uncaught exception: %s", err.what());\
+		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
 	}
 
 #define CATCH_ERROR_MAP_RETURN( contextExplainText, errorBuffer, errorReturnValue)\
 	catch (const std::bad_alloc&)\
 	{\
-		(errorBuffer).report( "memory allocation error");\
+		(errorBuffer).report( _TXT("memory allocation error"));\
 		return errorReturnValue;\
 	}\
 	catch (const std::runtime_error& err)\
@@ -63,7 +64,7 @@ namespace strus
 	}\
 	catch (const std::exception& err)\
 	{\
-		(errorBuffer).report( "uncaught exception: %s", err.what());\
+		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
 		return errorReturnValue;\
 	}
 
