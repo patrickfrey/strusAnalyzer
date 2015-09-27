@@ -27,15 +27,28 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/normalizer_dateconv.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "normalizerDateConv.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_date2int()
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_date2int( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const Date2IntNormalizerFunction rt;
-	return &rt;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new Date2IntNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create date normalizer: %s"), *errorhnd, 0);
 }
 
 

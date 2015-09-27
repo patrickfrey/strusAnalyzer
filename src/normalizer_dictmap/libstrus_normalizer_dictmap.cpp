@@ -27,16 +27,30 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/normalizer_dictmap.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "normalizerDictMap.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_dictmap()
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_dictmap( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const DictMapNormalizerFunction rt;
-	return &rt;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new DictMapNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create dictmap normalizer: %s"), *errorhnd, 0);
 }
+
 
 
 

@@ -430,71 +430,71 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 	CATCH_ERROR_MAP_RETURN( _TXT("error in normalizer: %s"), *errorhnd, std::string());
 }
 
-NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	if (args.size())
 	{
-		errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
+		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
 		return 0;
 	}
 	try
 	{
-		return new CharMapNormalizerInstance( CharMap::Lowercase, errorhnd);
+		return new CharMapNormalizerInstance( CharMap::Lowercase, m_errorhnd);
 	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( _TXT("out of memory in normalizer '%s'"), "lc");
+		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
 }
 
-NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	if (args.size())
 	{
-		errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
+		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
 		return 0;
 	}
 	try
 	{
-		return new CharMapNormalizerInstance( CharMap::Uppercase, errorhnd);
+		return new CharMapNormalizerInstance( CharMap::Uppercase, m_errorhnd);
 	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( _TXT("out of memory in normalizer '%s'"), "uc");
+		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
 }
 
-NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	try
 	{
 		if (args.size() > 1)
 		{
-			errorhnd->report( _TXT("too many arguments passed to normalizer '%s'"), "convdia");
+			m_errorhnd->report( _TXT("too many arguments passed to normalizer '%s'"), "convdia");
 			return 0;
 		}
 		if (args.size() == 0)
 		{
-			return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, errorhnd);
+			return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, m_errorhnd);
 		}
 		else
 		{
 			std::string language_lo = utils::tolower( args[0]);
 			if (language_lo == "de")
 			{
-				return new CharMapNormalizerInstance( CharMap::DiacriticalGerman, errorhnd);
+				return new CharMapNormalizerInstance( CharMap::DiacriticalGerman, m_errorhnd);
 			}
 			else
 			{
-				return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, errorhnd);
+				return new CharMapNormalizerInstance( CharMap::DiacriticalUnknown, m_errorhnd);
 			}
 		}
 	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( "out of memory");
+		m_errorhnd->report( "out of memory");
 		return 0;
 	}
 }

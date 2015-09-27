@@ -80,7 +80,7 @@ static void initDocumentClass( DocumentClass& dclass, const char* mimeType, cons
 }
 
 
-bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, AnalyzerErrorBufferInterface* errorhnd) const
+bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	try
 	{
@@ -181,7 +181,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 		}
 		return false;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in standard document class detector: %s"), *errorhnd, false);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in standard document class detector: %s"), *m_errorhnd, false);
 }
 
 

@@ -27,14 +27,29 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/normalizer_snowball.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/dll_tags.hpp"
 #include "snowball.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_snowball()
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_snowball( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return snowball_stemmer();
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new StemNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create snowball stemmer normalizer: %s"), *errorhnd, 0);
 }
 
 

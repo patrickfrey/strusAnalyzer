@@ -37,10 +37,12 @@ namespace strus
 
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the mapping of the input with a dictionary as result
 /// \return the normalization function
-const NormalizerFunctionInterface* getNormalizer_dictmap();
+NormalizerFunctionInterface* createNormalizer_dictmap( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

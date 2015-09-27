@@ -250,13 +250,13 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'textwolf' segmenter: %s"), *m_errorhnd, 0);
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( AnalyzerErrorBufferInterface* errorhnd) const
+SegmenterInstanceInterface* Segmenter::createInstance() const
 {
 	try
 	{
-		return new SegmenterInstance( errorhnd);
+		return new SegmenterInstance( m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'textwolf' segmenter: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'textwolf' segmenter: %s"), *m_errorhnd, 0);
 }
 
 

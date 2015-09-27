@@ -82,23 +82,23 @@ public:
 	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
 
 	/// \brief Define a content detector
-	/// \param[in] tokenizer a static const reference to a tokenizer object
-	virtual void defineDocumentClassDetector( const DocumentClassDetectorInterface* detector)=0;
+	/// \param[in] tokenizer a tokenizer object (pass ownership)
+	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector)=0;
 
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the normalizer to define
-	/// \param[in] tokenizer a static const reference to a tokenizer object
-	virtual void defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)=0;
+	/// \param[in] tokenizer a tokenizer object (pass ownership)
+	virtual void defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer)=0;
 
 	/// \brief Define a normalizer by name
 	/// \param[in] name name of the normalizer to define
-	/// \param[in] normalizer a static const reference to a normalizer object
-	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)=0;
+	/// \param[in] normalizer a normalizer object (pass ownership)
+	virtual void defineNormalizer( const std::string& name, NormalizerFunctionInterface* normalizer)=0;
 
 	/// \brief Define an aggregator function by name
 	/// \param[in] name name of the aggregator function to define
-	/// \param[in] aggregator a static const reference to an aggregator function object
-	virtual void defineAggregator( const std::string& name, const AggregatorFunctionInterface* aggregator)=0;
+	/// \param[in] aggregator an aggregator function object (pass ownership)
+	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* aggregator)=0;
 };
 
 }//namespace

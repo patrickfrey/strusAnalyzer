@@ -121,32 +121,18 @@ private:
 };
 
 
-class StemNormalizerFunction
-	:public NormalizerFunctionInterface
+NormalizerFunctionInstanceInterface* StemNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
-public:
-	StemNormalizerFunction(){}
-
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+	try
 	{
-		try
+		if (args.size() != 1)
 		{
-			if (args.size() != 1)
-			{
-				errorhnd->report( "illegal number of arguments passed to snowball stemmer");
-				return 0;
-			}
-			return new StemNormalizerFunctionInstance( args[0], errorhnd);
+			m_errorhnd->report( "illegal number of arguments passed to snowball stemmer");
+			return 0;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *errorhnd, 0);
+		return new StemNormalizerFunctionInstance( args[0], m_errorhnd);
 	}
-};
-
-
-const NormalizerFunctionInterface* strus::snowball_stemmer()
-{
-	static const StemNormalizerFunction rt;
-	return &rt;
+	CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *m_errorhnd, 0);
 }
 
 

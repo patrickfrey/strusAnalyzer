@@ -51,11 +51,35 @@ using namespace strus::analyzer;
 
 #undef STRUS_LOWLEVEL_DEBUG
 
+TextProcessor::~TextProcessor()
+{
+	std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.begin(), te = m_tokenizer_map.end();
+	for (; ti != te; ++ti)
+	{
+		delete ti->second;
+	}
+	std::map<std::string,NormalizerFunctionInterface*>::iterator ni = m_normalizer_map.begin(), ne = m_normalizer_map.end();
+	for (; ni != ne; ++ni)
+	{
+		delete ni->second;
+	}
+	std::map<std::string,AggregatorFunctionInterface*>::iterator ai = m_aggregator_map.begin(), ae = m_aggregator_map.end();
+	for (; ai != ae; ++ai)
+	{
+		delete ai->second;
+	}
+	std::vector<DocumentClassDetectorInterface*>::iterator di = m_detectors.begin(), de = m_detectors.end();
+	for (; di != de; ++di)
+	{
+		delete *di;
+	}
+}
+
 class EmptyNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	EmptyNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit EmptyNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
@@ -90,26 +114,32 @@ class EmptyNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+	explicit EmptyNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size())
 		{
-			errorhnd->report( "no arguments expected for 'empty' normalizer");
+			m_errorhnd->report( "no arguments expected for 'empty' normalizer");
 			return 0;
 		}
 		try
 		{
-			return new EmptyNormalizerInstance( errorhnd);
+			return new EmptyNormalizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
 	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class OrigNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	OrigNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit OrigNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
@@ -161,19 +191,25 @@ class OrigNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+	explicit OrigNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size())
 		{
-			errorhnd->report( "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( "no arguments expected for 'orig' normalizer");
 			return 0;
 		}
 		try
 		{
-			return new OrigNormalizerInstance( errorhnd);
+			return new OrigNormalizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
 	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class ContentTokenizerFunctionContext
@@ -203,7 +239,7 @@ class ContentTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	ContentTokenizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+	explicit ContentTokenizerInstance( AnalyzerErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual TokenizerFunctionContextInterface* createFunctionContext() const
@@ -223,19 +259,25 @@ class ContentTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp, AnalyzerErrorBufferInterface* errorhnd) const
+	explicit ContentTokenizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const
 	{
 		if (args.size())
 		{
-			errorhnd->report("no arguments expected for 'content' normalizer");
+			m_errorhnd->report("no arguments expected for 'content' normalizer");
 			return 0;
 		}
 		try
 		{
-			return new ContentTokenizerInstance( errorhnd);
+			return new ContentTokenizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
 	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -270,49 +312,48 @@ class CountAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	/// \brief Constructor
-	CountAggregatorFunction(){}
+	explicit CountAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
-	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, AnalyzerErrorBufferInterface* errorhnd) const
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
 	{
 		if (args.size() == 0)
 		{
-			errorhnd->report( "feature type name as argument expected for 'count' aggregator function");
+			m_errorhnd->report( "feature type name as argument expected for 'count' aggregator function");
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			errorhnd->report( "too many arguments passed to 'count' aggregator function");
+			m_errorhnd->report( "too many arguments passed to 'count' aggregator function");
 			return 0;
 		}
 		try
 		{
-			return new CountAggregatorFunctionInstance( args[0], errorhnd);
+			return new CountAggregatorFunctionInstance( args[0], m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'count' aggregator: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'count' aggregator: %s"), *m_errorhnd, 0);
 	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
-
-
-static ContentTokenizerFunction contentTokenizer;
-static OrigNormalizerFunction origNormalizer;
-static EmptyNormalizerFunction emptyNormalizer;
-static CountAggregatorFunction countAggregator;
-
 
 TextProcessor::TextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 	:m_errorhnd(errorhnd)
 {
-	defineDocumentClassDetector( getDetector_std());
-	defineTokenizer( "content", &contentTokenizer);
-	defineNormalizer( "orig", &origNormalizer);
-	defineNormalizer( "empty", &emptyNormalizer);
-	defineAggregator( "count", &countAggregator);
+	DocumentClassDetectorInterface* dtc;
+	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error(_TXT("error creating text processor"));
+	defineDocumentClassDetector( dtc);
+
+	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
+	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
+	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
+	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
 {
-	std::map<std::string,const TokenizerFunctionInterface*>::const_iterator
+	std::map<std::string,TokenizerFunctionInterface*>::const_iterator
 		ti = m_tokenizer_map.find( utils::tolower( name));
 	if (ti == m_tokenizer_map.end())
 	{
@@ -324,7 +365,7 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 
 const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::string& name) const
 {
-	std::map<std::string,const NormalizerFunctionInterface*>::const_iterator
+	std::map<std::string,NormalizerFunctionInterface*>::const_iterator
 		ni = m_normalizer_map.find( utils::tolower( name));
 	if (ni == m_normalizer_map.end())
 	{
@@ -336,7 +377,7 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 
 const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::string& name) const
 {
-	std::map<std::string,const AggregatorFunctionInterface*>::const_iterator
+	std::map<std::string,AggregatorFunctionInterface*>::const_iterator
 		ni = m_aggregator_map.find( utils::tolower( name));
 	if (ni == m_aggregator_map.end())
 	{
@@ -349,10 +390,10 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 
 bool TextProcessor::detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
-	std::vector<const DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
+	std::vector<DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
 	for (; ci != ce; ++ci)
 	{
-		if ((*ci)->detect( dclass, contentBegin, contentBeginSize, m_errorhnd))
+		if ((*ci)->detect( dclass, contentBegin, contentBeginSize))
 		{
 			return true;
 		}
@@ -364,7 +405,7 @@ bool TextProcessor::detectDocumentClass( DocumentClass& dclass, const char* cont
 	return false;
 }
 
-void TextProcessor::defineDocumentClassDetector( const DocumentClassDetectorInterface* detector)
+void TextProcessor::defineDocumentClassDetector( DocumentClassDetectorInterface* detector)
 {
 	try
 	{
@@ -376,7 +417,7 @@ void TextProcessor::defineDocumentClassDetector( const DocumentClassDetectorInte
 	}
 }
 
-void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer)
+void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer)
 {
 	try
 	{
@@ -388,7 +429,7 @@ void TextProcessor::defineTokenizer( const std::string& name, const TokenizerFun
 	}
 }
 
-void TextProcessor::defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer)
+void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctionInterface* normalizer)
 {
 	try
 	{
@@ -400,7 +441,7 @@ void TextProcessor::defineNormalizer( const std::string& name, const NormalizerF
 	}
 }
 
-void TextProcessor::defineAggregator( const std::string& name, const AggregatorFunctionInterface* statfunc)
+void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctionInterface* statfunc)
 {
 	try
 	{

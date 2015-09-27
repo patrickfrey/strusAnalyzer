@@ -263,13 +263,13 @@ DateNumGranularity parseGranularity( char const* gi)
 }
 
 
-NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	try
 	{
 		if (args.size() < 2)
 		{
-			errorhnd->report( _TXT("too few arguments passed to '%s' normalizer"), "dateconv");
+			m_errorhnd->report( _TXT("too few arguments passed to '%s' normalizer"), "dateconv");
 			return 0;
 		}
 		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
@@ -283,9 +283,9 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 				std::locale(std::locale::classic(),
 				new boost::posix_time::time_input_facet( ai->c_str())));
 		}
-		return new Date2IntNormalizerFunctionInstance( granularity, lcar, errorhnd);
+		return new Date2IntNormalizerFunctionInstance( granularity, lcar, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
 }
 
 

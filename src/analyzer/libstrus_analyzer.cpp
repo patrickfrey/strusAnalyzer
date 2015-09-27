@@ -37,6 +37,8 @@
 #include "queryAnalyzer.hpp"
 #include "private/dll_tags.hpp"
 
+static bool g_intl_initialized = false;
+
 using namespace strus;
 
 
@@ -45,6 +47,11 @@ DLL_PUBLIC DocumentAnalyzerInterface*
 {
 	try
 	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
 		return new DocumentAnalyzer( segmenter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer: %s"), *errorhnd, 0);
@@ -55,6 +62,11 @@ DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( AnalyzerErrorBuff
 {
 	try
 	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
 		return new QueryAnalyzer( errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query analyzer: %s"), *errorhnd, 0);

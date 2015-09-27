@@ -49,18 +49,21 @@ class PunctuationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+	explicit PunctuationTokenizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		try
 		{
 			if (args.size() > 2)
 			{
-				errorhnd->report( _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
+				m_errorhnd->report( _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
 				return 0;
 			}
 			if (args.size() < 1)
 			{
-				errorhnd->report( _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
+				m_errorhnd->report( _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
 				return 0;
 			}
 			const char* punctChar = 0;
@@ -70,26 +73,39 @@ public:
 			}
 			if (utils::caseInsensitiveEquals( args[0], "de"))
 			{
-				return new PunctuationTokenizerInstance_de( punctChar, errorhnd);
+				return new PunctuationTokenizerInstance_de( punctChar, m_errorhnd);
 			}
 			else if (utils::caseInsensitiveEquals( args[0], "en"))
 			{
-				return new PunctuationTokenizerInstance_en( punctChar, errorhnd);
+				return new PunctuationTokenizerInstance_en( punctChar, m_errorhnd);
 			}
 			else
 			{
-				errorhnd->report( _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
+				m_errorhnd->report( _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
 				return 0;
 			}
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
-const TokenizerFunctionInterface* strus::punctuationTokenizer()
+static bool g_intl_initialized = false;
+
+TokenizerFunctionInterface* strus::punctuationTokenizer( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const PunctuationTokenizerFunction tokenizer;
-	return &tokenizer;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new PunctuationTokenizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create punctuation tokenizer: %s"), *errorhnd, 0);
 }
 
 

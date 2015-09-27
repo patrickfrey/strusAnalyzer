@@ -86,25 +86,26 @@ class SeparationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	SeparationTokenizerFunction( TokenDelimiter delim)
-		:m_delim(delim){}
+	SeparationTokenizerFunction( TokenDelimiter delim_, AnalyzerErrorBufferInterface* errorhnd_)
+		:m_delim(delim_),m_errorhnd(errorhnd_){}
 
-	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const
+	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size())
 		{
-			errorhnd->report( "no arguments expected for tokenizer");
+			m_errorhnd->report( "no arguments expected for tokenizer");
 			return 0;
 		}
 		try
 		{
-			return new SeparationTokenizerInstance( m_delim, errorhnd);
+			return new SeparationTokenizerInstance( m_delim, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
 	TokenDelimiter m_delim;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -236,19 +237,36 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 	CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, std::vector<Token>());
 }
 
-static const SeparationTokenizerFunction wordSeparationTokenizer( wordBoundaryDelimiter);
-static const SeparationTokenizerFunction whiteSpaceTokenizer( whiteSpaceDelimiter);
 
+static bool g_intl_initialized = false;
 
-
-DLL_PUBLIC const TokenizerFunctionInterface* strus::getTokenizer_word()
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return &wordSeparationTokenizer;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new SeparationTokenizerFunction( wordBoundaryDelimiter, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC const TokenizerFunctionInterface* strus::getTokenizer_whitespace()
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return &whiteSpaceTokenizer;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new SeparationTokenizerFunction( whiteSpaceDelimiter, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create whitespace tokenizer: %s"), *errorhnd, 0);
 }
+
 
 

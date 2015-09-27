@@ -47,9 +47,13 @@ class DictMapNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	DictMapNormalizerFunction(){}
+	explicit DictMapNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
-	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*, AnalyzerErrorBufferInterface* errorhnd) const;
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

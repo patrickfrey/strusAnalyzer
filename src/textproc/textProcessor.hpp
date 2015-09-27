@@ -42,6 +42,7 @@ class TextProcessor
 {
 public:
 	explicit TextProcessor( AnalyzerErrorBufferInterface* errorhnd);
+	virtual ~TextProcessor();
 
 	virtual void addResourcePath( const std::string& path);
 	virtual std::string getResourcePath( const std::string& filename) const;
@@ -54,20 +55,20 @@ public:
 
 	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 
-	virtual void defineDocumentClassDetector( const DocumentClassDetectorInterface* detector);
+	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
 
-	virtual void defineTokenizer( const std::string& name, const TokenizerFunctionInterface* tokenizer);
+	virtual void defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer);
 
-	virtual void defineNormalizer( const std::string& name, const NormalizerFunctionInterface* normalizer);
+	virtual void defineNormalizer( const std::string& name, NormalizerFunctionInterface* normalizer);
 
-	virtual void defineAggregator( const std::string& name, const AggregatorFunctionInterface* statfunc);
+	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* statfunc);
 
 private:
-	std::map<std::string,const TokenizerFunctionInterface*> m_tokenizer_map;
-	std::map<std::string,const NormalizerFunctionInterface*> m_normalizer_map;
-	std::map<std::string,const AggregatorFunctionInterface*> m_aggregator_map;
+	std::map<std::string,TokenizerFunctionInterface*> m_tokenizer_map;
+	std::map<std::string,NormalizerFunctionInterface*> m_normalizer_map;
+	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;
 	std::vector<std::string> m_resourcePaths;
-	std::vector<const DocumentClassDetectorInterface*> m_detectors;
+	std::vector<DocumentClassDetectorInterface*> m_detectors;
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 

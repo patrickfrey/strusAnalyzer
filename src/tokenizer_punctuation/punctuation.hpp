@@ -32,8 +32,10 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
-const TokenizerFunctionInterface* punctuationTokenizer();
+TokenizerFunctionInterface* punctuationTokenizer( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

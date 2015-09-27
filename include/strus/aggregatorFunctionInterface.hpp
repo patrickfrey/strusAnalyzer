@@ -39,8 +39,6 @@ namespace strus
 
 /// \brief Forward declaration
 class AggregatorFunctionInstanceInterface;
-/// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
 
 /// \class AggregatorFunctionInterface
 /// \brief Interface for the aggregator function constructor
@@ -53,7 +51,7 @@ public:
 	/// \brief Create a parameterized aggregator function instance
 	/// \param[in] args arguments for the aggregator function
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
-	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, AnalyzerErrorBufferInterface* errorhnd) const=0;
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 };
 
 }//namespace

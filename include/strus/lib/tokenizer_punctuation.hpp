@@ -37,10 +37,12 @@ namespace strus
 
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get the tokenizer type that creates the tokenization of punctuation elements in the input
 /// \return the tokenization function
-const TokenizerFunctionInterface* getTokenizer_punctuation();
+TokenizerFunctionInterface* createTokenizer_punctuation( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

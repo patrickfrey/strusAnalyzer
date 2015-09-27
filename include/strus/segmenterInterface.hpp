@@ -36,8 +36,6 @@ namespace strus
 {
 /// \brief Forward declaration
 class SegmenterInstanceInterface;
-/// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
 
 /// \class SegmenterInterface
 /// \brief Defines an interface for creating instances of programs for document segmentation
@@ -53,7 +51,7 @@ public:
 
 	/// \brief Create a parameterizable segmenter instance
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
-	virtual SegmenterInstanceInterface* createInstance( AnalyzerErrorBufferInterface* errorhnd) const=0;
+	virtual SegmenterInstanceInterface* createInstance() const=0;
 };
 
 }//namespace

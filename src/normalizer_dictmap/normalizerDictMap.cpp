@@ -221,23 +221,23 @@ private:
 };
 
 
-NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc, AnalyzerErrorBufferInterface* errorhnd) const
+NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
 {
 	if (args.size() == 0)
 	{
-		errorhnd->report( _TXT("name of file with key values expected as argument for 'DictMap' normalizer"));
+		m_errorhnd->report( _TXT("name of file with key values expected as argument for 'DictMap' normalizer"));
 		return 0;
 	}
 	if (args.size() > 1)
 	{
-		errorhnd->report( _TXT("too many arguments for 'DictMap' normalizer"));
+		m_errorhnd->report( _TXT("too many arguments for 'DictMap' normalizer"));
 		return 0;
 	}
 	try
 	{
-		return new DictMapNormalizerInstance( args[0], textproc, errorhnd);
+		return new DictMapNormalizerInstance( args[0], textproc, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
 }
 
 

@@ -66,7 +66,8 @@ class Segmenter
 	:public SegmenterInterface
 {
 public:
-	Segmenter(){}
+	explicit Segmenter( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 	virtual ~Segmenter(){}
 
 	virtual const char* mimeType() const
@@ -74,7 +75,10 @@ public:
 		return "text/xml";
 	}
 
-	virtual SegmenterInstanceInterface* createInstance( AnalyzerErrorBufferInterface* errorhnd) const;
+	virtual SegmenterInstanceInterface* createInstance() const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

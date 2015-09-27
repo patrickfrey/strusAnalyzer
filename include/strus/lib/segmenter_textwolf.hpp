@@ -37,10 +37,12 @@ namespace strus {
 
 /// \brief Forward declaration
 class SegmenterInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get a document XML segmenter based on textwolf
 /// \return the segmenter
-const SegmenterInterface* getSegmenter_textwolf();
+SegmenterInterface* createSegmenter_textwolf( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

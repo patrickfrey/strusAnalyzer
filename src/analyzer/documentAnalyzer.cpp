@@ -48,7 +48,7 @@
 using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
-	:m_segmenter(segmenter_->createInstance(errorhnd)),m_errorhnd(errorhnd)
+	:m_segmenter(segmenter_->createInstance()),m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
 	{
