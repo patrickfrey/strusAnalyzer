@@ -155,7 +155,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	{
 		addExpression( id, expression);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error defining expression for 'textwolf' segmenter: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP( _TXT("error defining expression for 'textwolf' segmenter: %s"), *m_errorhnd);
 }
 
 
@@ -171,7 +171,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 		addExpression( startId, expression);
 		addExpression( endId, expression + "~");
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error defining subsection for 'textwolf' segmenter: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP( _TXT("error defining subsection for 'textwolf' segmenter: %s"), *m_errorhnd);
 }
 
 
