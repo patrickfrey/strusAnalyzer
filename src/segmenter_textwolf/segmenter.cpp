@@ -151,19 +151,27 @@ void SegmenterInstance::addExpression( int id, const std::string& expression)
 
 void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
-	addExpression( id, expression);
+	try
+	{
+		addExpression( id, expression);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error defining expression for 'textwolf' segmenter: %s"), *m_errorhnd, 0);
 }
 
 
 void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
-	std::vector<std::string> tags;
-	if (getExpressionClass( expression, tags) != TagSelection)
+	try
 	{
-		throw strus::runtime_error( _TXT("tag selection expected for defining a sub section of the document: '%s'"), expression.c_str());
+		std::vector<std::string> tags;
+		if (getExpressionClass( expression, tags) != TagSelection)
+		{
+			throw strus::runtime_error( _TXT("tag selection expected for defining a sub section of the document: '%s'"), expression.c_str());
+		}
+		addExpression( startId, expression);
+		addExpression( endId, expression + "~");
 	}
-	addExpression( startId, expression);
-	addExpression( endId, expression + "~");
+	CATCH_ERROR_MAP_RETURN( _TXT("error defining subsection for 'textwolf' segmenter: %s"), *m_errorhnd, 0);
 }
 
 
