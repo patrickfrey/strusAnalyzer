@@ -492,7 +492,7 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 				return absfilename;
 			}
 		}
-		throw strus::runtime_error( "resource file '%s' not found", filename.c_str());
+		throw strus::runtime_error( _TXT("resource file '%s' not found"), filename.c_str());
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
 }

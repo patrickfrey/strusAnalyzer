@@ -189,7 +189,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 {
 	if (!m_tokenizerContext.get())
 	{
-		throw std::runtime_error( "failed to create tokenizer context");
+		throw strus::runtime_error( _TXT("failed to create tokenizer context"));
 	}
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
@@ -248,7 +248,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		analyzerInstance->putInput( content.c_str(), content.size(), true);
 		if (!analyzerInstance->analyzeNext( rt))
 		{
-			throw std::runtime_error( "analyzed content incomplete or empty");
+			throw strus::runtime_error( _TXT("analyzed content incomplete or empty"));
 		}
 		return rt;
 	}
@@ -444,7 +444,7 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 {
 	if (!m_segmenter)
 	{
-		throw std::runtime_error( "failed to create document analyzer context");
+		throw strus::runtime_error( _TXT("failed to create document analyzer context"));
 	}
 	m_subdocstack.push_back( analyzer::Document());
 }
@@ -561,7 +561,8 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			}
 			catch (const std::runtime_error& err)
 			{
-				throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
+				std::string chunk( elem, elemsize);
+				throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
 			}
 		}
 		if (!m_eof && !have_document)

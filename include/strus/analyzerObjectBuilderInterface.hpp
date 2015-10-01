@@ -41,7 +41,7 @@ class DocumentAnalyzerInterface;
 /// \brief Forward declaration
 class QueryAnalyzerInterface;
 /// \brief Forward declaration
-class SegmenterInstanceInterface;
+class SegmenterInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
@@ -59,7 +59,7 @@ public:
 	/// \brief Creates a document segmenter object
 	/// \param[in] segmenterName name of the segmenter used (if not specified, find the first one loaded or the default one)
 	/// \return the document segmenter (with ownership returned)
-	virtual SegmenterInstanceInterface* createSegmenter( const std::string& segmenterName=std::string()) const=0;
+	virtual SegmenterInterface* createSegmenter( const std::string& segmenterName=std::string()) const=0;
 
 	/// \brief Creates a document analyzer object
 	/// \param[in] segmenterName name of the segmenter used (if not specified, find the first one loaded or the default one)

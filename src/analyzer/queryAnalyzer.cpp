@@ -62,7 +62,7 @@ QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfi
 {
 	if (!m_tokenizerContext.get())
 	{
-		throw std::runtime_error( "failed to create tokenizer context");
+		throw strus::runtime_error( _TXT("failed to create tokenizer context"));
 	}
 	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
