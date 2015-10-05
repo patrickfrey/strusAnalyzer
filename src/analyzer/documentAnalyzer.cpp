@@ -96,6 +96,16 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	m_tokenizer.reset( tokenizer_);
 }
 
+static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+		ci = normalizers_.begin(), ce = normalizers_.end();
+	for (; ci != ce; ++ci)
+	{
+		delete *ci;
+	}
+}
+
 void DocumentAnalyzer::defineFeature(
 		FeatureClass featureClass,
 		const std::string& name,
@@ -110,10 +120,22 @@ void DocumentAnalyzer::defineFeature(
 		{
 			m_errorhnd->report( _TXT("number of features defined exceeds maximum limit"));
 		}
-		m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
+		m_featurear.reserve( m_featurear.size()+1);
 		m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
+		m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
 	}
-	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineFeature: %s"), *m_errorhnd);
+	catch (const std::bad_alloc&)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("memory allocation error defining feature"));
+	}
+	catch (const std::runtime_error& err)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("error defining feature: '%s'", err.what()));
+	}
 }
 
 void DocumentAnalyzer::addSearchIndexFeature(
@@ -160,9 +182,20 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 {
 	try
 	{
+		// PF:NOTE: The following order of code ensures that if this constructor fails statfunc is not copied and can be freed by this function:
+		m_statistics.reserve( m_statistics.size()+1);
 		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
 	}
-	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineAggregatedMetaData: %s"), *m_errorhnd);
+	catch (const std::bad_alloc&)
+	{
+		delete statfunc;
+		m_errorhnd->report(_TXT("memory allocation error defining aggregated meta data"));
+	}
+	catch (const std::runtime_error& err)
+	{
+		delete statfunc;
+		m_errorhnd->report(_TXT("error defining aggregated meta data: '%s'", err.what()));
+	}
 }
 
 void DocumentAnalyzer::defineSubDocument(

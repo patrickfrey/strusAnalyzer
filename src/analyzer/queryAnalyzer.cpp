@@ -48,6 +48,8 @@ QueryAnalyzer::FeatureConfig::FeatureConfig(
 	:m_featureType(featureType_)
 	,m_tokenizer(tokenizer_)
 {
+	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
+	m_normalizerlist.reserve( normalizers_.size());
 	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
 		ci = normalizers_.begin(), ce = normalizers_.end();
 	for (; ci != ce; ++ci)
@@ -105,6 +107,16 @@ std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size
 }
 
 
+static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+		ci = normalizers_.begin(), ce = normalizers_.end();
+	for (; ci != ce; ++ci)
+	{
+		delete *ci;
+	}
+}
+
 void QueryAnalyzer::definePhraseType(
 		const std::string& phraseType,
 		const std::string& featureType,
@@ -116,7 +128,18 @@ void QueryAnalyzer::definePhraseType(
 		m_featuremap[ utils::tolower( phraseType)]
 			= FeatureConfig( featureType, tokenizer, normalizers);
 	}
-	CATCH_ERROR_MAP( _TXT("error in 'QueryAnalyzer::definePhraseType': %s"), *m_errorhnd);
+	catch (const std::bad_alloc&)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("memory allocation error defining phrase type"));
+	}
+	catch (const std::runtime_error& err)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("error defining phrase type: '%s'", err.what()));
+	}
 }
 
 const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const

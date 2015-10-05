@@ -413,6 +413,7 @@ void TextProcessor::defineDocumentClassDetector( DocumentClassDetectorInterface*
 	}
 	catch (const std::bad_alloc&)
 	{
+		delete detector;
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }
@@ -421,10 +422,21 @@ void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionI
 {
 	try
 	{
-		m_tokenizer_map[ utils::tolower( name)] = tokenizer;
+		std::string id( utils::tolower( name));
+		std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.find(id);
+		if (ti != m_tokenizer_map.end())
+		{
+			delete ti->second;
+			ti->second = tokenizer;
+		}
+		else
+		{
+			m_tokenizer_map[ id] = tokenizer;
+		}
 	}
 	catch (const std::bad_alloc&)
 	{
+		delete tokenizer;
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }
@@ -433,10 +445,21 @@ void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctio
 {
 	try
 	{
-		m_normalizer_map[ utils::tolower( name)] = normalizer;
+		std::string id( utils::tolower( name));
+		std::map<std::string,NormalizerFunctionInterface*>::iterator ni = m_normalizer_map.find(id);
+		if (ni != m_normalizer_map.end())
+		{
+			delete ni->second;
+			ni->second = normalizer;
+		}
+		else
+		{
+			m_normalizer_map[ id] = normalizer;
+		}
 	}
 	catch (const std::bad_alloc&)
 	{
+		delete normalizer;
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }
@@ -445,10 +468,21 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 {
 	try
 	{
-		m_aggregator_map[ utils::tolower( name)] = statfunc;
+		std::string id( utils::tolower( name));
+		std::map<std::string,TokenizerFunctionInterface*>::iterator ai = m_aggregator_map.find(id);
+		if (ai != m_aggregator_map.end())
+		{
+			delete ai->second;
+			ai->second = statfunc;
+		}
+		else
+		{
+			m_aggregator_map[ id] = statfunc;
+		}
 	}
 	catch (const std::bad_alloc&)
 	{
+		delete statfunc;
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }
