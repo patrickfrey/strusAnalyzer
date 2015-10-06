@@ -469,7 +469,7 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 	try
 	{
 		std::string id( utils::tolower( name));
-		std::map<std::string,TokenizerFunctionInterface*>::iterator ai = m_aggregator_map.find(id);
+		std::map<std::string,AggregatorFunctionInterface*>::iterator ai = m_aggregator_map.find(id);
 		if (ai != m_aggregator_map.end())
 		{
 			delete ai->second;

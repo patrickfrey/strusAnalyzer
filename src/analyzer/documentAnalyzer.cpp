@@ -99,7 +99,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers_.begin(), ce = normalizers_.end();
+		ci = normalizers.begin(), ce = normalizers.end();
 	for (; ci != ce; ++ci)
 	{
 		delete *ci;
@@ -134,7 +134,7 @@ void DocumentAnalyzer::defineFeature(
 	{
 		freeNormalizers( normalizers);
 		delete tokenizer;
-		m_errorhnd->report(_TXT("error defining feature: '%s'", err.what()));
+		m_errorhnd->report(_TXT("error defining feature: '%s'"), err.what());
 	}
 }
 
@@ -194,7 +194,7 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 	catch (const std::runtime_error& err)
 	{
 		delete statfunc;
-		m_errorhnd->report(_TXT("error defining aggregated meta data: '%s'", err.what()));
+		m_errorhnd->report(_TXT("error defining aggregated meta data: '%s'"), err.what());
 	}
 }
 

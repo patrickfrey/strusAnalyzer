@@ -110,7 +110,7 @@ std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size
 static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers_.begin(), ce = normalizers_.end();
+		ci = normalizers.begin(), ce = normalizers.end();
 	for (; ci != ce; ++ci)
 	{
 		delete *ci;
@@ -138,7 +138,7 @@ void QueryAnalyzer::definePhraseType(
 	{
 		freeNormalizers( normalizers);
 		delete tokenizer;
-		m_errorhnd->report(_TXT("error defining phrase type: '%s'", err.what()));
+		m_errorhnd->report(_TXT("error defining phrase type: '%s'"), err.what());
 	}
 }
 
