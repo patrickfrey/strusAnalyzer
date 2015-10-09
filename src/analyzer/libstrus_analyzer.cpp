@@ -43,7 +43,7 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd)
+	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd)
 {
 	try
 	{
