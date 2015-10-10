@@ -65,7 +65,7 @@
 </div><!--header-->
 <div class="contents">
 
-<p>Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.  
+<p>Defines an interface for creating instances of programs for document segmentation.  
  <a href="classstrus_1_1SegmenterInterface.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="segmenterInterface_8hpp_source.html">segmenterInterface.hpp</a>&gt;</code></p>
@@ -75,21 +75,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a21aee48e36c41f4e6db4a4a383425001"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">~SegmenterInterface</a> ()</td></tr>
 <tr class="memdesc:a21aee48e36c41f4e6db4a4a383425001"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a21aee48e36c41f4e6db4a4a383425001">More...</a><br/></td></tr>
 <tr class="separator:a21aee48e36c41f4e6db4a4a383425001"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76e9fd9892e35bebc22f0ee75f172f0e"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a76e9fd9892e35bebc22f0ee75f172f0e">mimeType</a> () const =0</td></tr>
-<tr class="memdesc:a76e9fd9892e35bebc22f0ee75f172f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the mime type accepted by this segmenter.  <a href="#a76e9fd9892e35bebc22f0ee75f172f0e">More...</a><br/></td></tr>
-<tr class="separator:a76e9fd9892e35bebc22f0ee75f172f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2a465090f783176d249201cd024cc3a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#af2a465090f783176d249201cd024cc3a">defineSelectorExpression</a> (int id, const std::string &amp;expression)=0</td></tr>
-<tr class="memdesc:af2a465090f783176d249201cd024cc3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an expression for selecting chunks from a document.  <a href="#af2a465090f783176d249201cd024cc3a">More...</a><br/></td></tr>
-<tr class="separator:af2a465090f783176d249201cd024cc3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#ab90dcdd936ecb1521c26e9faca9bb2dc">defineSubSection</a> (int startId, int endId, const std::string &amp;expression)=0</td></tr>
-<tr class="memdesc:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an expression for identifying a sub section of the document.  <a href="#ab90dcdd936ecb1521c26e9faca9bb2dc">More...</a><br/></td></tr>
-<tr class="separator:ab90dcdd936ecb1521c26e9faca9bb2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43de9c8126a1580971a3eab7abb4cd39"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a43de9c8126a1580971a3eab7abb4cd39">createContext</a> (const <a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;dclass) const =0</td></tr>
-<tr class="memdesc:a43de9c8126a1580971a3eab7abb4cd39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an instance of the segmenter.  <a href="#a43de9c8126a1580971a3eab7abb4cd39">More...</a><br/></td></tr>
-<tr class="separator:a43de9c8126a1580971a3eab7abb4cd39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13581b55eec2642f98bbef78d5cd779c"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c">mimeType</a> () const =0</td></tr>
+<tr class="memdesc:a13581b55eec2642f98bbef78d5cd779c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the mime type accepted by this segmenter.  <a href="#a13581b55eec2642f98bbef78d5cd779c">More...</a><br/></td></tr>
+<tr class="separator:a13581b55eec2642f98bbef78d5cd779c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa417e4e2db1402440684ffb29727e682"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682">createInstance</a> () const =0</td></tr>
+<tr class="memdesc:aa417e4e2db1402440684ffb29727e682"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a parameterizable segmenter instance.  <a href="#aa417e4e2db1402440684ffb29727e682">More...</a><br/></td></tr>
+<tr class="separator:aa417e4e2db1402440684ffb29727e682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression. </p>
+<div class="textblock"><p>Defines an interface for creating instances of programs for document segmentation. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a21aee48e36c41f4e6db4a4a383425001"></a>
 <div class="memitem">
@@ -117,7 +112,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a43de9c8126a1580971a3eab7abb4cd39"></a>
+<a class="anchor" id="aa417e4e2db1402440684ffb29727e682"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -125,10 +120,9 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a>* strus::SegmenterInterface::createContext </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a>* strus::SegmenterInterface::createInstance </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;&#160;</td>
-          <td class="paramname"><em>dclass</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -139,18 +133,17 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Creates an instance of the segmenter. </p>
+<p>Create a parameterizable segmenter instance. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">dclass</td><td>description of the document type and encoding to process </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">errorhnd</td><td>analyzer error buffer interface for reporting exeptions and errors </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the segmenter object (with ownership, to be desposed with delete by the caller) </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="af2a465090f783176d249201cd024cc3a"></a>
+<a class="anchor" id="a13581b55eec2642f98bbef78d5cd779c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -158,100 +151,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void strus::SegmenterInterface::defineSelectorExpression </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>expression</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Defines an expression for selecting chunks from a document. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">id</td><td>identifier of the chunks that match to expression </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">expression</td><td>expression for selecting chunks </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="ab90dcdd936ecb1521c26e9faca9bb2dc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void strus::SegmenterInterface::defineSubSection </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>startId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>endId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>expression</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Defines an expression for identifying a sub section of the document. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">startId</td><td>identifier to be returned when a sub section of this type starts </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">endId</td><td>identifier to be returned when a sub section of this type ends </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">expression</td><td>expression for selecting the sub section </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a76e9fd9892e35bebc22f0ee75f172f0e"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string strus::SegmenterInterface::mimeType </td>
+          <td class="memname">virtual const char* strus::SegmenterInterface::mimeType </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -276,7 +176,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Aug 16 2015 21:07:30 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 10 2015 19:47:37 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
