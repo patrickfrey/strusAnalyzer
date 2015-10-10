@@ -31,6 +31,7 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/documentClass.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -45,13 +46,15 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( SegmenterInterface* segmenter_);
+	DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzer()
 	{
@@ -63,45 +66,30 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options)
-	{
-		defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
-	}
+			const FeatureOptions& options);
 
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options)
-	{
-		defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
-	}
+			const FeatureOptions& options);
 
 	virtual void defineMetaData(
 			const std::string& fieldname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-	{
-		defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
-	}
-
-	virtual void defineAggregatedMetaData(
-			const std::string& fieldname,
-			AggregatorFunctionInstanceInterface* statfunc)
-	{
-		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
-	}
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
 	virtual void defineAttribute(
 			const std::string& attribname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-	{
-		defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, FeatureOptions());
-	}
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineAggregatedMetaData(
+			const std::string& fieldname,
+			AggregatorFunctionInstanceInterface* statfunc);
 
 	virtual void defineSubDocument(
 			const std::string& subDocumentTypeName,
@@ -113,8 +101,6 @@ public:
 
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const DocumentClass& dclass) const;
-
-	virtual std::string mimeType() const;
 
 public:
 	enum FeatureClass
@@ -198,10 +184,11 @@ private:
 
 private:
 	friend class DocumentAnalyzerContext;
-	SegmenterInterface* m_segmenter;
+	SegmenterInstanceInterface* m_segmenter;
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -247,7 +234,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzerContext()
 	{
@@ -262,7 +249,8 @@ private:
 	void clearTermMaps();
 	void mapPositions( analyzer::Document& res) const;
 	void mapStatistics( analyzer::Document& res) const;
-	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
+	///\param[in] samePosition true, if all elements get the same position (bind predecessor, bind successor)
+	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, bool samePosition);
 	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void processConcatenated( analyzer::Document& res);
 
@@ -307,6 +295,7 @@ private:
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
 	std::vector<SuccPositionChunk> m_succChunks;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

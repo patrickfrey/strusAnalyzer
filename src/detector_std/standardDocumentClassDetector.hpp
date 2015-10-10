@@ -37,15 +37,21 @@
 /// \brief strus toplevel namespace
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class StandardDocumentClassDetector
 	:public DocumentClassDetectorInterface
 {
 public:
-	StandardDocumentClassDetector(){}
+	explicit StandardDocumentClassDetector( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 	virtual ~StandardDocumentClassDetector(){}
 
 	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

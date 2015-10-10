@@ -37,10 +37,12 @@ namespace strus
 
 /// \brief Forward declaration
 class DocumentClassDetectorInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get the standard content detector
 /// \return the content detector class
-const DocumentClassDetectorInterface* getDetector_std();
+DocumentClassDetectorInterface* createDetector_std( AnalyzerErrorBufferInterface* errorhnd);
 
 }
 #endif

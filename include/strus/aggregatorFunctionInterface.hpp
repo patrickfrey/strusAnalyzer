@@ -50,6 +50,7 @@ public:
 
 	/// \brief Create a parameterized aggregator function instance
 	/// \param[in] args arguments for the aggregator function
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 };
 

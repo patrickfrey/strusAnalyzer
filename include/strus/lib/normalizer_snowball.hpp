@@ -37,10 +37,12 @@ namespace strus
 
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the stemming of the input with the snowball stemmer as result
 /// \return the normalization function
-const NormalizerFunctionInterface* getNormalizer_snowball();
+NormalizerFunctionInterface* createNormalizer_snowball( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

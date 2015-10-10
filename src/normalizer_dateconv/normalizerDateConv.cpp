@@ -27,7 +27,10 @@
 --------------------------------------------------------------------
 */
 #include "normalizerDateConv.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -81,7 +84,7 @@ struct DateNumGranularity
 			case Day:
 				return diff.ticks() / ((time_duration::ticks_per_second()) * (24 * 3600 * m_factor));
 		}
-		throw std::runtime_error("unexpected error in time calculation");
+		throw strus::runtime_error(_TXT("unexpected error in time calculation"));
 	}
 };
 
@@ -90,49 +93,59 @@ class Date2IntNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_)
-		:m_granularity(granularity_),m_lcar(lcar_)
+	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd)
 	{}
 
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize)
 	{
-		std::string inputstr( src, srcsize);
-		boost::posix_time::ptime pt;
-		std::vector<std::locale>::const_iterator li = m_lcar.begin(), le = m_lcar.end();
-		for (; li != le; ++li)
+		try
 		{
-			std::istringstream is( inputstr);
-			is.imbue( *li);
-			is >> pt;
-			if(pt != boost::posix_time::ptime()) break;
+			std::string inputstr( src, srcsize);
+			boost::posix_time::ptime pt;
+			std::vector<std::locale>::const_iterator li = m_lcar.begin(), le = m_lcar.end();
+			for (; li != le; ++li)
+			{
+				std::istringstream is( inputstr);
+				is.imbue( *li);
+				is >> pt;
+				if(pt != boost::posix_time::ptime()) break;
+			}
+			std::ostringstream out;
+			out << m_granularity.getValue( pt);
+			return out.str();
 		}
-		std::ostringstream out;
-		out << m_granularity.getValue( pt);
-		return out.str();
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class Date2IntNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_)
-		:m_granularity(granularity_),m_lcar(lcar_){}
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar);
+		try
+		{
+			return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 static const char* skipSpaces( char const* gi)
@@ -153,47 +166,47 @@ static DateNumGranularity::Type parseGranularityType( char const*& gi)
 {
 	if (gi[0] == 'u' && gi[1] == 's')
 	{
-		if (isAlphaNum(gi[2])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi+=2;
 		return DateNumGranularity::Microsecond;
 	}
 	else if (gi[0] == 'm' && gi[1] == 's')
 	{
-		if (isAlphaNum(gi[2])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi+=2;
 		return DateNumGranularity::Millisecond;
 	}
 	else if (*gi == 's')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Second;
 	}
 	else if (*gi == 'm')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Minute;
 	}
 	else if (*gi == 'h')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Hour;
 	}
 	else if (*gi == 'd')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
 	else if (*gi == 'y')
 	{
-		if (isAlphaNum(gi[1])) throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
-	throw std::runtime_error( "error in date2int result definition: unknown time unit identifier");
+	throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 }
 
 static unsigned int parseNumber( char const*& gi)
@@ -204,11 +217,11 @@ static unsigned int parseNumber( char const*& gi)
 	{
 		unsigned int fo = rt;
 		rt = rt * 10 + (*gi - '0');
-		if (fo < rt) throw std::runtime_error( "error in date2int result definition: number out of range");
+		if (fo < rt) throw strus::runtime_error( _TXT("error in result definition: number out of range"));
 	}
 	if (!rt)
 	{
-		throw std::runtime_error( "error in date2int result definition: number expected");
+		throw strus::runtime_error( _TXT("error in result definition: number expected"));
 	}
 	return rt;
 }
@@ -239,7 +252,7 @@ DateNumGranularity parseGranularity( char const* gi)
 		}
 		catch (...)
 		{
-			throw std::runtime_error( "error in date2int result definition: illegal start time");
+			throw strus::runtime_error( _TXT("error in result definition: illegal start time"));
 		}
 	}
 	else
@@ -252,19 +265,27 @@ DateNumGranularity parseGranularity( char const* gi)
 
 NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
-	if (args.size() < 2) throw std::runtime_error( "too few arguments passed to normalizer 'date2int'");
-	std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-
-	DateNumGranularity granularity( parseGranularity( ai->c_str()));
-
-	std::vector<std::locale> lcar;
-	for (++ai; ai != ae; ++ai)
+	try
 	{
-		lcar.push_back(
-			std::locale(std::locale::classic(),
-			new boost::posix_time::time_input_facet( ai->c_str())));
+		if (args.size() < 2)
+		{
+			m_errorhnd->report( _TXT("too few arguments passed to '%s' normalizer"), "dateconv");
+			return 0;
+		}
+		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
+	
+		DateNumGranularity granularity( parseGranularity( ai->c_str()));
+	
+		std::vector<std::locale> lcar;
+		for (++ai; ai != ae; ++ai)
+		{
+			lcar.push_back(
+				std::locale(std::locale::classic(),
+				new boost::posix_time::time_input_facet( ai->c_str())));
+		}
+		return new Date2IntNormalizerFunctionInstance( granularity, lcar, m_errorhnd);
 	}
-	return new Date2IntNormalizerFunctionInstance( granularity, lcar);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
 }
 
 

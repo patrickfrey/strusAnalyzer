@@ -37,10 +37,12 @@ namespace strus
 
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the conversion of the input date as number (various units configurable base)
 /// \return the normalization function
-const NormalizerFunctionInterface* getNormalizer_date2int();
+NormalizerFunctionInterface* createNormalizer_date2int( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

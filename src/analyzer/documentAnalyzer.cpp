@@ -33,8 +33,11 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -44,20 +47,21 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( SegmenterInterface* segmenter_)
-	:m_segmenter(segmenter_){}
-
-
-std::string DocumentAnalyzer::mimeType() const
+DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
+	:m_segmenter(segmenter_->createInstance()),m_errorhnd(errorhnd)
 {
-	return m_segmenter->mimeType();
+	if (!m_segmenter)
+	{
+		throw strus::runtime_error( _TXT("failed to create segmenter context: %s"), errorhnd->fetchError());
+	}
 }
+
 
 const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
 	{
-		throw std::runtime_error( "internal: unknown index of feature");
+		throw strus::runtime_error( _TXT("internal: unknown index of feature"));
 	}
 	return m_featurear[ featidx-1];
 }
@@ -78,7 +82,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	{
 		if (m_options.positionBind() != FeatureOptions::BindContent)
 		{
-			throw std::runtime_error( "illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features");
+			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
 		}
 	}
 	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
@@ -92,6 +96,16 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 	m_tokenizer.reset( tokenizer_);
 }
 
+static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+		ci = normalizers.begin(), ce = normalizers.end();
+	for (; ci != ce; ++ci)
+	{
+		delete *ci;
+	}
+}
+
 void DocumentAnalyzer::defineFeature(
 		FeatureClass featureClass,
 		const std::string& name,
@@ -100,25 +114,105 @@ void DocumentAnalyzer::defineFeature(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const FeatureOptions& options)
 {
-	if (m_featurear.size()+1 >= MaxNofFeatures)
+	try
 	{
-		throw std::runtime_error( "number of features defined exceeds maximum limit");
+		if (m_featurear.size()+1 >= MaxNofFeatures)
+		{
+			m_errorhnd->report( _TXT("number of features defined exceeds maximum limit"));
+		}
+		m_featurear.reserve( m_featurear.size()+1);
+		m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
+		m_segmenter->defineSelectorExpression( m_featurear.size(), expression);
 	}
-	m_segmenter->defineSelectorExpression( m_featurear.size()+1, expression);
-	m_featurear.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
+	catch (const std::bad_alloc&)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("memory allocation error defining feature"));
+	}
+	catch (const std::runtime_error& err)
+	{
+		freeNormalizers( normalizers);
+		delete tokenizer;
+		m_errorhnd->report(_TXT("error defining feature: '%s'"), err.what());
+	}
+}
+
+void DocumentAnalyzer::addSearchIndexFeature(
+		const std::string& type,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const FeatureOptions& options)
+{
+	defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+}
+
+void DocumentAnalyzer::addForwardIndexFeature(
+		const std::string& type,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const FeatureOptions& options)
+{
+	defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+}
+
+void DocumentAnalyzer::defineMetaData(
+		const std::string& fieldname,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	defineFeature( FeatMetaData, fieldname, selectexpr, tokenizer, normalizers, FeatureOptions());
+}
+
+void DocumentAnalyzer::defineAttribute(
+		const std::string& attribname,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, FeatureOptions());
+}
+
+void DocumentAnalyzer::defineAggregatedMetaData(
+		const std::string& fieldname,
+		AggregatorFunctionInstanceInterface* statfunc)
+{
+	try
+	{
+		// PF:NOTE: The following order of code ensures that if this constructor fails statfunc is not copied and can be freed by this function:
+		m_statistics.reserve( m_statistics.size()+1);
+		m_statistics.push_back( StatisticsConfig( fieldname, statfunc));
+	}
+	catch (const std::bad_alloc&)
+	{
+		delete statfunc;
+		m_errorhnd->report(_TXT("memory allocation error defining aggregated meta data"));
+	}
+	catch (const std::runtime_error& err)
+	{
+		delete statfunc;
+		m_errorhnd->report(_TXT("error defining aggregated meta data: '%s'"), err.what());
+	}
 }
 
 void DocumentAnalyzer::defineSubDocument(
 		const std::string& subDocumentTypeName,
 		const std::string& selectexpr)
 {
-	unsigned int subDocumentType = m_subdoctypear.size();
-	m_subdoctypear.push_back( subDocumentTypeName);
-	if (subDocumentType >= MaxNofSubDocuments)
+	try
 	{
-		throw std::runtime_error( "too many sub documents defined");
+		unsigned int subDocumentType = m_subdoctypear.size();
+		m_subdoctypear.push_back( subDocumentTypeName);
+		if (subDocumentType >= MaxNofSubDocuments)
+		{
+			throw strus::runtime_error( _TXT("too many sub documents defined"));
+		}
+		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
 	}
-	m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
 }
 
 
@@ -126,6 +220,10 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	:m_config(&config)
 	,m_tokenizerContext(config.tokenizer()->createFunctionContext())
 {
+	if (!m_tokenizerContext.get())
+	{
+		throw strus::runtime_error( _TXT("failed to create tokenizer context"));
+	}
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
@@ -133,6 +231,10 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	for (; ni != ne; ++ni)
 	{
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
+		if (!m_normalizerContextAr.back().get())
+		{
+			throw strus::runtime_error( _TXT("failed to create normalizer context"));
+		}
 	}
 }
 
@@ -171,20 +273,28 @@ analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
 		const DocumentClass& dclass) const
 {
-	analyzer::Document rt;
-	std::auto_ptr<DocumentAnalyzerContext>
-		analyzerInstance( new DocumentAnalyzerContext( this, dclass));
-	analyzerInstance->putInput( content.c_str(), content.size(), true);
-	if (!analyzerInstance->analyzeNext( rt))
+	try
 	{
-		throw std::runtime_error( "analyzed content incomplete or empty");
+		analyzer::Document rt;
+		std::auto_ptr<DocumentAnalyzerContext>
+			analyzerInstance( new DocumentAnalyzerContext( this, dclass, m_errorhnd));
+		analyzerInstance->putInput( content.c_str(), content.size(), true);
+		if (!analyzerInstance->analyzeNext( rt))
+		{
+			throw strus::runtime_error( _TXT("analyzed content incomplete or empty"));
+		}
+		return rt;
 	}
-	return rt;
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::defineSubDocument: %s", *m_errorhnd, analyzer::Document());
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
 {
-	return new DocumentAnalyzerContext( this, dclass);
+	try
+	{
+		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::createContext: %s", *m_errorhnd, 0);
 }
 
 
@@ -240,7 +350,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	}
 }
 
-void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, bool samePosition)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 
@@ -258,7 +368,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			}
 			if (tokens.size() > 1)
 			{
-				throw std::runtime_error( "metadata feature tokenized to to more than one part");
+				throw strus::runtime_error( _TXT("metadata feature tokenized to to more than one part"));
 			}
 			break;
 		}
@@ -277,28 +387,28 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		case DocumentAnalyzer::FeatSearchIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				ti = tokens.begin(), te = tokens.end();
+				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
 				m_searchTerms.push_back(
 					analyzer::Term(
 						feat.m_config->name(),
 						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + ti->docpos));
+						rel_position + (samePosition?ts->docpos:ti->docpos)));
 			}
 			break;
 		}
 		case DocumentAnalyzer::FeatForwardIndexTerm:
 		{
 			std::vector<analyzer::Token>::const_iterator
-				ti = tokens.begin(), te = tokens.end();
+				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
 				m_forwardTerms.push_back(
 					analyzer::Term(
 						feat.m_config->name(),
 						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + ti->docpos));
+						rel_position + (samePosition?ts->docpos:ti->docpos)));
 			}
 			break;
 		}
@@ -327,7 +437,7 @@ void DocumentAnalyzerContext::processConcatenated(
 	for (; ci != ce; ++ci)
 	{
 		processDocumentSegment(
-			res, ci->first, ci->second.position, ci->second.content.c_str(), ci->second.content.size());
+			res, ci->first, ci->second.position, ci->second.content.c_str(), ci->second.content.size(), false);
 	}
 }
 
@@ -355,7 +465,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)
@@ -363,7 +473,12 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_last_position(0)
 	,m_curr_position(0)
 	,m_start_position(0)
+	,m_errorhnd(errorhnd)
 {
+	if (!m_segmenter)
+	{
+		throw strus::runtime_error( _TXT("failed to create document analyzer context"));
+	}
 	m_subdocstack.push_back( analyzer::Document());
 }
 
@@ -375,140 +490,145 @@ void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize
 
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
-	if (m_subdocstack.empty())
+	try
 	{
-		return false;
-	}
-	bool have_document = false;
-	doc.clear();
-	m_subdocstack.back().swap( doc);
-	m_subdocstack.pop_back();
-	const char* elem = 0;
-	std::size_t elemsize = 0;
-	int featidx = 0;
-
-	// [1] Scan the document and push the normalized tokenization of the elements to the result:
-	while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
-	{
-		try
+		if (m_subdocstack.empty())
 		{
-			if (featidx >= EndOfSubDocument)
-			{
-				//... start or end of document marker
-				if (featidx == EndOfSubDocument)
-				{
-					//... end of sub document -> out of loop and return document
-					have_document = true;
-					break;
-				}
-				else
-				{
-					// process chunks bound to successor not processed yet (without successor):
-					std::vector<SuccPositionChunk>::const_iterator
-						si = m_succChunks.begin(), se = m_succChunks.end();
-					std::size_t rel_position
-						= (std::size_t)(m_curr_position - m_start_position);
-					for (; si != se; ++si)
-					{
-						processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
-					}
-					m_succChunks.clear();
-
-					// process what is left to process for the current sub document:
-					processConcatenated( doc);
-					mapPositions( doc);
-					mapStatistics( doc);
-					clearTermMaps();
-
-					// create new sub document:
-					m_subdocstack.push_back( doc);
-					doc.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
-					m_start_position = m_curr_position;
-				}
-			}
-			else
-			{
-				const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
-
-				if (feat.tokenizer()->concatBeforeTokenize())
-				{
-					// concat chunks that need to be concatenated before tokenization:
-					std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-					concatDocumentSegment( featidx, rel_position, elem, elemsize);
-					continue;
-				}
-				else
-				{
-					switch (feat.options().positionBind())
-					{
-						case DocumentAnalyzerInterface::FeatureOptions::BindContent:
-						{
-							// process chunks bound to successor (this chunk):
-							std::vector<SuccPositionChunk>::const_iterator
-								si = m_succChunks.begin(), se = m_succChunks.end();
-							std::size_t rel_position
-								= (std::size_t)(m_curr_position - m_start_position);
-							for (; si != se; ++si)
-							{
-								processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
-							}
-							m_succChunks.clear();
-
-							// process this chunk:
-							m_last_position = m_curr_position;
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
-							break;
-						}
-						case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
-						{
-							m_succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
-							break;
-						}
-						case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
-						{
-							std::size_t rel_position
-								= (std::size_t)(m_last_position - m_start_position);
-							processDocumentSegment( doc, featidx, rel_position, elem, elemsize);
-							break;
-						}
-					}
-				}
-			}
+			return false;
 		}
-		catch (const std::runtime_error& err)
-		{
-			throw std::runtime_error( std::string( "error in analyze when processing chunk (") + std::string( elem, elemsize) + "): " + err.what());
-		}
-	}
-	if (!m_eof && !have_document)
-	{
-		m_subdocstack.push_back( analyzer::Document());
+		bool have_document = false;
+		doc.clear();
 		m_subdocstack.back().swap( doc);
+		m_subdocstack.pop_back();
+		const char* elem = 0;
+		std::size_t elemsize = 0;
+		int featidx = 0;
+	
+		// [1] Scan the document and push the normalized tokenization of the elements to the result:
+		while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
+		{
+			try
+			{
+				if (featidx >= EndOfSubDocument)
+				{
+					//... start or end of document marker
+					if (featidx == EndOfSubDocument)
+					{
+						//... end of sub document -> out of loop and return document
+						have_document = true;
+						break;
+					}
+					else
+					{
+						// process chunks bound to successor not processed yet (without successor):
+						std::vector<SuccPositionChunk>::const_iterator
+							si = m_succChunks.begin(), se = m_succChunks.end();
+						std::size_t rel_position
+							= (std::size_t)(m_curr_position - m_start_position);
+						for (; si != se; ++si)
+						{
+							processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+						}
+						m_succChunks.clear();
+	
+						// process what is left to process for the current sub document:
+						processConcatenated( doc);
+						mapPositions( doc);
+						mapStatistics( doc);
+						clearTermMaps();
+	
+						// create new sub document:
+						m_subdocstack.push_back( doc);
+						doc.setSubDocumentTypeName( m_analyzer->m_subdoctypear[ featidx-OfsSubDocument]);
+						m_start_position = m_curr_position;
+					}
+				}
+				else
+				{
+					const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
+	
+					if (feat.tokenizer()->concatBeforeTokenize())
+					{
+						// concat chunks that need to be concatenated before tokenization:
+						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+						concatDocumentSegment( featidx, rel_position, elem, elemsize);
+						continue;
+					}
+					else
+					{
+						switch (feat.options().positionBind())
+						{
+							case DocumentAnalyzerInterface::FeatureOptions::BindContent:
+							{
+								// process chunks bound to successor (this chunk):
+								std::vector<SuccPositionChunk>::const_iterator
+									si = m_succChunks.begin(), se = m_succChunks.end();
+								std::size_t rel_position
+									= (std::size_t)(m_curr_position - m_start_position);
+								for (; si != se; ++si)
+								{
+									processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+								}
+								m_succChunks.clear();
+	
+								// process this chunk:
+								m_last_position = m_curr_position;
+								processDocumentSegment( doc, featidx, rel_position, elem, elemsize, false);
+								break;
+							}
+							case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
+							{
+								m_succChunks.push_back( SuccPositionChunk( featidx, elem, elemsize));
+								break;
+							}
+							case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
+							{
+								std::size_t rel_position
+									= (std::size_t)(m_last_position - m_start_position);
+								processDocumentSegment( doc, featidx, rel_position, elem, elemsize, true);
+								break;
+							}
+						}
+					}
+				}
+			}
+			catch (const std::runtime_error& err)
+			{
+				std::string chunk( elem, elemsize);
+				throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
+			}
+		}
+		if (!m_eof && !have_document)
+		{
+			m_subdocstack.push_back( analyzer::Document());
+			m_subdocstack.back().swap( doc);
+			return false;
+		}
+	
+		// process chunks bound to successor not processed yet (without successor):
+		std::vector<SuccPositionChunk>::const_iterator
+			si = m_succChunks.begin(), se = m_succChunks.end();
+		std::size_t rel_position
+			= (std::size_t)(m_curr_position - m_start_position);
+		for (; si != se; ++si)
+		{
+			processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size(), true);
+		}
+	
+		// process concatenated chunks:
+		processConcatenated( doc);
+	
+		// create real positions for output:
+		mapPositions( doc);
+		mapStatistics( doc);
+		clearTermMaps();
+	
+		if (!doc.attributes().empty()) return true;
+		if (!doc.metadata().empty()) return true;
+		if (!doc.searchIndexTerms().empty()) return true;
+		if (!doc.forwardIndexTerms().empty()) return true;
 		return false;
 	}
-
-	// process chunks bound to successor not processed yet (without successor):
-	std::vector<SuccPositionChunk>::const_iterator
-		si = m_succChunks.begin(), se = m_succChunks.end();
-	std::size_t rel_position
-		= (std::size_t)(m_curr_position - m_start_position);
-	for (; si != se; ++si)
-	{
-		processDocumentSegment( doc, si->featidx, rel_position, si->elem.c_str(), si->elem.size());
-	}
-
-	// process concatenated chunks:
-	processConcatenated( doc);
-
-	// create real positions for output:
-	mapPositions( doc);
-	mapStatistics( doc);
-	clearTermMaps();
-
-	if (!doc.attributes().empty()) return true;
-	if (!doc.metadata().empty()) return true;
-	if (!doc.searchIndexTerms().empty()) return true;
-	if (!doc.forwardIndexTerms().empty()) return true;
-	return false;
+	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzerContext::analyzeNext: %s", *m_errorhnd, false);
 }
 

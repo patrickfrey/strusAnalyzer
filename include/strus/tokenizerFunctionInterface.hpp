@@ -52,6 +52,7 @@ public:
 	/// \brief Create a parameterizable tokenizer function instance
 	/// \param[in] args arguments for the tokenizer function
 	/// \param[in] tp text processor reference (for loading resources)
+	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
 };
 

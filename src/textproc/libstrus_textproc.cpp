@@ -33,38 +33,93 @@
 #include "strus/lib/normalizer_dateconv.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
+#include "strus/tokenizerFunctionInterface.hpp"
 #include "textProcessor.hpp"
 #include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
 #include <stdexcept>
 
 using namespace strus;
 
 DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor()
+	strus::createTextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 {
-	TextProcessor* rt = new TextProcessor();
+	TextProcessor* rt = 0;
 	try
 	{
-		rt->defineNormalizer( "stem", getNormalizer_snowball());
-		rt->defineNormalizer( "dictmap", getNormalizer_dictmap());
-		rt->defineNormalizer( "lc", getNormalizer_lowercase());
-		rt->defineNormalizer( "uc", getNormalizer_uppercase());
-		rt->defineNormalizer( "convdia", getNormalizer_convdia());
-		rt->defineNormalizer( "date2int", getNormalizer_date2int());
-		rt->defineTokenizer( "punctuation", getTokenizer_punctuation());
-		rt->defineTokenizer( "word", getTokenizer_word());
-		rt->defineTokenizer( "split", getTokenizer_whitespace());
+		NormalizerFunctionInterface* nrm;
+		TokenizerFunctionInterface* tkn;
+
+		rt = new TextProcessor( errorhnd);
+		if (0==(nrm = createNormalizer_snowball( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "stem", nrm);
+		if (0==(nrm = createNormalizer_dictmap( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "dictmap", nrm);
+		if (0==(nrm = createNormalizer_lowercase( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "lc", nrm);
+		if (0==(nrm = createNormalizer_uppercase( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "uc", nrm);
+		if (0==(nrm = createNormalizer_convdia( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "convdia", nrm);
+		if (0==(nrm = createNormalizer_date2int( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineNormalizer( "date2int", nrm);
+		if (0==(tkn = createTokenizer_punctuation( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineTokenizer( "punctuation", tkn);
+		if (0==(tkn = createTokenizer_word( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineTokenizer( "word", tkn);
+		if (0==(tkn = createTokenizer_whitespace( errorhnd)))
+		{
+			errorhnd->explain( _TXT("error creating text processor: %s"));
+			return 0;
+		}
+		rt->defineTokenizer( "split", tkn);
 		return rt;
+	}
+	catch (const std::bad_alloc&)
+	{
+		if (rt) delete rt;
+		errorhnd->report( _TXT("out of memory creating textprocessor"));
+		return 0;
 	}
 	catch (const std::runtime_error& err)
 	{
-		delete rt;
-		throw err;
-	}
-	catch (const std::bad_alloc& err)
-	{
-		delete rt;
-		throw err;
+		if (rt) delete rt;
+		errorhnd->report( _TXT("error creating textprocessor: %s"), err.what());
+		return 0;
 	}
 }
 

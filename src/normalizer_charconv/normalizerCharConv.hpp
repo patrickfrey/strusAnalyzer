@@ -37,32 +37,46 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class LowercaseNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	LowercaseNormalizerFunction(){}
+	explicit LowercaseNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class UppercaseNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	UppercaseNormalizerFunction(){}
+	explicit UppercaseNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class DiacriticalNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	DiacriticalNormalizerFunction(){}
+	explicit DiacriticalNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

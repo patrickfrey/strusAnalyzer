@@ -34,13 +34,18 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
 class PunctuationTokenizerFunctionContext_de
 	:public TokenizerFunctionContextInterface
 {
 public:
-	PunctuationTokenizerFunctionContext_de( const CharTable* punctuation_char_)
-		:m_punctuation_char(punctuation_char_){}
+	PunctuationTokenizerFunctionContext_de(
+			const CharTable* punctuation_char_,
+			AnalyzerErrorBufferInterface* errorhnd)
+		:m_punctuation_char(punctuation_char_)
+		,m_errorhnd(errorhnd){}
 
 	inline bool isPunctuation( textwolf::UChar ch)
 	{
@@ -51,6 +56,7 @@ public:
 
 private:
 	const CharTable* m_punctuation_char;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -58,21 +64,22 @@ class PunctuationTokenizerInstance_de
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	PunctuationTokenizerInstance_de( const char* punctuationCharList)
-		:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-"){}
+	PunctuationTokenizerInstance_de(
+			const char* punctuationCharList,
+			AnalyzerErrorBufferInterface* errorhnd)
+		:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
+		,m_errorhnd(errorhnd){}
 
 	virtual bool concatBeforeTokenize() const
 	{
 		return true;
 	}
 
-	TokenizerFunctionContextInterface* createFunctionContext() const
-	{
-		return new PunctuationTokenizerFunctionContext_de( &m_punctuation_char);
-	}
+	TokenizerFunctionContextInterface* createFunctionContext() const;
 
 private:
 	CharTable m_punctuation_char;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

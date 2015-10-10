@@ -32,8 +32,21 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class AnalyzerErrorBufferInterface;
 
-const NormalizerFunctionInterface* snowball_stemmer();
+class StemNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit StemNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
 
 }//namespace
 #endif

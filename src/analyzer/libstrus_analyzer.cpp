@@ -30,23 +30,46 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include "documentAnalyzer.hpp"
 #include "queryAnalyzer.hpp"
 #include "private/dll_tags.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( SegmenterInterface* segmenter)
+	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd)
 {
-	return new DocumentAnalyzer( segmenter);
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new DocumentAnalyzer( segmenter, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer: %s"), *errorhnd, 0);
 }
 
 
-DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer()
+DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return new QueryAnalyzer();
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new QueryAnalyzer( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query analyzer: %s"), *errorhnd, 0);
 }
 
 

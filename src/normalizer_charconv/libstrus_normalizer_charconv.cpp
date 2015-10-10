@@ -27,27 +27,57 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/normalizer_charconv.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "normalizerCharConv.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_lowercase()
+
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_lowercase( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const LowercaseNormalizerFunction rt;
-	return &rt;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new LowercaseNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create lowercase character normalizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_uppercase()
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const UppercaseNormalizerFunction rt;
-	return &rt;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new UppercaseNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create uppercase character normalizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC const NormalizerFunctionInterface* strus::getNormalizer_convdia()
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_convdia( AnalyzerErrorBufferInterface* errorhnd)
 {
-	static const DiacriticalNormalizerFunction rt;
-	return &rt;
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new DiacriticalNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create diacritical character normalizer: %s"), *errorhnd, 0);
 }
 
 

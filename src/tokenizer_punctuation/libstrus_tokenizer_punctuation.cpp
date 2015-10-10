@@ -27,13 +27,28 @@
 --------------------------------------------------------------------
 */
 #include "strus/lib/tokenizer_punctuation.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
 #include "punctuation.hpp"
 #include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
+
+static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC const TokenizerFunctionInterface* strus::getTokenizer_punctuation()
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_punctuation( AnalyzerErrorBufferInterface* errorhnd)
 {
-	return punctuationTokenizer();
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return punctuationTokenizer( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create punctuation tokenizer: %s"), *errorhnd, 0);
 }
+
 

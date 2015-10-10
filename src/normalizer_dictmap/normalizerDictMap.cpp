@@ -30,6 +30,9 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
+#include "strus/analyzerErrorBufferInterface.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 #include <cstring>
 #include <cstring>
 #include <cstdio>
@@ -81,9 +84,7 @@ static std::string readFile( const std::string& filename)
 	FILE* fh = ::fopen( filename.c_str(), "rb");
 	if (!fh)
 	{
-		std::ostringstream msg;
-		msg << errno;
-		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
 	}
 	unsigned int nn;
 	enum {bufsize=(1<<12)};
@@ -107,7 +108,7 @@ static std::string readFile( const std::string& filename)
 		::fclose( fh);
 		std::ostringstream msg;
 		msg << ec;
-		throw std::runtime_error( std::string("error opening file '") + filename + "' (errno " + msg.str() + ")");
+		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
 	}
 	else
 	{
@@ -153,7 +154,7 @@ void DictMap::loadFile( const std::string& filename)
 		}
 		if (!set( key, val))
 		{
-			throw std::runtime_error("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'");
+			throw strus::runtime_error(_TXT("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'"));
 		}
 		cc = (*eoln)?(eoln+1):eoln;
 	}
@@ -164,27 +165,32 @@ class DictMapNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	DictMapNormalizerFunctionContext( const DictMap* map_)
-		:m_map( map_){}
+	DictMapNormalizerFunctionContext( const DictMap* map_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_map( map_),m_errorhnd(errorhnd){}
 	
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize)
 	{
-		std::string key( src, srcsize);
-		std::string rt;
-		if (m_map->get( key, rt))
+		try
 		{
-			return rt;
+			std::string key( src, srcsize);
+			std::string rt;
+			if (m_map->get( key, rt))
+			{
+				return rt;
+			}
+			else
+			{
+				return key;
+			}
 		}
-		else
-		{
-			return key;
-		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:
 	const DictMap* m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 class DictMapNormalizerInstance
@@ -194,26 +200,44 @@ public:
 	/// \brief Destructor
 	virtual ~DictMapNormalizerInstance(){}
 
-	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc)
+	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc, AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd)
 	{
 		m_map.loadFile( textproc->getResourcePath( filename));
 	}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
 	{
-		return new DictMapNormalizerFunctionContext( &m_map);
+		try
+		{
+			return new DictMapNormalizerFunctionContext( &m_map, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
 	DictMap m_map;
+	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
 
 NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
 {
-	if (args.size() == 0) throw std::runtime_error( "name of file with key values expected as argument for 'DictMap' normalizer");
-	if (args.size() > 1) throw std::runtime_error( "too many arguments for 'DictMap' normalizer");
-	return new DictMapNormalizerInstance( args[0], textproc);
+	if (args.size() == 0)
+	{
+		m_errorhnd->report( _TXT("name of file with key values expected as argument for 'DictMap' normalizer"));
+		return 0;
+	}
+	if (args.size() > 1)
+	{
+		m_errorhnd->report( _TXT("too many arguments for 'DictMap' normalizer"));
+		return 0;
+	}
+	try
+	{
+		return new DictMapNormalizerInstance( args[0], textproc, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
 }
 
 

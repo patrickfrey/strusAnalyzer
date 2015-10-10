@@ -26,17 +26,48 @@
 
 --------------------------------------------------------------------
 */
-#ifndef _STRUS_TOKENIZER_PUNCTUATION_HPP_INCLUDED
-#define _STRUS_TOKENIZER_PUNCTUATION_HPP_INCLUDED
-#include "strus/tokenizerFunctionInterface.hpp"
+#include "private/dll_tags.hpp"
+#include "private/internationalization.hpp"
+#include <stdio.h>
+#include <stdlib.h>
+#include <libintl.h>
+#include <locale.h>
+#include <cstdarg>
 
-namespace strus
+#define STRUS_GETTEXT_PACKAGE		"strus-dom"
+#define STRUS_GETTEXT_LOCALEDIR		""
+
+std::runtime_error strus::runtime_error( const char* format, ...)
 {
-/// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+	char buffer[ 1024];
+	va_list args;
+	va_start( args, format);
+	const char* formatTranslation = ::dgettext( STRUS_GETTEXT_PACKAGE, format);
+	int buffersize = vsnprintf( buffer, sizeof(buffer), formatTranslation, args);
+	buffer[ sizeof(buffer)-1] = 0;
+	std::runtime_error rt( std::string( buffer, buffersize));
+	va_end (args);
+	return rt;
+}
 
-TokenizerFunctionInterface* punctuationTokenizer( AnalyzerErrorBufferInterface* errorhnd);
+std::logic_error strus::logic_error( const char* format, ...)
+{
+	char buffer[ 1024];
+	va_list args;
+	va_start( args, format);
+	const char* formatTranslation = ::dgettext( STRUS_GETTEXT_PACKAGE, format);
+	int buffersize = vsnprintf( buffer, sizeof(buffer), formatTranslation, args);
+	buffer[ sizeof(buffer)-1] = 0;
+	std::logic_error rt( std::string( buffer, buffersize));
+	va_end (args);
+	return rt;
+}
 
-}//namespace
+DLL_PUBLIC void strus::initMessageTextDomain()
+{
+#ifdef ENABLE_NLS
+	::bindtextdomain( STRUS_GETTEXT_PACKAGE, STRUS_GETTEXT_LOCALEDIR);
 #endif
+}
+
 
