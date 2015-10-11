@@ -42,6 +42,9 @@ CPackConfig.cmake
 CPackConfig.cmake.user
 CPackSourceConfig.cmake
 CPackSourceConfig.cmake.user
+include/strus/versionAnalyzer.hpp
+src/textproc/resourceDirectory.hpp
+src/utils/internationalization.cpp
 
 # Compiled Programs
 src/strusAnalyze/strusAnalyze
