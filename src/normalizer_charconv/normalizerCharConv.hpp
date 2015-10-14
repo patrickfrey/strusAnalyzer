@@ -49,6 +49,11 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping all characters to lowercase.";
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -62,6 +67,11 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping all characters to uppercase.";
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -74,6 +84,11 @@ public:
 		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping all diacritical characters to ascii. The language is passed as first argument and alternative date formats as following argument (currently only german 'de' and english 'en' supported).";
+	}
 
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;

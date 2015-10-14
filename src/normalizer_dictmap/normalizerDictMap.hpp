@@ -52,6 +52,11 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument";
+	}
+	
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
