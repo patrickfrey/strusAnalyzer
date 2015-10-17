@@ -45,15 +45,17 @@ include_directories( include libstemmer runtime)
 # -------------------------------------------
 # SNOWBALL STEMMER LIBRARY
 # -------------------------------------------
-add_library( stemmer SHARED ${snowball_source_files})
+add_library( strus_stemmer SHARED ${snowball_source_files})
 set_target_properties(
-    stemmer
+    strus_stemmer
     PROPERTIES
     DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
 )
+
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS stemmer
+install( TARGETS strus_stemmer
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
-
