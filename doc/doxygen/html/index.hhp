@@ -47,7 +47,6 @@ textProcessorInterface_8hpp_source.html
 tokenizerFunctionContextInterface_8hpp_source.html
 tokenizerFunctionInstanceInterface_8hpp_source.html
 tokenizerFunctionInterface_8hpp_source.html
-versionAnalyzer_8hpp_source.html
 strus_8md.html
 aggregatorFunctionInstanceInterface_8hpp.html
 aggregatorFunctionInterface_8hpp.html
@@ -83,7 +82,6 @@ textProcessorInterface_8hpp.html
 tokenizerFunctionContextInterface_8hpp.html
 tokenizerFunctionInstanceInterface_8hpp.html
 tokenizerFunctionInterface_8hpp.html
-versionAnalyzer_8hpp.html
 namespacestrus.html
 classstrus_1_1AggregatorFunctionInstanceInterface.html
 classstrus_1_1AggregatorFunctionInstanceInterface-members.html
@@ -155,8 +153,6 @@ functions_vars.html
 functions_enum.html
 functions_eval.html
 files.html
-globals.html
-globals_defs.html
 tab_a.png
 tab_b.png
 tab_h.png

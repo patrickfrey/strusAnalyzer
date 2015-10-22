@@ -101,6 +101,9 @@
 <li>addSearchIndexTerm()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#af1dec248b2ae18b6fdb0294553cb7943">strus::analyzer::Document</a>
 </li>
+<li>AggregatorFunction
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a07cea7ef374ca79522e99574696cf779">strus::TextProcessorInterface</a>
+</li>
 <li>analyze()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a41a07551bffc9178896831ce3b4bc429">strus::DocumentAnalyzerInterface</a>
 </li>
@@ -114,7 +117,7 @@
 : <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">strus::QueryAnalyzerInterface</a>
 </li>
 <li>Attribute()
-: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a3a48662f43b0c7a630384e83f1974eb2">strus::analyzer::Attribute</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a103754cd5264f13610e265eba687c32d">strus::analyzer::Attribute</a>
 </li>
 <li>attributes()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a6210190181412859c53846fe3b55d0ef">strus::analyzer::Document</a>
@@ -255,12 +258,24 @@
 <li>forwardIndexTerms()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ae2074345422ae5aee2128bf02641f4bb">strus::analyzer::Document</a>
 </li>
+<li>FunctionType
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">strus::TextProcessorInterface</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
 <li>getAggregator()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">strus::TextProcessorInterface</a>
+</li>
+<li>getDescription()
+: <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html#afbb6fa900a495a4582e0b99d0e4abc14">strus::AggregatorFunctionInterface</a>
+, <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">strus::NormalizerFunctionInterface</a>
+, <a class="el" href="classstrus_1_1TextProcessorInterface.html#a69c0d9b66f10066e526772a4176dbb70">strus::TextProcessorInterface</a>
+, <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97">strus::TokenizerFunctionInterface</a>
+</li>
+<li>getFunctionList()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ad5d4ea1f8b75f22d9057007eae4efb68">strus::TextProcessorInterface</a>
 </li>
 <li>getNext()
 : <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
@@ -312,6 +327,9 @@
 <li>normalize()
 : <a class="el" href="classstrus_1_1NormalizerFunctionContextInterface.html#afa89aecbb8ba4a20300ecc0f13e6f37b">strus::NormalizerFunctionContextInterface</a>
 </li>
+<li>NormalizerFunction
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353aac2f3d1bf0821e31c66feb1c668ef627">strus::TextProcessorInterface</a>
+</li>
 </ul>
 
 
@@ -329,11 +347,11 @@
 <li>pos()
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a3dcf10302667f5d22221f0178477137d">strus::analyzer::Term</a>
 </li>
-<li>positionBind()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc">strus::DocumentAnalyzerInterface::FeatureOptions</a>
-</li>
 <li>PositionBind
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">strus::DocumentAnalyzerInterface::FeatureOptions</a>
+</li>
+<li>positionBind()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc">strus::DocumentAnalyzerInterface::FeatureOptions</a>
 </li>
 <li>positionBindName()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#aa8145d03e04bfd4ff0cd38b9d2d14d38">strus::DocumentAnalyzerInterface::FeatureOptions</a>
@@ -407,6 +425,9 @@
 </li>
 <li>tokenize()
 : <a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html#a13a589ddb7f43bca77d17a227b4d0c10">strus::TokenizerFunctionContextInterface</a>
+</li>
+<li>TokenizerFunction
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a716b4771502cb2ed8ec11512d927849d">strus::TextProcessorInterface</a>
 </li>
 <li>type()
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#ae995e07bb41171fbdc4523fb981af9a3">strus::analyzer::Term</a>
@@ -484,7 +505,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Oct 22 2015 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 22 2015 12:25:03 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
