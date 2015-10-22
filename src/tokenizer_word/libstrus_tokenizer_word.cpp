@@ -86,8 +86,8 @@ class SeparationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	SeparationTokenizerFunction( TokenDelimiter delim_, AnalyzerErrorBufferInterface* errorhnd_)
-		:m_delim(delim_),m_errorhnd(errorhnd_){}
+	SeparationTokenizerFunction( const char* description_, TokenDelimiter delim_, AnalyzerErrorBufferInterface* errorhnd_)
+		:m_delim(delim_),m_description(description_),m_errorhnd(errorhnd_){}
 
 	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
@@ -103,8 +103,14 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual const char* getDescription() const
+	{
+		return m_description;
+	}
+
 private:
 	TokenDelimiter m_delim;
+	const char* m_description;
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
@@ -249,7 +255,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( AnalyzerErro
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( wordBoundaryDelimiter, errorhnd);
+		return new SeparationTokenizerFunction( "Tokenizer splitting tokens by word boundaries for european languages", wordBoundaryDelimiter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
 }
@@ -263,7 +269,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( Analyz
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( whiteSpaceDelimiter, errorhnd);
+		return new SeparationTokenizerFunction( "Tokenizer splitting tokens separated by whitespace characters", whiteSpaceDelimiter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create whitespace tokenizer: %s"), *errorhnd, 0);
 }

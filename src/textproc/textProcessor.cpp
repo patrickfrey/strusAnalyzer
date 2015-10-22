@@ -106,6 +106,7 @@ public:
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
 	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -129,6 +130,11 @@ public:
 			return new EmptyNormalizerInstance( m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping input tokens to an empty string";
 	}
 
 private:
@@ -208,6 +214,11 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping the identity of the input tokens";
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -276,6 +287,11 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual const char* getDescription() const
+	{
+		return "Tokenizer producing one token for each input chunk (identity)";
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -332,6 +348,11 @@ public:
 			return new CountAggregatorFunctionInstance( args[0], m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'count' aggregator: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return "Aggregator counting the input elements";
 	}
 
 private:
@@ -529,6 +550,71 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 		throw strus::runtime_error( _TXT("resource file '%s' not found"), filename.c_str());
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
+}
+
+template <class Map>
+static std::vector<std::string> getKeys( const Map& map)
+{
+	std::vector<std::string> rt;
+	typename Map::const_iterator mi = map.begin(), me = map.end();
+	for (; mi != me; ++mi)
+	{
+		rt.push_back( mi->first);
+	}
+	return rt;
+}
+
+template <class Map>
+static const char* getDescription_( const Map& map, const std::string& name)
+{
+	typename Map::const_iterator mi = map.find( utils::tolower( name));
+	if (mi != map.end())
+	{
+		return mi->second->getDescription();
+	}
+	return 0;
+}
+
+const char* TextProcessor::getDescription( FunctionType type, const std::string& name) const
+{
+	try
+	{
+		switch (type)
+		{
+			case TokenizerFunction:
+				return getDescription_( m_tokenizer_map, name);
+			case NormalizerFunction:
+				return getDescription_( m_normalizer_map, name);
+			case AggregatorFunction:
+				return getDescription_( m_aggregator_map, name);
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+	return 0;
+}
+
+std::vector<std::string> TextProcessor::getFunctionList( TextProcessorInterface::FunctionType type) const
+{
+	try
+	{
+		switch (type)
+		{
+			case TokenizerFunction:
+				return getKeys( m_tokenizer_map);
+			case NormalizerFunction:
+				return getKeys( m_normalizer_map);
+			case AggregatorFunction:
+				return getKeys( m_aggregator_map);
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+	return std::vector<std::string>();
 }
 
 

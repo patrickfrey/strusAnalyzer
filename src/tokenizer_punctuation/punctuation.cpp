@@ -88,6 +88,11 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual const char* getDescription() const
+	{
+		return "Tokenizer producing punctuation elements (end of sentence recognition). The language is specified as parameter (currently only german 'de' and english 'en' supported)";
+	}
+	
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };

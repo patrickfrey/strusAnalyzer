@@ -31,6 +31,7 @@
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #include <string>
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus
@@ -99,6 +100,25 @@ public:
 	/// \param[in] name name of the aggregator function to define
 	/// \param[in] aggregator an aggregator function object (pass ownership)
 	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* aggregator)=0;
+
+	/// \brief Function type for fetching descriptions of available functions
+	enum FunctionType
+	{
+		TokenizerFunction,		///< Addresses a tokenizer
+		NormalizerFunction,		///< Addresses a normalizer
+		AggregatorFunction		///< Addresses am aggregator
+	};
+
+	/// \brief Get a description of a specific function addressed by name
+	/// \param[in] type type of the function
+	/// \param[in] name name of the function
+	/// \return the description
+	virtual const char* getDescription( FunctionType type, const std::string& name) const=0;
+
+	/// \brief Get a list of all functions of a specific type available
+	/// \param[in] type type of the function
+	/// \return the list of function names
+	virtual std::vector<std::string> getFunctionList( FunctionType type) const=0;
 };
 
 }//namespace

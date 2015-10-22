@@ -49,6 +49,11 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping a date to an integer. The granularity of the result is passed as first argument and alternative date formats as following arguments.";
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
