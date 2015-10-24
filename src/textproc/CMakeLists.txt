@@ -10,7 +10,7 @@ set(source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/src//textwolf/include"
+	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 )
 
 link_directories(

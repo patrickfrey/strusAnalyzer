@@ -27,6 +27,8 @@
 --------------------------------------------------------------------
 */
 #include "textProcessor.hpp"
+#include "textwolf/charset_utf8.hpp"
+#include "textwolf/cstringiterator.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
@@ -223,6 +225,93 @@ private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
+class TextNormalizerFunctionContext
+	:public NormalizerFunctionContextInterface
+{
+public:
+	explicit TextNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize)
+	{
+		try
+		{
+			std::string rt;
+			textwolf::charset::UTF8 utf8;
+			char buf[16];
+			unsigned int bufpos;
+			textwolf::CStringIterator itr( src, srcsize);
+
+			while (*itr)
+			{
+				bufpos = 0;
+				textwolf::UChar value = utf8.value( buf, bufpos, itr);
+				if (value != textwolf::charset::UTF8::MaxChar)
+				{
+					rt.append( buf, bufpos);
+				}
+				if (value <= 32)
+				{
+					while (*itr && *itr <= 32) ++itr;
+				}
+			}
+			return rt;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
+	}
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+class TextNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
+{
+public:
+	explicit TextNormalizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
+
+	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	{
+		try
+		{
+			return new TextNormalizerFunctionContext( m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'text' normalizer: %s"), *m_errorhnd, 0);
+	}
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+class TextNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit TextNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size())
+		{
+			m_errorhnd->report( "no arguments expected for 'orig' normalizer");
+			return 0;
+		}
+		try
+		{
+			return new TextNormalizerInstance( m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping the identity of the input tokens";
+	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
 class ContentTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
@@ -368,6 +457,7 @@ TextProcessor::TextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 
 	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
 	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
+	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
 	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
 	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
 }
