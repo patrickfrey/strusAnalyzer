@@ -534,7 +534,6 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						// process what is left to process for the current sub document:
 						processConcatenated( doc);
 						mapPositions( doc);
-						mapStatistics( doc);
 						clearTermMaps();
 	
 						// create new sub document:
