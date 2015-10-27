@@ -44,6 +44,9 @@
 #include <set>
 #include <map>
 #include <cstring>
+#include <limits>
+
+#undef STRUS_LOWLEVEL_DEBUG
 
 using namespace strus;
 
@@ -346,7 +349,15 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 		si = m_analyzer->m_statistics.begin(), se = m_analyzer->m_statistics.end();
 	for (; si != se; ++si)
 	{
-		res.setMetaData( si->name(), si->statfunc()->evaluate( res));
+		double value = si->statfunc()->evaluate( res);
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cout << "ADD AGGREGATED META DATA " << si->name() << " " << value << std::endl;
+		if (value * value < std::numeric_limits<double>::epsilon())
+		{
+			value = si->statfunc()->evaluate( res);
+		}
+#endif
+		res.setMetaData( si->name(), value);
 	}
 }
 
@@ -362,9 +373,11 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		{
 			if (!tokens.empty())
 			{
-				res.setMetaData(
-					feat.m_config->name(),
-					utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize)));
+				double value = utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "ADD META DATA " << feat.m_config->name() << "=" << value << std::endl;
+#endif
+				res.setMetaData( feat.m_config->name(), value);
 			}
 			if (tokens.size() > 1)
 			{
@@ -378,6 +391,9 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "ADD ATTRIBUTE " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
+#endif
 				res.setAttribute(
 					feat.m_config->name(),
 					feat.normalize( elem + ti->strpos, ti->strsize));
@@ -390,11 +406,14 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				m_searchTerms.push_back(
-					analyzer::Term(
-						feat.m_config->name(),
-						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + (samePosition?ts->docpos:ti->docpos)));
+				analyzer::Term term(
+					feat.m_config->name(),
+					feat.normalize( elem + ti->strpos, ti->strsize),
+					rel_position + (samePosition?ts->docpos:ti->docpos));
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "ADD SEARCH INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+#endif
+				m_searchTerms.push_back( term);
 			}
 			break;
 		}
@@ -404,11 +423,14 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				m_forwardTerms.push_back(
-					analyzer::Term(
-						feat.m_config->name(),
-						feat.normalize( elem + ti->strpos, ti->strsize),
-						rel_position + (samePosition?ts->docpos:ti->docpos)));
+				analyzer::Term term(
+					feat.m_config->name(),
+					feat.normalize( elem + ti->strpos, ti->strsize),
+					rel_position + (samePosition?ts->docpos:ti->docpos));
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "ADD FORWARD INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+#endif
+				m_forwardTerms.push_back( term);
 			}
 			break;
 		}
@@ -490,8 +512,9 @@ void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize
 
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
-	try
+	try 
 	{
+	AGAIN:
 		if (m_subdocstack.empty())
 		{
 			return false;
@@ -617,16 +640,24 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		// process concatenated chunks:
 		processConcatenated( doc);
 	
-		// create real positions for output:
+		// create output (with real positions):
 		mapPositions( doc);
-		mapStatistics( doc);
+
+		// Map statistics, if defined
+		bool rt = (doc.searchIndexTerms().size() + doc.forwardIndexTerms().size() != 0);
+		if (rt)
+		{
+			mapStatistics( doc);
+		}
 		clearTermMaps();
-	
-		if (!doc.attributes().empty()) return true;
-		if (!doc.metadata().empty()) return true;
-		if (!doc.searchIndexTerms().empty()) return true;
-		if (!doc.forwardIndexTerms().empty()) return true;
-		return false;
+		if (have_document && !rt)
+		{
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "GOT EMPTY DOCUMENT" << std::endl;
+#endif
+			goto AGAIN;
+		}
+		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzerContext::analyzeNext: %s", *m_errorhnd, false);
 }
