@@ -435,6 +435,10 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#aac22792e23900dcb45f80085bd99ddef"><param name="Name" value="createTokenizer_word"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd"><param name="Name" value="SegmenterPosition"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#aa6eef8ed98442598f73fef04b4e4ffb0"><param name="Name" value="STRUS_ANALYZER_VERSION"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#a887925854e1f94e26033c3a6014e3639"><param name="Name" value="STRUS_ANALYZER_VERSION_MAJOR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#a885115fd9d7ab86fa08596f2ecc79598"><param name="Name" value="STRUS_ANALYZER_VERSION_MINOR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#af8a5bbbe7a83c54d2257feb7532ef347"><param name="Name" value="STRUS_ANALYZER_VERSION_STRING"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a7eef235ae7df82b0fd71dd7a43ca468d"><param name="Name" value="subDocumentTypeName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ad5815b8932fc14d05a356287fc403fff"><param name="Name" value="swap"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="term_8hpp.html"><param name="Name" value="term.hpp"></OBJECT>
@@ -464,6 +468,13 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Attribute.html#a9713090379f3b4eb0bc28bde12ffd7a6"><param name="Name" value="strus::analyzer::Attribute"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a621452450bdcdfd1dd264d7316918b27"><param name="Name" value="strus::analyzer::MetaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#a4f28852af4b0b6c656a0e9379e79dc02"><param name="Name" value="strus::analyzer::Term"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html"><param name="Name" value="versionAnalyzer.hpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#aa6eef8ed98442598f73fef04b4e4ffb0"><param name="Name" value="STRUS_ANALYZER_VERSION"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#a887925854e1f94e26033c3a6014e3639"><param name="Name" value="STRUS_ANALYZER_VERSION_MAJOR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#a885115fd9d7ab86fa08596f2ecc79598"><param name="Name" value="STRUS_ANALYZER_VERSION_MINOR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#af8a5bbbe7a83c54d2257feb7532ef347"><param name="Name" value="STRUS_ANALYZER_VERSION_STRING"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc"><param name="Name" value="~AggregatorFunctionInstanceInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInterface.html#a7f9c38c0fa96c64f23735b2ccb863e57"><param name="Name" value="~AggregatorFunctionInterface"></OBJECT>

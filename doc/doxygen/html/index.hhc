@@ -646,8 +646,20 @@
             <LI><OBJECT type="text/sitemap"><param name="Name" value="getDescription"><param name="Local" value="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="versionAnalyzer.hpp"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="STRUS_ANALYZER_VERSION"><param name="Local" value="versionAnalyzer_8hpp.html#aa6eef8ed98442598f73fef04b4e4ffb0"><param name="ImageNumber" value="11"></OBJECT>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="STRUS_ANALYZER_VERSION_MAJOR"><param name="Local" value="versionAnalyzer_8hpp.html#a887925854e1f94e26033c3a6014e3639"><param name="ImageNumber" value="11"></OBJECT>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="STRUS_ANALYZER_VERSION_MINOR"><param name="Local" value="versionAnalyzer_8hpp.html#a885115fd9d7ab86fa08596f2ecc79598"><param name="ImageNumber" value="11"></OBJECT>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="STRUS_ANALYZER_VERSION_STRING"><param name="Local" value="versionAnalyzer_8hpp.html#af8a5bbbe7a83c54d2257feb7532ef347"><param name="ImageNumber" value="11"></OBJECT>
+          </UL>
         </UL>
       </UL>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="File Members"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Macros"><param name="Local" value="globals_defs.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
   </UL>
 </UL>
