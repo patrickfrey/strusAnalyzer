@@ -416,7 +416,7 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 			bufpos = 0;
 			textwolf::UChar value = utf8.value( buf, bufpos, itr);
 			std::map<unsigned int,std::size_t>::const_iterator mi = m_map.find( value);
-			if (mi == m_map.end())
+			if (mi == m_map.end() && value != textwolf::charset::UTF8::MaxChar)
 			{
 				rt.append( buf, bufpos);
 			}
