@@ -2,14 +2,14 @@
 # Maintainer: Patrick Frey <patrickpfrey@yahoo.com> 
 
 pkgname=strusanalyzer
-_mainpkgver=0.1.6
+_mainpkgver=@STRUS_VERSION@
 pkgver=${_mainpkgver}
 pkgrel=1
 pkgdesc='Library implementing the document and query analysis for a text search engine.'
 license=('GPL3')
 arch=('i686' 'x86_64')
 url="http://project-strus.net"
-depends=('boost>=1.53' 'boost-libs>=1.53' "strus>=${_mainpkgver}")
+depends=('boost>=1.53' 'boost-libs>=1.53')
 makedepends=('cmake')
 source=("${pkgname}-${_mainpkgver}.tar.gz")
 
