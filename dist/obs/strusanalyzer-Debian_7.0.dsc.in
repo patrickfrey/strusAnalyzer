@@ -1,6 +1,6 @@
 Format: 3.0 (quilt)
 Source: strusanalyzer
-Version: 0.1.6-xUbuntu12.04
+Version: @STRUS_VERSION@-Debian7.0
 Binary: strusanalyzer
 Maintainer: Patrick Frey <patrickpfrey@yahoo.com>
 Architecture: any
