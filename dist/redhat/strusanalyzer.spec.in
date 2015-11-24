@@ -116,7 +116,7 @@ Summary: Library implementing the document and query analysis for a text search 
 Name: strusanalyzer
 %define main_version @STRUS_VERSION@
 Version: %{main_version}
-Release: 0.1
+Release: @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 License: GPLv3
 Group: Development/Libraries/C++
 
