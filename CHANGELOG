@@ -1,11 +1,70 @@
-* Wed Feb 18 2015  Patrick Frey  <patrickpfrey@yahoo.com>
-- Initial release
-* Wed Jul 14 2015  Patrick Frey  <patrickpfrey@yahoo.com>
-- v0.1.3
-* Sun Aug 2 2015  Patrick Frey  <patrickpfrey@yahoo.com>
-- v0.1.5 Added bulk interface for analyze phrase in query analyzer (eliminating TCP round trips in RPC)
-* Fri Nov 11 2015  Patrick Frey  <patrickpfrey@yahoo.com>
-- 0.2.0 Exception free interfaces
-* Fri Nov 15 2015  Patrick Frey  <patrickpfrey@yahoo.com>
-- 0.2.1 Trim result in text normalizer
+strusAnalyzer (0.2.3)
+  * sunchronize version with strus core increment of version to 0.2.3
+ -- patrickfrey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 19:49:41 +0100
+
+strusAnalyzer (0.2.2)
+  * added cmake version patching for OBS packaging
+  * added some missing interface documentation
+  * updated changelog
+ -- patrickfrey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 14:34:01 +0100
+
+strusAnalyzer (0.2.1)
+  * normalizer 'text' trimming input before processing
+ -- patrickfrey <patrickpfrey@yahoo.com>  Sun, 15 Nov 2015 10:08:24 +0100
+
+strusAnalyzer (0.2.0)
+  * fixed bug in document analysis: Under some circumstances (multi part documents) empty documents could be returned
+  * added new normalizer 'text' to clean non UTF-8 characters
+  * fixed bug in analyzer: multiple meta data declarations
+  * updated interface
+  * added missing boost libraries to normalizer_dateconv
+  * adapted to rename of stemmig library in normalizer_snowball
+  * renamed libstemmer to libstrus_stemmer and fixed shared library version
+  * support description of functions for help
+  * Merge branch 'master' of https://github.com/patrickfrey/strusAnalyzer into errorhnd
+  * small interface change in analyzer library
+  * delete all objects passed with ownership to functions that have no return value. caller cannot always determine if function was successful
+  * added internationalization
+  * temporary checkin
+  * (origin/interface_exceptions, interface_exceptions) textwolf: declare std::bad_alloc as possible exception in automaton (for non static buffers)
+  * make visibility default (all visible) for temporarily enable exceptions
+  * rewriting interfaces as exception free
+  * working on exception free interfaces - in progress
+  * changed report error interface to printf style
+  * some more error handling for function potentially returning 0 on error
+  * reorganize error handling - work in progress
+  * typo in comment fixed
+  * better punctuation recognition (case of numbers with more than 2 digits is not an abbreviation, if no digits are following)
+  * fixed bug in parsing character set encoding isolatin
+  * bind predecessor/successor produces same position for all features of the chunk
+ -- patrickfrey <patrickpfrey@yahoo.com>  Wed, 11 Nov 2015 02:50:23 +0100
+
+strusAnalyzer (v0.1.6)
+  * put common CMAKE stuff of all strus relaed projects into includes
+ -- patrickfrey <patrickpfrey@yahoo.com>  Sat, 8 Aug 2015 10:30:05 +0200
+
+strusAnalyzer (v0.1.5)
+  * added interface to analyze bulk of query phrases (to avoid roundtrips in RPC interface)
+ -- patrickfrey <patrickpfrey@yahoo.com>  Sun, 2 Aug 2015 13:06:09 +0200
+
+strusAnalyzer (v0.1.4)
+  * fixed severe bug in segmenter: buffer not copied
+  * revert segmenter last checkin
+  * fixed non initialized memory read
+  * add method in source iterator to defined longjump exit context in case of error
+ -- patrickfrey <patrickpfrey@yahoo.com>  Sun, 26 Jul 2015 12:57:58 +0200
+
+strusAnalyzer (v0.1.3)
+  * multiple character set encoding support in standard XML segmenter
+  * fixed UMR in document class detection
+  * added get MIME type function to segmenter and analyzer interface. Incremented version number to v0.1.3
+  * renamings (DocumentClass)
+  * implement content description as object and not as abstract interface
+  * added document content description interface
+  * updated documentation
+ -- patrickfrey <patrickpfrey@yahoo.com>  Tue, 14 Jul 2015 15:30:21 +0200
+
+strusAnalyzer (v0.1.1)
+  * Initial revision
+ -- patrickfrey <patrickpfrey@yahoo.com>  Fri, 3 Jul 2015 15:16:25 +0200
 
