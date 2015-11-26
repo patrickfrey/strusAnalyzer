@@ -1,18 +1,18 @@
-strusAnalyzer (0.2.3-1) unstable; urgency=low
+strusanalyzer (0.2.3-1) unstable; urgency=low
   * sunchronize version with strus core increment of version to 0.2.3
  -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 19:49:41 +0100
 
-strusAnalyzer (0.2.2-1) unstable; urgency=low
+strusanalyzer (0.2.2-1) unstable; urgency=low
   * added cmake version patching for OBS packaging
   * added some missing interface documentation
   * updated changelog
  -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 14:34:01 +0100
 
-strusAnalyzer (0.2.1-1) unstable; urgency=low
+strusanalyzer (0.2.1-1) unstable; urgency=low
   * normalizer 'text' trimming input before processing
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 15 Nov 2015 10:08:24 +0100
 
-strusAnalyzer (0.2.0-1) unstable; urgency=low
+strusanalyzer (0.2.0-1) unstable; urgency=low
   * fixed bug in document analysis: Under some circumstances (multi part documents) empty documents could be returned
   * added new normalizer 'text' to clean non UTF-8 characters
   * fixed bug in analyzer: multiple meta data declarations
@@ -39,22 +39,22 @@ strusAnalyzer (0.2.0-1) unstable; urgency=low
   * bind predecessor/successor produces same position for all features of the chunk
  -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 11 Nov 2015 02:50:23 +0100
 
-strusAnalyzer (0.1.6-1) unstable; urgency=low
+strusanalyzer (0.1.6-1) unstable; urgency=low
   * put common CMAKE stuff of all strus relaed projects into includes
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sat, 8 Aug 2015 10:30:05 +0200
 
-strusAnalyzer (0.1.5-1) unstable; urgency=low
+strusanalyzer (0.1.5-1) unstable; urgency=low
   * added interface to analyze bulk of query phrases (to avoid roundtrips in RPC interface)
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 2 Aug 2015 13:06:09 +0200
 
-strusAnalyzer (0.1.4-1) unstable; urgency=low
+strusanalyzer (0.1.4-1) unstable; urgency=low
   * fixed severe bug in segmenter: buffer not copied
   * revert segmenter last checkin
   * fixed non initialized memory read
   * add method in source iterator to defined longjump exit context in case of error
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 26 Jul 2015 12:57:58 +0200
 
-strusAnalyzer (0.1.3-1) unstable; urgency=low
+strusanalyzer (0.1.3-1) unstable; urgency=low
   * multiple character set encoding support in standard XML segmenter
   * fixed UMR in document class detection
   * added get MIME type function to segmenter and analyzer interface. Incremented version number to v0.1.3
@@ -64,7 +64,7 @@ strusAnalyzer (0.1.3-1) unstable; urgency=low
   * updated documentation
  -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 14 Jul 2015 15:30:21 +0200
 
-strusAnalyzer (0.1.1-1) unstable; urgency=low
+strusanalyzer (0.1.1-1) unstable; urgency=low
   * Initial revision
  -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 3 Jul 2015 15:16:25 +0200
 
