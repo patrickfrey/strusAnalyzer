@@ -1,3 +1,7 @@
+strusanalyzer (0.2.4-1) unstable; urgency=low
+  * incremented version to 0.2.4 to resolve OBS trouble with dependencies
+ -- patrickfrey <patrickpfrey@yahoo.com>  Thu, 26 Nov 2015 09:08:42 +0100
+
 strusanalyzer (0.2.3-1) unstable; urgency=low
   * sunchronize version with strus core increment of version to 0.2.3
  -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 19:49:41 +0100
