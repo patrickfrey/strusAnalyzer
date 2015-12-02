@@ -1,3 +1,8 @@
+strusAnalyzer (0.2.4)
+  * incremented version to 0.2.4 to resolve OBS trouble with dependencies
+  * better error message for to few arguments in 'dateToInt' normalizer
+  -- patrickfrey <patrickpfrey@yahoo.com>  Tue, 1 Dec 2015 19:49:41 +0100
+
 strusAnalyzer (0.2.3)
   * sunchronize version with strus core increment of version to 0.2.3
  -- patrickfrey <patrickpfrey@yahoo.com>  Tue, 24 Nov 2015 19:49:41 +0100
