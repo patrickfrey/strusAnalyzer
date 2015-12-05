@@ -236,11 +236,18 @@ public:
 	{
 		try
 		{
+			// [1] Trim input string:
+			char const* cc = src;
+			for (;(unsigned char)*cc <= 32; ++cc,--srcsize){}
+			for (;srcsize > 0 && (unsigned char)cc[srcsize-1] <= 32; --srcsize){}
+			if (srcsize == 0) return std::string();
+
+			// [2] Map valid unicode (UTF-8) characters of trimmed input string:
 			std::string rt;
 			textwolf::charset::UTF8 utf8;
 			char buf[16];
 			unsigned int bufpos;
-			textwolf::CStringIterator itr( src, srcsize);
+			textwolf::CStringIterator itr( cc, srcsize);
 
 			while (*itr)
 			{

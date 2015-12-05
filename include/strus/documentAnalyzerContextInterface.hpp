@@ -49,7 +49,7 @@ public:
 	/// \param[in] chunk pointer to input chunk to process
 	/// \param[in] chunksize size of input chunk to process in bytes
 	/// \param[in] eof true, if this chunk fed is the last one in input
-	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof)=0;
+	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof)=0;
 
 	/// \brief Analyze the next sub document from the input feeded with putInput(const char*,std::size_t)
 	/// \param[out] doc the analyzed sub document structure

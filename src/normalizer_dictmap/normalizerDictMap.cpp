@@ -99,7 +99,7 @@ static std::string readFile( const std::string& filename)
 		catch (const std::bad_alloc& err)
 		{
 			::fclose( fh);
-			throw err;
+			throw strus::runtime_error(_TXT("out of memory reading file"));
 		}
 	}
 	if (!feof( fh))

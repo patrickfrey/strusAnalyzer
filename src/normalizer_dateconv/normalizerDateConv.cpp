@@ -117,7 +117,7 @@ public:
 			out << m_granularity.getValue( pt);
 			return out.str();
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, std::string());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:
@@ -139,7 +139,7 @@ public:
 		{
 			return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, 0);
 	}
 
 private:
@@ -269,7 +269,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 	{
 		if (args.size() < 2)
 		{
-			m_errorhnd->report( _TXT("too few arguments passed to '%s' normalizer"), "dateconv");
+			m_errorhnd->report( _TXT("too few arguments (%u)"), (unsigned int)args.size());
 			return 0;
 		}
 		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
@@ -285,7 +285,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 		}
 		return new Date2IntNormalizerFunctionInstance( granularity, lcar, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dateconv' normalizer: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, 0);
 }
 
 
