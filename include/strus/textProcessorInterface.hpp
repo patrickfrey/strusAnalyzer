@@ -109,12 +109,6 @@ public:
 		AggregatorFunction		///< Addresses am aggregator
 	};
 
-	/// \brief Get a description of a specific function addressed by name
-	/// \param[in] type type of the function
-	/// \param[in] name name of the function
-	/// \return the description
-	virtual const char* getDescription( FunctionType type, const std::string& name) const=0;
-
 	/// \brief Get a list of all functions of a specific type available
 	/// \param[in] type type of the function
 	/// \return the list of function names

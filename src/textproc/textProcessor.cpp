@@ -136,7 +136,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping input tokens to an empty string";
+		return _TXT("Normalizer mapping input tokens to an empty string");
 	}
 
 private:
@@ -218,7 +218,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping the identity of the input tokens";
+		return _TXT("Normalizer mapping the identity of the input tokens");
 	}
 
 private:
@@ -312,7 +312,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping the identity of the input tokens";
+		return _TXT("Normalizer mapping the identity of the input tokens");
 	}
 
 private:
@@ -385,7 +385,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Tokenizer producing one token for each input chunk (identity)";
+		return _TXT("Tokenizer producing one token for each input chunk (identity)");
 	}
 
 private:
@@ -448,7 +448,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Aggregator counting the input elements";
+		return _TXT("Aggregator counting the input elements");
 	}
 
 private:

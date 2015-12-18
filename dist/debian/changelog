@@ -1,3 +1,7 @@
+strusanalyzer (0.3.0-1) unstable; urgency=low
+  * better introspection functions
+ -- patrickfrey <patrickpfrey@yahoo.com>  Fri, 18 Dec 2015 15:00:00 +0100
+
 strusanalyzer (0.2.4-1) unstable; urgency=low
   * incremented version to 0.2.4 to resolve OBS trouble with dependencies
  -- patrickfrey <patrickpfrey@yahoo.com>  Thu, 26 Nov 2015 09:08:42 +0100

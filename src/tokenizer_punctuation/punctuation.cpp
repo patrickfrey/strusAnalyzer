@@ -90,7 +90,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Tokenizer producing punctuation elements (end of sentence recognition). The language is specified as parameter (currently only german 'de' and english 'en' supported)";
+		return _TXT("Tokenizer producing punctuation elements (end of sentence recognition). The language is specified as parameter (currently only german 'de' and english 'en' supported)");
 	}
 	
 private:
