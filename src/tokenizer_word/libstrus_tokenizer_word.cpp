@@ -255,7 +255,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( AnalyzerErro
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( "Tokenizer splitting tokens by word boundaries for european languages", wordBoundaryDelimiter, errorhnd);
+		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries for european languages"), wordBoundaryDelimiter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
 }
@@ -269,7 +269,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( Analyz
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( "Tokenizer splitting tokens separated by whitespace characters", whiteSpaceDelimiter, errorhnd);
+		return new SeparationTokenizerFunction( _TXT( "Tokenizer splitting tokens separated by whitespace characters"), whiteSpaceDelimiter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create whitespace tokenizer: %s"), *errorhnd, 0);
 }

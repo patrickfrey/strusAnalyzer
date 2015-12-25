@@ -302,6 +302,12 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Mon Dec 21 2015 Patrick Frey <patrickpfrey@yahoo.com> 0.3.1-0.1
+- fixing versioning problems of the Open Suse build cluster 
+
+* Fri Dec 18 2015 Patrick Frey <patrickpfrey@yahoo.com> 0.3.0-0.1
+- better introspection functions
+
 * Thu Nov 26 2015 Patrick Frey <patrickpfrey@yahoo.com> 0.2.4-0.1
 - incremented version to 0.2.4 to resolve OBS trouble with dependencies
 
