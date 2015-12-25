@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.2</span>
+   &#160;<span id="projectnumber">0.3</span>
    </div>
   </td>
  </tr>
@@ -134,21 +134,18 @@
 <div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a07cea7ef374ca79522e99574696cf779">  109</a></span>&#160;                <a class="code" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a07cea7ef374ca79522e99574696cf779">AggregatorFunction</a>              </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        };</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1TextProcessorInterface.html#a69c0d9b66f10066e526772a4176dbb70">getDescription</a>( <a class="code" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> type, <span class="keyword">const</span> std::string&amp; name) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;std::string&gt; <a class="code" href="classstrus_1_1TextProcessorInterface.html#ad5d4ea1f8b75f22d9057007eae4efb68">getFunctionList</a>( <a class="code" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> type) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;};</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;std::string&gt; <a class="code" href="classstrus_1_1TextProcessorInterface.html#ad5d4ea1f8b75f22d9057007eae4efb68">getFunctionList</a>( <a class="code" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> type) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;};</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_a18948ae7b281702ed4982aedf3c7726b"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#a18948ae7b281702ed4982aedf3c7726b">strus::TextProcessorInterface::defineTokenizer</a></div><div class="ttdeci">virtual void defineTokenizer(const std::string &amp;name, TokenizerFunctionInterface *tokenizer)=0</div><div class="ttdoc">Define a tokenizer by name. </div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_a0842bf29493616cbd5bceff842ad8485"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#a0842bf29493616cbd5bceff842ad8485">strus::TextProcessorInterface::defineAggregator</a></div><div class="ttdeci">virtual void defineAggregator(const std::string &amp;name, AggregatorFunctionInterface *aggregator)=0</div><div class="ttdoc">Define an aggregator function by name. </div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_af76c31c5908ba4f6dff0598a6b51150c"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#af76c31c5908ba4f6dff0598a6b51150c">strus::TextProcessorInterface::detectDocumentClass</a></div><div class="ttdeci">virtual bool detectDocumentClass(DocumentClass &amp;dclass, const char *contentBegin, std::size_t contentBeginSize) const =0</div><div class="ttdoc">Detect the document class from a document start chunk and set the content description attributes...</div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_ac1fcf22e648de50b7c2897a0ab9da4e2"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#ac1fcf22e648de50b7c2897a0ab9da4e2">strus::TextProcessorInterface::defineNormalizer</a></div><div class="ttdeci">virtual void defineNormalizer(const std::string &amp;name, NormalizerFunctionInterface *normalizer)=0</div><div class="ttdoc">Define a normalizer by name. </div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_a91caaf2e2f07a840efa507c080ef9383"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">strus::TextProcessorInterface::getAggregator</a></div><div class="ttdeci">virtual const AggregatorFunctionInterface * getAggregator(const std::string &amp;name) const =0</div><div class="ttdoc">Get a const reference to a statistics collector function object that implements the collection of som...</div></div>
 <div class="ttc" id="classstrus_1_1AggregatorFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInterface.html">strus::AggregatorFunctionInterface</a></div><div class="ttdoc">Interface for the aggregator function constructor. </div><div class="ttdef"><b>Definition:</b> aggregatorFunctionInterface.hpp:45</div></div>
-<div class="ttc" id="classstrus_1_1TextProcessorInterface_html_a69c0d9b66f10066e526772a4176dbb70"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#a69c0d9b66f10066e526772a4176dbb70">strus::TextProcessorInterface::getDescription</a></div><div class="ttdeci">virtual const char * getDescription(FunctionType type, const std::string &amp;name) const =0</div><div class="ttdoc">Get a description of a specific function addressed by name. </div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInterface.html">strus::TokenizerFunctionInterface</a></div><div class="ttdoc">Interface for a tokenizer function. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInterface.hpp:46</div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_a12be7c7a76632607dad91d8208c120c3"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3">strus::TextProcessorInterface::getTokenizer</a></div><div class="ttdeci">virtual const TokenizerFunctionInterface * getTokenizer(const std::string &amp;name) const =0</div><div class="ttdoc">Get a const reference to a tokenizer object that implements the splitting of a text segments into tok...</div></div>
 <div class="ttc" id="classstrus_1_1TextProcessorInterface_html_ad5d4ea1f8b75f22d9057007eae4efb68"><div class="ttname"><a href="classstrus_1_1TextProcessorInterface.html#ad5d4ea1f8b75f22d9057007eae4efb68">strus::TextProcessorInterface::getFunctionList</a></div><div class="ttdeci">virtual std::vector&lt; std::string &gt; getFunctionList(FunctionType type) const =0</div><div class="ttdoc">Get a list of all functions of a specific type available. </div></div>
@@ -169,7 +166,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 5 2015 18:31:25 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Dec 25 2015 06:26:23 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
