@@ -77,7 +77,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
 		FeatureClass featureClass_,
 		const FeatureOptions& options_)
-	:m_name(name_)
+	:m_name(utils::tolower(name_))
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
