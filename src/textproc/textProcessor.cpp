@@ -555,19 +555,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( "feature type name as argument expected for 'maxpos' aggregator function");
+			m_errorhnd->report( "feature type name as argument expected for 'minpos' aggregator function");
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( "too many arguments passed to 'maxpos' aggregator function");
+			m_errorhnd->report( "too many arguments passed to 'minpos' aggregator function");
 			return 0;
 		}
 		try
 		{
-			return new MaxPosAggregatorFunctionInstance( args[0], m_errorhnd);
+			return new MinPosAggregatorFunctionInstance( args[0], m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'maxpos' aggregator: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'minpos' aggregator: %s"), *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
