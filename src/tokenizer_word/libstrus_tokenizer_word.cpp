@@ -93,7 +93,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( "no arguments expected for tokenizer");
+			m_errorhnd->report( _TXT("no arguments expected for tokenizer"));
 			return 0;
 		}
 		try

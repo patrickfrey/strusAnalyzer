@@ -431,12 +431,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( "feature type name as argument expected for 'count' aggregator function");
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'count' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( "too many arguments passed to 'count' aggregator function");
+			m_errorhnd->report( _TXT("too many arguments passed to 'count' aggregator function"));
 			return 0;
 		}
 		try
@@ -493,12 +493,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( "feature type name as argument expected for 'maxpos' aggregator function");
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( "too many arguments passed to 'maxpos' aggregator function");
+			m_errorhnd->report( _TXT("too many arguments passed to 'maxpos' aggregator function"));
 			return 0;
 		}
 		try
@@ -555,12 +555,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( "feature type name as argument expected for 'minpos' aggregator function");
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'minpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( "too many arguments passed to 'minpos' aggregator function");
+			m_errorhnd->report( _TXT("too many arguments passed to 'minpos' aggregator function"));
 			return 0;
 		}
 		try

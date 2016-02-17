@@ -50,6 +50,19 @@ namespace strus
 	{\
 		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
 	}
+#define CATCH_ERROR_MAP_ARG1( contextExplainText, arg, errorBuffer)\
+	catch (const std::bad_alloc&)\
+	{\
+		(errorBuffer).report( _TXT("memory allocation error"));\
+	}\
+	catch (const std::runtime_error& err)\
+	{\
+		(errorBuffer).report( contextExplainText, arg, err.what());\
+	}\
+	catch (const std::exception& err)\
+	{\
+		(errorBuffer).report( _TXT("uncaught exception (%s): %s"), arg, err.what());\
+	}
 
 #define CATCH_ERROR_MAP_RETURN( contextExplainText, errorBuffer, errorReturnValue)\
 	catch (const std::bad_alloc&)\
@@ -65,6 +78,22 @@ namespace strus
 	catch (const std::exception& err)\
 	{\
 		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
+		return errorReturnValue;\
+	}
+#define CATCH_ERROR_MAP_ARG1_RETURN( contextExplainText, arg, errorBuffer, errorReturnValue)\
+	catch (const std::bad_alloc&)\
+	{\
+		(errorBuffer).report( _TXT("memory allocation error"));\
+		return errorReturnValue;\
+	}\
+	catch (const std::runtime_error& err)\
+	{\
+		(errorBuffer).report( contextExplainText, arg, err.what());\
+		return errorReturnValue;\
+	}\
+	catch (const std::exception& err)\
+	{\
+		(errorBuffer).report( _TXT("uncaught exception (%s): %s"), arg, err.what());\
 		return errorReturnValue;\
 	}
 
