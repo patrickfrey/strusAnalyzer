@@ -35,7 +35,7 @@
 
 using namespace strus;
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_LOWLEVEL_DEBUG
 
 static const char g_abbrevList[] = 
 	"abbrev\0"
@@ -1191,8 +1191,8 @@ std::vector<analyzer::Token>
 								&& (ch2 != 'h' && ch1 != 'r')
 								&& (ch3 != 'u' && ch2 != 'n' && ch1 != 's'))
 							|| ((isConsonant( ch3) && ch3 != ch2 && wordlen <= 5)
-								&& (ch3 != 'c' && ch2 != 'h' && ch1 != 't')
-								&& (ch3 != 'h' && ch2 != 'r' && ch1 != 't')
+								&& (ch3 != 'c' && ch2 != 'h' && ch1 != 't' && ch1 != 's')
+								&& (ch3 != 'h' && ch2 != 'r' && ch1 != 't' && ch1 != 's')
 							))
 							{
 #ifdef STRUS_LOWLEVEL_DEBUG
