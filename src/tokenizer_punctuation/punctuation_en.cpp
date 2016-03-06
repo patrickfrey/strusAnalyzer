@@ -1146,7 +1146,7 @@ std::vector<analyzer::Token>
 					rt.push_back( analyzer::Token( scanner.pos()-1, scanner.pos()-1, 1));
 					continue;
 				}
-				else if (isAlpha( ch1))
+				else if (isLowercase( ch1))
 				{
 					// Check, if it is an abbreviation listed in the dictonary:
 					char word[ CharWindow::NofPrevChar+1];

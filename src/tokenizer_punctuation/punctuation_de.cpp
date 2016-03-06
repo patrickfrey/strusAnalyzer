@@ -75,7 +75,7 @@ std::vector<analyzer::Token>
 #endif
 					continue;
 				}
-				if (isAlpha( ch1))
+				if (isLowercase( ch1))
 				{
 					textwolf::UChar ch2 = scanner.chr(2);
 					textwolf::UChar ch3 = scanner.chr(3);

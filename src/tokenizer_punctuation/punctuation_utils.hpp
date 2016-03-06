@@ -80,6 +80,10 @@ static inline bool isUppercase( textwolf::UChar ch)
 {
 	return (ch >= 'A' && ch <= 'Z') || ch == 0xc4 || ch == 0xd6 || ch == 0xdc;
 }
+static inline bool isLowercase( textwolf::UChar ch)
+{
+	return (ch >= 'a' && ch <= 'z') || ch == 0xe4 || ch == 0xf6 || ch == 0xfc;
+}
 
 class CharWindow
 {
