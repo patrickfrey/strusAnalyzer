@@ -1,3 +1,7 @@
+strusAnalyzer (0.5.1)
+  * Small fixes for bringing up packages again
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 7 Mar 2016 18:00:00 +0100
+
 strusAnalyzer (0.5.0)
   * added statistics (VSM) aggregator frame for implementation with one example (cosine normalization)
   * bug in handling case insensitivity in term type names fixed 

@@ -280,6 +280,8 @@ make test
 %{_libdir}/strus/libstrus_detector_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dateconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dateconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 
 %files devel
 %defattr( -, root, root )
@@ -294,6 +296,7 @@ make test
 %{_libdir}/strus/libstrus_normalizer_snowball.so
 %{_libdir}/strus/libstrus_detector_std.so
 %{_libdir}/strus/libstrus_normalizer_dateconv.so
+%{_libdir}/strus/libstrus_aggregator_vsm.so
 %dir %{_includedir}/strus
 %{_includedir}/strus/*.hpp
 %dir %{_includedir}/strus/lib
@@ -302,6 +305,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Mon Mar 7 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.1-0.1
+- Small fixes for bringing up packages again
+
 * Sun Mar 6 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.0-0.1
 - added statistics (VSM) aggregator frame for implementation with one example (cosine normalization)
 - bug in handling case insensitivity in term type names fixed 
