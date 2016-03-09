@@ -345,6 +345,10 @@
           </UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="lib"><param name="ImageNumber" value="1"></OBJECT>
           <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="aggregator_vsm.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createAggregator_sumSquareTf"><param name="Local" value="aggregator__vsm_8hpp.html#a1f89101c430519cad1d76785400d2c0c"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="analyzer.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="analyzer_8hpp.html#aebc14cb4486253a7a0d6d8116a7b6215"><param name="ImageNumber" value="11"></OBJECT>

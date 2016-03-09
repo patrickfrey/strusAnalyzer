@@ -9,6 +9,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a06cfcdb70457021ba311dec67e7bc55e"><param name="Name" value="addResourcePath"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#afb8dc448732359c8ef4d52e50d5541b0"><param name="Name" value="addSearchIndexFeature"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#af1dec248b2ae18b6fdb0294553cb7943"><param name="Name" value="addSearchIndexTerm"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="aggregator__vsm_8hpp.html"><param name="Name" value="aggregator_vsm.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a07cea7ef374ca79522e99574696cf779"><param name="Name" value="AggregatorFunction"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a41a07551bffc9178896831ce3b4bc429"><param name="Name" value="analyze"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerContextInterface.html#ad8bc77130cfb04b52ae0dfdbbf9d8ef8"><param name="Name" value="analyzeNext"></OBJECT>
@@ -28,6 +29,11 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ac88af0a7deb11f11a92b76dcda81998e"><param name="Name" value="clear"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionInstanceInterface.html#a094e03ef84bc3398f67676adf4bfa72e"><param name="Name" value="concatBeforeTokenize"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#aa5b36486dfd89628fa8e34cb28e95913"><param name="Name" value="content"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a1f89101c430519cad1d76785400d2c0c"><param name="Name" value="createAggregator_sumSquareTf"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a1f89101c430519cad1d76785400d2c0c"><param name="Name" value="aggregator_vsm.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a1f89101c430519cad1d76785400d2c0c"><param name="Name" value="strus"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a14032b0ee92fa3a21cce19c014a0a51f"><param name="Name" value="createContext"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface.html#a14032b0ee92fa3a21cce19c014a0a51f"><param name="Name" value="strus::DocumentAnalyzerInterface"></OBJECT>
@@ -417,6 +423,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html"><param name="Name" value="strus"></OBJECT>
   <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a1f89101c430519cad1d76785400d2c0c"><param name="Name" value="createAggregator_sumSquareTf"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5c5fe432e3b8e139cc987e29eca7f231"><param name="Name" value="createDetector_std"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#aebc14cb4486253a7a0d6d8116a7b6215"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a7820e195adffcbb21ca58c9007e6b5df"><param name="Name" value="createNormalizer_convdia"></OBJECT>
