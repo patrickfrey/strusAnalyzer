@@ -3,19 +3,19 @@
     The C++ library strus implements basic operations to build
     a search engine for structured search on unstructured data.
 
-    Copyright (C) 2013,2014 Patrick Frey
+    Copyright (C) 2015 Patrick Frey
 
     This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
+    modify it under the terms of the GNU General Public
     License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+    version 3 of the License, or (at your option) any later version.
 
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+    General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
+    You should have received a copy of the GNU General Public
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
@@ -259,7 +259,7 @@ public:
 				}
 				if (value <= 32)
 				{
-					while (*itr && *itr <= 32) ++itr;
+					while (*itr && (unsigned char)*itr <= 32) ++itr;
 				}
 			}
 			return rt;
@@ -431,12 +431,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( "feature type name as argument expected for 'count' aggregator function");
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'count' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( "too many arguments passed to 'count' aggregator function");
+			m_errorhnd->report( _TXT("too many arguments passed to 'count' aggregator function"));
 			return 0;
 		}
 		try
@@ -455,6 +455,130 @@ private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
 
+class MaxPosAggregatorFunctionInstance
+	:public AggregatorFunctionInstanceInterface
+{
+public:
+	/// \brief Constructor
+	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+
+	virtual double evaluate( const analyzer::Document& document) const
+	{
+		unsigned int rt = 0;
+		std::vector<Term>::const_iterator
+			si = document.searchIndexTerms().begin(),
+			se = document.searchIndexTerms().end();
+
+		for (; si != se; ++si)
+		{
+			if (si->type() == m_featuretype && rt < si->pos()) rt = si->pos();
+		}
+		return rt;
+	}
+
+private:
+	std::string m_featuretype;
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+class MaxPosAggregatorFunction
+	:public AggregatorFunctionInterface
+{
+public:
+	explicit MaxPosAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
+	{
+		if (args.size() == 0)
+		{
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
+			return 0;
+		}
+		if (args.size() > 1)
+		{
+			m_errorhnd->report( _TXT("too many arguments passed to 'maxpos' aggregator function"));
+			return 0;
+		}
+		try
+		{
+			return new MaxPosAggregatorFunctionInstance( args[0], m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'maxpos' aggregator: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Aggregator getting the maximum position of the input elements");
+	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+class MinPosAggregatorFunctionInstance
+	:public AggregatorFunctionInstanceInterface
+{
+public:
+	/// \brief Constructor
+	MinPosAggregatorFunctionInstance( const std::string& featuretype_, AnalyzerErrorBufferInterface* errorhnd)
+		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+
+	virtual double evaluate( const analyzer::Document& document) const
+	{
+		unsigned int rt = 0;
+		std::vector<Term>::const_iterator
+			si = document.searchIndexTerms().begin(),
+			se = document.searchIndexTerms().end();
+
+		for (; si != se; ++si)
+		{
+			if (si->type() == m_featuretype && (!rt || rt > si->pos())) rt = si->pos();
+		}
+		return rt;
+	}
+
+private:
+	std::string m_featuretype;
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
+class MinPosAggregatorFunction
+	:public AggregatorFunctionInterface
+{
+public:
+	explicit MinPosAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
+	{
+		if (args.size() == 0)
+		{
+			m_errorhnd->report( _TXT("feature type name as argument expected for 'minpos' aggregator function"));
+			return 0;
+		}
+		if (args.size() > 1)
+		{
+			m_errorhnd->report( _TXT("too many arguments passed to 'minpos' aggregator function"));
+			return 0;
+		}
+		try
+		{
+			return new MinPosAggregatorFunctionInstance( args[0], m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'minpos' aggregator: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Aggregator getting the minimum position of the input elements");
+	}
+
+private:
+	AnalyzerErrorBufferInterface* m_errorhnd;
+};
+
 TextProcessor::TextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 	:m_errorhnd(errorhnd)
 {
@@ -467,6 +591,8 @@ TextProcessor::TextProcessor( AnalyzerErrorBufferInterface* errorhnd)
 	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
 	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
 	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
+	defineAggregator( "minpos", new MinPosAggregatorFunction(errorhnd));
+	defineAggregator( "maxpos", new MaxPosAggregatorFunction(errorhnd));
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const

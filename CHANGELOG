@@ -1,3 +1,17 @@
+strusAnalyzer (0.5.1)
+  * Small fixes for bringing up packages again
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 7 Mar 2016 18:00:00 +0100
+
+strusAnalyzer (0.5.0)
+  * added statistics (VSM) aggregator frame for implementation with one example (cosine normalization)
+  * bug in handling case insensitivity in term type names fixed 
+  * bug fixes in punctuation tokenizer
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 6 Mar 2016 19:00:00 +0100
+
+strusAnalyzer (0.4.0)
+  * incrementing version minor number with the strus core
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sat, 1 Jan 2016 17:00:00 +0100
+
 strusAnalyzer (0.3.1)
   * fixing versioning problems on the Open Suse build cluster
  -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 21 Dec 2015 09:38:00 +0100

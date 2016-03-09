@@ -26,23 +26,23 @@
 
 --------------------------------------------------------------------
 */
-/// \brief Exported functions of the strus analyzer dictionary word map normalization library
-/// \file normalizer_dictmap.hpp
-#ifndef _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
-#define _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED
+/// \brief Exported functions of the strus analyzer vector space model aggregator functions library
+/// \file aggregator_vsm.hpp
+#ifndef _STRUS_ANALYZER_AGGREGATOR_VSM_LIB_HPP_INCLUDED
+#define _STRUS_ANALYZER_AGGREGATOR_VSM_LIB_HPP_INCLUDED
 
 /// \brief strus toplevel namespace
 namespace strus
 {
 
 /// \brief Forward declaration
-class NormalizerFunctionInterface;
+class AggregatorFunctionInterface;
 /// \brief Forward declaration
 class AnalyzerErrorBufferInterface;
 
-/// \brief Get the normalizer that returns the mapping of the input with a dictionary as result
-/// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_dictmap( AnalyzerErrorBufferInterface* errorhnd);
+/// \brief Get the aggregator function type for the cosine measure normalization factor
+/// \return the aggregator function
+AggregatorFunctionInterface* createAggregator_sumSquareTf( AnalyzerErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif
