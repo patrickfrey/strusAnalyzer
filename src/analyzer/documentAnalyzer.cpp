@@ -351,7 +351,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	{
 		double value = si->statfunc()->evaluate( res);
 #ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "ADD AGGREGATED META DATA " << si->name() << " " << value << std::endl;
+		std::cout << "add aggregated metadata " << si->name() << " " << value << std::endl;
 		if (value * value < std::numeric_limits<double>::epsilon())
 		{
 			value = si->statfunc()->evaluate( res);
@@ -375,7 +375,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			{
 				double value = utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD META DATA " << feat.m_config->name() << "=" << value << std::endl;
+				std::cout << "add metadata " << feat.m_config->name() << "=" << value << std::endl;
 #endif
 				res.setMetaData( feat.m_config->name(), value);
 			}
@@ -392,7 +392,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			for (; ti != te; ++ti)
 			{
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD ATTRIBUTE " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
+				std::cout << "add attribute " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
 #endif
 				res.setAttribute(
 					feat.m_config->name(),
@@ -411,7 +411,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					feat.normalize( elem + ti->strpos, ti->strsize),
 					rel_position + (samePosition?ts->docpos:ti->docpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD SEARCH INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+				std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 				m_searchTerms.push_back( term);
 			}
@@ -428,7 +428,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					feat.normalize( elem + ti->strpos, ti->strsize),
 					rel_position + (samePosition?ts->docpos:ti->docpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD FORWARD INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+				std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 				m_forwardTerms.push_back( term);
 			}
@@ -653,7 +653,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		if (have_document && !rt)
 		{
 #ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "GOT EMPTY DOCUMENT" << std::endl;
+			std::cout << "got empty document" << std::endl;
 #endif
 			goto AGAIN;
 		}

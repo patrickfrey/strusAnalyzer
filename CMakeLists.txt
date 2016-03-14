@@ -14,6 +14,7 @@ include( cmake/dist.cmake )
 include( cmake/LinuxDistribution.cmake )
 include( cmake/build_rules.cmake )
 include( cmake/boost.cmake)
+include( cmake/intl.cmake )
 
 set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )

@@ -51,7 +51,11 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping a date to an integer. The granularity of the result is passed as first argument and alternative date formats as following arguments.";
+		return "Normalizer mapping a date to an integer. The granularity of the result is passed as first argument and alternative date formats as following arguments."
+			"Returns a date time difference of a date time value to a constant base date time value (e.g. '1970-01-01') as integer."
+			"The first parameter specifies the unit of the result and the constant base date time value."
+			"This unit is specified as string with the granularity (one of { 'us'=microseconds, 'ms'=milliseconds, 's'=seconds, 'm'=minutes, 'h'=hours, 'd'=days })"
+			"optionally followed by the base date time value. If the base date time value is not specified, then \"1970-01-01\" is assumed.";
 	}
 
 private:

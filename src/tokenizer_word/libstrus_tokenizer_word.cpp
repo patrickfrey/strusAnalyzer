@@ -130,6 +130,10 @@ static inline unsigned int utf8decode( char const* si, const char* se)
 	};
 	unsigned int res = (unsigned char)*si;
 	unsigned char charsize = g_charLengthTab[ *si];
+	if (!charsize)
+	{
+		throw strus::runtime_error(_TXT( "illegal UTF-8 character in input: %u"), (unsigned int)(unsigned char)*si);
+	}
 	if (res > 127)
 	{
 		res = ((unsigned char)*si)&(B00011111>>(charsize-2));

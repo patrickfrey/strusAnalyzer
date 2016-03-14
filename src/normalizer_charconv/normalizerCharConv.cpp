@@ -410,15 +410,18 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 		char buf[16];
 		unsigned int bufpos;
 		textwolf::CStringIterator itr( src, srcsize);
-	
+
 		while (*itr)
 		{
 			bufpos = 0;
 			textwolf::UChar value = utf8.value( buf, bufpos, itr);
 			std::map<unsigned int,std::size_t>::const_iterator mi = m_map.find( value);
-			if (mi == m_map.end() && value != textwolf::charset::UTF8::MaxChar)
+			if (mi == m_map.end())
 			{
-				rt.append( buf, bufpos);
+				if (value == textwolf::charset::UTF8::MaxChar)
+				{
+					throw strus::runtime_error(_TXT( "illegal UTF-8 character in input"));
+				}
 			}
 			else
 			{
