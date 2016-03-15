@@ -46,7 +46,7 @@
 #include <cstring>
 #include <limits>
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_LOWLEVEL_DEBUG
 
 using namespace strus;
 

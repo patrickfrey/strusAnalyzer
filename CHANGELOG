@@ -1,6 +1,6 @@
 strusAnalyzer (0.5.2)
   * added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
- -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 7 Mar 2016 18:00:00 +0100
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 14 Mar 2016 18:00:00 +0100
 
 strusAnalyzer (0.5.1)
   * small fixes for bringing up packages again

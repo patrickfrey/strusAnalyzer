@@ -422,6 +422,7 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 				{
 					throw strus::runtime_error(_TXT( "illegal UTF-8 character in input"));
 				}
+				rt.append( buf, bufpos);
 			}
 			else
 			{
