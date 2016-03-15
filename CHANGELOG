@@ -1,3 +1,7 @@
+strusAnalyzer (0.5.3)
+  * removed debug code that came accidentally into 0.5.2
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 15 Mar 2016 15:00:00 +0100
+
 strusAnalyzer (0.5.2)
   * added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
  -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 14 Mar 2016 18:00:00 +0100

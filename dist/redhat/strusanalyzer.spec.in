@@ -305,6 +305,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Tue Mar 15 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.3-0.1
+- removed debug code that came accidentally into 0.5.2
+
 * Mon Mar 14 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.2-0.1
 - added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
 

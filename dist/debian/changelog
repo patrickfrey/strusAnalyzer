@@ -1,3 +1,7 @@
+strusanalyzer (0.5.3-1) unstable; urgency=low
+  * removed debug code that came accidentally into 0.5.2
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 15 Mar 2016 15:00:00 +0100
+
 strusanalyzer (0.5.2-1) unstable; urgency=low
   * added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
  -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 14 Mar 2016 17:30:00 +0100
