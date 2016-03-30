@@ -45,7 +45,7 @@
 
 /// \brief Pseudo random generator 
 enum {KnuthIntegerHashFactor=2654435761U};
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
 class AnalyzerErrorBuffer
 	:public strus::AnalyzerErrorBufferInterface
