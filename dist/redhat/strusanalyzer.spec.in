@@ -305,6 +305,10 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Wed Mar 30 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.0-0.1
+- fixing random feed test
+- increment minor version number to be in sync with the strus core
+
 * Mon Mar 21 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.6.0-0.1
 - changed license from GPLv3 to MPLv2 (Mozilla Public License, Version 2)
 

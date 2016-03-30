@@ -1,3 +1,8 @@
+strusanalyzer (0.7.0-1) unstable; urgency=low
+  * fixing random feed test
+  * increment minor version number to be in sync with the strus core
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 30 Mar 2016 21:30:00 +0100
+
 strusanalyzer (0.6.0-1) unstable; urgency=low
   * changed license from GPLv3 to MPLv2 (Mozilla Public License, Version 2)
  -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 21 Mar 2016 16:00:00 +0100
