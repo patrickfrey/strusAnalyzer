@@ -1,5 +1,12 @@
-Library for document analysis that splits a document into normalized atomic terms that can be insterted into a search engine for retrieval. Also some functions for analyzing tokens or phrases of the strus query are provided.
-Interface documentation at http://patrickfrey.github.io/strusAnalyzer/doc/doxygen/html/index.html.
+Library for building the document analysis for information retrieval engines.
+Used as an extension of Strus.
 
-Strus project homepage at http://project-strus.net.
+Licenced as MPLv2 (Mozilla Public License, Version 2 - https://www.mozilla.org/en-US/MPL/2.0)
+
+Strus project homepage at http://project-strus.net with articles, links, documentation.
+Binary packages available.
+
+* Contributors welcome
+* Open for sharing ideas
+* Open for interesting projects
 

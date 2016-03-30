@@ -1,31 +1,10 @@
 /*
----------------------------------------------------------------------
-    The C++ library strus implements basic operations to build
-    a search engine for structured search on unstructured data.
-
-    Copyright (C) 2015 Patrick Frey
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public
-    License as published by the Free Software Foundation; either
-    version 3 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
-
-    You should have received a copy of the GNU General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
---------------------------------------------------------------------
-
-	The latest version of strus can be found at 'http://github.com/patrickfrey/strus'
-	For documentation see 'http://patrickfrey.github.com/strus'
-
---------------------------------------------------------------------
-*/
+ * Copyright (c) 2014 Patrick P. Frey
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 #include "normalizerCharConv.hpp"
 #include "strus/analyzerErrorBufferInterface.hpp"
 #include "textwolf/charset_utf8.hpp"
@@ -410,14 +389,18 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErro
 		char buf[16];
 		unsigned int bufpos;
 		textwolf::CStringIterator itr( src, srcsize);
-	
+
 		while (*itr)
 		{
 			bufpos = 0;
 			textwolf::UChar value = utf8.value( buf, bufpos, itr);
 			std::map<unsigned int,std::size_t>::const_iterator mi = m_map.find( value);
-			if (mi == m_map.end() && value != textwolf::charset::UTF8::MaxChar)
+			if (mi == m_map.end())
 			{
+				if (value == textwolf::charset::UTF8::MaxChar)
+				{
+					throw strus::runtime_error(_TXT( "illegal UTF-8 character in input"));
+				}
 				rt.append( buf, bufpos);
 			}
 			else

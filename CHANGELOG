@@ -1,5 +1,26 @@
+strusAnalyzer (0.7.0)
+  * fixing random feed test
+  * increment minor version number to be in sync with the strus core
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 30 Mar 2016 21:30:00 +0100
+
+strusAnalyzer (0.6.0)
+  * changed license from GPLv3 to MPLv2 (Mozilla Public License, Version 2)
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 21 Mar 2016 15:00:00 +0100
+
+strusAnalyzer (0.5.4)
+  * temporarily disabled tests to bring packages through (need time for fixing the issues).
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 16 Mar 2016 15:00:00 +0100
+
+strusAnalyzer (0.5.3)
+  * removed debug code that came accidentally into 0.5.2
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 15 Mar 2016 15:00:00 +0100
+
+strusAnalyzer (0.5.2)
+  * added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 14 Mar 2016 18:00:00 +0100
+
 strusAnalyzer (0.5.1)
-  * Small fixes for bringing up packages again
+  * small fixes for bringing up packages again
  -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 7 Mar 2016 18:00:00 +0100
 
 strusAnalyzer (0.5.0)

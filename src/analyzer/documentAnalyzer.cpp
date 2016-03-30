@@ -1,31 +1,10 @@
 /*
----------------------------------------------------------------------
-    The C++ library strus implements basic operations to build
-    a search engine for structured search on unstructured data.
-
-    Copyright (C) 2015 Patrick Frey
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public
-    License as published by the Free Software Foundation; either
-    version 3 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
-
-    You should have received a copy of the GNU General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
---------------------------------------------------------------------
-
-	The latest version of strus can be found at 'http://github.com/patrickfrey/strus'
-	For documentation see 'http://patrickfrey.github.com/strus'
-
---------------------------------------------------------------------
-*/
+ * Copyright (c) 2014 Patrick P. Frey
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 #include "documentAnalyzer.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -351,7 +330,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	{
 		double value = si->statfunc()->evaluate( res);
 #ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "ADD AGGREGATED META DATA " << si->name() << " " << value << std::endl;
+		std::cout << "add aggregated metadata " << si->name() << " " << value << std::endl;
 		if (value * value < std::numeric_limits<double>::epsilon())
 		{
 			value = si->statfunc()->evaluate( res);
@@ -375,7 +354,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			{
 				double value = utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD META DATA " << feat.m_config->name() << "=" << value << std::endl;
+				std::cout << "add metadata " << feat.m_config->name() << "=" << value << std::endl;
 #endif
 				res.setMetaData( feat.m_config->name(), value);
 			}
@@ -392,7 +371,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			for (; ti != te; ++ti)
 			{
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD ATTRIBUTE " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
+				std::cout << "add attribute " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
 #endif
 				res.setAttribute(
 					feat.m_config->name(),
@@ -411,7 +390,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					feat.normalize( elem + ti->strpos, ti->strsize),
 					rel_position + (samePosition?ts->docpos:ti->docpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD SEARCH INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+				std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 				m_searchTerms.push_back( term);
 			}
@@ -428,7 +407,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					feat.normalize( elem + ti->strpos, ti->strsize),
 					rel_position + (samePosition?ts->docpos:ti->docpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "ADD FORWARD INDEX " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+				std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 				m_forwardTerms.push_back( term);
 			}
@@ -653,7 +632,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		if (have_document && !rt)
 		{
 #ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "GOT EMPTY DOCUMENT" << std::endl;
+			std::cout << "got empty document" << std::endl;
 #endif
 			goto AGAIN;
 		}

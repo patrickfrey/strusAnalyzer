@@ -117,7 +117,7 @@ Name: strusanalyzer
 %define main_version @STRUS_VERSION@
 Version: %{main_version}
 Release: @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
-License: GPLv3
+License: MPLv2
 Group: Development/Libraries/C++
 
 Source: %{name}_%{main_version}.tar.gz
@@ -305,8 +305,24 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Wed Mar 30 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.0-0.1
+- fixing random feed test
+- increment minor version number to be in sync with the strus core
+
+* Mon Mar 21 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.6.0-0.1
+- changed license from GPLv3 to MPLv2 (Mozilla Public License, Version 2)
+
+* Wed Mar 16 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.4-0.1
+- temporarily disabled tests to bring packages through (need time for fixing the issues).
+
+* Tue Mar 15 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.3-0.1
+- removed debug code that came accidentally into 0.5.2
+
+* Mon Mar 14 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.2-0.1
+- added test feeding tokenizers and normalizers with random input and fixed the bugs found with this test
+
 * Mon Mar 7 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.1-0.1
-- Small fixes for bringing up packages again
+- small fixes for bringing up packages again
 
 * Sun Mar 6 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.5.0-0.1
 - added statistics (VSM) aggregator frame for implementation with one example (cosine normalization)

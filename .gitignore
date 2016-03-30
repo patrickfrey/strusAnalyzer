@@ -58,6 +58,7 @@ src/strusAnalyze/strusAnalyze
 src/strusInsert/strusInsert
 src/strusQuery/strusQuery
 3rdParty/snowball/libstemmer_c/stemwords
+tests/randomfeed/src/testRandomFeed
 
 # Test Programs
 tests/annotationpos/src/testAnnotationPos
