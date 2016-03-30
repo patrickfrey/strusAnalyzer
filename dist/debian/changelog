@@ -1,3 +1,7 @@
+strusAnalyzer (0.7.1-1) unstable; urgency=low
+  * temporarily disabled random feed test to bring packages through.
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 30 Mar 2016 23:30:00 +0100
+
 strusanalyzer (0.7.0-1) unstable; urgency=low
   * fixing random feed test
   * increment minor version number to be in sync with the strus core
