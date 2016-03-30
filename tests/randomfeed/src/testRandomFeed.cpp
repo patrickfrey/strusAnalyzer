@@ -180,6 +180,7 @@ private:
 static Random g_random;
 static strus::AnalyzerErrorBufferInterface* g_errorhnd = 0;
 
+#ifdef STRUS_LOWLEVEL_DEBUG
 static void print( std::ostream& out, const std::string& val)
 {
 	static const char HEX[] = "0123456789abcdef";
@@ -191,6 +192,7 @@ static void print( std::ostream& out, const std::string& val)
 		out << HEX[ hi] << HEX[ lo];
 	}
 }
+#endif
 
 static std::string randomString( unsigned int maxSize)
 {
