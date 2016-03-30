@@ -390,7 +390,7 @@ int main( int argc, const char* argv[])
 			testTokenizer( textproc.get(), ri, maxSize);
 			testNormalizer( textproc.get(), ri, maxSize);
 		}
-		free( g_errorhnd);
+		delete g_errorhnd;
 		return 0;
 	}
 	catch (const std::runtime_error& e)
