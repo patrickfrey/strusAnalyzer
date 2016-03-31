@@ -1,4 +1,4 @@
-strusAnalyzer (0.7.1-1) unstable; urgency=low
+strusanalyzer (0.7.1-1) unstable; urgency=low
   * temporarily disabled random feed test to bring packages through.
  -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 30 Mar 2016 23:30:00 +0100
 
