@@ -12,6 +12,8 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c/include"
 	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${Intl_INCLUDE_DIRS}"
+	"${Boost_INCLUDE_DIRS}"
 )
 
 link_directories(
