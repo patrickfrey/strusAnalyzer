@@ -350,9 +350,10 @@ static unsigned int getUintValue( const char* arg)
 
 static void printUsage( int argc, const char* argv[])
 {
-	std::cerr << "usage: " << argv[0] << " <nofruns> <maxsize>" << std::endl;
+	std::cerr << "usage: " << argv[0] << " <nofruns> <maxsize> <resourcedir>" << std::endl;
 	std::cerr << "<nofruns> = number of test runs" << std::endl;
 	std::cerr << "<maxsize> = maximum size of a string" << std::endl;
+	std::cerr << "<resourcedir> = location of the resources to load" << std::endl;
 }
 
 int main( int argc, const char* argv[])
@@ -362,13 +363,13 @@ int main( int argc, const char* argv[])
 		printUsage( argc, argv);
 		return 0;
 	}
-	else if (argc < 3)
+	else if (argc < 4)
 	{
 		std::cerr << "ERROR too few parameters" << std::endl;
 		printUsage( argc, argv);
 		return 1;
 	}
-	else if (argc > 3)
+	else if (argc > 4)
 	{
 		std::cerr << "ERROR too many parameters" << std::endl;
 		printUsage( argc, argv);
@@ -379,10 +380,11 @@ int main( int argc, const char* argv[])
 		g_errorhnd = new AnalyzerErrorBuffer();
 		unsigned int nofRuns = getUintValue( argv[1]);
 		unsigned int maxSize = getUintValue( argv[2]);
+		const char* resourcePath = argv[3];
 
 		std::auto_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
-		textproc->addResourcePath( "./");
+		textproc->addResourcePath( resourcePath);
 
 		unsigned int ri = 0;
 		for (; ri < nofRuns; ++ri)
