@@ -24,11 +24,12 @@ int main( int argc, char *argv[] )
 	streamsize size = f.tellg( );
 	f.seekg( 0, ios::beg );
 
-	vector<char> buf( size );
+	vector<char> buf( size + 1 );
 	if( !f.read( buf.data( ), size ) ) {
 	cerr << "ERROR: unable to read file into memory" << endl;
 		return 1;
 	}
+	buf[size] = '\0';
 
 	void *h = textcat_Init( profileConfig );
 
@@ -42,6 +43,8 @@ int main( int argc, char *argv[] )
 	} else {
 		cout << languages << "\t" << filename << endl;
 	}
+	
+	textcat_Done( h );
 
 	return 0;
 }
