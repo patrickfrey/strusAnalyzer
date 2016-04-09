@@ -42,9 +42,7 @@ public:
 
 	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* statfunc);
 
-	virtual const char* getDescription( FunctionType type, const std::string& name) const;
-
-	virtual std::vector<std::string> getFunctionList( FunctionType type) const;
+	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
 	std::map<std::string,TokenizerFunctionInterface*> m_tokenizer_map;

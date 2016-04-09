@@ -56,6 +56,11 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("cannot create tokenizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual bool concatBeforeTokenize() const
+	{
+		return false;
+	}
+
 private:
 	TokenDelimiter m_delim;
 	AnalyzerErrorBufferInterface* m_errorhnd;

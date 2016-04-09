@@ -337,6 +337,11 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
 	}
 
+	virtual bool concatBeforeTokenize() const
+	{
+		return false;
+	}
+
 private:
 	AnalyzerErrorBufferInterface* m_errorhnd;
 };
@@ -766,39 +771,7 @@ static std::vector<std::string> getKeys( const Map& map)
 	return rt;
 }
 
-template <class Map>
-static const char* getDescription_( const Map& map, const std::string& name)
-{
-	typename Map::const_iterator mi = map.find( utils::tolower( name));
-	if (mi != map.end())
-	{
-		return mi->second->getDescription();
-	}
-	return 0;
-}
-
-const char* TextProcessor::getDescription( FunctionType type, const std::string& name) const
-{
-	try
-	{
-		switch (type)
-		{
-			case TokenizerFunction:
-				return getDescription_( m_tokenizer_map, name);
-			case NormalizerFunction:
-				return getDescription_( m_normalizer_map, name);
-			case AggregatorFunction:
-				return getDescription_( m_aggregator_map, name);
-		}
-	}
-	catch (const std::bad_alloc&)
-	{
-		m_errorhnd->report( _TXT("out of memory"));
-	}
-	return 0;
-}
-
-std::vector<std::string> TextProcessor::getFunctionList( TextProcessorInterface::FunctionType type) const
+std::vector<std::string> TextProcessor::getFunctionList( const FunctionType& type) const
 {
 	try
 	{
