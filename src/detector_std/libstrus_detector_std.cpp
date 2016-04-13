@@ -7,7 +7,7 @@
  */
 /// \brief Exported functions of the strus standard content detector library
 #include "strus/lib/detector_std.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "standardDocumentClassDetector.hpp"
 #include "private/internationalization.hpp"
 #include "private/dll_tags.hpp"
@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

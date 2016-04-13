@@ -18,7 +18,7 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -60,7 +60,7 @@ class EmptyNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	explicit EmptyNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit EmptyNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
@@ -68,14 +68,14 @@ public:
 		return std::string();
 	}
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class EmptyNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit EmptyNormalizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+	explicit EmptyNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
@@ -89,14 +89,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class EmptyNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	explicit EmptyNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit EmptyNormalizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -119,14 +119,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class OrigNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	explicit OrigNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit OrigNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
@@ -152,14 +152,14 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class OrigNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit OrigNormalizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+	explicit OrigNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
@@ -171,14 +171,14 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
 	}
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class OrigNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	explicit OrigNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit OrigNormalizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -201,14 +201,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class TextNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	explicit TextNormalizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit TextNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize)
@@ -246,14 +246,14 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class TextNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit TextNormalizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
@@ -265,14 +265,14 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'text' normalizer: %s"), *m_errorhnd, 0);
 	}
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class TextNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	explicit TextNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit TextNormalizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -295,14 +295,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class ContentTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
 public:
-	explicit ContentTokenizerFunctionContext( AnalyzerErrorBufferInterface* errorhnd)
+	explicit ContentTokenizerFunctionContext( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual std::vector<analyzer::Token>
@@ -318,14 +318,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class ContentTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	explicit ContentTokenizerInstance( AnalyzerErrorBufferInterface* errorhnd)
+	explicit ContentTokenizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
 	virtual TokenizerFunctionContextInterface* createFunctionContext() const
@@ -343,14 +343,14 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class ContentTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	explicit ContentTokenizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit ContentTokenizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const
@@ -373,7 +373,7 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -382,7 +382,7 @@ class CountAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	CountAggregatorFunctionInstance( const std::string& featuretype_, AnalyzerErrorBufferInterface* errorhnd)
+	CountAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual double evaluate( const analyzer::Document& document) const
@@ -401,14 +401,14 @@ public:
 
 private:
 	std::string m_featuretype;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class CountAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	explicit CountAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit CountAggregatorFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
@@ -436,7 +436,7 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class MaxPosAggregatorFunctionInstance
@@ -444,7 +444,7 @@ class MaxPosAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, AnalyzerErrorBufferInterface* errorhnd)
+	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual double evaluate( const analyzer::Document& document) const
@@ -463,14 +463,14 @@ public:
 
 private:
 	std::string m_featuretype;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class MaxPosAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	explicit MaxPosAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit MaxPosAggregatorFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
@@ -498,7 +498,7 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class MinPosAggregatorFunctionInstance
@@ -506,7 +506,7 @@ class MinPosAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	MinPosAggregatorFunctionInstance( const std::string& featuretype_, AnalyzerErrorBufferInterface* errorhnd)
+	MinPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual double evaluate( const analyzer::Document& document) const
@@ -525,14 +525,14 @@ public:
 
 private:
 	std::string m_featuretype;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class MinPosAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	explicit MinPosAggregatorFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit MinPosAggregatorFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
@@ -560,10 +560,10 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
-TextProcessor::TextProcessor( AnalyzerErrorBufferInterface* errorhnd)
+TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	:m_errorhnd(errorhnd)
 {
 	DocumentClassDetectorInterface* dtc;

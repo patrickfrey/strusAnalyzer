@@ -9,7 +9,7 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/segmenterInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "documentAnalyzer.hpp"
@@ -22,7 +22,7 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd)
+	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -37,7 +37,7 @@ DLL_PUBLIC DocumentAnalyzerInterface*
 }
 
 
-DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

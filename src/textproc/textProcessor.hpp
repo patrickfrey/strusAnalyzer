@@ -14,13 +14,13 @@
 namespace strus {
 
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 class TextProcessor
 	:public TextProcessorInterface
 {
 public:
-	explicit TextProcessor( AnalyzerErrorBufferInterface* errorhnd);
+	explicit TextProcessor( ErrorBufferInterface* errorhnd);
 	virtual ~TextProcessor();
 
 	virtual void addResourcePath( const std::string& path);
@@ -50,7 +50,7 @@ private:
 	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

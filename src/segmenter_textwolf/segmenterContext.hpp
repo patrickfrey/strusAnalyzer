@@ -8,7 +8,7 @@
 #ifndef _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #define _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
 #include "textwolf/xmlpathselect.hpp"
 #include "textwolf/charset.hpp"
@@ -28,7 +28,7 @@ public:
 	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
 
 public:
-	explicit SegmenterContext( AnalyzerErrorBufferInterface* errorhnd, const Automaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
+	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const Automaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_automaton(automaton_)
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_pathselect(automaton_)
@@ -159,7 +159,7 @@ private:
 	bool m_eof;
 	bool m_got_eom;
 	jmp_buf m_eom;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

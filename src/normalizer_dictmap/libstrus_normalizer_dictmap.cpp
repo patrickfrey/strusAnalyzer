@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "strus/lib/normalizer_dictmap.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "normalizerDictMap.hpp"
 #include "private/dll_tags.hpp"
 #include "private/internationalization.hpp"
@@ -16,7 +16,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_dictmap( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_dictmap( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

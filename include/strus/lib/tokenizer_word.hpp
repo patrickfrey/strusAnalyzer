@@ -17,14 +17,14 @@ namespace strus
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the tokenizer type that creates the tokenization of words in the input
 /// \return the tokenization function
-TokenizerFunctionInterface* createTokenizer_word( AnalyzerErrorBufferInterface* errorhnd);
+TokenizerFunctionInterface* createTokenizer_word( ErrorBufferInterface* errorhnd);
 /// \brief Get the tokenizer type that creates the tokenization as splitting of the input by whitespaces 
 /// \return the tokenization function
-TokenizerFunctionInterface* createTokenizer_whitespace( AnalyzerErrorBufferInterface* errorhnd);
+TokenizerFunctionInterface* createTokenizer_whitespace( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

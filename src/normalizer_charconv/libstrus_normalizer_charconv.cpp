@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "strus/lib/normalizer_charconv.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "normalizerCharConv.hpp"
 #include "private/dll_tags.hpp"
 #include "private/internationalization.hpp"
@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 using namespace strus;
 
 
-DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_lowercase( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_lowercase( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -31,7 +31,7 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_lowercase( Analy
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create lowercase character normalizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -45,7 +45,7 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( Analy
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create uppercase character normalizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_convdia( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_convdia( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

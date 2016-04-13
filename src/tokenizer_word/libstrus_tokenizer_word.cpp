@@ -9,7 +9,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/dll_tags.hpp"
 #include "private/errorUtils.hpp"
@@ -27,7 +27,7 @@ class SeparationTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
 public:
-	SeparationTokenizerFunctionContext( TokenDelimiter delim, AnalyzerErrorBufferInterface* errorhnd)
+	SeparationTokenizerFunctionContext( TokenDelimiter delim, ErrorBufferInterface* errorhnd)
 		:m_delim(delim),m_errorhnd(errorhnd){}
 
 	const char* skipToToken( char const* si, const char* se) const;
@@ -36,7 +36,7 @@ public:
 
 private:
 	TokenDelimiter m_delim;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -44,7 +44,7 @@ class SeparationTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	SeparationTokenizerInstance( TokenDelimiter delim, AnalyzerErrorBufferInterface* errorhnd)
+	SeparationTokenizerInstance( TokenDelimiter delim, ErrorBufferInterface* errorhnd)
 		:m_delim(delim),m_errorhnd(errorhnd){}
 
 	TokenizerFunctionContextInterface* createFunctionContext() const
@@ -63,14 +63,14 @@ public:
 
 private:
 	TokenDelimiter m_delim;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class SeparationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	SeparationTokenizerFunction( const char* description_, TokenDelimiter delim_, AnalyzerErrorBufferInterface* errorhnd_)
+	SeparationTokenizerFunction( const char* description_, TokenDelimiter delim_, ErrorBufferInterface* errorhnd_)
 		:m_delim(delim_),m_description(description_),m_errorhnd(errorhnd_){}
 
 	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -95,7 +95,7 @@ public:
 private:
 	TokenDelimiter m_delim;
 	const char* m_description;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -234,7 +234,7 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 
 static bool g_intl_initialized = false;
 
-DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -248,7 +248,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( AnalyzerErro
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

@@ -26,14 +26,14 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd);
+	DocumentAnalyzer( const SegmenterInterface* segmenter_, ErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzer()
 	{
@@ -167,7 +167,7 @@ private:
 	std::vector<FeatureConfig> m_featurear;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -213,7 +213,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, ErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzerContext()
 	{
@@ -274,7 +274,7 @@ private:
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
 	std::vector<SuccPositionChunk> m_succChunks;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

@@ -14,9 +14,10 @@
 #include "strus/lib/normalizer_snowball.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/textproc.hpp"
+#include "strus/lib/error.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/documentClass.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
@@ -46,66 +47,6 @@
 /// \brief Pseudo random generator 
 enum {KnuthIntegerHashFactor=2654435761U};
 #undef STRUS_LOWLEVEL_DEBUG
-
-class AnalyzerErrorBuffer
-	:public strus::AnalyzerErrorBufferInterface
-{
-public:
-	explicit AnalyzerErrorBuffer()
-		:m_hasError(false)
-	{
-		m_msgbuf[0] = '\0';
-	}
-
-	virtual void report( const char* format, ...) const
-	{
-		va_list ap;
-		va_start(ap, format);
-		unsigned int nn = vsnprintf( m_msgbuf, sizeof(m_msgbuf), format, ap);
-		if (nn >= sizeof(m_msgbuf))
-		{
-			m_msgbuf[ sizeof(m_msgbuf)-1] = '\0';
-		}
-		va_end(ap);
-		m_hasError = true;
-	}
-
-	virtual void explain( const char* format) const
-	{
-		char msgbuf[ 1024];
-		unsigned int nn = snprintf( msgbuf, sizeof(msgbuf), format, m_msgbuf);
-		if (nn >= sizeof(m_msgbuf))
-		{
-			nn = sizeof(m_msgbuf)-1;
-		}
-		std::memcpy( m_msgbuf, msgbuf, nn);
-		m_msgbuf[ nn] = '\0';
-		m_hasError = true;
-	}
-
-	virtual const char* fetchError()
-	{
-		if (m_hasError)
-		{
-			m_hasError = false;
-			return m_msgbuf;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	virtual bool hasError() const
-	{
-		return m_hasError;
-	}
-
-private:
-	mutable char m_msgbuf[ 1024];
-	mutable bool m_hasError;
-};
-
 
 uint32_t uint32_hash( uint32_t a)
 {
@@ -178,7 +119,7 @@ private:
 };
 
 static Random g_random;
-static strus::AnalyzerErrorBufferInterface* g_errorhnd = 0;
+static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 #ifdef STRUS_LOWLEVEL_DEBUG
 static void print( std::ostream& out, const std::string& val)
@@ -377,7 +318,11 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = new AnalyzerErrorBuffer();
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2);
+		if (!g_errorhnd)
+		{
+			throw std::runtime_error("failed to create error buffer object");
+		}
 		unsigned int nofRuns = getUintValue( argv[1]);
 		unsigned int maxSize = getUintValue( argv[2]);
 		const char* resourcePath = argv[3];
@@ -394,6 +339,10 @@ int main( int argc, const char* argv[])
 		}
 		delete g_errorhnd;
 		return 0;
+	}
+	catch (const std::bad_alloc&)
+	{
+		std::cerr << "ERROR memory allocation error" << std::endl;
 	}
 	catch (const std::runtime_error& e)
 	{

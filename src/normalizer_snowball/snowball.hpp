@@ -12,13 +12,13 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 class StemNormalizerFunction
 	:public NormalizerFunctionInterface
 {
 public:
-	explicit StemNormalizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit StemNormalizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
@@ -29,7 +29,7 @@ public:
 	}
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

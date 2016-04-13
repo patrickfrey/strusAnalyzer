@@ -8,7 +8,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "textwolf/charset_utf8.hpp"
@@ -24,7 +24,7 @@ class StemNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	StemNormalizerFunctionContext( const struct sb_stemmer* stemmer_, AnalyzerErrorBufferInterface* errorhnd)
+	StemNormalizerFunctionContext( const struct sb_stemmer* stemmer_, ErrorBufferInterface* errorhnd)
 		:m_stemmer(stemmer_)
 		,m_env( sb_stemmer_create_env( stemmer_))
 		,m_errorhnd(errorhnd)
@@ -60,7 +60,7 @@ public:
 private:
 	const struct sb_stemmer* m_stemmer;
 	struct SN_env* m_env;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -68,7 +68,7 @@ class StemNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	StemNormalizerFunctionInstance( const std::string& language, AnalyzerErrorBufferInterface* errorhnd)
+	StemNormalizerFunctionInstance( const std::string& language, ErrorBufferInterface* errorhnd)
 	{
 		m_errorhnd = errorhnd;
 		std::string language_lo = utils::tolower( language);
@@ -96,7 +96,7 @@ public:
 
 private:
 	struct sb_stemmer* m_stemmer;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 

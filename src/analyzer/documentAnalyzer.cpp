@@ -12,7 +12,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -29,7 +29,7 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
+DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance()),m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
@@ -466,7 +466,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, ErrorBufferInterface* errorhnd)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)

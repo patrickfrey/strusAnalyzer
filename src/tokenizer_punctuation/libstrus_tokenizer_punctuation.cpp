@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "strus/lib/tokenizer_punctuation.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "punctuation.hpp"
 #include "private/dll_tags.hpp"
 #include "private/internationalization.hpp"
@@ -16,7 +16,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_punctuation( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_punctuation( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

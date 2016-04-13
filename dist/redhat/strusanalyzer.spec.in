@@ -134,6 +134,10 @@ BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: cmake
 
+BuildRequires: strusbase >= %{dep_version}
+BuildRequires: strusbase-devel >= %{dep_version}
+Requires: strusbase >= %{dep_version}
+
 # LinuxDistribution.cmake depends depends on the Linux release files in '/etc' or
 # LSB files
 %if %{rhel}
@@ -205,6 +209,10 @@ Requires: libboost_date_time1_58_0 >= 1.58.0
 BuildRequires: boost-devel
 %endif
 %endif
+
+BuildRequires: strusbase >= %{dep_version}
+BuildRequires: strusbase-devel >= %{dep_version}
+Requires: strusbase >= %{dep_version}
 
 # Check if 'Distribution' is really set by OBS (as mentioned in bacula)
 %if ! 0%{?opensuse_bs}
@@ -305,6 +313,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Wed Apr 13 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.0-0.1
+- depends now on strusbase for using the ErrorBufferInterface, the own AnalyzerErrorBufferInterface has been removed.
+
 * Sat Apr 2 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.2-0.1
 - reenabled random feed test
 

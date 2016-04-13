@@ -17,11 +17,11 @@ namespace strus
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the mapping of the input with a dictionary as result
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_dictmap( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_dictmap( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif
