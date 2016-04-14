@@ -115,6 +115,7 @@
 Summary: Library implementing the document and query analysis for a text search engine
 Name: strusanalyzer
 %define main_version @STRUS_VERSION@
+%define dep_version @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 Version: %{main_version}
 Release: @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 License: MPLv2
