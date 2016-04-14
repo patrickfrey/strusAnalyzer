@@ -10,7 +10,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "standardDocumentClassDetector.hpp"
 #include "private/internationalization.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 
 static bool g_intl_initialized = false;

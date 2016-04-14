@@ -14,7 +14,7 @@
 #include "private/internationalization.hpp"
 #include "documentAnalyzer.hpp"
 #include "queryAnalyzer.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 
 static bool g_intl_initialized = false;
 

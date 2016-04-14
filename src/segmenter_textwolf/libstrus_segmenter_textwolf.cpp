@@ -9,7 +9,7 @@
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 

@@ -8,7 +8,7 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "punctuation.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 

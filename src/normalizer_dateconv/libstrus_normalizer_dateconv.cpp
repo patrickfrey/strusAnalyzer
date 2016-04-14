@@ -8,7 +8,7 @@
 #include "strus/lib/normalizer_dateconv.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "normalizerDateConv.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 

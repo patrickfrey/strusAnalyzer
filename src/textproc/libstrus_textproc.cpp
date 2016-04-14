@@ -17,7 +17,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "textProcessor.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
 

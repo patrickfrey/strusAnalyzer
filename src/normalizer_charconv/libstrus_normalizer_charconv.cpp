@@ -8,7 +8,7 @@
 #include "strus/lib/normalizer_charconv.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "normalizerCharConv.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 

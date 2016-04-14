@@ -11,7 +11,7 @@
 #include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "textwolf/charset_utf8.hpp"

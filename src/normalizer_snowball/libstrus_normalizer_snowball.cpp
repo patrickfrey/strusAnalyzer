@@ -7,9 +7,8 @@
  */
 #include "strus/lib/normalizer_snowball.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "snowball.hpp"
-#include "private/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
