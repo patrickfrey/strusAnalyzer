@@ -134,10 +134,6 @@ BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: cmake
 
-BuildRequires: strusbase >= %{dep_version}
-BuildRequires: strusbase-devel >= %{dep_version}
-Requires: strusbase >= %{dep_version}
-
 # LinuxDistribution.cmake depends depends on the Linux release files in '/etc' or
 # LSB files
 %if %{rhel}
@@ -214,6 +210,7 @@ BuildRequires: strusbase >= %{dep_version}
 BuildRequires: strusbase-devel >= %{dep_version}
 Requires: strusbase >= %{dep_version}
 
+
 # Check if 'Distribution' is really set by OBS (as mentioned in bacula)
 %if ! 0%{?opensuse_bs}
 Distribution: %{dist}
@@ -225,7 +222,7 @@ Packager: Patrick Frey <patrickpfrey@yahoo.com>
 Library implementing the document and query analysis for a text search engine.
 
 %package devel
-Summary: strusanalyzer development files
+Summary: Strusanalyzer development files
 Group: Development/Libraries/C++
 
 %description devel
