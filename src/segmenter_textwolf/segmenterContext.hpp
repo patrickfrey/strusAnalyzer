@@ -14,7 +14,6 @@
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include <cstdlib>
-#include <stdint.h>
 #include <setjmp.h>
 
 namespace strus
