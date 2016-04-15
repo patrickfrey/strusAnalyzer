@@ -9,11 +9,12 @@
 /// \file document.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
-#include <string>
-#include <vector>
+#include "strus/numericVariant.hpp"
 #include "strus/analyzer/term.hpp"
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
+#include <string>
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -59,7 +60,7 @@ public:
 	/// \brief Define a meta data element of the document
 	/// \param[in] t name of the meta data element
 	/// \param[in] v value of the meta data element
-	void setMetaData( const std::string& t, double v)
+	void setMetaData( const std::string& t, const NumericVariant& v)
 	{
 		m_metadata.push_back( MetaData( t,v));
 	}

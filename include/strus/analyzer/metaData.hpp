@@ -9,6 +9,7 @@
 /// \file metaData.hpp
 #ifndef _STRUS_ANALYZER_METADATA_HPP_INCLUDED
 #define _STRUS_ANALYZER_METADATA_HPP_INCLUDED
+#include "strus/numericVariant.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -28,7 +29,7 @@ public:
 	/// \brief Constructor
 	/// \param[in] n name of the meta data element
 	/// \param[in] v value of the meta data element
-	MetaData( const std::string& n, double v)
+	MetaData( const std::string& n, const NumericVariant& v)
 		:m_name(n),m_value(v){}
 
 	/// \brief Get the name of the meta data element
@@ -41,7 +42,7 @@ public:
 
 private:
 	std::string m_name;
-	double m_value;
+	NumericVariant m_value;
 };
 
 }}//namespace

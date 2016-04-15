@@ -352,9 +352,14 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		{
 			if (!tokens.empty())
 			{
-				double value = utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
+				std::string valuestr = feat.normalize( elem + tokens[0].strpos, tokens[0].strsize);
+				NumericVariant value;
+				if (!value.initFromString( valuestr.c_str()))
+				{
+					throw strus::runtime_error(_TXT("cannot convert nromalized item to number (metadata element): %s"), valuestr.c_str());
+				}
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add metadata " << feat.m_config->name() << "=" << value << std::endl;
+				std::cout << "add metadata " << feat.m_config->name() << "=" << valuestr << std::endl;
 #endif
 				res.setMetaData( feat.m_config->name(), value);
 			}
