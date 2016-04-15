@@ -1,4 +1,8 @@
-strusanalyzer (0.8.0-1) unstable; urgency=low
+strusAnalyzer (0.8.1)
+  * use numeric variant (now in strusBase) for docucment metadata values instead of double
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 15 Apr 2016 15:00:00 +0100
+
+strusAnalyzer (0.8.0)
   * dependency to libstrus_base because of ErrorBufferInterface, the AnalyzerErrorBufferInterface has been removed
  -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 13 Apr 2016 14:30:00 +0100
 

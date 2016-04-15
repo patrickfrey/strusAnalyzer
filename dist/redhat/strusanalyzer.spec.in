@@ -317,6 +317,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Fri Apr 15 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.1-0.1
+- use numeric variant (now in strusBase) for docucment metadata values instead of double
+
 * Wed Apr 13 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.0-0.1
 - depends now on strusbase for using the ErrorBufferInterface, the own AnalyzerErrorBufferInterface has been removed.
 
