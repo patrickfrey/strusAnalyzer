@@ -14,7 +14,11 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/include"
+	"${Intl_INCLUDE_DIRS}"
+	"${Boost_INCLUDE_DIRS}"
+	"${strusbase_INCLUDE_DIRS}"
 )
+
 link_directories(
 	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/src"
  	"${PROJECT_SOURCE_DIR}/src/utils"

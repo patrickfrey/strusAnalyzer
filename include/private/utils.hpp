@@ -8,6 +8,7 @@
 /// \brief Some utility functions that are centralised to control dependencies to boost
 #ifndef _STRUS_UTILS_HPP_INCLUDED
 #define _STRUS_UTILS_HPP_INCLUDED
+#include "strus/numericVariant.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -19,7 +20,6 @@ std::string trim( const std::string& val);
 bool caseInsensitiveEquals( const std::string& val1, const std::string& val2);
 bool caseInsensitiveStartsWith( const std::string& val, const std::string& prefix);
 int toint( const std::string& val);
-int todouble( const std::string& val);
 std::string tostring( int val);
 bool isFile( const std::string& path);
 

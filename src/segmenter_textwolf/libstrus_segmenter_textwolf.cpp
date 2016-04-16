@@ -7,9 +7,9 @@
  */
 /// \brief Exported functions of the strus segmenter library
 #include "strus/lib/segmenter_textwolf.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

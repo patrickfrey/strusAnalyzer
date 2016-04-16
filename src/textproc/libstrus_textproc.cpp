@@ -13,18 +13,18 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/aggregator_vsm.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "textProcessor.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
 
 using namespace strus;
 
 DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor( AnalyzerErrorBufferInterface* errorhnd)
+	strus::createTextProcessor( ErrorBufferInterface* errorhnd)
 {
 	TextProcessor* rt = 0;
 	NormalizerFunctionInterface* nrm;

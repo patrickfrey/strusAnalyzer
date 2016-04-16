@@ -9,7 +9,10 @@ set(source_files
 )
 
 include_directories(  
+	"${Intl_INCLUDE_DIRS}"
+	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include" 
+	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
 )
@@ -18,6 +21,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_detector_std SHARED ${source_files} )
+target_link_libraries( strus_detector_std strus_private_utils )
 set_target_properties(
     strus_detector_std
     PROPERTIES

@@ -62,12 +62,6 @@ public:
 			BindSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
 			BindPredecessor		///< An element in the document that gets the position of the preceding content element assigned
 		};
-		/// \brief Get a PositionBind value as string
-		static const char* positionBindName( PositionBind t)
-		{
-			static const char* ar[] = {"BindContent","BindSuccessor","BindPredecessor"};
-			return ar[t];
-		}
 
 		/// \brief Get the PositionBind value set
 		PositionBind positionBind() const		{return (PositionBind)(m_opt & 0x3);}

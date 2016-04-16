@@ -67,6 +67,7 @@
 %define fedora 0
 %define fc21 0
 %define fc22 0
+%define fc23 0
 %if 0%{?fedora_version} == 21
 %define dist fc21
 %define fc21 1
@@ -75,6 +76,11 @@
 %if 0%{?fedora_version} == 22
 %define dist fc22
 %define fc22 1
+%define fedora 1
+%endif
+%if 0%{?fedora_version} == 23
+%define dist fc23
+%define fc23 1
 %define fedora 1
 %endif
 
@@ -115,6 +121,7 @@
 Summary: Library implementing the document and query analysis for a text search engine
 Name: strusanalyzer
 %define main_version @STRUS_VERSION@
+%define dep_version @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 Version: %{main_version}
 Release: @STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 License: MPLv2
@@ -206,6 +213,11 @@ BuildRequires: boost-devel
 %endif
 %endif
 
+BuildRequires: strusbase >= %{dep_version}
+BuildRequires: strusbase-devel >= %{dep_version}
+Requires: strusbase >= %{dep_version}
+
+
 # Check if 'Distribution' is really set by OBS (as mentioned in bacula)
 %if ! 0%{?opensuse_bs}
 Distribution: %{dist}
@@ -217,7 +229,7 @@ Packager: Patrick Frey <patrickpfrey@yahoo.com>
 Library implementing the document and query analysis for a text search engine.
 
 %package devel
-Summary: strusanalyzer development files
+Summary: Strusanalyzer development files
 Group: Development/Libraries/C++
 
 %description devel
@@ -305,6 +317,18 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Fri Apr 15 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.1-0.1
+- use numeric variant (now in strusBase) for docucment metadata values instead of double
+
+* Wed Apr 13 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.0-0.1
+- depends now on strusbase for using the ErrorBufferInterface, the own AnalyzerErrorBufferInterface has been removed.
+
+* Sat Apr 2 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.2-0.1
+- reenabled random feed test
+
+* Wed Mar 30 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.1-0.1
+- temporarily disabled random feed test to bring packages through.
+
 * Wed Mar 30 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.7.0-0.1
 - fixing random feed test
 - increment minor version number to be in sync with the strus core

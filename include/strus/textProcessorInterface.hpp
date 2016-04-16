@@ -91,7 +91,7 @@ public:
 	/// \brief Get a list of all functions of a specific type available
 	/// \param[in] type type of the function
 	/// \return the list of function names
-	virtual std::vector<std::string> getFunctionList( FunctionType type) const=0;
+	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const=0;
 };
 
 }//namespace

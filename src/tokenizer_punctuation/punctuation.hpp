@@ -12,9 +12,9 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
-TokenizerFunctionInterface* punctuationTokenizer( AnalyzerErrorBufferInterface* errorhnd);
+TokenizerFunctionInterface* punctuationTokenizer( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

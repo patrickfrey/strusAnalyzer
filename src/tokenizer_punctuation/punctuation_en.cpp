@@ -7,7 +7,7 @@
  */
 #include "punctuation_en.hpp"
 #include "punctuation_utils.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -1045,7 +1045,7 @@ static const char g_abbrevList[] =
 
 PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en(
 		const char* punctuationCharList,
-		AnalyzerErrorBufferInterface* errorhnd)
+		ErrorBufferInterface* errorhnd)
 	:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
 	,m_errorhnd(errorhnd)
 {

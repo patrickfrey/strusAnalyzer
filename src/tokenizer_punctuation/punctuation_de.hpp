@@ -14,7 +14,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 class PunctuationTokenizerFunctionContext_de
 	:public TokenizerFunctionContextInterface
@@ -22,7 +22,7 @@ class PunctuationTokenizerFunctionContext_de
 public:
 	PunctuationTokenizerFunctionContext_de(
 			const CharTable* punctuation_char_,
-			AnalyzerErrorBufferInterface* errorhnd)
+			ErrorBufferInterface* errorhnd)
 		:m_punctuation_char(punctuation_char_)
 		,m_errorhnd(errorhnd){}
 
@@ -35,7 +35,7 @@ public:
 
 private:
 	const CharTable* m_punctuation_char;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -45,7 +45,7 @@ class PunctuationTokenizerInstance_de
 public:
 	PunctuationTokenizerInstance_de(
 			const char* punctuationCharList,
-			AnalyzerErrorBufferInterface* errorhnd)
+			ErrorBufferInterface* errorhnd)
 		:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
 		,m_errorhnd(errorhnd){}
 
@@ -58,7 +58,7 @@ public:
 
 private:
 	CharTable m_punctuation_char;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

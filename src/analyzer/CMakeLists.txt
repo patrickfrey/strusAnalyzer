@@ -10,13 +10,16 @@ set(source_files
 )
 
 include_directories(  
-  "${PROJECT_SOURCE_DIR}/include" 
+	"${PROJECT_SOURCE_DIR}/include" 
+	"${Intl_INCLUDE_DIRS}"
+ 	"${Boost_INCLUDE_DIRS}"
+	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
-   "${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
-   "${PROJECT_SOURCE_DIR}/src/textproc"
-   "${PROJECT_SOURCE_DIR}/src/utils"
+ 	"${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
+ 	"${PROJECT_SOURCE_DIR}/src/textproc"
+ 	"${PROJECT_SOURCE_DIR}/src/utils"
 )
 
 

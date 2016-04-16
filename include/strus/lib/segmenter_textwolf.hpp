@@ -17,11 +17,11 @@ namespace strus {
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get a document XML segmenter based on textwolf
 /// \return the segmenter
-SegmenterInterface* createSegmenter_textwolf( AnalyzerErrorBufferInterface* errorhnd);
+SegmenterInterface* createSegmenter_textwolf( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "normalizerDateConv.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -72,7 +72,7 @@ class Date2IntNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, ErrorBufferInterface* errorhnd)
 		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd)
 	{}
 
@@ -102,14 +102,14 @@ public:
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class Date2IntNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, AnalyzerErrorBufferInterface* errorhnd)
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, ErrorBufferInterface* errorhnd)
 		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
@@ -124,7 +124,7 @@ public:
 private:
 	DateNumGranularity m_granularity;
 	std::vector<std::locale> m_lcar;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 static const char* skipSpaces( char const* gi)

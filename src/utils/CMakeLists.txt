@@ -5,7 +5,9 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 include_directories(
 	"${Boost_INCLUDE_DIRS}"
-	"${PROJECT_SOURCE_DIR}/include" )
+	"${PROJECT_SOURCE_DIR}/include"
+	"${strusbase_INCLUDE_DIRS}"
+)
 link_directories(
 	"${Boost_LIBRARY_DIRS}"
 	"${PROJECT_SOURCE_DIR}/utils" )
@@ -16,7 +18,7 @@ link_directories(
 # Library with some helper functions used by strus libraries and programs but not part of the public interface
 # -------------------------------------------
 add_library( strus_private_utils STATIC utils.cpp internationalization.cpp )
-target_link_libraries( strus_private_utils  "${Boost_LIBRARIES}" )
+target_link_libraries( strus_private_utils  "${Boost_LIBRARIES}" "${Intl_LIBRARIES}" )
 
 
 

@@ -15,7 +15,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 class PunctuationTokenizerFunctionContext_en
 	:public TokenizerFunctionContextInterface
@@ -24,7 +24,7 @@ public:
 	PunctuationTokenizerFunctionContext_en(
 			const conotrie::CompactNodeTrie* abbrevDict_,
 			const CharTable* punctuation_char_,
-			AnalyzerErrorBufferInterface* errorhnd)
+			ErrorBufferInterface* errorhnd)
 		:m_abbrevDict(abbrevDict_),m_punctuation_char(punctuation_char_),m_errorhnd(errorhnd){}
 
 	inline bool isPunctuation( textwolf::UChar ch)
@@ -37,7 +37,7 @@ public:
 private:
 	const conotrie::CompactNodeTrie* m_abbrevDict;
 	const CharTable* m_punctuation_char;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class PunctuationTokenizerInstance_en
@@ -46,7 +46,7 @@ class PunctuationTokenizerInstance_en
 public:
 	PunctuationTokenizerInstance_en(
 			const char* punctuationCharList,
-			AnalyzerErrorBufferInterface* errorhnd);
+			ErrorBufferInterface* errorhnd);
 
 	virtual bool concatBeforeTokenize() const
 	{
@@ -58,7 +58,7 @@ public:
 private:
 	conotrie::CompactNodeTrie m_abbrevDict;
 	CharTable m_punctuation_char;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

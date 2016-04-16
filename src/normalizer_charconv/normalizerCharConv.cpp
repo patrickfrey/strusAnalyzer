@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "normalizerCharConv.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/utils.hpp"
@@ -28,7 +28,7 @@ public:
 	}
 
 	void load( ConvType type);
-	std::string rewrite( const char* src, std::size_t srcsize, AnalyzerErrorBufferInterface* errorhnd) const;
+	std::string rewrite( const char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd) const;
 
 private:
 	void set( unsigned int chr, const char* value);
@@ -47,7 +47,7 @@ class CharMapNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	CharMapNormalizerFunctionContext( const CharMap* map_, AnalyzerErrorBufferInterface* errorhnd)
+	CharMapNormalizerFunctionContext( const CharMap* map_, ErrorBufferInterface* errorhnd)
 		:m_map( map_),m_errorhnd(errorhnd){}
 	
 	virtual std::string normalize(
@@ -59,14 +59,14 @@ public:
 
 private:
 	const CharMap* m_map;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class CharMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	CharMapNormalizerInstance( CharMap::ConvType maptype, AnalyzerErrorBufferInterface* errorhnd)
+	CharMapNormalizerInstance( CharMap::ConvType maptype, ErrorBufferInterface* errorhnd)
 		:m_map(maptype),m_errorhnd(errorhnd){}
 
 	virtual NormalizerFunctionContextInterface* createFunctionContext() const
@@ -80,7 +80,7 @@ public:
 
 private:
 	CharMap m_map;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -380,7 +380,7 @@ void CharMap::load( ConvType type)
 	}
 }
 
-std::string CharMap::rewrite( const char* src, std::size_t srcsize, AnalyzerErrorBufferInterface* errorhnd) const
+std::string CharMap::rewrite( const char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd) const
 {
 	try
 	{

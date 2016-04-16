@@ -9,7 +9,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -144,7 +144,7 @@ class DictMapNormalizerFunctionContext
 	:public NormalizerFunctionContextInterface
 {
 public:
-	DictMapNormalizerFunctionContext( const DictMap* map_, AnalyzerErrorBufferInterface* errorhnd)
+	DictMapNormalizerFunctionContext( const DictMap* map_, ErrorBufferInterface* errorhnd)
 		:m_map( map_),m_errorhnd(errorhnd){}
 	
 	virtual std::string normalize(
@@ -169,7 +169,7 @@ public:
 
 private:
 	const DictMap* m_map;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class DictMapNormalizerInstance
@@ -179,7 +179,7 @@ public:
 	/// \brief Destructor
 	virtual ~DictMapNormalizerInstance(){}
 
-	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc, AnalyzerErrorBufferInterface* errorhnd)
+	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd)
 	{
 		m_map.loadFile( textproc->getResourcePath( filename));
@@ -196,7 +196,7 @@ public:
 
 private:
 	DictMap m_map;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 

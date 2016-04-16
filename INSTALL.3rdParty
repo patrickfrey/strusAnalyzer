@@ -1,4 +1,4 @@
-Library dependencies of strus:
+Library dependencies of strusAnalyzer:
 	- boost (headers and -lboost_system)
 	- textwolf (http://textwolf.net)
 	- snowball stemers (http://snowball.tartarus.org/)

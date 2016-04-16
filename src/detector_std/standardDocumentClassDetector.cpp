@@ -8,7 +8,6 @@
 /// \brief Standard document class detector implementation
 /// \file standardDocumentClassDetector.hpp
 #include "standardDocumentClassDetector.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>

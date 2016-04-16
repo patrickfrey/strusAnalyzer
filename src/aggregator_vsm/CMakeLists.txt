@@ -8,7 +8,10 @@ set(source_files
 )
 
 include_directories(  
-	"${PROJECT_SOURCE_DIR}/include" 
+	"${Intl_INCLUDE_DIRS}"
+	"${Boost_INCLUDE_DIRS}"
+	"${PROJECT_SOURCE_DIR}/include"
+	"${strusbase_INCLUDE_DIRS}"
 )
 
 
