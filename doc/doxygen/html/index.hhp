@@ -20,7 +20,6 @@ document_8hpp_source.html
 metaData_8hpp_source.html
 term_8hpp_source.html
 token_8hpp_source.html
-analyzerErrorBufferInterface_8hpp_source.html
 analyzerObjectBuilderInterface_8hpp_source.html
 documentAnalyzerContextInterface_8hpp_source.html
 documentAnalyzerInterface_8hpp_source.html
@@ -57,7 +56,6 @@ document_8hpp.html
 metaData_8hpp.html
 term_8hpp.html
 token_8hpp.html
-analyzerErrorBufferInterface_8hpp.html
 analyzerObjectBuilderInterface_8hpp.html
 documentAnalyzerContextInterface_8hpp.html
 documentAnalyzerInterface_8hpp.html
@@ -91,8 +89,6 @@ classstrus_1_1AggregatorFunctionInstanceInterface.html
 classstrus_1_1AggregatorFunctionInstanceInterface-members.html
 classstrus_1_1AggregatorFunctionInterface.html
 classstrus_1_1AggregatorFunctionInterface-members.html
-classstrus_1_1AnalyzerErrorBufferInterface.html
-classstrus_1_1AnalyzerErrorBufferInterface-members.html
 classstrus_1_1AnalyzerObjectBuilderInterface.html
 classstrus_1_1AnalyzerObjectBuilderInterface-members.html
 classstrus_1_1DocumentAnalyzerContextInterface.html
