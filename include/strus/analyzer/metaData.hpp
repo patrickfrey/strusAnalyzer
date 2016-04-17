@@ -38,7 +38,7 @@ public:
 
 	/// \brief Get the value of the meta data element
 	/// \return Value of the meta data element
-	double value() const			{return m_value;}
+	const NumericVariant& value() const	{return m_value;}
 
 private:
 	std::string m_name;
