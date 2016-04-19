@@ -32,7 +32,9 @@ public:
 	/// \param[in] args arguments for the tokenizer function
 	/// \param[in] tp text processor reference (for loading resources)
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
-	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const=0;
+	virtual TokenizerFunctionInstanceInterface* createInstance(
+			const std::vector<std::string>& args,
+			const TextProcessorInterface* tp) const=0;
 
 	/// \brief Get a description of the function for user help
 	/// \return the description
