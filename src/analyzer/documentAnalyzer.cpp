@@ -209,7 +209,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
-	
+
 	for (; ni != ne; ++ni)
 	{
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
