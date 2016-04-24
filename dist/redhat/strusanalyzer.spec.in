@@ -311,6 +311,10 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Sun Apr 24 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.2-0.1
+- document is only considered to be empty if there are no features defined
+- aggregator and metadata result is now a numeric variant
+
 * Fri Apr 15 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.8.1-0.1
 - use numeric variant (now in strusBase) for docucment metadata values instead of double
 
