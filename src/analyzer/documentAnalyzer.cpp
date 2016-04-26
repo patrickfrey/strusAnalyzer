@@ -328,13 +328,9 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 		si = m_analyzer->m_statistics.begin(), se = m_analyzer->m_statistics.end();
 	for (; si != se; ++si)
 	{
-		double value = si->statfunc()->evaluate( res);
+		NumericVariant value = si->statfunc()->evaluate( res);
 #ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add aggregated metadata " << si->name() << " " << value << std::endl;
-		if (value * value < std::numeric_limits<double>::epsilon())
-		{
-			value = si->statfunc()->evaluate( res);
-		}
+		std::cout << "add aggregated metadata " << si->name() << " " << value.tostring().c_str() << std::endl;
 #endif
 		res.setMetaData( si->name(), value);
 	}
