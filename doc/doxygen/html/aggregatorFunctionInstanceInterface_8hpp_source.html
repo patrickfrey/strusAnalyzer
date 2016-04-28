@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.8</span>
+   &#160;<span id="projectnumber">0.9</span>
    </div>
   </td>
  </tr>
@@ -70,31 +70,32 @@
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="document_8hpp.html">analyzer/document.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacestrus.html">   15</a></span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classstrus_1_1AggregatorFunctionInstanceInterface.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html">AggregatorFunctionInstanceInterface</a></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">   24</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">~AggregatorFunctionInstanceInterface</a>(){}</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">double</span> <a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a487f79e8e86431dcb07b89403b26cb18">evaluate</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1Document.html">analyzer::Document</a>&amp; document) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html_a487f79e8e86431dcb07b89403b26cb18"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a487f79e8e86431dcb07b89403b26cb18">strus::AggregatorFunctionInstanceInterface::evaluate</a></div><div class="ttdeci">virtual double evaluate(const analyzer::Document &amp;document) const =0</div><div class="ttdoc">Aggregator function for document statistics. </div></div>
-<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html_a70d4d7a0de1f5affb1191305514bd4bc"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">strus::AggregatorFunctionInstanceInterface::~AggregatorFunctionInstanceInterface</a></div><div class="ttdeci">virtual ~AggregatorFunctionInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> aggregatorFunctionInstanceInterface.hpp:24</div></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;strus/numericVariant.hpp&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="namespacestrus.html">   16</a></span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classstrus_1_1AggregatorFunctionInstanceInterface.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html">AggregatorFunctionInstanceInterface</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">   25</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">~AggregatorFunctionInstanceInterface</a>(){}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">virtual</span> NumericVariant <a class="code" href="classstrus_1_1AggregatorFunctionInstanceInterface.html#ae98e82f93f837c2d45d918d7bee033db">evaluate</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1Document.html">analyzer::Document</a>&amp; document) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html_a70d4d7a0de1f5affb1191305514bd4bc"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html#a70d4d7a0de1f5affb1191305514bd4bc">strus::AggregatorFunctionInstanceInterface::~AggregatorFunctionInstanceInterface</a></div><div class="ttdeci">virtual ~AggregatorFunctionInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> aggregatorFunctionInstanceInterface.hpp:25</div></div>
+<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html_ae98e82f93f837c2d45d918d7bee033db"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html#ae98e82f93f837c2d45d918d7bee033db">strus::AggregatorFunctionInstanceInterface::evaluate</a></div><div class="ttdeci">virtual NumericVariant evaluate(const analyzer::Document &amp;document) const =0</div><div class="ttdoc">Aggregator function for document statistics. </div></div>
 <div class="ttc" id="document_8hpp_html"><div class="ttname"><a href="document_8hpp.html">document.hpp</a></div><div class="ttdoc">Structure of a document as result of document analysis. </div></div>
-<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html">strus::AggregatorFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterized aggregator function. </div><div class="ttdef"><b>Definition:</b> aggregatorFunctionInstanceInterface.hpp:20</div></div>
+<div class="ttc" id="classstrus_1_1AggregatorFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1AggregatorFunctionInstanceInterface.html">strus::AggregatorFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterized aggregator function. </div><div class="ttdef"><b>Definition:</b> aggregatorFunctionInstanceInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1Document_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1Document.html">strus::analyzer::Document</a></div><div class="ttdoc">Structure of a document created as result of a document analysis. </div><div class="ttdef"><b>Definition:</b> document.hpp:25</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 16 2016 16:15:36 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

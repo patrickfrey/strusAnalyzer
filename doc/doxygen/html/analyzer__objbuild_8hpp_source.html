@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/lib/normalizer_dictmap.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/lib/analyzer_objbuild.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -57,31 +57,33 @@
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">normalizer_dictmap.hpp</div>  </div>
+<div class="title">analyzer_objbuild.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="normalizer__dictmap_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="analyzer__objbuild_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (c) 2014 Patrick P. Frey</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * This Source Code Form is subject to the terms of the Mozilla Public</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * License, v. 2.0. If a copy of the MPL was not distributed with this</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * file, You can obtain one at http://mozilla.org/MPL/2.0/.</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_NORMALIZER_DICTIONARY_MAP_LIB_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_OBJBUILD_LIB_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_OBJBUILD_LIB_HPP_INCLUDED</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>strus {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>NormalizerFunctionInterface;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>AnalyzerObjectBuilderInterface;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;NormalizerFunctionInterface* <a class="code" href="namespacestrus.html#a31c94bfd5dd39a2c51c14760e0b0355d">createNormalizer_dictmap</a>( ErrorBufferInterface* errorhnd);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="namespacestrus_html_a31c94bfd5dd39a2c51c14760e0b0355d"><div class="ttname"><a href="namespacestrus.html#a31c94bfd5dd39a2c51c14760e0b0355d">strus::createNormalizer_dictmap</a></div><div class="ttdeci">NormalizerFunctionInterface * createNormalizer_dictmap(ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Get the normalizer that returns the mapping of the input with a dictionary as result. </div></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;AnalyzerObjectBuilderInterface*</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="namespacestrus.html#a816d5e05df8f785816fb9c419f422f13">createAnalyzerObjectBuilder_default</a>(</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="namespacestrus_html_a816d5e05df8f785816fb9c419f422f13"><div class="ttname"><a href="namespacestrus.html#a816d5e05df8f785816fb9c419f422f13">strus::createAnalyzerObjectBuilder_default</a></div><div class="ttdeci">AnalyzerObjectBuilderInterface * createAnalyzerObjectBuilder_default(ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Create a storage object builder with the builders from the standard strus core libraries (without mod...</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->

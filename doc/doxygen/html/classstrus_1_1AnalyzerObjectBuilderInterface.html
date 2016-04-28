@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.8</span>
+   &#160;<span id="projectnumber">0.9</span>
    </div>
   </td>
  </tr>
@@ -79,12 +79,12 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834">getTextProcessor</a> () const =0</td></tr>
 <tr class="memdesc:aa8f9090a8fb1af0134fa9c3b82f57834"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the analyzer text processor interface.  <a href="#aa8f9090a8fb1af0134fa9c3b82f57834">More...</a><br/></td></tr>
 <tr class="separator:aa8f9090a8fb1af0134fa9c3b82f57834"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8a9c658335a9583c86d910193684d72"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#ae8a9c658335a9583c86d910193684d72">createSegmenter</a> (const std::string &amp;segmenterName=std::string()) const =0</td></tr>
-<tr class="memdesc:ae8a9c658335a9583c86d910193684d72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a document segmenter object.  <a href="#ae8a9c658335a9583c86d910193684d72">More...</a><br/></td></tr>
-<tr class="separator:ae8a9c658335a9583c86d910193684d72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ed790313d7e462218fb3288d60cd18e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a8ed790313d7e462218fb3288d60cd18e">createDocumentAnalyzer</a> (const std::string &amp;segmenterName=std::string()) const =0</td></tr>
-<tr class="memdesc:a8ed790313d7e462218fb3288d60cd18e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a document analyzer object.  <a href="#a8ed790313d7e462218fb3288d60cd18e">More...</a><br/></td></tr>
-<tr class="separator:a8ed790313d7e462218fb3288d60cd18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8bcc8a9fba1142d52a223ef77999a85"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85">getSegmenter</a> (const std::string &amp;segmenterName=std::string()) const =0</td></tr>
+<tr class="memdesc:af8bcc8a9fba1142d52a223ef77999a85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a document segmenter object.  <a href="#af8bcc8a9fba1142d52a223ef77999a85">More...</a><br/></td></tr>
+<tr class="separator:af8bcc8a9fba1142d52a223ef77999a85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a021c85779e002261339cea6f67f7d123"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123">createDocumentAnalyzer</a> (const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *segmenter) const =0</td></tr>
+<tr class="memdesc:a021c85779e002261339cea6f67f7d123"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a document analyzer object.  <a href="#a021c85779e002261339cea6f67f7d123">More...</a><br/></td></tr>
+<tr class="separator:a021c85779e002261339cea6f67f7d123"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbeb80a3d6c60fe4b684e7091d75e6c0"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">QueryAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0">createQueryAnalyzer</a> () const =0</td></tr>
 <tr class="memdesc:afbeb80a3d6c60fe4b684e7091d75e6c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a query analyzer object.  <a href="#afbeb80a3d6c60fe4b684e7091d75e6c0">More...</a><br/></td></tr>
 <tr class="separator:afbeb80a3d6c60fe4b684e7091d75e6c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,7 +118,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a8ed790313d7e462218fb3288d60cd18e"></a>
+<a class="anchor" id="a021c85779e002261339cea6f67f7d123"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -128,8 +128,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a>* strus::AnalyzerObjectBuilderInterface::createDocumentAnalyzer </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>segmenterName</em> = <code>std::string()</code></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td>
+          <td class="paramname"><em>segmenter</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -143,11 +143,11 @@ Public Member Functions</h2></td></tr>
 <p>Creates a document analyzer object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">segmenterName</td><td>name of the segmenter used (if not specified, find the first one loaded or the default one) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">segmenter</td><td>the document segmenter to use (ownership passed) </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the document analyzer (with ownership returned) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the document analyzer (ownership returned) </dd></dl>
 
 </div>
 </div>
@@ -173,11 +173,11 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates a query analyzer object. </p>
-<dl class="section return"><dt>Returns</dt><dd>the query analyzer (with ownership returned) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the query analyzer (ownership returned) </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ae8a9c658335a9583c86d910193684d72"></a>
+<a class="anchor" id="af8bcc8a9fba1142d52a223ef77999a85"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -185,7 +185,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::AnalyzerObjectBuilderInterface::createSegmenter </td>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::AnalyzerObjectBuilderInterface::getSegmenter </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>segmenterName</em> = <code>std::string()</code></td><td>)</td>
@@ -206,7 +206,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the document segmenter (with ownership returned) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the document segmenter (ownership returned) </dd></dl>
 
 </div>
 </div>
@@ -243,7 +243,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 16 2016 16:15:36 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.8</span>
+   &#160;<span id="projectnumber">0.9</span>
    </div>
   </td>
  </tr>
@@ -82,15 +82,17 @@
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenizerFunctionInterface.html#af565b1e7870e6a3acbe61fe6c70815c7">   29</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenizerFunctionInterface.html#af565b1e7870e6a3acbe61fe6c70815c7">~TokenizerFunctionInterface</a>(){}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311">createInstance</a>( <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args, <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97">getDescription</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311">createInstance</a>(</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97">getDescription</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInterface.html">strus::TokenizerFunctionInterface</a></div><div class="ttdoc">Interface for a tokenizer function. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInterface.hpp:25</div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInterface_html_a52f3f173b899b1ae3d7439393452cd97"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97">strus::TokenizerFunctionInterface::getDescription</a></div><div class="ttdeci">virtual const char * getDescription() const =0</div><div class="ttdoc">Get a description of the function for user help. </div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInstanceInterface.html">strus::TokenizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for tokenization. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInstanceInterface.hpp:20</div></div>
@@ -101,7 +103,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 16 2016 16:15:36 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
