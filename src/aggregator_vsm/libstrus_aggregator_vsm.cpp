@@ -47,7 +47,7 @@ public:
 	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(0){}
 
-	virtual double evaluate( const analyzer::Document& document) const
+	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		try
 		{

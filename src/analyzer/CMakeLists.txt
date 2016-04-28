@@ -36,6 +36,15 @@ set_target_properties(
     VERSION ${STRUS_VERSION}
 )
 
+add_library( strus_analyzer_objbuild SHARED libstrus_analyzer_objbuild.cpp )
+target_link_libraries( strus_analyzer_objbuild strus_analyzer strus_segmenter_textwolf strus_textproc strus_private_utils )
+set_target_properties(
+    strus_analyzer_objbuild
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
 
 # ------------------------------
 # INSTALLATION
@@ -43,4 +52,6 @@ set_target_properties(
 install( TARGETS strus_analyzer
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 
+install( TARGETS strus_analyzer_objbuild
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

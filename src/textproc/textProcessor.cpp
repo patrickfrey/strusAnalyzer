@@ -385,9 +385,9 @@ public:
 	CountAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
-	virtual double evaluate( const analyzer::Document& document) const
+	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
-		double rt = 0.0;
+		unsigned int rt = 0.0;
 		std::vector<Term>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
@@ -447,7 +447,7 @@ public:
 	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
-	virtual double evaluate( const analyzer::Document& document) const
+	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		unsigned int rt = 0;
 		std::vector<Term>::const_iterator
@@ -509,7 +509,7 @@ public:
 	MinPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
 
-	virtual double evaluate( const analyzer::Document& document) const
+	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		unsigned int rt = 0;
 		std::vector<Term>::const_iterator

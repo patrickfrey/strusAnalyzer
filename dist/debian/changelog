@@ -1,3 +1,12 @@
+strusanalyzer (0.9.0-1) unstable; urgency=low
+  * changes in the object builder interfaces
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Thu, 28 Apr 2016 16:00:00 +0100
+
+strusanalyzer (0.8.2-1) unstable; urgency=low
+  * document is only considered to be empty if there are no features defined
+  * aggregator and metadata result is now a numeric variant
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 24 Apr 2016 14:00:00 +0100
+
 strusanalyzer (0.8.1-1) unstable; urgency=low
   * use numeric variant (now in strusBase) for docucment metadata values instead of double
  -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 15 Apr 2016 15:00:00 +0100

@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "analyzer/document.hpp"
+#include "strus/numericVariant.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
@@ -26,7 +27,7 @@ public:
 	/// \brief Aggregator function for document statistics
 	/// \param[in] document document to inspect
 	/// \return aggregated value
-	virtual double evaluate( const analyzer::Document& document) const=0;
+	virtual NumericVariant evaluate( const analyzer::Document& document) const=0;
 };
 
 }//namespace
