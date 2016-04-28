@@ -35,7 +35,10 @@ class AnalyzerObjectBuilder
 {
 public:
 	explicit AnalyzerObjectBuilder( ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_textproc(strus::createTextProcessor(errorhnd_)){}
+		:m_errorhnd(errorhnd_)
+		,m_textproc(strus::createTextProcessor(errorhnd_))
+		,m_segmenter(createSegmenter_textwolf(errorhnd_)){}
+
 	/// \brief Destructor
 	virtual ~AnalyzerObjectBuilder(){}
 
@@ -44,13 +47,13 @@ public:
 		return m_textproc.get();
 	}
 
-	virtual SegmenterInterface* createSegmenter( const std::string& segmenterName=std::string()) const
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const
 	{
 		try
 		{
 			if (segmenterName.empty() || utils::caseInsensitiveEquals( segmenterName, "textwolf"))
 			{
-				return createSegmenter_textwolf( m_errorhnd);
+				return m_segmenter.get();
 			}
 			else
 			{
@@ -60,7 +63,7 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error creating document segmenter: %s"), *m_errorhnd, 0);
 	}
 
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( SegmenterInterface* segmenter) const
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const
 	{
 		return strus::createDocumentAnalyzer( segmenter, m_errorhnd);
 	}
@@ -73,6 +76,7 @@ public:
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<TextProcessorInterface> m_textproc;
+	Reference<SegmenterInterface> m_segmenter;
 };
 
 

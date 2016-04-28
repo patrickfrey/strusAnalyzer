@@ -38,12 +38,12 @@ public:
 	/// \brief Creates a document segmenter object
 	/// \param[in] segmenterName name of the segmenter used (if not specified, find the first one loaded or the default one)
 	/// \return the document segmenter (ownership returned)
-	virtual SegmenterInterface* createSegmenter( const std::string& segmenterName=std::string()) const=0;
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const=0;
 
 	/// \brief Creates a document analyzer object
 	/// \param[in] segmenter the document segmenter to use (ownership passed)
 	/// \return the document analyzer (ownership returned)
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( SegmenterInterface* segmenter) const=0;
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)
