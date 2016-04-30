@@ -16,13 +16,13 @@
 namespace strus
 {
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 class SegmenterInstance
 	:public SegmenterInstanceInterface
 {
 public:
-	SegmenterInstance( AnalyzerErrorBufferInterface* errorhnd)
+	SegmenterInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 	virtual ~SegmenterInstance(){}
 
@@ -37,7 +37,7 @@ private:
 private:
 	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
 	Automaton m_automaton;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
@@ -45,7 +45,7 @@ class Segmenter
 	:public SegmenterInterface
 {
 public:
-	explicit Segmenter( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit Segmenter( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 	virtual ~Segmenter(){}
 
@@ -57,7 +57,7 @@ public:
 	virtual SegmenterInstanceInterface* createInstance() const;
 
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

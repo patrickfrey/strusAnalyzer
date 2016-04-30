@@ -17,11 +17,11 @@ namespace strus
 /// \brief Forward declaration
 class AggregatorFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the aggregator function type for the cosine measure normalization factor
 /// \return the aggregator function
-AggregatorFunctionInterface* createAggregator_sumSquareTf( AnalyzerErrorBufferInterface* errorhnd);
+AggregatorFunctionInterface* createAggregator_sumSquareTf( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

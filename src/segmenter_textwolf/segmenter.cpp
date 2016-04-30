@@ -8,7 +8,6 @@
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
 #include "strus/documentClass.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
 #include "textwolf/xmlpathautomatonparse.hpp"
 #include "textwolf/charset.hpp"
 #include "private/utils.hpp"

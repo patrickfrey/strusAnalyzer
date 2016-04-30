@@ -17,11 +17,11 @@ namespace strus
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the tokenizer type that creates the tokenization of punctuation elements in the input
 /// \return the tokenization function
-TokenizerFunctionInterface* createTokenizer_punctuation( AnalyzerErrorBufferInterface* errorhnd);
+TokenizerFunctionInterface* createTokenizer_punctuation( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

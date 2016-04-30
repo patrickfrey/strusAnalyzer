@@ -17,11 +17,11 @@ namespace strus
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the conversion of the input date as number (various units configurable base)
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_date2int( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_date2int( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

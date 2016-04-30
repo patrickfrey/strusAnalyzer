@@ -8,9 +8,9 @@
 #include "strus/lib/aggregator_vsm.hpp"
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/term.hpp"
-#include "private/dll_tags.hpp"
+#include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/utils.hpp"
@@ -44,10 +44,10 @@ class VsmAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, AnalyzerErrorBufferInterface* errorhnd)
+	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(0){}
 
-	virtual double evaluate( const analyzer::Document& document) const
+	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		try
 		{
@@ -82,14 +82,14 @@ private:
 	std::string m_featuretype;
 	AggregatorFunctionCall m_call;
 	const char* m_name;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 class VsmAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	explicit VsmAggregatorFunction( AggregatorFunctionCall call_, const char* name_, const char* description_, AnalyzerErrorBufferInterface* errorhnd_)
+	explicit VsmAggregatorFunction( AggregatorFunctionCall call_, const char* name_, const char* description_, ErrorBufferInterface* errorhnd_)
 		:m_description(description_),m_name(name_),m_call(call_),m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
@@ -120,11 +120,11 @@ private:
 	const char* m_description;
 	const char* m_name;
 	AggregatorFunctionCall m_call;
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 
-DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_sumSquareTf( AnalyzerErrorBufferInterface* errorhnd)
+DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_sumSquareTf( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

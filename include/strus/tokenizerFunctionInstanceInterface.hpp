@@ -26,7 +26,7 @@ public:
 	/// \brief Flag defined by tokenizer indicating that different segments defined by the tag hierarchy should be concatenated before tokenization
 	/// \return true, if the argument chunks should be passed as one concatenated string, else if no
 	/// \remark This flag is needed for context sensitive tokenization like for example for recognizing punctuation.
-	virtual bool concatBeforeTokenize() const					{return false;}
+	virtual bool concatBeforeTokenize() const=0;
 
 	/// \brief Create an instance (context for one document) for tokenization
 	/// \return the created tokenizer instance (with ownership)

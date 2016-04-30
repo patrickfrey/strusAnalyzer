@@ -9,7 +9,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -28,7 +28,7 @@ class PunctuationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	explicit PunctuationTokenizerFunction( AnalyzerErrorBufferInterface* errorhnd_)
+	explicit PunctuationTokenizerFunction( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
 
 	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -73,12 +73,12 @@ public:
 	}
 	
 private:
-	AnalyzerErrorBufferInterface* m_errorhnd;
+	ErrorBufferInterface* m_errorhnd;
 };
 
 static bool g_intl_initialized = false;
 
-TokenizerFunctionInterface* strus::punctuationTokenizer( AnalyzerErrorBufferInterface* errorhnd)
+TokenizerFunctionInterface* strus::punctuationTokenizer( ErrorBufferInterface* errorhnd)
 {
 	try
 	{

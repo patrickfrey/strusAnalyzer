@@ -17,11 +17,11 @@ namespace strus
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the stemming of the input with the snowball stemmer as result
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_snowball( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_snowball( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

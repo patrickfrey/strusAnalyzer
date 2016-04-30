@@ -46,18 +46,6 @@ int utils::toint( const std::string& val)
 	}
 }
 
-int utils::todouble( const std::string& val)
-{
-	try
-	{
-		return boost::lexical_cast<double>( val);
-	}
-	catch (const boost::bad_lexical_cast& err)
-	{
-		throw strus::runtime_error( _TXT( "failed to convert string '%s' to double precision floating point number: %s"), val.c_str(), err.what());
-	}
-}
-
 std::string utils::tostring( int val)
 {
 	try

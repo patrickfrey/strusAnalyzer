@@ -7,7 +7,6 @@
  */
 #include "punctuation_de.hpp"
 #include "punctuation_utils.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <iostream>

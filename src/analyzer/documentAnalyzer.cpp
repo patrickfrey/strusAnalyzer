@@ -12,7 +12,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/analyzerErrorBufferInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -29,7 +29,7 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, AnalyzerErrorBufferInterface* errorhnd)
+DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance()),m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
@@ -209,7 +209,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
-	
+
 	for (; ni != ne; ++ni)
 	{
 		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
@@ -267,7 +267,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::defineSubDocument: %s", *m_errorhnd, analyzer::Document());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::analyze: %s"), *m_errorhnd, analyzer::Document());
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
@@ -276,7 +276,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const Documen
 	{
 		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzer::createContext: %s", *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::createContext: %s"), *m_errorhnd, 0);
 }
 
 
@@ -328,13 +328,9 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 		si = m_analyzer->m_statistics.begin(), se = m_analyzer->m_statistics.end();
 	for (; si != se; ++si)
 	{
-		double value = si->statfunc()->evaluate( res);
+		NumericVariant value = si->statfunc()->evaluate( res);
 #ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add aggregated metadata " << si->name() << " " << value << std::endl;
-		if (value * value < std::numeric_limits<double>::epsilon())
-		{
-			value = si->statfunc()->evaluate( res);
-		}
+		std::cout << "add aggregated metadata " << si->name() << " " << value.tostring().c_str() << std::endl;
 #endif
 		res.setMetaData( si->name(), value);
 	}
@@ -352,9 +348,14 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		{
 			if (!tokens.empty())
 			{
-				double value = utils::todouble( feat.normalize( elem + tokens[0].strpos, tokens[0].strsize));
+				std::string valuestr = feat.normalize( elem + tokens[0].strpos, tokens[0].strsize);
+				NumericVariant value;
+				if (!value.initFromString( valuestr.c_str()))
+				{
+					throw strus::runtime_error(_TXT("cannot convert nromalized item to number (metadata element): %s"), valuestr.c_str());
+				}
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add metadata " << feat.m_config->name() << "=" << value << std::endl;
+				std::cout << "add metadata " << feat.m_config->name() << "=" << valuestr << std::endl;
 #endif
 				res.setMetaData( feat.m_config->name(), value);
 			}
@@ -466,7 +467,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, AnalyzerErrorBufferInterface* errorhnd)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, ErrorBufferInterface* errorhnd)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)
@@ -623,7 +624,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		mapPositions( doc);
 
 		// Map statistics, if defined
-		bool rt = (doc.searchIndexTerms().size() + doc.forwardIndexTerms().size() != 0);
+		bool rt = (doc.metadata().size() + doc.attributes().size() + doc.searchIndexTerms().size() + doc.forwardIndexTerms().size() != 0);
 		if (rt)
 		{
 			mapStatistics( doc);
@@ -638,6 +639,6 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( "error in DocumentAnalyzerContext::analyzeNext: %s", *m_errorhnd, false);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzerContext::analyzeNext: %s"), *m_errorhnd, false);
 }
 

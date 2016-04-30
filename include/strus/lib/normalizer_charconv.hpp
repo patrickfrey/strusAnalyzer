@@ -17,17 +17,17 @@ namespace strus
 /// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Get the normalizer that returns the lower case of the input as result
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_lowercase( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_lowercase( ErrorBufferInterface* errorhnd);
 /// \brief Get the normalizer that returns the upper case of the input as result
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_uppercase( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_uppercase( ErrorBufferInterface* errorhnd);
 /// \brief Get the normalizer that returns the conversion of diacritical characters to ascii of the input as result
 /// \return the normalization function
-NormalizerFunctionInterface* createNormalizer_convdia( AnalyzerErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_convdia( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

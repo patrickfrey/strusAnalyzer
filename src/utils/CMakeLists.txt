@@ -5,7 +5,9 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 include_directories(
 	"${Boost_INCLUDE_DIRS}"
-	"${PROJECT_SOURCE_DIR}/include" )
+	"${PROJECT_SOURCE_DIR}/include"
+	"${strusbase_INCLUDE_DIRS}"
+)
 link_directories(
 	"${Boost_LIBRARY_DIRS}"
 	"${PROJECT_SOURCE_DIR}/utils" )

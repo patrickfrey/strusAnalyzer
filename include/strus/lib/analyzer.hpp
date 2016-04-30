@@ -21,16 +21,16 @@ class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
-class AnalyzerErrorBufferInterface;
+class ErrorBufferInterface;
 
 /// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter segmenter type to be used by the created analyzer.
 /// \return the analyzer program (with ownership)
-DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, AnalyzerErrorBufferInterface* errorhnd);
+DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, ErrorBufferInterface* errorhnd);
 
 /// \brief Creates a parameterizable analyzer instance for analyzing queries
 /// \return the analyzer program (with ownership)
-QueryAnalyzerInterface* createQueryAnalyzer( AnalyzerErrorBufferInterface* errorhnd);
+QueryAnalyzerInterface* createQueryAnalyzer( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif
