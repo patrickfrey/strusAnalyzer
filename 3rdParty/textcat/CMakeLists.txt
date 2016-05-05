@@ -40,3 +40,12 @@ target_link_libraries( textcatcli strus_textcat )
 # ------------------------------
 install( TARGETS strus_textcat
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
+
+# ------------------------------
+# INSTALLATION
+# ------------------------------
+install( DIRECTORY langclass/LM
+           DESTINATION share/strus/textcat
+           FILES_MATCHING PATTERN "*.lm")
+install( FILES langclass/conf.txt
+           DESTINATION share/strus/textcat)

@@ -270,6 +270,8 @@ make test
 %{_libdir}/strus/libstrus_tokenizer_word.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_segmenter_textwolf.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -292,13 +294,15 @@ make test
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
-
+%{_datadir}/strus/textcat/conf.txt
+%{_datadir}/strus/textcat/LM/*.lm
 
 %files devel
 %defattr( -, root, root )
 %{_libdir}/strus/libstrus_stemmer.so
 %{_libdir}/strus/libstrus_tokenizer_word.so
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so
+%{_libdir}/strus/libstrus_textcat.so
 %{_libdir}/strus/libstrus_tokenizer_textcat.so
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
 %{_libdir}/strus/libstrus_analyzer.so

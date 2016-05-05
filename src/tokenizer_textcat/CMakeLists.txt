@@ -37,5 +37,3 @@ set_target_properties(
 # ------------------------------
 install( TARGETS strus_tokenizer_textcat
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
-
-
