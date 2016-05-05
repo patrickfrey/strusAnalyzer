@@ -12,6 +12,10 @@ using namespace std;
 
 int main( int argc, char *argv[] )
 {
+	if( argc != 3 ) {
+		cerr << "ERROR: expecting arguments <profile configuration> and <filename>" << endl;
+		return 1;
+	}
 	char *profileConfig = argv[1];
 	char *filename = argv[2];
 	ifstream f( filename, ios::binary | ios::in | ios::ate );
