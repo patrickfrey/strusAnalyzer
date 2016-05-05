@@ -21,7 +21,6 @@ extern "C" {
 using namespace strus;
 using namespace strus::analyzer;
 
-#include <iostream>
 #include <stdexcept>
 #include <unistd.h>
 #include <libgen.h>
@@ -47,7 +46,7 @@ public:
 		m_textcat = textcat_Init( config.c_str());
 		(void)chdir( oldDir);
 		if( !m_textcat) {
-			throw new std::runtime_error( "Cannot open textcat configuration");
+			throw std::runtime_error( "Cannot open textcat configuration");
 		}
 	}
 	
@@ -89,7 +88,6 @@ std::vector<Token> TextcatTokenizerFunctionContext::tokenize( const char* src, s
 		char *languages;
 
 		languages = textcat_Classify( m_textcat, const_cast<char *>( src ), srcsize );
-std::cout << "languages: " << languages << " (must: " << m_language << ")" << std::endl;		
 		if( strcmp( languages, _TEXTCAT_RESULT_UNKOWN ) == 0 ) {
 			m_errorhnd->report( _TXT("unknown languages seen in textcat in: %*s"), srcsize, src);
 		} else if( strcmp( languages, _TEXTCAT_RESULT_SHORT ) == 0 ) {
@@ -157,6 +155,11 @@ public:
 		if (args.size() == 0)
 		{
 			m_errorhnd->report( _TXT("name of textcat config file expected as first argument for the 'textcat' tokenizer"));
+			return 0;
+		}
+		if (args.size() == 1)
+		{
+			m_errorhnd->report( _TXT("filter language expected as second parameter of the textcat tokenizer"));
 			return 0;
 		}
 		if (args.size() > 2)
