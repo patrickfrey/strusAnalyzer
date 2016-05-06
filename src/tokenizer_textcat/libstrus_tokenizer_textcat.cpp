@@ -78,7 +78,15 @@ static textwolf::charset::UTF8::CharLengthTab g_charLengthTab;
 
 static inline const char* skipChar( const char* si)
 {
-	return si+g_charLengthTab[*si];
+	unsigned char charsize = g_charLengthTab[ *si];
+	if (!charsize)
+	{
+		throw strus::runtime_error(_TXT( "illegal UTF-8 character in input: %u"), (unsigned int)(unsigned char)*si);
+	}
+	else
+	{
+		return si+charsize;
+	}
 }
 
 const char* TextcatTokenizerFunctionContext::skipToToken( char const* si, const char* se) const
