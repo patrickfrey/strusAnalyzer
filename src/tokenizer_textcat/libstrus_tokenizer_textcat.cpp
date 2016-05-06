@@ -30,6 +30,12 @@ using namespace strus::analyzer;
 
 #include "textwolf/charset_utf8.hpp"
 
+#undef STRUS_LOWLEVEL_DEBUG
+
+#ifdef STRUS_LOWLEVEL_DEBUG
+#include <iostream>
+#endif
+
 class TextcatTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
@@ -38,6 +44,7 @@ public:
 		:m_language(language), m_errorhnd(errorhnd), m_textcat(0)
 	{
 		char* oldDir = new char[PATH_MAX];
+		(void)getcwd( oldDir, PATH_MAX );
 		char* configCopy = strdup( config.c_str());
 		char* dir = dirname( configCopy);
 		(void)chdir( dir);
@@ -45,6 +52,7 @@ public:
 		
 		m_textcat = textcat_Init( config.c_str());
 		(void)chdir( oldDir);
+		delete[] oldDir;
 		if( !m_textcat) {
 			throw std::runtime_error( "Cannot open textcat configuration");
 		}
@@ -89,11 +97,24 @@ std::vector<Token> TextcatTokenizerFunctionContext::tokenize( const char* src, s
 
 		languages = textcat_Classify( m_textcat, const_cast<char *>( src ), srcsize );
 		if( strcmp( languages, _TEXTCAT_RESULT_UNKOWN ) == 0 ) {
-			m_errorhnd->report( _TXT("unknown languages seen in textcat in: %*s"), srcsize, src);
+			// unknown languages seen, we assume some other rule catches
+			// the non-recognizable things in the text and adds them somehow
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "textcat: unknown language" << std::endl;
+#endif
+			return rt;
 		} else if( strcmp( languages, _TEXTCAT_RESULT_SHORT ) == 0 ) {
-			m_errorhnd->report( _TXT("text too short in textcat in: %*s"), srcsize, src);
-		} else if( strstr( m_language.c_str( ), languages ) == NULL ) {
+			// text too short in textcat
+			// TODO: can I issue warnings in error handler?
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "textcat: short text" << std::endl;
+#endif
+		} else if( strstr( languages, m_language.c_str( ) ) == NULL ) {
 			// not the language we are lookup for, so do not emit tokens
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "textcat: detected languages don't match '" << m_language << "'"
+				<< "(" << languages << ")" << std::endl;
+#endif
 			return rt;
 		}
 
@@ -107,7 +128,14 @@ std::vector<Token> TextcatTokenizerFunctionContext::tokenize( const char* src, s
 			{
 				si = skipChar( si);
 			}
-			rt.push_back( Token( start-src, start-src, si-start));
+			Token token( start-src, start-src, si-start);
+			rt.push_back( token);
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "textcat: " << m_language << " "
+				<< token.strpos << " " << token.strsize << " "
+				<< std::string( start, si-start)
+				<< std::endl;
+#endif
 		}
 		
 		return rt;
