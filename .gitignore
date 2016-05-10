@@ -62,5 +62,10 @@ src/strusQuery/strusQuery
 # Test Programs
 tests/randomfeed/src/testRandomFeed
 tests/segmenter_textwolf/src/testSegmenterTextwolf
-tests/segmenter_cjson/src/testSegmenterCjson
+tests/segmenter_cjson/src/testSegmenterCJson
+
+# Test Output
+tests/segmenter_textwolf/output.txt
+tests/segmenter_cjson/output.txt
+
 

@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 set(source_files
 	segmenter.cpp
+	segmenterContext.cpp
 	libstrus_segmenter_cjson.cpp
 )
 
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_cjson SHARED ${source_files} )
-target_link_libraries( strus_segmenter_cjson strus_private_utils cjson )
+target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strus_private_utils cjson )
 set_target_properties(
     strus_segmenter_cjson
     PROPERTIES

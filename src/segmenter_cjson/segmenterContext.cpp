@@ -16,6 +16,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <setjmp.h>
+#define STRUS_LOWLEVEL_DEBUG
+#ifdef STRUS_LOWLEVEL_DEBUG
+#include <iostream>
+#endif
 
 using namespace strus;
 
@@ -23,7 +27,7 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 {
 	try
 	{
-		m_content.append( chunk. chunksize);
+		m_content.append( chunk, chunksize);
 		m_eof |= eof;
 	}
 	CATCH_ERROR_MAP( _TXT("error in put input of JSON segmenter: %s"), *m_errorhnd);
@@ -83,8 +87,8 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 		case cJSON_NULL:
 			if (nd->string && nd->string[0] != '-' && nd->string[0] != '#')
 			{
-				tiar.push_back( TextwolfItem( TX::OpenTag, nd->string));
-				tiar.push_back( TextwolfItem( TX::CloseTagIm));
+				itemar.push_back( TextwolfItem( TX::OpenTag, nd->string));
+				itemar.push_back( TextwolfItem( TX::CloseTagIm));
 			}
 			break;
 		case cJSON_String:
@@ -104,9 +108,9 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 			{
 				for (;chnd; chnd = chnd->next)
 				{
-					tiar.push_back( TextwolfItem( TX::OpenTag, nd->string));
+					itemar.push_back( TextwolfItem( TX::OpenTag, nd->string));
 					getTextwolfItems( itemar, chnd);
-					tiar.push_back( TextwolfItem( TX::CloseTag, nd->string));
+					itemar.push_back( TextwolfItem( TX::CloseTag, nd->string));
 				}
 			}
 			else
@@ -116,28 +120,33 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 				for (;chnd; chnd = chnd->next)
 				{
 					snprintf( idxstr, sizeof( idxstr), "%u", idx);
-					tiar.push_back( TextwolfItem( TX::OpenTag, idxstr));
+					itemar.push_back( TextwolfItem( TX::OpenTag, idxstr));
 					getTextwolfItems( itemar, chnd);
-					tiar.push_back( TextwolfItem( TX::CloseTag, idxstr));
+					itemar.push_back( TextwolfItem( TX::CloseTag, idxstr));
 				}
 			}
+			break;
 		}
 		case cJSON_Object:
 		{
 			cJSON const* chnd = nd->child;
 			if (nd->string)
 			{
-				tiar.push_back( TextwolfItem( TX::OpenTag, nd->string));
+				itemar.push_back( TextwolfItem( TX::OpenTag, nd->string));
 				for (;chnd; chnd = chnd->next)
 				{
 					getTextwolfItems( itemar, chnd);
 				}
-				tiar.push_back( TextwolfItem( TX::CloseTag, nd->string));
+				itemar.push_back( TextwolfItem( TX::CloseTag, nd->string));
 			}
 			else
 			{
-				getTextwolfItems( itemar, chnd);
+				for (;chnd; chnd = chnd->next)
+				{
+					getTextwolfItems( itemar, chnd);
+				}
 			}
+			break;
 		}
 		default:
 			throw std::runtime_error( "internal: memory corruption found in JSON structure");
@@ -170,7 +179,7 @@ static cJSON* parseJsonTree( const  std::string& content)
 	if (!tree)
 	{
 		if (!ctx.errorptr) throw std::bad_alloc();
-		std::pair<std::size_t,std::size_t> li = lineInfo( m_content.begin(), ctx.errorptr);
+		std::pair<std::size_t,std::size_t> li = lineInfo( content.c_str(), ctx.errorptr);
 
 		std::string err( ctx.errorptr);
 		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), li.first, li.second, err.c_str());
@@ -178,21 +187,8 @@ static cJSON* parseJsonTree( const  std::string& content)
 	return tree;
 }
 
-static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<SegmenterContext::Item>& resar, const std::string& content)
+static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<SegmenterContext::Item>& resar, const cJSON* tree)
 {
-	struct TreeScope
-	{
-		cJSON* tree;
-		TreeScope( cJSON* tree_)
-			:tree(tree_){}
-		~TreeScope()
-		{
-			cJSON_Delete( tree);
-		}
-	};
-
-	cJSON* tree = parseJsonTree( content);
-	TreeScope td( tree);
 	if (!tree->string && !tree->valuestring && !tree->next && tree->type == cJSON_Object)
 	{
 		tree = tree->child;
@@ -200,15 +196,18 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 	XPathAutomatonContext xpathselect( automaton->createContext());
 	std::vector<TextwolfItem> itemar;
 	getTextwolfItems( itemar, tree);
-
 	SegmenterPosition pos = 0;
 	std::vector<TextwolfItem>::const_iterator ti = itemar.begin(), te = itemar.end();
 	for (; ti != te; ++ti)
 	{
+#ifdef STRUS_LOWLEVEL_DEBUG
+		const char* elemtypenam = textwolf::XMLScannerBase::getElementTypeName(ti->type);
+		std::cout << "input " << elemtypenam << " " << ti->value << std::endl;
+#endif
 		std::size_t valuesize = ti->value?std::strlen(ti->value):0;
 		xpathselect.putElement( ti->type, ti->value, valuesize);
 		int segid;
-		while (xpathselect.getNext( &segid))
+		while (xpathselect.getNext( segid))
 		{
 			resar.push_back( SegmenterContext::Item( segid, pos, ti->value, valuesize));
 		}
@@ -224,23 +223,27 @@ bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& se
 		if (m_itemidx < m_itemar.size())
 		{
 			const Item& curitem = m_itemar[ m_itemidx];
-			item.id = curitem.id;
-			item.pos = curitem.pos;
-			item.segment = curitem.segment;
-			item.segmentsize = curitem.segmentsize;
+			id = curitem.id;
+			pos = curitem.pos;
+			segment = curitem.segment;
+			segmentsize = curitem.segmentsize;
 			++m_itemidx;
 			return true;
 		}
 		else if (m_itemidx == m_itemar.size())
 		{
-			if (m_itemar.size() == 0)
+			if (!m_tree)
 			{
-				getSegmenterItems( m_automaton, m_itemar, m_content);
-				if (m_itemar.empty())
+				m_tree = parseJsonTree( m_content);
+				getSegmenterItems( m_automaton, m_itemar, m_tree);
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "got " << m_itemar.size() << " items" << std::endl;
+				std::vector<Item>::const_iterator ti = m_itemar.begin(), te = m_itemar.end();
+				for (; ti != te; ++ti)
 				{
-					m_itemidx = 1;
-					return false;
+					std::cout << "item " << ti->id << " at " << ti->pos << " " << std::string( ti->segment, ti->segmentsize) << std::endl;
 				}
+#endif
 				goto AGAIN;
 			}
 			return false;

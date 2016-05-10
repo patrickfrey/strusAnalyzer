@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Exported functions of the strus segmenter library
-#include "strus/lib/segmenter_textwolf.hpp"
+#include "strus/lib/segmenter_cjson.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/segmenterInterface.hpp"
@@ -21,14 +21,14 @@
 #include <iostream>
 #include <sstream>
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
 	std::cerr << "usage: " << argv[0] << " <rundir>" << std::endl;
-	std::cerr << "<rundir> = directory with the test files rules.txt input.xml expected.txt" << std::endl;
+	std::cerr << "<rundir> = directory with the test files rules.txt input.json expected.txt" << std::endl;
 }
 
 static bool isSpace( char ch)
@@ -142,13 +142,13 @@ int main( int argc, const char* argv[])
 		char rulefile[ 256];
 		snprintf( rulefile, sizeof(rulefile), "%s%c%s", argv[1], strus::dirSeparator(), "rules.txt");
 		char inputfile[ 256];
-		snprintf( inputfile, sizeof(inputfile), "%s%c%s", argv[1], strus::dirSeparator(), "input.xml");
+		snprintf( inputfile, sizeof(inputfile), "%s%c%s", argv[1], strus::dirSeparator(), "input.json");
 		char expectedfile[ 256];
 		snprintf( expectedfile, sizeof(expectedfile), "%s%c%s", argv[1], strus::dirSeparator(), "expected.txt");
 		char outputfile[ 256];
 		snprintf( outputfile, sizeof(outputfile), "%s%c%s", argv[1], strus::dirSeparator(), "output.txt");
 
-		std::auto_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
+		std::auto_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_cjson( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
 		std::auto_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
 		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
@@ -248,5 +248,4 @@ int main( int argc, const char* argv[])
 	}
 	return -1;
 }
-
 
