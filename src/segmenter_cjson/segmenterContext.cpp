@@ -16,7 +16,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <setjmp.h>
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 #ifdef STRUS_LOWLEVEL_DEBUG
 #include <iostream>
 #endif
