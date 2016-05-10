@@ -1,3 +1,7 @@
+strusanalyzer (0.9.1-1) unstable; urgency=low
+  * added support for JSON (segmenter and standard document detection)
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 10 May 2016 21:40:00 +0100
+
 strusanalyzer (0.9.0-1) unstable; urgency=low
   * changes in the object builder interfaces
  -- Patrick Frey <patrickpfrey@yahoo.com>  Thu, 28 Apr 2016 16:00:00 +0100
