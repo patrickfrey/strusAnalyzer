@@ -10,7 +10,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
-#include "textwolf/xmlpathselect.hpp"
+#include "private/xpathAutomaton.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include <cstdlib>
@@ -24,21 +24,19 @@ class SegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	typedef textwolf::XMLPathSelectAutomaton<> Automaton;
-
-public:
-	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const Automaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
+	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_automaton(automaton_)
+		,m_xpathselect(automaton_->createContext())
 		,m_scanner(charset_,textwolf::SrcIterator())
-		,m_pathselect(automaton_)
 		,m_chunk(0)
 		,m_chunksize(0)
 		,m_chunkbufsize(0)
 		,m_eof(false)
 		,m_got_eom(true)
+		,m_chunkbufitr(0)
+		,m_chunkbufeof(false)
 		,m_errorhnd(errorhnd)
 	{
-		m_selitr = m_selend = m_pathselect.end();
 	}
 
 	virtual ~SegmenterContext()
@@ -55,7 +53,15 @@ public:
 		}
 		if (!m_got_eom)
 		{
-			m_errorhnd->report( "feeded chunk to segmenter while previous chunk is still processed");
+			try
+			{
+				m_chunkbuf.push_back( std::string( chunk, chunksize));
+				m_chunkbufeof = eof;
+			}
+			catch (const std::bad_alloc&)
+			{
+				m_errorhnd->report( "out of memory when buffering chunks for 'textwolf' segmenter");
+			}
 			return;
 		}
 		std::size_t chunkallocsize = chunksize + 4;
@@ -91,12 +97,21 @@ public:
 
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 	{
+	AGAIN:
 		if (setjmp(m_eom) != 0)
 		{
 			if (m_eof)
 			{
 				m_errorhnd->report( "unexpected end of input");
 				return false;
+			}
+			else if (m_chunkbufitr < m_chunkbuf.size())
+			{
+				m_got_eom = true;
+				bool ceof = m_chunkbufeof && (m_chunkbufitr+1) == m_chunkbuf.size();
+				putInput( m_chunkbuf[ m_chunkbufitr].c_str(), m_chunkbuf[ m_chunkbufitr].size(), ceof);
+				++m_chunkbufitr;
+				goto AGAIN;
 			}
 			else
 			{
@@ -105,7 +120,7 @@ public:
 			}
 		}
 		if (m_itr == m_end) return false;
-		while (m_selitr == m_selend)
+		while (!m_xpathselect.getNext( id))
 		{
 			++m_itr;
 			if (m_itr == m_end) return false;
@@ -122,11 +137,8 @@ public:
 			{
 				return false;
 			}
-			m_selitr = m_pathselect.push( m_itr->type(), m_itr->content(), m_itr->size());
-			m_selend = m_pathselect.end();
+			m_xpathselect.putElement( m_itr->type(), m_itr->content(), m_itr->size());
 		}
-		id = *m_selitr;
-		++m_selitr;
 		pos = m_scanner.getIterator().position() - m_itr->size();
 		segment = m_itr->content();
 		segmentsize = m_itr->size();
@@ -134,9 +146,6 @@ public:
 	}
 
 private:
-	typedef textwolf::XMLPathSelect<
-			textwolf::charset::UTF8
-		> XMLPathSelect;
 	typedef textwolf::XMLScanner<
 			textwolf::SrcIterator,
 			CharsetEncoding,
@@ -144,20 +153,21 @@ private:
 			std::string
 		> XMLScanner;
 
-	const Automaton* m_automaton;
+	const XPathAutomaton* m_automaton;
+	XPathAutomatonContext m_xpathselect;
 	textwolf::SrcIterator m_srciter;
 	XMLScanner m_scanner;
-	XMLPathSelect m_pathselect;
 	typename XMLScanner::iterator m_itr;
 	typename XMLScanner::iterator m_end;
-	XMLPathSelect::iterator m_selitr;
-	XMLPathSelect::iterator m_selend;
 	char* m_chunk;
 	std::size_t m_chunksize;
 	std::size_t m_chunkbufsize;
 	bool m_eof;
 	bool m_got_eom;
 	jmp_buf m_eom;
+	std::vector<std::string> m_chunkbuf;
+	std::size_t m_chunkbufitr;
+	bool m_chunkbufeof;
 	ErrorBufferInterface* m_errorhnd;
 };
 

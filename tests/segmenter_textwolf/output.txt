@@ -1,0 +1,6 @@
+[3] Shipping
+[2] Hugo Largo
+[1] München
+[3] Billing
+[2] Konrad Toenz
+[1] Zürich

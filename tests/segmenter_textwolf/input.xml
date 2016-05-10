@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Order Number="12345" Date="2016/02/03">
+  <Address Type="Shipping">
+    <Name>Hugo Largo</Name>
+    <Street>Heinrichstr. 7</Street>
+    <City>München</City>
+    <Zip>80331</Zip>
+    <Country>Deutschland</Country>
+  </Address>
+  <Address Type="Billing">
+    <Name>Konrad Toenz</Name>
+    <Street>Bahnhofstr. 7</Street>
+    <City>Zürich</City>
+    <Zip>8008</Zip>
+    <Country>Schweiz</Country>
+  </Address>
+  <DeliveryNotes>Bitte das Packet im Treppenhaus abstellen.</DeliveryNotes>
+  <Items>
+    <Item Number="XY-123.123">
+      <ProductName>Staubsauger</ProductName>
+      <Quantity>1</Quantity>
+      <Price>312.70</Price>
+      <Comment>Gebraucht</Comment>
+    </Item>
+    <Item PartNumber="XY-456.456">
+      <ProductName>Verlängerungskabel</ProductName>
+      <Quantity>2</Quantity>
+      <Price>9.70</Price>
+    </Item>
+  </Items>
+</Order>

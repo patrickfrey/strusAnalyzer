@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+
+# --------------------------------------
+# SOURCES AND INCLUDES
+# --------------------------------------
+set(source_files
+	xpathAutomaton.cpp
+)
+
+include_directories(  
+	"${Intl_INCLUDE_DIRS}"
+	"${Boost_INCLUDE_DIRS}"
+	"${PROJECT_SOURCE_DIR}/include" 
+	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${strusbase_INCLUDE_DIRS}"
+)
+link_directories(
+)
+
+# -------------------------------------------
+# LIBRARY
+# -------------------------------------------
+add_library( strus_segmenter_utils STATIC ${source_files} )
+target_link_libraries( strus_segmenter_utils strus_private_utils )
+
+

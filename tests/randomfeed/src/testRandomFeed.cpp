@@ -354,7 +354,7 @@ int main( int argc, const char* argv[])
 	}
 	if (g_errorhnd)
 	{
-		free( g_errorhnd);
+		delete g_errorhnd;
 	}
 	return -1;
 }
