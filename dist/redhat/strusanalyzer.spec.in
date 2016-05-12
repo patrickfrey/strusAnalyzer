@@ -296,6 +296,9 @@ make test
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%dir %{_datadir}/strus
+%dir %{_datadir}/strus/textcat
+%dir %{_datadir}/strus/textcat/LM
 %{_datadir}/strus/textcat/conf.txt
 %{_datadir}/strus/textcat/LM/*.lm
 
