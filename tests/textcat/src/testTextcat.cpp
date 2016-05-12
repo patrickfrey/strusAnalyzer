@@ -21,6 +21,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <stdexcept>
 
 #define STRUS_LOWLEVEL_DEBUG
 
