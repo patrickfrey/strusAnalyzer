@@ -6,6 +6,7 @@ Table of Contents
 
   boost
   textwolf
+  cJSON
   snowball
   textcat
 
@@ -18,8 +19,13 @@ textwolf
 --------
    LGPL
 
-snowball
+cJSON
 --------
+   MIT
+   Copyright (c) 2009 Dave Gamble
+
+snowball
+-----------
    BSD License
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"

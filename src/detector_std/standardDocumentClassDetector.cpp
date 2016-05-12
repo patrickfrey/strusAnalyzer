@@ -58,6 +58,32 @@ static void initDocumentClass( DocumentClass& dclass, const char* mimeType, cons
 }
 
 
+static bool isDocumentJson( char const* ci, const char* ce)
+{
+	static const char* tokchr = "[]{}E-+0123456789.";
+	if (ci != ce && *ci == '{')
+	{
+		for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+		if (ci != ce && *ci == '"')
+		{
+			for (++ci; ci != ce && (unsigned char)*ci != '"'; ++ci){}
+			if (ci != ce)
+			{
+				for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+				if (ci != ce && *ci == ':')
+				{
+					for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+					if (ci != ce && std::strchr( tokchr, *ci) != 0)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	try
@@ -99,6 +125,15 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 					}
 					else
 					{
+						// Try to find out if its JSON:
+						for (; ci != ce && (unsigned char)*ci < 32; ++ci){}
+						if (ci != ce && *ci == '{' && isDocumentJson(ci,ce))
+						{
+							initDocumentClass( dclass, "application/json", "UTF-8", 0);
+							return true;
+						}
+
+						// Give up:
 						return false;
 					}
 					break;

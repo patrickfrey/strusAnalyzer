@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Exported functions of the strus segmenter library
-#include "strus/lib/segmenter_textwolf.hpp"
+/// \brief Exported functions of the strus JSON segmenter library
+#include "strus/lib/segmenter_cjson.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
 #include "strus/base/dll_tags.hpp"
@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC SegmenterInterface* strus::createSegmenter_cjson( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -28,7 +28,7 @@ DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf( ErrorBufferInter
 		}
 		return new Segmenter( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' segmenter: %s"), "textwolf", *errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' segmenter: %s"), "cjson", *errorhnd, 0);
 }
 
 

@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-#ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
-#define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
+#ifndef _STRUS_SEGMENTER_CJSON_HPP_INCLUDED
+#define _STRUS_SEGMENTER_CJSON_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/documentClass.hpp"
@@ -50,7 +50,7 @@ public:
 
 	virtual const char* mimeType() const
 	{
-		return "text/xml";
+		return "application/json";
 	}
 
 	virtual SegmenterInstanceInterface* createInstance() const;

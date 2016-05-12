@@ -276,6 +276,8 @@ make test
 %{_libdir}/strus/libstrus_tokenizer_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_segmenter_textwolf.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_segmenter_textwolf.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_segmenter_cjson.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_segmenter_cjson.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -305,6 +307,7 @@ make test
 %{_libdir}/strus/libstrus_textcat.so
 %{_libdir}/strus/libstrus_tokenizer_textcat.so
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
+%{_libdir}/strus/libstrus_segmenter_cjson.so
 %{_libdir}/strus/libstrus_analyzer.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
@@ -322,6 +325,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Tue May 10 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.9.1-0.1
+- added support for JSON (segmenter and standard document detection)
+
 * Thu Apr 28 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.9.0-0.1
 - changes in the object builder interfaces
 
