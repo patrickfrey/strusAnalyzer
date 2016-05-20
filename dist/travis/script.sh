@@ -26,7 +26,7 @@ case $OS in
 		;;
 esac
 
-DEPS="strusBase strus"
+DEPS="strusBase"
 
 # build pre-requisites
 for i in $DEPS; do
