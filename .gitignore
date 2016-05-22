@@ -70,3 +70,5 @@ tests/textcat/src/testTextcat
 # Test Output
 tests/segmenter_textwolf/output.txt
 tests/segmenter_cjson/output.txt
+
+.travis.yml
