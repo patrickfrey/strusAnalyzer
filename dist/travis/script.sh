@@ -4,6 +4,8 @@ set -e
 
 OS=$(uname -s)
 
+PROJECT=strusAnalyzer
+
 # set up environment
 case $OS in
 	Linux)
@@ -26,11 +28,13 @@ case $OS in
 		;;
 esac
 
-DEPS="strusBase strus"
-
 # build pre-requisites
+DEPS="strusBase"
+
+GITURL=`git config remote.origin.url`
+cd ..
 for i in $DEPS; do
-	git clone `git config remote.origin.url | sed "s@/strus\.@/$i.@g"` $i
+	git clone `echo $GITURL | sed "s@/$PROJECT\.@/$i.@g"` $i
 	cd $i
 	git checkout travis
 	case $OS in
@@ -78,6 +82,7 @@ for i in $DEPS; do
 	esac
 	cd ..
 done
+cd $PROJECT
 
 # build the package itself
 case $OS in
