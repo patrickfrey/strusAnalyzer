@@ -396,7 +396,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					{
 						analyzer::Term term(
 							feat.m_config->name(), vi,
-							rel_position + (samePosition?ts->docpos:ti->docpos));
+							rel_position + (samePosition?ts->ordpos:ti->ordpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -407,7 +407,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				{
 					analyzer::Term term(
 						feat.m_config->name(), termval,
-						rel_position + (samePosition?ts->docpos:ti->docpos));
+						rel_position + (samePosition?ts->ordpos:ti->ordpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
 					std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -425,7 +425,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				analyzer::Term term(
 					feat.m_config->name(),
 					feat.normalize( elem + ti->strpos, ti->strsize),
-					rel_position + (samePosition?ts->docpos:ti->docpos));
+					rel_position + (samePosition?ts->ordpos:ti->ordpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
