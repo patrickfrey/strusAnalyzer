@@ -10,6 +10,7 @@
 #include "strus/lib/normalizer_dictmap.hpp"
 #include "strus/lib/normalizer_charconv.hpp"
 #include "strus/lib/normalizer_dateconv.hpp"
+#include "strus/lib/normalizer_ngram.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/aggregator_vsm.hpp"
@@ -68,6 +69,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "date2int", nrm);
+	if (0==(nrm = createNormalizer_ngram( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "ngram", nrm);
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

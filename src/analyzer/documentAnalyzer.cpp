@@ -386,14 +386,33 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
-				analyzer::Term term(
-					feat.m_config->name(),
-					feat.normalize( elem + ti->strpos, ti->strsize),
-					rel_position + (samePosition?ts->docpos:ti->docpos));
+				std::string termval( feat.normalize( elem + ti->strpos, ti->strsize));
+				if (termval.size() && termval[0] == '\0')
+				{
+					// ... handle normalizers with multiple results
+					char const* vi = termval.c_str();
+					char const* ve = vi + termval.size();
+					for (++vi; vi != ve; vi = std::strchr( vi, '\0'))
+					{
+						analyzer::Term term(
+							feat.m_config->name(), vi,
+							rel_position + (samePosition?ts->docpos:ti->docpos));
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+						std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
-				m_searchTerms.push_back( term);
+						m_searchTerms.push_back( term);
+					}
+				}
+				else
+				{
+					analyzer::Term term(
+						feat.m_config->name(), termval,
+						rel_position + (samePosition?ts->docpos:ti->docpos));
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+#endif
+					m_searchTerms.push_back( term);
+				}
 			}
 			break;
 		}
