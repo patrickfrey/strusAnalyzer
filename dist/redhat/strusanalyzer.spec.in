@@ -284,6 +284,8 @@ make test
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_normalizer_ngram.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_normalizer_ngram.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_textproc.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_textproc.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_snowball.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -314,6 +316,7 @@ make test
 %{_libdir}/strus/libstrus_analyzer.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
+%{_libdir}/strus/libstrus_normalizer_ngram.so
 %{_libdir}/strus/libstrus_textproc.so
 %{_libdir}/strus/libstrus_normalizer_snowball.so
 %{_libdir}/strus/libstrus_detector_std.so
