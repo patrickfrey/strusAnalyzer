@@ -44,12 +44,21 @@ public:
 			boost::match_results<char const*> what;
 			char const* si = src;
 			char const* se = src+srcsize;
-			while (boost::regex_search( si, se, what, m_config.expression, boost::match_posix))
+			while (boost::regex_search(
+				si, se, what, m_config.expression, boost::match_posix))
 			{
 				std::size_t len = what.length();
 				std::size_t pos = what.position();
-				rt.push_back( analyzer::Token( pos, pos, len));
-				si += pos + len;
+				std::size_t abspos = pos + (si - src);
+				rt.push_back( analyzer::Token( abspos, abspos, len));
+				if (pos + len == 0)
+				{
+					++si;
+				}
+				else
+				{
+					si += pos + len;
+				}
 			}
 			return rt;
 		}

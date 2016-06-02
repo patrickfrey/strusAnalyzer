@@ -123,7 +123,7 @@ public:
 		{
 			return boost::regex_replace(
 				std::string( src, srcsize), m_config.expression, m_config.output,
-				boost::match_posix | boost::match_partial);
+				boost::match_posix);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" normalizer function: %s"), *m_errorhnd, std::string());
 	}
