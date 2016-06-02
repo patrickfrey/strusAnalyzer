@@ -44,8 +44,10 @@ public:
 			boost::match_results<char const*> what;
 			char const* si = src;
 			char const* se = src+srcsize;
-			while (boost::regex_search(
-				si, se, what, m_config.expression, boost::match_posix))
+			while (si < se
+				&& boost::regex_search(
+					si, se, what, m_config.expression,
+					boost::match_posix))
 			{
 				std::size_t len = what.length();
 				std::size_t pos = what.position();

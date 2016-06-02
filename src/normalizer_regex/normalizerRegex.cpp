@@ -105,7 +105,11 @@ struct RegexConfiguration
 		output = boost::bind(&RegexOutputFormatter::print, &formatter, _1);
 	}
 	RegexConfiguration( const RegexConfiguration& o)
-		:expression(o.expression){}
+		:expression(o.expression)
+		,formatter(o.formatter)
+	{
+		output = boost::bind(&RegexOutputFormatter::print, &formatter, _1);
+	}
 };
 
 class RegexNormalizerFunctionContext
