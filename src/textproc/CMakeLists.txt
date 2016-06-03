@@ -47,11 +47,8 @@ target_link_libraries(
 	strus_normalizer_regex
 	strus_tokenizer_punctuation
 	strus_tokenizer_word
-<<<<<<< HEAD
-	strus_tokenizer_textcat
-=======
 	strus_tokenizer_regex
->>>>>>> master
+	strus_tokenizer_textcat
 	strus_aggregator_vsm
 	strus_private_utils )
 
