@@ -11,6 +11,7 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
+#include "strus/lib/segmenter_cjson.hpp"
 #include "strus/reference.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
@@ -37,7 +38,9 @@ public:
 	explicit AnalyzerObjectBuilder( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
 		,m_textproc(strus::createTextProcessor(errorhnd_))
-		,m_segmenter(createSegmenter_textwolf(errorhnd_)){}
+		,m_segmenter_textwolf(createSegmenter_textwolf(errorhnd_))
+		,m_segmenter_cjson(createSegmenter_cjson(errorhnd_))
+	{}
 
 	/// \brief Destructor
 	virtual ~AnalyzerObjectBuilder(){}
@@ -53,7 +56,11 @@ public:
 		{
 			if (segmenterName.empty() || utils::caseInsensitiveEquals( segmenterName, "textwolf"))
 			{
-				return m_segmenter.get();
+				return m_segmenter_textwolf.get();
+			}
+			else if (utils::caseInsensitiveEquals( segmenterName, "cjson"))
+			{
+				return m_segmenter_cjson.get();
 			}
 			else
 			{
@@ -76,7 +83,8 @@ public:
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<TextProcessorInterface> m_textproc;
-	Reference<SegmenterInterface> m_segmenter;
+	Reference<SegmenterInterface> m_segmenter_textwolf;
+	Reference<SegmenterInterface> m_segmenter_cjson;
 };
 
 
