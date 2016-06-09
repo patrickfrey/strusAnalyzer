@@ -17,7 +17,7 @@ link_directories(
 	"${strusbase_LIBRARY_DIRS}"
 )
 
-add_executable( testTextcat testTextcat.cpp)
-target_link_libraries( testTextcat strus_error strus_tokenizer_textcat strus_textproc strus_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+add_executable( testTokenizerTextcat testTokenizerTextcat.cpp)
+target_link_libraries( testTokenizerTextcat strus_error strus_tokenizer_textcat strus_textproc strus_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 
