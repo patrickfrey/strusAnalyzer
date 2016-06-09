@@ -125,6 +125,12 @@ int main( int argc, const char* argv[])
 		}
 
 		delete g_errorhnd;
+		
+		// we expect all tokens to be of the given language
+		if (result.size() == 0) {
+			return 1;
+		}
+		
 		return 0;
 	}
 	catch (const std::bad_alloc&)
