@@ -1,3 +1,8 @@
+strusAnalyzer (0.9.2)
+  * added normalizer and tokenizer for regex and normalizer for ngram
+  * renamed Token::docpos to Token::ordpos (for ordinal position)
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Thu, 9 Jun 2016 14:45:00 +0100
+
 strusAnalyzer (0.9.1)
   * added support for JSON (segmenter and standard document detection)
  -- Patrick Frey <patrickpfrey@yahoo.com>  Tue, 10 May 2016 21:40:00 +0100
