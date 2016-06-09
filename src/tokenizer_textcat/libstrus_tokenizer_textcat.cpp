@@ -40,30 +40,9 @@ class TextcatTokenizerFunctionContext
 	:public TokenizerFunctionContextInterface
 {
 public:
-	TextcatTokenizerFunctionContext( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
-		:m_language(language), m_errorhnd(errorhnd), m_textcat(0)
-	{
-		char* oldDir = new char[PATH_MAX];
-		(void)getcwd( oldDir, PATH_MAX );
-		char* configCopy = strdup( config.c_str());
-		char* dir = dirname( configCopy);
-		(void)chdir( dir);
-		free( configCopy);
-		
-		m_textcat = textcat_Init( config.c_str());
-		(void)chdir( oldDir);
-		delete[] oldDir;
-		if( !m_textcat) {
-			throw std::runtime_error( "Cannot open textcat configuration");
-		}
-	}
+	TextcatTokenizerFunctionContext( const std::string& language, ErrorBufferInterface* errorhnd, void *textcat)
+		:m_language(language), m_errorhnd(errorhnd), m_textcat(textcat) {}
 	
-	virtual ~TextcatTokenizerFunctionContext() {
-		if( m_textcat) {
-			textcat_Done(m_textcat);
-		}
-	}
-
 	const char* skipToToken( char const* si, const char* se) const;
 
 	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize);
@@ -157,13 +136,22 @@ class TextcatTokenizerInstance
 {
 public:
 	TextcatTokenizerInstance( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
-		:m_config(config), m_language(language), m_errorhnd(errorhnd){}
+		:m_language(language), m_errorhnd(errorhnd)
+	{
+		initialize( config );
+	}
+
+	virtual ~TextcatTokenizerInstance() {
+		if (m_textcat) {
+			textcat_Done(m_textcat);
+		}
+	}
 
 	TokenizerFunctionContextInterface* createFunctionContext() const
 	{
 		try
 		{
-			return new TextcatTokenizerFunctionContext( m_config, m_language, m_errorhnd);
+			return new TextcatTokenizerFunctionContext( m_language, m_errorhnd, m_textcat);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("cannot create tokenizer: %s"), *m_errorhnd, 0);
 	}
@@ -174,9 +162,26 @@ public:
 	}
 
 private:
-	std::string m_config;
 	std::string m_language;
 	ErrorBufferInterface* m_errorhnd;
+	void *m_textcat;
+
+	void initialize( const std::string &config )
+	{
+		char* oldDir = new char[PATH_MAX];
+		(void)getcwd( oldDir, PATH_MAX );
+		char* configCopy = strdup( config.c_str());
+		char* dir = dirname( configCopy);
+		(void)chdir( dir);
+		free( configCopy);
+
+		m_textcat = textcat_Init( config.c_str());
+		(void)chdir( oldDir);
+		delete[] oldDir;
+		if( !m_textcat) {
+			throw std::runtime_error( "Cannot open textcat configuration");
+		}
+	}
 };
 
 class TextcatTokenizerFunction
