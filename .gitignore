@@ -65,7 +65,7 @@ src/strusQuery/strusQuery
 tests/randomfeed/src/testRandomFeed
 tests/segmenter_textwolf/src/testSegmenterTextwolf
 tests/segmenter_cjson/src/testSegmenterCJson
-tests/textcat/src/testTextcat
+tests/tokenizer_textcat/src/testTokenizerTextcat
 
 # Test Output
 tests/segmenter_textwolf/output.txt
