@@ -1,0 +1,7 @@
+1 /lastname
+2 /firstname
+3 /street
+4 /zip
+5 /city
+6 /country
+7 /lineno()

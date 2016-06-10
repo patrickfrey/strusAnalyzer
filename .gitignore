@@ -63,9 +63,11 @@ src/strusQuery/strusQuery
 tests/randomfeed/src/testRandomFeed
 tests/segmenter_textwolf/src/testSegmenterTextwolf
 tests/segmenter_cjson/src/testSegmenterCJson
+tests/segmenter_tsv/src/testSegmenterTsv
 
 # Test Output
 tests/segmenter_textwolf/output.txt
 tests/segmenter_cjson/output.txt
+tests/segmenter_tsv/output.txt
 
 .travis.yml
