@@ -1,9 +1,3 @@
-// workaround for MacX ftello/fseeko problem in C++ (why?!)
-#ifdef __APPLE__
-#define ftello ftell
-#define fseeko fseek
-#endif
-
 #include <fstream>
 #include <iostream>
 #include <string>
