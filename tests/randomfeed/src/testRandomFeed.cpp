@@ -155,6 +155,7 @@ static void testTokenizer( strus::TextProcessorInterface* textproc, unsigned int
 		{"content",(const char*)0},
 		{"word",(const char*)0},
 		{"split",(const char*)0},
+		{"regex","[a-zA-Z][a-zA-Z0-9]+\b", (const char*)0},
 		{(const char*)0,(const char*)0}
 	};
 
@@ -225,6 +226,8 @@ static void testNormalizer( strus::TextProcessorInterface* textproc, unsigned in
 		{"convdia","de",(const char*)0},
 		{"convdia","en",(const char*)0},
 		{"date2int", "ms", "%m/%d/%y", (const char*)0},
+		{"ngram",(const char*)0},
+		{"regex","([a-zA-Z])[a-zA-Z0-9]+\b", "$1", (const char*)0},
 		{(const char*)0,(const char*)0},
 	};
 
