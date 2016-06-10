@@ -11,6 +11,8 @@ set(textcat_source_files
 	src/wg_mempool.c
 )
 
+include_directories( ${CMAKE_CURRENT_BINARY_DIR}/src )
+
 # -------------------------------------------
 # CONFIGURATION
 # -------------------------------------------
