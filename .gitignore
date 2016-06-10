@@ -72,3 +72,6 @@ tests/segmenter_textwolf/output.txt
 tests/segmenter_cjson/output.txt
 
 .travis.yml
+
+# autoconf-like generated configuration file (textcat)
+3rdParty/textcat/src/config.h
