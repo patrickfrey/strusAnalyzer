@@ -8,6 +8,7 @@ Andreas Baumann <http://www.andreasbaumann.cc> (github: andreasbaumann)
   Wrote the whole packaging
   Wrote the scripts to make the software build on the Open Suse Build Cluster
   Some influence on introspection features due to the work on the Strus webservice project (https://github.com/Eurospider/strusWebService)
+  Wrote the textcat tokenizer (language detection with libtextcat)
 
 David Wilson <dw@botanicus.net> (github: dw)
   Contributed some fixes for the build on OS X
