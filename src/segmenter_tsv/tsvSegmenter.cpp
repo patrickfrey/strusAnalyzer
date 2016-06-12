@@ -8,11 +8,14 @@
 
 #include "tsvSegmenter.hpp"
 
-#undef LOWLEVEL_DEBUG
+#define LOWLEVEL_DEBUG
 
 #ifdef LOWLEVEL_DEBUG
 #include <iostream>
 #endif
+
+#include <algorithm>
+#include <cstring>
 
 // TSVParserDefinition
 
@@ -80,11 +83,10 @@ bool TSVParserDefinition::moreOftheSame( )
 // TSVSegmenterContext
 
 TSVSegmenterContext::TSVSegmenterContext( TSVParserDefinition *parserDefinition, strus::ErrorBufferInterface *errbuf, bool errorReporting )
-	: m_errbuf( errbuf ), m_errorReporting( errorReporting),
-	m_eof( false ), m_parserDefinition( parserDefinition ),
-	m_pos( 0 ),
-	m_parseState( TSV_PARSE_STATE_HEADER ),
-	m_is( m_buf )
+	: m_errbuf( errbuf ), m_errorReporting( errorReporting), m_buf( ),
+	m_eof( false ), m_is( m_buf ), m_currentLine( ),
+	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -2 ), m_linepos( 0 ),
+	m_parseState( TSV_PARSE_STATE_HEADER ), m_headers( )
 {
 }
 	
@@ -100,121 +102,145 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 	}
 	
 	m_buf.append( chunk, chunksize );
-	m_eof = eof;
-	
-	if( !m_eof ) {
-		return;
-	}
+	m_eof |= eof;
 	
 	m_is.str( m_buf );
-	m_is.clear( );
-	std::istreambuf_iterator<char> begin( m_is );
-	std::istreambuf_iterator<char> end;
 }
 
-bool TSVSegmenterContext::parseHeader( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
+static std::vector<std::string> splitLine( const std::string &s, const std::string &delimiter, bool keepEmpty )
 {
-	//~ if( m_hbit != m_heit ) {
-		//~ do {
-//~ #ifdef LOWLEVEL_DEBUG	
-			//~ std::cout << "DEBUG: Header data: " << m_hbit->name( ) << ": " << m_hbit->value( ) << std::endl;
-//~ #endif
-			//~ std::string header = m_hbit->name( );
-			//~ boost::algorithm::to_lower( header );
-			//~ if( header == "content-transfer-encoding" ) {
-				//~ transferEncoding = hbit->value( );
-				//~ boost::algorithm::to_lower( transferEncoding );
-			//~ }
-			//~ id = m_parserDefinition->getNextId( header );
-			//~ if( id == 0 && !m_parserDefinition->moreOftheSame( ) ) {
-				//~ m_hbit++;
-				//~ if( m_hbit != m_heit ) {
-					//~ m_pos += header.size( ) + m_hbit->value( ).size( );
-				//~ }
-			//~ }
-		//~ } while( id == 0 && m_hbit != m_heit );
-		
-		//~ if( m_hbit == m_heit ) {
-//~ #ifdef LOWLEVEL_DEBUG	
-			//~ std::cout << "DEBUG: no more header data" << std::endl;
-//~ #endif
-			//~ return false;
-		//~ }
-		
-		//~ if( id != 0 ) {
-			//~ pos = m_pos; // TODO: good idea for position to orginal source needed?
-			//~ m_currentValue = m_hbit->value( );
-			//~ segment = m_currentValue.c_str( );
-			//~ segmentsize = m_currentValue.size( );
-			//~ if( !m_parserDefinition->moreOftheSame( ) ) {
-				//~ m_hbit++;
-				//~ m_pos += segmentsize;
-			//~ }
-			//~ return true;
-		//~ }
-	//~ }
-	
-	return false;
-}		
+	std::vector<std::string> result; 
 
-// TODO: state machine iterating through mime body parts (main, then parts( ) )
-bool TSVSegmenterContext::parseBody( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
+	if( delimiter.empty( ) ) { 
+		result.push_back( s );
+		return result;
+	}
+
+	std::string::const_iterator b = s.begin( ), e;
+	while( true ) {
+		e = std::search( b, s.end( ), delimiter.begin( ), delimiter.end( ) );
+		std::string tmp( b, e );
+		if( keepEmpty || !tmp.empty( ) ) {
+			result.push_back( tmp );
+		}
+		if( e == s.end( ) ) {
+			break;
+		}
+		b = e + delimiter.size( );
+	}
+
+	return result;
+}
+
+bool TSVSegmenterContext::parseHeader( )
 {
+	m_headers = splitLine( m_currentLine, "\t", true );
+	return true;
+}
+
+bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
+{
+	// hard-coded field line number (not present in the TSV file itself)
+	if( m_pos == -1 ) {
+		id = m_parserDefinition->getNextId( "lineno" );
+		if( id != 0 ) {
+			if( !m_parserDefinition->moreOftheSame( ) ) {
+				m_pos++;
+			}
+			pos = m_linepos * m_headers.size( );
+			snprintf( m_lineposStr, 11, "%d", m_linepos );
+			segment = m_lineposStr;
+			segmentsize = strlen( m_lineposStr );
+			return true;
+		}
+
+		if( !m_parserDefinition->moreOftheSame( ) ) {
+			m_pos++;
+		}
+	}
+
+	if( m_pos == 0 ) {
+		m_data = splitLine( m_currentLine, "\t", true );
+	}
+		
+	do {
+		std::string headerName = m_headers[m_pos];
 #ifdef LOWLEVEL_DEBUG	
-	std::cout << "DEBUG: TSV body" << std::endl;
+		std::cout << "DEBUG: field " << m_linepos << ":" << m_pos << "'" << headerName << "': '" << m_data[m_pos] << "'" << std::endl;
 #endif
-
-	m_currentValue.clear( );
-
-	// process my own content (recursively)
-	//~ processMimeEntity( m_me.get( ), id, pos, segment, segmentsize );
-// TODO: state machine iterating through mime body parts (main, then parts( ) )
-	//~ mimetic::MimeEntityList::iterator mbit = m_me->body( ).parts( ).begin( ),
-		//~ mend = m_me->body( ).parts( ).end( );
-	//~ for( ; mbit != mend; mbit++ ) {
-		//~ m_currentValue += " ";
-		//~ processMimeEntity( *mbit, id, pos, segment, segmentsize );
-	//~ }
-
-	//~ id = m_parserDefinition->getNextId( "body" );
-	//~ if( id != 0 ) {
-		//~ pos = m_pos; // TODO: good idea for position to orginal source needed?
-		//~ segment = m_currentValue.c_str( );
-		//~ segmentsize = m_currentValue.size( );
-		//~ if( !m_parserDefinition->moreOftheSame( ) ) {
-			//~ m_parseState = TSV_PARSE_STATE_EOF;
-		//~ }
-		//~ return true;
-	//~ }
 		
+		id = m_parserDefinition->getNextId( headerName );
+		
+		if( id == 0 ) {
+			m_pos++;
+		}
+		
+	} while( id == 0 && (size_t)m_pos < m_headers.size( ) );
+
+	if( id != 0 ) {
+		// TODO: think whether we should not return the character position into the TSV here
+		pos = m_linepos * m_headers.size( ) + m_pos;
+		segment = m_data[m_pos].c_str( );
+		segmentsize = m_data[m_pos].size( );
+		if( !m_parserDefinition->moreOftheSame( ) ) {
+			m_pos++;
+		}
+		if( (size_t)m_pos >= m_headers.size( ) ) {
+			m_pos = -2;
+		}
+		return true;
+	}
+
+	m_pos++;
+	if( (size_t)m_pos >= m_headers.size( ) ) {
+		m_pos = -2;
+	}
+	
 	return false;
 }
 
 bool TSVSegmenterContext::getNext( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
 {
-	if( !m_eof ) {
-		return false;
-	}
-
+NEXTLINE:
+	
 	bool hasNext = false;
 	switch( m_parseState ) {
 		case TSV_PARSE_STATE_HEADER:
-			if( ( hasNext = parseHeader( id, pos, segment, segmentsize ) ) ) {
+			std::getline( m_is, m_currentLine );
+			if( m_is.eof( ) ) {
+				// we don't have a complete line to work with, so wait for more data
+				return false;
+			}
+			if( !( hasNext = parseHeader( ) ) ) {
+				m_parseState = TSV_PARSE_STATE_EOF;
+				return false;
+			}
+			m_parseState = TSV_PARSE_STATE_DATA;
+			goto NEXTLINE;
+			
+		case TSV_PARSE_STATE_DATA:
+			if( m_pos < -1 ) {
+				std::getline( m_is, m_currentLine );
+				if( m_is.eof( ) ) {
+					// we don't have a complete line to work with, so wait for more data
+					return false;
+				}
+				m_linepos++;
+				m_pos = -1;
+			}
+				
+			if( ( hasNext = parseData( id, pos, segment, segmentsize ) ) ) {
 				return hasNext;
 			} else {
-				m_parseState = TSV_PARSE_STATE_BODY;
+				m_parseState = TSV_PARSE_STATE_EOF;
 			}
-			// intentional fall-thru here!
-			
-		case TSV_PARSE_STATE_BODY:
-			return parseBody( id, pos, segment, segmentsize );
+			break;
 
 		case TSV_PARSE_STATE_EOF:
 #ifdef LOWLEVEL_DEBUG
 			std::cout << "DEBUG: end of data" << std::endl;
 #endif
 			return false;
-
 	}
 	
 	return false;

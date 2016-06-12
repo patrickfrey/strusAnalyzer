@@ -62,7 +62,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 	
 		enum TSVParseState {
 			TSV_PARSE_STATE_HEADER,
-			TSV_PARSE_STATE_BODY,
+			TSV_PARSE_STATE_DATA,
 			TSV_PARSE_STATE_EOF
 		};
 	
@@ -70,14 +70,21 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		bool m_errorReporting;
 		std::string m_buf;
 		bool m_eof;
-		TSVParserDefinition *m_parserDefinition;
-		std::string m_currentValue;
-		std::size_t m_pos;
-		enum TSVParseState m_parseState;
 		std::istringstream m_is;
+		std::string m_currentLine;
+		TSVParserDefinition *m_parserDefinition;
+		std::vector<std::string> m_data;
+		int m_pos;
+		unsigned int m_linepos;
+		char m_lineposStr[12];
+		enum TSVParseState m_parseState;
+		std::vector<std::string> m_headers;
 		
-		bool parseHeader( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
-		bool parseBody( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
+		bool parseHeader( );
+		bool parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
+		
+		//~ bool parseHeader( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
+		//~ bool parseBody( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
 };
 
 
