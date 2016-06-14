@@ -35,7 +35,8 @@ class TSVParserDefinition
 	
 		TSVParserDefinition( );
 		
-		void addDefinition( int id, const std::string &definition );
+		void defineSelectorExpression( int id, const std::string &expression );
+		void defineSubSection( int startId, int endId, const std::string &expression );
 		int getNextId( const std::string &definition );
 		bool moreOftheSame( );
 	
@@ -43,6 +44,8 @@ class TSVParserDefinition
 	
 		std::multimap<std::string, int> m_map;
 		std::multimap<std::string, int>::const_iterator m_it, m_end;
+
+		void printDefinitions( );
 		
 };
 

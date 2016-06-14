@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <iterator>
 
 // TSVParserDefinition
 
@@ -24,19 +25,40 @@ TSVParserDefinition::TSVParserDefinition( )
 {
 }
 
-void TSVParserDefinition::addDefinition( int id, const std::string &definition )
+void TSVParserDefinition::printDefinitions( )
 {
-#ifdef LOWLEVEL_DEBUG	
-	std::cout << "DEBUG: adding selector expression: " << id << ", " << definition << std::endl;
-#endif
-	m_map.insert( std::make_pair( definition, id ) );
-
-#ifdef LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: definition multimap contains: ";
 	for( std::multimap<std::string, int>::const_iterator it = m_map.begin( ); it != m_map.end( ); it++ ) {
 		std::cout << "[" << it->first << ", " << it->second << "], ";
 	}
 	std::cout << std::endl;
+}
+
+void TSVParserDefinition::defineSelectorExpression( int id, const std::string &expression )
+{
+#ifdef LOWLEVEL_DEBUG	
+	std::cout << "DEBUG: adding selector expression: " << id << ", " << expression << std::endl;
+#endif
+	m_map.insert( std::make_pair( expression, id ) );
+
+#ifdef LOWLEVEL_DEBUG	
+	printDefinitions( );
+#endif
+}
+
+void TSVParserDefinition::defineSubSection( int startId, int endId, const std::string &expression )
+{
+#ifdef LOWLEVEL_DEBUG	
+	std::cout << "DEBUG: adding subsection expression: [" << startId << ", " << endId << "]: " << expression << std::endl;
+#endif
+	// TODO: assume "line" as selector, currently we don't want to support something
+	// like partial lines or combined/runaway lines
+
+	m_map.insert( std::make_pair( expression, startId ) );
+	m_map.insert( std::make_pair( expression, endId ) );
+
+#ifdef LOWLEVEL_DEBUG	
+	printDefinitions( );
 #endif
 }
 
@@ -85,7 +107,7 @@ bool TSVParserDefinition::moreOftheSame( )
 TSVSegmenterContext::TSVSegmenterContext( TSVParserDefinition *parserDefinition, strus::ErrorBufferInterface *errbuf, bool errorReporting )
 	: m_errbuf( errbuf ), m_errorReporting( errorReporting), m_buf( ),
 	m_eof( false ), m_is( m_buf ), m_currentLine( ),
-	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -2 ), m_linepos( 0 ),
+	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -3 ), m_linepos( 0 ),
 	m_parseState( TSV_PARSE_STATE_HEADER ), m_headers( )
 {
 }
@@ -140,6 +162,20 @@ bool TSVSegmenterContext::parseHeader( )
 
 bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
 {
+	// start of line, emit start of section
+	if( m_pos == -2 ) {
+		id = m_parserDefinition->getNextId( "line" );
+		if( id != 0 ) {
+			pos = m_linepos * m_headers.size( );
+			segment = m_currentLine.c_str( );
+			segmentsize = m_currentLine.size( );
+			return true;
+		}
+		
+		// only one subsection definition
+		m_pos++;
+	}
+	
 	// hard-coded field line number (not present in the TSV file itself)
 	if( m_pos == -1 ) {
 		id = m_parserDefinition->getNextId( "lineno" );
@@ -186,14 +222,14 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 			m_pos++;
 		}
 		if( (size_t)m_pos >= m_headers.size( ) ) {
-			m_pos = -2;
+			m_pos = -3;
 		}
 		return true;
 	}
 
 	m_pos++;
 	if( (size_t)m_pos >= m_headers.size( ) ) {
-		m_pos = -2;
+		m_pos = -3;
 	}
 	
 	return false;
@@ -216,11 +252,10 @@ NEXTLINE:
 				return false;
 			}
 			m_parseState = TSV_PARSE_STATE_DATA;
-			m_buf.clear( );
 			goto NEXTLINE;
 			
 		case TSV_PARSE_STATE_DATA:
-			if( m_pos < -1 ) {
+			if( m_pos < -2 ) {
 				std::getline( m_is, m_currentLine );
 				if( m_is.eof( ) ) {
 					if( m_eof ) {
@@ -228,10 +263,16 @@ NEXTLINE:
 						return false;
 					}	
 					// we don't have a complete line to work with, so wait for more data
+					std::istream_iterator<char> it( m_is );
+					std::istream_iterator<char> end;
+					std::string rest( it, end );
+					m_buf.clear( );
+					m_buf.append( rest );
+					m_is.str( m_buf );
 					return false;
 				}
 				m_linepos++;
-				m_pos = -1;
+				m_pos = -2;
 			}
 				
 			if( ( hasNext = parseData( id, pos, segment, segmentsize ) ) ) {
@@ -261,16 +302,12 @@ TSVSegmenterInstance::TSVSegmenterInstance( strus::ErrorBufferInterface *errbuf,
 
 void TSVSegmenterInstance::defineSelectorExpression( int id, const std::string &expression )
 {
-	m_parserDefinition->addDefinition( id, expression );
+	m_parserDefinition->defineSelectorExpression( id, expression );
 }
 		
 void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::string &expression )
 {
-	// TODO
-#ifdef LOWLEVEL_DEBUG	
-	std::cout << "DEBUG: selector subsection: " << startId << ", " 
-		<< endId << ", " << expression << std::endl;
-#endif
+	m_parserDefinition->defineSubSection( startId, endId, expression );
 }
 
 strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::DocumentClass &dclass ) const
