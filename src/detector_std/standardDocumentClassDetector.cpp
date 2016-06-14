@@ -133,8 +133,12 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 							return true;
 						}
 
+						// temporary: fixed TSV for testing
+						initDocumentClass( dclass, "text/tab-separated-values", "UTF-8", 0);
+						return true;
+
 						// Give up:
-						return false;
+						//~ return false;
 					}
 					break;
 	

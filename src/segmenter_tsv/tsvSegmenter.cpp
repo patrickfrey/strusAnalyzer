@@ -216,12 +216,17 @@ NEXTLINE:
 				return false;
 			}
 			m_parseState = TSV_PARSE_STATE_DATA;
+			m_buf.clear( );
 			goto NEXTLINE;
 			
 		case TSV_PARSE_STATE_DATA:
 			if( m_pos < -1 ) {
 				std::getline( m_is, m_currentLine );
 				if( m_is.eof( ) ) {
+					if( m_eof ) {
+						m_parseState = TSV_PARSE_STATE_EOF;
+						return false;
+					}	
 					// we don't have a complete line to work with, so wait for more data
 					return false;
 				}
@@ -232,7 +237,7 @@ NEXTLINE:
 			if( ( hasNext = parseData( id, pos, segment, segmentsize ) ) ) {
 				return hasNext;
 			} else {
-				m_parseState = TSV_PARSE_STATE_EOF;
+				goto NEXTLINE;
 			}
 			break;
 
