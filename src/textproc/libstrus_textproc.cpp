@@ -15,6 +15,7 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/tokenizer_regex.hpp"
+#include "strus/lib/tokenizer_textcat.hpp"
 #include "strus/lib/aggregator_vsm.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
@@ -107,6 +108,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineTokenizer( "split", tkn);
+	if (0==(tkn = createTokenizer_textcat( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineTokenizer( "textcat", tkn);
 	if (0==(agr = createAggregator_sumSquareTf( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

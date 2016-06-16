@@ -58,12 +58,15 @@ src/strusAnalyze/strusAnalyze
 src/strusInsert/strusInsert
 src/strusQuery/strusQuery
 3rdParty/snowball/libstemmer_c/stemwords
+3rdParty/textcat/createfp
+3rdParty/textcat/textcatcli
 
 # Test Programs
 tests/randomfeed/src/testRandomFeed
 tests/segmenter_textwolf/src/testSegmenterTextwolf
 tests/segmenter_cjson/src/testSegmenterCJson
 tests/segmenter_tsv/src/testSegmenterTsv
+tests/tokenizer_textcat/src/testTokenizerTextcat
 
 # Test Output
 tests/segmenter_textwolf/output.txt
@@ -71,3 +74,6 @@ tests/segmenter_cjson/output.txt
 tests/segmenter_tsv/output.txt
 
 .travis.yml
+
+# autoconf-like generated configuration file (textcat)
+3rdParty/textcat/src/config.h
