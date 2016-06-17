@@ -16,6 +16,8 @@
 
 using namespace strus;
 
+#define NORMALIZER_NAME "ngram"
+
 struct NgramConfiguration
 {
 	unsigned int width;
@@ -118,7 +120,7 @@ NormalizerFunctionInstanceInterface* NgramNormalizerFunction::createInstance( co
 		{
 			config.width = utils::toint( *ai);
 		}
-		if (utils::caseInsensitiveEquals( *ai, "RoundRobin"))
+		else if (utils::caseInsensitiveEquals( *ai, "RoundRobin"))
 		{
 			config.roundRobin = true;
 		}
@@ -132,14 +134,8 @@ NormalizerFunctionInstanceInterface* NgramNormalizerFunction::createInstance( co
 		}
 		else
 		{
-			throw strus::runtime_error(_TXT("unknown configuration option for '%s' normalizer: '%s'"), "ngram", ai->c_str());
+			throw strus::runtime_error(_TXT("unknown configuration option for '%s' normalizer: '%s'"), NORMALIZER_NAME, ai->c_str());
 		}
-		
-	}
-	if (args.size())
-	{
-		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
-		return 0;
 	}
 	try
 	{

@@ -392,7 +392,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					// ... handle normalizers with multiple results
 					char const* vi = termval.c_str();
 					char const* ve = vi + termval.size();
-					for (++vi; vi != ve; vi = std::strchr( vi, '\0'))
+					for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
 					{
 						analyzer::Term term(
 							feat.m_config->name(), vi,

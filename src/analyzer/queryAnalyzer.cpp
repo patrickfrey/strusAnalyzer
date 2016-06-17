@@ -157,7 +157,19 @@ std::vector<analyzer::Term>
 				prevpos = pi->ordpos;
 			}
 			std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
-			rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
+			if (!val.empty() && val[0] == '\0')
+			{
+				char const* vi = val.c_str();
+				char const* ve = vi + val.size();
+				for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
+				{
+					rt.push_back( analyzer::Term( feat.featureType(), vi, posidx));
+				}
+			}
+			else
+			{
+				rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
+			}
 		}
 		return rt;
 	}
