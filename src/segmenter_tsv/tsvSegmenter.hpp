@@ -39,11 +39,15 @@ class TSVParserDefinition
 		void defineSubSection( int startId, int endId, const std::string &expression );
 		int getNextId( const std::string &definition );
 		bool moreOftheSame( );
+		int getStartId( ) { return m_startId; }
+		int getEndId( ) { return m_endId; }
 	
 	private:
 	
 		std::multimap<std::string, int> m_map;
 		std::multimap<std::string, int>::const_iterator m_it, m_end;
+		int m_startId;
+		int m_endId;
 
 		void printDefinitions( );
 		

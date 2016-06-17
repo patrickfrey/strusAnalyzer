@@ -8,7 +8,7 @@
 
 #include "tsvSegmenter.hpp"
 
-#define LOWLEVEL_DEBUG
+#undef LOWLEVEL_DEBUG
 
 #ifdef LOWLEVEL_DEBUG
 #include <iostream>
@@ -21,17 +21,20 @@
 // TSVParserDefinition
 
 TSVParserDefinition::TSVParserDefinition( )
-	: m_map( ), m_it( m_map.end( ) ), m_end( m_map.end( ) )
+	: m_map( ), m_it( m_map.end( ) ), m_end( m_map.end( ) ),
+	m_startId( 0 ), m_endId( 0 )
 {
 }
 
 void TSVParserDefinition::printDefinitions( )
 {
+#ifdef LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: definition multimap contains: ";
 	for( std::multimap<std::string, int>::const_iterator it = m_map.begin( ); it != m_map.end( ); it++ ) {
 		std::cout << "[" << it->first << ", " << it->second << "], ";
 	}
 	std::cout << std::endl;
+#endif
 }
 
 void TSVParserDefinition::defineSelectorExpression( int id, const std::string &expression )
@@ -52,14 +55,10 @@ void TSVParserDefinition::defineSubSection( int startId, int endId, const std::s
 	std::cout << "DEBUG: adding subsection expression: [" << startId << ", " << endId << "]: " << expression << std::endl;
 #endif
 	// TODO: assume "line" as selector, currently we don't want to support something
-	// like partial lines or combined/runaway lines
-
-	m_map.insert( std::make_pair( expression, startId ) );
-	m_map.insert( std::make_pair( expression, endId ) );
-
-#ifdef LOWLEVEL_DEBUG	
-	printDefinitions( );
-#endif
+	// like partial lines or combined/runaway lines, so basically we ignore the
+	// expression
+	m_startId = startId;
+	m_endId = endId;
 }
 
 int TSVParserDefinition::getNextId( const std::string &definition )
@@ -118,6 +117,10 @@ TSVSegmenterContext::~TSVSegmenterContext( )
 			
 void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bool eof )
 {
+#ifdef LOWLEVEL_DEBUG	
+	std::cout << "DEBUG: putInput '" << chunksize << " (eof: " << eof << ")" << std::endl;
+#endif
+	
 	if( m_eof ) {
 		m_errbuf->report( "fed chunk after declared end of input" );
 		return;
@@ -164,15 +167,13 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 {
 	// start of line, emit start of section
 	if( m_pos == -2 ) {
-		id = m_parserDefinition->getNextId( "line" );
+		id = m_parserDefinition->getStartId( );
 		if( id != 0 ) {
-			pos = m_linepos * m_headers.size( );
-			segment = m_currentLine.c_str( );
-			segmentsize = m_currentLine.size( );
+			m_pos++;
 			return true;
 		}
 		
-		// only one subsection definition
+		// no subsection definition, continue
 		m_pos++;
 	}
 	
@@ -223,6 +224,10 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		}
 		if( (size_t)m_pos >= m_headers.size( ) ) {
 			m_pos = -3;
+			id = m_parserDefinition->getEndId( );
+			if( id != 0 ) {
+				return true;
+			}
 		}
 		return true;
 	}
@@ -230,6 +235,10 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 	m_pos++;
 	if( (size_t)m_pos >= m_headers.size( ) ) {
 		m_pos = -3;
+		id = m_parserDefinition->getEndId( );
+		if( id != 0 ) {
+			return true;
+		}
 	}
 	
 	return false;
@@ -268,6 +277,7 @@ NEXTLINE:
 					std::string rest( it, end );
 					m_buf.clear( );
 					m_buf.append( rest );
+					m_is.clear( );
 					m_is.str( m_buf );
 					return false;
 				}
