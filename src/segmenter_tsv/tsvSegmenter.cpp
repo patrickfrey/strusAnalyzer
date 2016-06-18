@@ -270,13 +270,14 @@ NEXTLINE:
 					if( m_eof ) {
 						m_parseState = TSV_PARSE_STATE_EOF;
 						return false;
-					}	
+					}
 					// we don't have a complete line to work with, so wait for more data
-					std::istream_iterator<char> it( m_is );
-					std::istream_iterator<char> end;
-					std::string rest( it, end );
+#ifdef LOWLEVEL_DEBUG	
+					std::cout << "DEBUG: buffer reset, rest: " << m_currentLine << std::endl;
+#endif
+					m_data.clear( );
 					m_buf.clear( );
-					m_buf.append( rest );
+					m_buf.append( m_currentLine );
 					m_is.clear( );
 					m_is.str( m_buf );
 					return false;
