@@ -89,9 +89,6 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		
 		bool parseHeader( );
 		bool parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
-		
-		//~ bool parseHeader( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
-		//~ bool parseBody( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
 };
 
 
