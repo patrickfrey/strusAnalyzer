@@ -12,6 +12,7 @@
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/segmenter_cjson.hpp"
+#include "strus/lib/segmenter_tsv.hpp"
 #include "strus/reference.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
@@ -40,6 +41,7 @@ public:
 		,m_textproc(strus::createTextProcessor(errorhnd_))
 		,m_segmenter_textwolf(createSegmenter_textwolf(errorhnd_))
 		,m_segmenter_cjson(createSegmenter_cjson(errorhnd_))
+		,m_segmenter_tsv(createSegmenter_tsv(errorhnd_))
 	{}
 
 	/// \brief Destructor
@@ -61,6 +63,10 @@ public:
 			else if (utils::caseInsensitiveEquals( segmenterName, "cjson"))
 			{
 				return m_segmenter_cjson.get();
+			}
+			else if (utils::caseInsensitiveEquals( segmenterName, "tsv"))
+			{
+				return m_segmenter_tsv.get();
 			}
 			else
 			{
@@ -85,6 +91,7 @@ private:
 	Reference<TextProcessorInterface> m_textproc;
 	Reference<SegmenterInterface> m_segmenter_textwolf;
 	Reference<SegmenterInterface> m_segmenter_cjson;
+	Reference<SegmenterInterface> m_segmenter_tsv;
 };
 
 
