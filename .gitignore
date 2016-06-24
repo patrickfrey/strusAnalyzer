@@ -63,6 +63,7 @@ src/strusQuery/strusQuery
 
 # Test Programs
 tests/randomfeed/src/testRandomFeed
+tests/documentclassdetect/src/testDocumentClassDetect
 tests/segmenter_textwolf/src/testSegmenterTextwolf
 tests/segmenter_cjson/src/testSegmenterCJson
 tests/segmenter_tsv/src/testSegmenterTsv

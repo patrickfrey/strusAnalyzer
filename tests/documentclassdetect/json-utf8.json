@@ -1,0 +1,41 @@
+{
+"Order": {
+  "-Number": 12345,
+  "-Date": "2016/02/03",
+  "Address": [
+  {
+     "-Type": "Shipping",
+     "Name":"Hugo Largo",
+     "Street":"Heinrichstr. 7",
+     "City": "München",
+     "Zip": 80331,
+     "Country": "Deutschland"
+  },
+  {
+     "-Type": "Billing",
+     "Name":"Konrad Toenz",
+     "Street":"Bahnhofstr. 7",
+     "City": "Zürich",
+     "Zip": 8001,
+     "Country": "Schweiz"
+  }],
+  "DeliveryNotes": "Bitte das Packet im Treppenhaus abstellen.",
+  "Items": {
+     "Item": [
+     {
+        "Number": "XY-123.123",
+        "ProductName": "Staubsauger",
+        "Quantity": 1,
+        "Price": 312.70,
+        "Comment": "Gebraucht"
+    },
+    {
+        "Number": "XY-456.456",
+        "ProductName": "Verlängerungskabel",
+        "Quantity": 2,
+        "Price": 9.70
+    }]
+  }
+}
+}
+
