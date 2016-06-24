@@ -78,7 +78,10 @@ int TSVParserDefinition::getNextId( const std::string &definition )
 	} else {		
 		std::pair <std::multimap<std::string, int>::const_iterator, std::multimap<std::string, int>::const_iterator> ret;
 		ret = m_map.equal_range( definition );
-		if( ret.first->first == definition ) {
+		if( ret.first == ret.second ) {
+			m_it = m_map.end( );
+			m_end = m_map.end( );
+		} else if( ret.first->first == definition ) {
 			m_it = ret.first;
 			m_end = ret.second;
 			id = m_it->second;
