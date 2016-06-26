@@ -31,6 +31,7 @@ static const unsigned char BOM_UTF32LE[] = {4,0xFF,0xFE,0,0};
 
 const char* detectBOM( const char* str, std::size_t strsize, std::size_t& BOMsize)
 {
+	BOMsize = 0;
 	if (strsize < 4) return 0;
 	BOMsize = BOM_UTF8[0];
 	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0) return "UTF-8";
