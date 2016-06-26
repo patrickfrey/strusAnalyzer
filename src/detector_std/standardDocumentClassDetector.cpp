@@ -63,16 +63,16 @@ static bool isDocumentJson( char const* ci, const char* ce)
 	static const char* tokchr = "[]{}E-+0123456789.";
 	if (ci != ce && *ci == '{')
 	{
-		for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+		for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 		if (ci != ce && *ci == '"')
 		{
 			for (++ci; ci != ce && (unsigned char)*ci != '"'; ++ci){}
 			if (ci != ce)
 			{
-				for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+				for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 				if (ci != ce && *ci == ':')
 				{
-					for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+					for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 					if (ci != ce && std::strchr( tokchr, *ci) != 0)
 					{
 						return true;
