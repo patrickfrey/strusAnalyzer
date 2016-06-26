@@ -29,14 +29,40 @@ static const unsigned char BOM_UTF16LE[] = {2,0xFF,0xFE};
 static const unsigned char BOM_UTF32BE[] = {4,0,0,0xFE,0xFF};
 static const unsigned char BOM_UTF32LE[] = {4,0xFF,0xFE,0,0};
 
-const char* detectBOM( const char* str, std::size_t strsize)
+const char* detectBOM( const char* str, std::size_t strsize, std::size_t& BOMsize)
 {
-	if (strsize < 4) return 0;
-	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0) return "UTF-8";
-	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0) return "UTF-16BE";
-	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0) return "UTF-16LE";
-	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0) return "UTF-32BE";
-	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0) return "UTF-32LE";
+	
+	if (strsize < 4)
+	{
+		BOMsize = 0;
+		return 0;
+	}
+	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-8";
+	}
+	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-16BE";
+	}
+	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-16LE";
+	}
+	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-32BE";
+	}
+	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-32LE";
+	}
+	BOMsize = 0;
 	return 0;
 }
 
@@ -63,16 +89,16 @@ static bool isDocumentJson( char const* ci, const char* ce)
 	static const char* tokchr = "[]{}E-+0123456789.";
 	if (ci != ce && *ci == '{')
 	{
-		for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+		for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 		if (ci != ce && *ci == '"')
 		{
 			for (++ci; ci != ce && (unsigned char)*ci != '"'; ++ci){}
 			if (ci != ce)
 			{
-				for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+				for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 				if (ci != ce && *ci == ':')
 				{
-					for (++ci; ci != ce && (unsigned char)*ci < 32; ++ci){}
+					for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
 					if (ci != ce && std::strchr( tokchr, *ci) != 0)
 					{
 						return true;
@@ -80,6 +106,47 @@ static bool isDocumentJson( char const* ci, const char* ce)
 				}
 			}
 		}
+	}
+	return false;
+}
+
+static bool isDocumentTSV( const char* ci, const char* ce)
+{
+	unsigned int seps[2];
+	unsigned int nofSeps = 0;
+	unsigned int nofLines = 0;
+	
+	for (; ci != ce && nofLines < 2; ++ci)
+	{
+		switch (*ci)
+		{
+			case '\n':
+				seps[nofLines] = nofSeps;
+				nofLines++;
+				nofSeps = 0;
+				break;
+			
+			case '\t':
+				nofSeps++;
+				break;
+		}
+		if (nofLines > 2)
+		{
+			break;
+		}
+	}
+
+	if ( nofLines >= 2)
+	{
+		nofSeps = seps[0];
+		for (unsigned int i = 1; i < 2; i++)
+		{
+			if (nofSeps != seps[i])
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	return false;
 }
@@ -94,7 +161,9 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 		unsigned int nullCnt = 0;
 		unsigned int maxNullCnt = 0;
 		State state = ParseStart;
-		const char* BOM = detectBOM( contentBegin, contentBeginSize);
+		std::size_t BOMsize = 0;
+		const char* BOM = detectBOM( contentBegin, contentBeginSize, BOMsize);
+		ci += BOMsize;
 		std::string encoding_buf;
 		const char* encoding = 0;
 	
@@ -132,13 +201,24 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 							initDocumentClass( dclass, "application/json", "UTF-8", 0);
 							return true;
 						}
-
-						// temporary: fixed TSV for testing
-						initDocumentClass( dclass, "text/tab-separated-values", "UTF-8", 0);
-						return true;
+						
+						ci = contentBegin + BOMsize;
+						if (isDocumentTSV(ci,ce))
+						{
+							if (BOM)
+							{
+								initDocumentClass( dclass, "text/tab-separated-values", BOM, 0);
+								return true;
+							}
+							else
+							{
+								initDocumentClass( dclass, "text/tab-separated-values", "UTF-8", 0);
+								return true;
+							}
+						}
 
 						// Give up:
-						//~ return false;
+						return false;
 					}
 					break;
 	
