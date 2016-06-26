@@ -31,18 +31,38 @@ static const unsigned char BOM_UTF32LE[] = {4,0xFF,0xFE,0,0};
 
 const char* detectBOM( const char* str, std::size_t strsize, std::size_t& BOMsize)
 {
+	
+	if (strsize < 4)
+	{
+		BOMsize = 0;
+		return 0;
+	}
+	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-8";
+	}
+	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-16BE";
+	}
+	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-16LE";
+	}
+	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-32BE";
+	}
+	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0)
+	{
+		BOMsize = BOM_UTF8[0];
+		return "UTF-32LE";
+	}
 	BOMsize = 0;
-	if (strsize < 4) return 0;
-	BOMsize = BOM_UTF8[0];
-	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0) return "UTF-8";
-	BOMsize = BOM_UTF8[0];
-	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0) return "UTF-16BE";
-	BOMsize = BOM_UTF8[0];
-	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0) return "UTF-16LE";
-	BOMsize = BOM_UTF8[0];
-	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0) return "UTF-32BE";
-	BOMsize = BOM_UTF8[0];
-	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0) return "UTF-32LE";
 	return 0;
 }
 
@@ -90,6 +110,47 @@ static bool isDocumentJson( char const* ci, const char* ce)
 	return false;
 }
 
+static bool isDocumentTSV( const char* ci, const char* ce)
+{
+	unsigned int seps[2];
+	unsigned int nofSeps = 0;
+	unsigned int nofLines = 0;
+	
+	for (; ci != ce && nofLines < 2; ++ci)
+	{
+		switch (*ci)
+		{
+			case '\n':
+				seps[nofLines] = nofSeps;
+				nofLines++;
+				nofSeps = 0;
+				break;
+			
+			case '\t':
+				nofSeps++;
+				break;
+		}
+		if (nofLines > 2)
+		{
+			break;
+		}
+	}
+
+	if ( nofLines >= 2)
+	{
+		nofSeps = seps[0];
+		for (unsigned int i = 1; i < 2; i++)
+		{
+			if (nofSeps != seps[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
 bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	try
@@ -102,12 +163,9 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 		State state = ParseStart;
 		std::size_t BOMsize = 0;
 		const char* BOM = detectBOM( contentBegin, contentBeginSize, BOMsize);
+		ci += BOMsize;
 		std::string encoding_buf;
 		const char* encoding = 0;
-
-		if (BOM != 0) {
-			ci += BOMsize;
-		}
 	
 		for (;ci != ce; ++ci)
 		{
@@ -142,6 +200,21 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 						{
 							initDocumentClass( dclass, "application/json", "UTF-8", 0);
 							return true;
+						}
+						
+						ci = contentBegin + BOMsize;
+						if (isDocumentTSV(ci,ce))
+						{
+							if (BOM)
+							{
+								initDocumentClass( dclass, "text/tab-separated-values", BOM, 0);
+								return true;
+							}
+							else
+							{
+								initDocumentClass( dclass, "text/tab-separated-values", "UTF-8", 0);
+								return true;
+							}
 						}
 
 						// Give up:
