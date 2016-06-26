@@ -139,7 +139,7 @@ public:
 			}
 			m_xpathselect.putElement( m_itr->type(), m_itr->content(), m_itr->size());
 		}
-		pos = m_scanner.getIterator().position() - m_itr->size();
+		pos = m_scanner.getPosition() - m_itr->size();
 		segment = m_itr->content();
 		segmentsize = m_itr->size();
 		return true;

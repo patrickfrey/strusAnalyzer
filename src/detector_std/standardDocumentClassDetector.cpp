@@ -177,7 +177,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 								}
 							}
 						}
-						initDocumentClass( dclass, "text/xml", encoding, BOM);
+						initDocumentClass( dclass, "application/xml", encoding, BOM);
 						return true;
 					}
 					else if ((unsigned char)*ci > 32)
@@ -190,7 +190,7 @@ bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* c
 					if (*ci == '<') return false;
 					if (*ci == '>')
 					{
-						initDocumentClass( dclass, "text/xml", 0, BOM);
+						initDocumentClass( dclass, "application/xml", 0, BOM);
 						return true;
 					}
 					break;
