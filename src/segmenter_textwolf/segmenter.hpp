@@ -50,7 +50,7 @@ public:
 
 	virtual const char* mimeType() const
 	{
-		return "text/xml";
+		return "application/xml";
 	}
 
 	virtual SegmenterInstanceInterface* createInstance() const;
