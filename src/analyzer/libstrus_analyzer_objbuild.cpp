@@ -52,7 +52,7 @@ public:
 		return m_textproc.get();
 	}
 
-	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName) const
 	{
 		try
 		{
@@ -70,12 +70,36 @@ public:
 			}
 			else
 			{
-				throw strus::runtime_error(_TXT("unknown document segmenter: '%s'"), segmenterName.c_str());
+				throw strus::runtime_error(_TXT("unknown document segmenter name: '%s'"), segmenterName.c_str());
 			}
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating document segmenter: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
 	}
 
+	virtual const SegmenterInterface* findMimeTypeSegmenter( const std::string& mimetype) const
+	{
+		try
+		{
+			if (utils::caseInsensitiveEquals( mimetype, m_segmenter_textwolf->mimeType()))
+			{
+				return m_segmenter_textwolf.get();
+			}
+			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_cjson->mimeType()))
+			{
+				return m_segmenter_cjson.get();
+			}
+			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_tsv->mimeType()))
+			{
+				return m_segmenter_tsv.get();
+			}
+			else
+			{
+				throw strus::runtime_error(_TXT("unknown document mime type: '%s'"), mimetype.c_str());
+			}
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
+	}
+	
 	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const
 	{
 		return strus::createDocumentAnalyzer( segmenter, m_errorhnd);

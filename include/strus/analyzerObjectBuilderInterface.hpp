@@ -35,10 +35,15 @@ public:
 	/// \return the analyzer text processor interface reference
 	virtual const TextProcessorInterface* getTextProcessor() const=0;
 
-	/// \brief Creates a document segmenter object
-	/// \param[in] segmenterName name of the segmenter used (if not specified, find the first one loaded or the default one)
-	/// \return the document segmenter (ownership returned)
-	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const=0;
+	/// \brief Get a loaded document segmenter object reference
+	/// \param[in] segmenterName name of the segmenter used (if empty, find the first one loaded or the default one)
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName) const=0;
+
+	/// \brief Get a loaded document segmenter object reference that is able to process the specified MIME type
+	/// \param[in] mimetype MIME type of the document type to process
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* findMimeTypeSegmenter( const std::string& mimetype) const=0;
 
 	/// \brief Creates a document analyzer object
 	/// \param[in] segmenter the document segmenter to use (ownership passed)
