@@ -8,9 +8,9 @@
 
 #include "tsvSegmenter.hpp"
 
-#undef LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
-#ifdef LOWLEVEL_DEBUG
+#ifdef STRUS_LOWLEVEL_DEBUG
 #include <iostream>
 #endif
 
@@ -28,7 +28,7 @@ TSVParserDefinition::TSVParserDefinition( )
 
 void TSVParserDefinition::printDefinitions( )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: definition multimap contains: ";
 	for( std::multimap<std::string, int>::const_iterator it = m_map.begin( ); it != m_map.end( ); it++ ) {
 		std::cout << "[" << it->first << ", " << it->second << "], ";
@@ -39,19 +39,19 @@ void TSVParserDefinition::printDefinitions( )
 
 void TSVParserDefinition::defineSelectorExpression( int id, const std::string &expression )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: adding selector expression: " << id << ", " << expression << std::endl;
 #endif
 	m_map.insert( std::make_pair( expression, id ) );
 
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	printDefinitions( );
 #endif
 }
 
 void TSVParserDefinition::defineSubSection( int startId, int endId, const std::string &expression )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: adding subsection expression: [" << startId << ", " << endId << "]: " << expression << std::endl;
 #endif
 	// TODO: assume "line" as selector, currently we don't want to support something
@@ -63,7 +63,7 @@ void TSVParserDefinition::defineSubSection( int startId, int endId, const std::s
 
 int TSVParserDefinition::getNextId( const std::string &definition )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: lookup expression for: " << definition << std::endl;
 #endif
 	int id = 0;
@@ -90,7 +90,7 @@ int TSVParserDefinition::getNextId( const std::string &definition )
 			m_end = m_map.end( );
 		}
 	}
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: got number for '" << definition << "' to be " << id << std::endl;
 #endif
 	return id;
@@ -98,7 +98,7 @@ int TSVParserDefinition::getNextId( const std::string &definition )
 
 bool TSVParserDefinition::moreOftheSame( )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: moreOftheSame is " <<  ( m_it != m_map.end( ) && m_it != m_end ) << std::endl;
 #endif
 	return m_it != m_map.end( ) && m_it != m_end;
@@ -120,7 +120,7 @@ TSVSegmenterContext::~TSVSegmenterContext( )
 			
 void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bool eof )
 {
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: putInput '" << chunksize << " (eof: " << eof << ")" << std::endl;
 #endif
 	
@@ -205,7 +205,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		
 	do {
 		std::string headerName = m_headers[m_pos];
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 		std::cout << "DEBUG: field " << m_linepos << ":" << m_pos << "'" << headerName << "': '" << m_data[m_pos] << "'" << std::endl;
 #endif
 		
@@ -275,7 +275,7 @@ NEXTLINE:
 						return false;
 					}
 					// we don't have a complete line to work with, so wait for more data
-#ifdef LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG	
 					std::cout << "DEBUG: buffer reset, rest: " << m_currentLine << std::endl;
 #endif
 					m_data.clear( );
@@ -297,7 +297,7 @@ NEXTLINE:
 			break;
 
 		case TSV_PARSE_STATE_EOF:
-#ifdef LOWLEVEL_DEBUG
+#ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "DEBUG: end of data" << std::endl;
 #endif
 			return false;
