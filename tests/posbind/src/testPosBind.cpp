@@ -25,6 +25,7 @@
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/base/fileio.hpp"
 #include <memory>
+#include <algorithm>
 #include <string>
 #include <cstring>
 #include <stdexcept>
@@ -80,15 +81,14 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 	static const ConfigItem config[32] =
 	{
 		{ConfigItem::Attribute,"title",{"orig",0},"content","/doc/title()"},
-		{ConfigItem::Attribute,"title",{"orig",0},"content","/doc/title()"},
-		{ConfigItem::SearchIndex,"para",{"orig",0},"word","/text"},
-		{ConfigItem::SearchIndex,"head",{"empty",0},"content","/title"},
-		{ConfigItem::SearchIndex,"tag",{"orig",0},"word","/text/tag()"},
-		{ConfigItem::SearchIndex,"annot",{"orig",0},"word","/text/annot"},
-		{ConfigItem::SearchIndex,"aid",{"orig",0},"word","/text/annot@id"},
-		{ConfigItem::SearchIndex,"stem",{"convdia de","stem de","lc",0},"word","/text//()"},
-		{ConfigItem::SearchIndex,"punctuation",{"orig",0},"punctuation de","/text//()"},
-		{ConfigItem::ForwardIndex,"orig",{"orig",0},"word","/text//()"},
+		{ConfigItem::SearchIndex,"para",{"orig",0},"content","/doc/text"},
+		{ConfigItem::SearchIndex,"para",{"empty",0},"content","/doc/title"},
+		{ConfigItem::SearchIndex,"tag",{"orig",0},"word","/doc/text/tag()"},
+		{ConfigItem::SearchIndex,"annot",{"orig",0},"word","/doc/text/annot"},
+		{ConfigItem::SearchIndex,"aid",{"orig",0},"word","/doc/text/annot@id"},
+		{ConfigItem::SearchIndex,"stem",{"convdia de","stem de","lc",0},"word","/doc/text//()"},
+		{ConfigItem::SearchIndex,"sent",{"orig",0},"punctuation de","/doc/text//()"},
+		{ConfigItem::ForwardIndex,"orig",{"orig",0},"word","//text//()"},
 		{ConfigItem::Attribute,0,{0},0,0}
 	};
 	analyzer->defineSubDocument( "doc", "/doc");
@@ -100,16 +100,18 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 	ConfigItem const* ci = config;
 	for (; ci->name; ++ci)
 	{
-		FuncDef funcdef( ci->tokenizer);
-		const strus::TokenizerFunctionInterface* tk = textproc->getTokenizer( funcdef.name);
-		std::auto_ptr<strus::TokenizerFunctionInstanceInterface> tki( tk->createInstance( funcdef.args, textproc));
+		FuncDef tdef( ci->tokenizer);
+		const strus::TokenizerFunctionInterface* tk = textproc->getTokenizer( tdef.name);
+		if (!tk) throw std::runtime_error( std::string("unknown tokenizer: '") + tdef.name + "'");
+		std::auto_ptr<strus::TokenizerFunctionInstanceInterface> tki( tk->createInstance( tdef.args, textproc));
 		std::vector<strus::NormalizerFunctionInstanceInterface*> normalizers;
 		std::size_t ni = 0;
 		for (; ci->normalizers[ni]; ++ni)
 		{
 			FuncDef ndef( ci->normalizers[ni]);
-			const strus::NormalizerFunctionInterface* nm = textproc->getNormalizer( funcdef.name);
-			std::auto_ptr<strus::NormalizerFunctionInstanceInterface> nmi( nm->createInstance( funcdef.args, textproc));
+			const strus::NormalizerFunctionInterface* nm = textproc->getNormalizer( ndef.name);
+			if (!nm) throw std::runtime_error( std::string("unknown normalizer: '") + ndef.name + "'");
+			std::auto_ptr<strus::NormalizerFunctionInstanceInterface> nmi( nm->createInstance( ndef.args, textproc));
 			if (!nmi.get())
 			{
 				std::vector<strus::NormalizerFunctionInstanceInterface*>::iterator zi = normalizers.begin(), ze = normalizers.end();
@@ -124,16 +126,24 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 		switch (ci->type)
 		{
 			case ConfigItem::Attribute:
-				analyzer->defineAttribute( ci->name, ci->path, tki.get(), normalizers);
+				analyzer->defineAttribute( ci->name, ci->path, tki.release(), normalizers);
 				break;
 			case ConfigItem::SearchIndex:
-				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.get(), normalizers);
+				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers);
 				break;
 			case ConfigItem::ForwardIndex:
-				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.get(), normalizers);
+				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers);
 				break;
 		}
 	}
+}
+
+static bool cmpTerm( const strus::analyzer::Term& a, const strus::analyzer::Term& b)
+{
+	if (a.pos() != b.pos()) return a.pos() < b.pos();
+	if (a.type() != b.type()) return a.type() < b.type();
+	if (a.value() != b.value()) return a.value() < b.value();
+	return false;
 }
 
 int main( int argc, const char* argv[])
@@ -143,13 +153,13 @@ int main( int argc, const char* argv[])
 		printUsage( argc, argv);
 		return 0;
 	}
-	else if (argc < 4)
+	else if (argc < 3)
 	{
 		std::cerr << "ERROR too few parameters" << std::endl;
 		printUsage( argc, argv);
 		return 1;
 	}
-	else if (argc > 4)
+	else if (argc > 3)
 	{
 		std::cerr << "ERROR too many parameters" << std::endl;
 		printUsage( argc, argv);
@@ -162,14 +172,20 @@ int main( int argc, const char* argv[])
 		{
 			throw std::runtime_error("failed to create error buffer object");
 		}
-		char const* xi = argv[3];
-		char const* xn = std::strchr( xi,'.');
-		for (; xn; xi=xn+1,xn=std::strchr(xi,'.')){}
-
 		std::string inputfile( argv[1]);
 		std::string expectedfile( argv[2]);
-		std::string outputfile( std::string( argv[2], xi-argv[2]) + ".out");
-
+		std::string outputfile;
+		char const* xi = argv[2];
+		char const* xn = std::strchr( xi,'.');
+		if (xn)
+		{
+			for (; xn; xi=xn+1,xn=std::strchr(xi,'.')){}
+			outputfile.append( std::string( argv[2], xi-argv[2]) + "out");
+		}
+		else
+		{
+			outputfile.append( std::string( argv[2]) + ".out");
+		}
 		std::auto_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
 			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
 		const strus::SegmenterInterface* segmenter = objbuild->getSegmenter( "textwolf");
@@ -198,24 +214,28 @@ int main( int argc, const char* argv[])
 				ai = doc.attributes().begin(), ae = doc.attributes().end();
 			for (; ai != ae; ++ai)
 			{
-				output << "Attribute " << ai->name() << "=" << ai->value() << std::endl;
+				output << "Attribute " << ai->name() << " = '" << ai->value() << "'" << std::endl;
 			}
 			std::vector<strus::analyzer::MetaData>::const_iterator
 				mi = doc.metadata().begin(), me = doc.metadata().end();
 			for (; mi != me; ++mi)
 			{
-				output << "MetaData " << mi->name() << "=" << mi->value().tostring().c_str() << std::endl;
+				output << "MetaData " << mi->name() << " = '" << mi->value().tostring().c_str() << "'" << std::endl;
 			}
+			std::vector<strus::analyzer::Term> searchIndexTerms = doc.searchIndexTerms();
+			std::sort( searchIndexTerms.begin(), searchIndexTerms.end(), cmpTerm);
 			std::vector<strus::analyzer::Term>::const_iterator
-				ti = doc.searchIndexTerms().begin(), te = doc.searchIndexTerms().end();
+				ti = searchIndexTerms.begin(), te = searchIndexTerms.end();
 			for (; ti != te; ++ti)
 			{
-				output << "SearchTerm term " << ti->type() << " '" << ti->value() << " at " << ti->pos() << std::endl;
+				output << "SearchTerm term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
-			ti = doc.forwardIndexTerms().begin(), te = doc.forwardIndexTerms().end();
+			std::vector<strus::analyzer::Term> forwardIndexTerms = doc.forwardIndexTerms();
+			std::sort( forwardIndexTerms.begin(), forwardIndexTerms.end(), cmpTerm);
+			ti = forwardIndexTerms.begin(), te = forwardIndexTerms.end();
 			for (; ti != te; ++ti)
 			{
-				output << "ForwardIndex term " << ti->type() << " '" << ti->value() << " at " << ti->pos() << std::endl;
+				output << "ForwardIndex term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
 		}
 #ifdef STRUS_LOWLEVEL_DEBUG

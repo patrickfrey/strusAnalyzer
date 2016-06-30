@@ -115,9 +115,13 @@ public:
 		return m_prev_ch[ (m_idx - idx) & ((unsigned int)NofPrevChar -1)];
 	}
 
-	unsigned int pos() const
+	unsigned int winpos() const
 	{
 		return m_pos;
+	}
+	unsigned int itrpos() const
+	{
+		return m_itr.getPosition();
 	}
 
 	unsigned int wordlen() const

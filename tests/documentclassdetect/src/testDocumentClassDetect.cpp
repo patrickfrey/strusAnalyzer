@@ -23,7 +23,7 @@
 #include <streambuf>
 #include <stdexcept>
 
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 

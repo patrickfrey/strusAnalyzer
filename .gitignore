@@ -74,6 +74,7 @@ tests/posbind/src/testPosBind
 tests/segmenter_textwolf/output.txt
 tests/segmenter_cjson/output.txt
 tests/segmenter_tsv/output.txt
+tests/posbind/data/doc.out
 
 .travis.yml
 

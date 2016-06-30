@@ -130,7 +130,7 @@ public:
 			{
 				const char* errstr = "";
 				m_scanner.getError( &errstr);
-				m_errorhnd->report( "error in XML document: %s", errstr);
+				m_errorhnd->report( "error in XML document at position %u: %s", (unsigned int)m_scanner.getTokenPosition(), errstr);
 				return false;
 			}
 			else if (et == XMLScanner::Exit)
