@@ -68,11 +68,13 @@ tests/segmenter_textwolf/src/testSegmenterTextwolf
 tests/segmenter_cjson/src/testSegmenterCJson
 tests/segmenter_tsv/src/testSegmenterTsv
 tests/tokenizer_textcat/src/testTokenizerTextcat
+tests/posbind/src/testPosBind
 
 # Test Output
 tests/segmenter_textwolf/output.txt
 tests/segmenter_cjson/output.txt
 tests/segmenter_tsv/output.txt
+tests/posbind/data/doc.out
 
 .travis.yml
 

@@ -88,6 +88,7 @@ install( TARGETS strus_textcat
 # ------------------------------
 # INSTALLATION
 # ------------------------------
+install(DIRECTORY DESTINATION share/strus)
 install( DIRECTORY langclass/LM
            DESTINATION share/strus/textcat
            FILES_MATCHING PATTERN "*.lm")

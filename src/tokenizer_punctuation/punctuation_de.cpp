@@ -26,6 +26,7 @@ std::vector<analyzer::Token>
 		textwolf::UChar ch0;
 		CharWindow scanner( src, srcsize, m_punctuation_char);
 		unsigned int wordlen=0;
+		unsigned int pos = 0;
 	
 		for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
 		{
@@ -36,6 +37,7 @@ std::vector<analyzer::Token>
 			}
 			else if (ch0 == '.')
 			{
+				pos = scanner.itrpos();
 				textwolf::UChar ch1 = scanner.chr(1);
 				if (isDigit( ch1))
 				{
@@ -149,14 +151,22 @@ std::vector<analyzer::Token>
 						continue;
 					}
 				}
+				rt.push_back( analyzer::Token( pos, pos, 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+				std::size_t endpos = pos;
+				std::size_t startpos = (endpos > 16)?(endpos-16):0;
+				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
 #endif
-				rt.push_back( analyzer::Token( scanner.pos(), scanner.pos(), 1));
 			}
 			else if (isPunctuation(ch0))
 			{
-				rt.push_back( analyzer::Token( scanner.pos(), scanner.pos(), 1));
+				rt.push_back( analyzer::Token( pos, pos, 1));
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::size_t endpos = pos;
+				std::size_t startpos = (endpos > 16)?(endpos-16):0;
+				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
+#endif
 			}
 		}
 		return rt;

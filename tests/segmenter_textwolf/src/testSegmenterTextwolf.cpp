@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Exported functions of the strus segmenter library
+/// \brief Test of the textwolf based XML segmenter
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/errorBufferInterface.hpp"

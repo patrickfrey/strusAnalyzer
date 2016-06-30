@@ -1,0 +1,20 @@
+[Document]
+	doc = /doc;
+
+[Attribute]
+	title = orig content /doc/title();
+
+[SearchIndex]
+	para = orig word /text;
+	head = empty content /title;
+	tag  = orig word /text/tag();
+	annot= orig word /text/annot();
+	aid  = orig word /text/annot@id;
+	stem = convdia("de"):stem("de"):lc word /text//();
+	punctuation = orig punctuation("de") /text//();
+
+[ForwardIndex]
+	orig = orig word /text//();
+
+[Aggregator]
+	doclen = count( stem);
