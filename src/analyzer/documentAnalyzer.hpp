@@ -209,6 +209,22 @@ private:
 };
 
 
+class BindTerm
+	:public analyzer::Term
+{
+public:
+	typedef DocumentAnalyzerInterface::FeatureOptions::PositionBind PositionBind;
+	BindTerm( const BindTerm& o)
+		:analyzer::Term(o),m_posbind(o.m_posbind){}
+	BindTerm( const std::string& t, const std::string& v, unsigned int p, PositionBind b)
+		:analyzer::Term(t,v,p),m_posbind(b){}
+
+	PositionBind posbind() const		{return m_posbind;}
+private:
+	PositionBind m_posbind;
+};
+
+
 class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
@@ -225,11 +241,22 @@ public:
 	virtual bool analyzeNext( analyzer::Document& doc);
 
 private:
+	struct SegPosDef
+	{
+		std::size_t strpos;
+		std::size_t segpos;
+
+		SegPosDef( std::size_t strpos_, std::size_t segpos_)
+			:strpos(strpos_),segpos(segpos_){}
+		SegPosDef( const SegPosDef& o)
+			:strpos(o.strpos),segpos(o.segpos){}
+	};
+
 	void clearTermMaps();
 	void mapPositions( analyzer::Document& res) const;
 	void mapStatistics( analyzer::Document& res) const;
 	///\param[in] samePosition true, if all elements get the same position (bind predecessor, bind successor)
-	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, bool samePosition);
+	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
 	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void processConcatenated( analyzer::Document& res);
 
@@ -239,25 +266,21 @@ private:
 		Chunk()
 			:position(0){}
 		Chunk( std::size_t position_, const std::string& content_)
-			:position(position_),content(content_){}
+			:position(position_),content(content_),concatposmap(){}
+		Chunk( std::size_t position_, const std::string& content_, std::size_t segpos)
+			:position(position_),content(content_),concatposmap()
+		{
+			concatposmap.push_back( SegPosDef( content.size(), segpos));
+		}
 		Chunk( const Chunk& o)
-			:position(o.position),content(o.content){}
+			:position(o.position),content(o.content),concatposmap(o.concatposmap){}
 	
 		std::size_t position;
 		std::string content;
+		std::vector<SegPosDef> concatposmap;
 	};
 	
 	typedef std::map<int,Chunk> ConcatenatedMap;
-
-	struct SuccPositionChunk
-	{
-		SuccPositionChunk( int featidx_, const char* elem_, std::size_t elemsize_)
-			:featidx(featidx_),elem(elem_,elemsize_){}
-		SuccPositionChunk( const SuccPositionChunk& o)
-			:featidx(o.featidx),elem(o.elem){}
-		int featidx;
-		std::string elem;
-	};
 
 private:
 	const DocumentAnalyzer* m_analyzer;
@@ -267,13 +290,11 @@ private:
 
 	ConcatenatedMap m_concatenatedMap;
 
-	std::vector<analyzer::Term> m_searchTerms;
-	std::vector<analyzer::Term> m_forwardTerms;
+	std::vector<BindTerm> m_searchTerms;
+	std::vector<BindTerm> m_forwardTerms;
 	bool m_eof;
-	SegmenterPosition m_last_position;
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
-	std::vector<SuccPositionChunk> m_succChunks;
 	ErrorBufferInterface* m_errorhnd;
 };
 
