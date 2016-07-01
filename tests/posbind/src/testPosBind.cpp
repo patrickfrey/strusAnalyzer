@@ -52,6 +52,7 @@ struct ConfigItem
 	const char* normalizers[10];
 	const char* tokenizer;
 	const char* path;
+	int posbind;
 };
 
 struct FuncDef
@@ -80,15 +81,15 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 {
 	static const ConfigItem config[32] =
 	{
-		{ConfigItem::Attribute,"title",{"orig",0},"content","/doc/title()"},
-		{ConfigItem::SearchIndex,"para",{"orig",0},"content","/doc/text"},
-		{ConfigItem::SearchIndex,"para",{"empty",0},"content","/doc/title"},
-		{ConfigItem::SearchIndex,"tag",{"orig",0},"word","/doc/text/tag()"},
-		{ConfigItem::SearchIndex,"annot",{"orig",0},"word","/doc/text/annot"},
-		{ConfigItem::SearchIndex,"aid",{"orig",0},"word","/doc/text/annot@id"},
-		{ConfigItem::SearchIndex,"stem",{"convdia de","stem de","lc",0},"word","/doc/text//()"},
-		{ConfigItem::SearchIndex,"sent",{"orig",0},"punctuation de","/doc/text//()"},
-		{ConfigItem::ForwardIndex,"orig",{"orig",0},"word","//text//()"},
+		{ConfigItem::Attribute,"title",{"orig",0},"content","/doc/title()",0},
+		{ConfigItem::SearchIndex,"para",{"orig",0},"content","/doc/text",0},
+		{ConfigItem::SearchIndex,"para",{"empty",0},"content","/doc/title",0},
+		{ConfigItem::SearchIndex,"tag",{"orig",0},"word","/doc/text/tag()",0},
+		{ConfigItem::SearchIndex,"annot",{"orig",0},"word","/doc/text/annot",0},
+		{ConfigItem::SearchIndex,"aid",{"orig",0},"word","/doc/text/annot@id",0},
+		{ConfigItem::SearchIndex,"stem",{"convdia de","stem de","lc",0},"word","/doc/text//()",0},
+		{ConfigItem::SearchIndex,"sent",{"orig",0},"punctuation de","/doc/text//()",0},
+		{ConfigItem::ForwardIndex,"orig",{"orig",0},"word","//text//()",0},
 		{ConfigItem::Attribute,0,{0},0,0}
 	};
 	analyzer->defineSubDocument( "doc", "/doc");
@@ -123,16 +124,25 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 			}
 			normalizers.push_back( nmi.release());
 		}
+		strus::DocumentAnalyzerInterface::FeatureOptions opt;
+		if (ci->posbind > 0)
+		{
+			opt.definePositionBind( strus::DocumentAnalyzerInterface::FeatureOptions::BindSuccessor);
+		}
+		else if (ci->posbind < 0)
+		{
+			opt.definePositionBind( strus::DocumentAnalyzerInterface::FeatureOptions::BindPredecessor);
+		}
 		switch (ci->type)
 		{
 			case ConfigItem::Attribute:
 				analyzer->defineAttribute( ci->name, ci->path, tki.release(), normalizers);
 				break;
 			case ConfigItem::SearchIndex:
-				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers);
+				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
 				break;
 			case ConfigItem::ForwardIndex:
-				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers);
+				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
 				break;
 		}
 	}
@@ -201,8 +211,6 @@ int main( int argc, const char* argv[])
 		if (ec) throw std::runtime_error( std::string("error reading expected file ") + expectedfile + ": " + ::strerror(ec));
 
 		strus::DocumentClass documentClass( "application/xml", "UTF-8");
-		strus::analyzer::Document resdoc = analyzer->analyze( inputsrc, documentClass);
-
 		std::ostringstream output;
 		std::auto_ptr<strus::DocumentAnalyzerContextInterface> analyzerctx( analyzer->createContext( documentClass));
 		analyzerctx->putInput( inputsrc.c_str(), inputsrc.size(), true);

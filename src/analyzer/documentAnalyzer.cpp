@@ -25,7 +25,7 @@
 #include <cstring>
 #include <limits>
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_LOWLEVEL_DEBUG
 
 ///\brief Correction factor to avoid byte positions of different segments in the original source to overlap in case the UTF-8 string of the decoded segment is longer than the source
 #define REL_POS_CORR_FACTOR  2 
@@ -328,6 +328,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.find( ri->pos()+1);
 				res.addSearchIndexTerm( ri->type(), ri->value(), mi->second + posofs);
+				break;
 			}
 			case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
 			{
@@ -337,15 +338,17 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				{
 					res.addSearchIndexTerm( ri->type(), ri->value(), mi->second + posofs);
 				}
+				break;
 			}
 			case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
-					mi = posmap.lower_bound( ri->pos()+1);
+					mi = posmap.upper_bound( ri->pos()+1);
 				if (mi != posmap.end())
 				{
-					res.addSearchIndexTerm( ri->type(), ri->value(), mi->second + posofs);
+					res.addSearchIndexTerm( ri->type(), ri->value(), mi->second + posofs - 1);
 				}
+				break;
 			}
 		}
 	}
@@ -358,6 +361,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.find( ri->pos()+1);
 				res.addForwardIndexTerm( ri->type(), ri->value(), mi->second + posofs);
+				break;
 			}
 			case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
 			{
@@ -367,15 +371,17 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				{
 					res.addForwardIndexTerm( ri->type(), ri->value(), mi->second + posofs);
 				}
+				break;
 			}
 			case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
-					mi = posmap.lower_bound( ri->pos()+1);
+					mi = posmap.upper_bound( ri->pos()+1);
 				if (mi != posmap.end())
 				{
-					res.addForwardIndexTerm( ri->type(), ri->value(), mi->second + posofs);
+					res.addForwardIndexTerm( ri->type(), ri->value(), mi->second + posofs - 1);
 				}
+				break;
 			}
 		}
 	}
@@ -398,7 +404,9 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
-
+#ifdef STRUS_LOWLEVEL_DEBUG
+	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(elem,elemsize>100?100:elemsize) << std::endl;
+#endif
 	std::vector<analyzer::Token>
 		tokens = feat.m_tokenizerContext->tokenize( elem, elemsize);
 	switch (feat.m_config->featureClass())
@@ -447,10 +455,16 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
+				// Calculate string position of segment start for concatenated segments:
+				unsigned int str_position = 0;
 				if (ci != ce)
 				{
-					for (; ci != ce && ci->strpos < ti->strpos; ++ci){}
-					if (ci != ce) rel_position = ci->segpos;
+					for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
+					if (ci != ce)
+					{
+						str_position = ci->start_strpos;
+						rel_position = ci->segpos;
+					}
 				}
 				std::string termval( feat.normalize( elem + ti->strpos, ti->strsize));
 				if (termval.size() && termval[0] == '\0')
@@ -462,7 +476,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					{
 						BindTerm term(
 							feat.m_config->name(), vi,
-							REL_POS_CORR_FACTOR * rel_position + ti->strpos,
+							REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
 							feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -474,7 +488,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				{
 					BindTerm term(
 						feat.m_config->name(), termval,
-						REL_POS_CORR_FACTOR * rel_position + ti->strpos,
+						REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
 						feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 					std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -492,10 +506,16 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
 			for (; ti != te; ++ti)
 			{
+				// Calculate string position of segment start for concatenated segments:
+				unsigned int str_position = 0;
 				if (ci != ce)
 				{
-					for (; ci != ce && ci->strpos < ti->strpos; ++ci){}
-					if (ci != ce) rel_position = ci->segpos;
+					for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
+					if (ci != ce)
+					{
+						str_position = ci->start_strpos;
+						rel_position = ci->segpos;
+					}
 				}
 				std::string termval( feat.normalize( elem + ti->strpos, ti->strsize));
 				if (termval.size() && termval[0] == '\0')
@@ -507,7 +527,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 					{
 						BindTerm term(
 							feat.m_config->name(), vi,
-							REL_POS_CORR_FACTOR * rel_position + ti->strpos,
+							REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
 							feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -519,7 +539,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 				{
 					BindTerm term(
 						feat.m_config->name(), termval,
-						REL_POS_CORR_FACTOR * rel_position + ti->strpos,
+						REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
 						feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 					std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -571,9 +591,9 @@ void DocumentAnalyzerContext::concatDocumentSegment( int featidx, std::size_t re
 	{
 		Chunk& cm = m_concatenatedMap[ featidx];
 		cm.content.push_back(' ');
-		cm.content.append( elem, elemsize);
 		std::size_t strpos = cm.content.size();
-		cm.concatposmap.push_back( SegPosDef( strpos, rel_position));
+		cm.content.append( elem, elemsize);
+		cm.concatposmap.push_back( SegPosDef( strpos, strpos+elemsize, rel_position));
 	}
 }
 
@@ -628,6 +648,9 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		{
 			try
 			{
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "fetch document segment '" << featidx << "': " << std::string(elem,elemsize>100?100:elemsize) << std::endl;
+#endif
 				if (featidx >= EndOfSubDocument)
 				{
 					//... start or end of document marker

@@ -243,13 +243,14 @@ public:
 private:
 	struct SegPosDef
 	{
-		std::size_t strpos;
+		std::size_t start_strpos;
+		std::size_t end_strpos;
 		std::size_t segpos;
 
-		SegPosDef( std::size_t strpos_, std::size_t segpos_)
-			:strpos(strpos_),segpos(segpos_){}
+		SegPosDef( std::size_t start_strpos_, std::size_t end_strpos_, std::size_t segpos_)
+			:start_strpos(start_strpos_),end_strpos(end_strpos_),segpos(segpos_){}
 		SegPosDef( const SegPosDef& o)
-			:strpos(o.strpos),segpos(o.segpos){}
+			:start_strpos(o.start_strpos),end_strpos(o.end_strpos),segpos(o.segpos){}
 	};
 
 	void clearTermMaps();
@@ -270,7 +271,7 @@ private:
 		Chunk( std::size_t position_, const std::string& content_, std::size_t segpos)
 			:position(position_),content(content_),concatposmap()
 		{
-			concatposmap.push_back( SegPosDef( content.size(), segpos));
+			concatposmap.push_back( SegPosDef( 0, content.size(), segpos));
 		}
 		Chunk( const Chunk& o)
 			:position(o.position),content(o.content),concatposmap(o.concatposmap){}
