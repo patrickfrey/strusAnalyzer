@@ -16,6 +16,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
+#include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -258,6 +259,7 @@ private:
 	void mapStatistics( analyzer::Document& res) const;
 	///\param[in] samePosition true, if all elements get the same position (bind predecessor, bind successor)
 	void processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
+	void processContentTokens( std::vector<BindTerm>& result, ParserContext::FeatureContext& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t rel_position, const std::vector<SegPosDef>& concatposmap) const;
 	void concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize);
 	void processConcatenated( analyzer::Document& res);
 

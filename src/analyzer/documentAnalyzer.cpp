@@ -13,7 +13,6 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -401,21 +400,75 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	}
 }
 
-void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap)
+void DocumentAnalyzerContext::processContentTokens( std::vector<BindTerm>& result, ParserContext::FeatureContext& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t rel_position, const std::vector<SegPosDef>& concatposmap) const
+{
+#ifdef STRUS_LOWLEVEL_DEBUG
+	const char* indextype = feat.m_config->featureClass()==DocumentAnalyzer::FeatSearchIndexTerm?"search index":"forward index";
+#endif
+	std::vector<SegPosDef>::const_iterator
+		ci = concatposmap.begin(), ce = concatposmap.end();
+	std::vector<analyzer::Token>::const_iterator
+		ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
+	for (; ti != te; ++ti)
+	{
+		// Calculate string position of segment start for concatenated segments:
+		unsigned int str_position = 0;
+		if (ci != ce)
+		{
+			for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
+			if (ci != ce)
+			{
+				str_position = ci->start_strpos;
+				rel_position = ci->segpos;
+			}
+		}
+		std::string termval( feat.normalize( segsrc + ti->strpos, ti->strsize));
+		if (termval.size() && termval[0] == '\0')
+		{
+			// ... handle normalizers with multiple results
+			char const* vi = termval.c_str();
+			char const* ve = vi + termval.size();
+			for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
+			{
+				BindTerm term(
+					feat.m_config->name(), vi,
+					REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
+					feat.m_config->options().positionBind());
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+#endif
+				result.push_back( term);
+			}
+		}
+		else
+		{
+			BindTerm term(
+				feat.m_config->name(), termval,
+				REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
+				feat.m_config->options().positionBind());
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+#endif
+			result.push_back( term);
+		}
+	}
+}
+
+void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, int featidx, std::size_t rel_position, const char* segsrc, std::size_t segsrcsize, const std::vector<SegPosDef>& concatposmap)
 {
 	ParserContext::FeatureContext& feat = m_parserContext.featureContext( featidx);
 #ifdef STRUS_LOWLEVEL_DEBUG
-	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(elem,elemsize>100?100:elemsize) << std::endl;
+	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
 	std::vector<analyzer::Token>
-		tokens = feat.m_tokenizerContext->tokenize( elem, elemsize);
+		tokens = feat.m_tokenizerContext->tokenize( segsrc, segsrcsize);
 	switch (feat.m_config->featureClass())
 	{
 		case DocumentAnalyzer::FeatMetaData:
 		{
 			if (!tokens.empty())
 			{
-				std::string valuestr = feat.normalize( elem + tokens[0].strpos, tokens[0].strsize);
+				std::string valuestr = feat.normalize( segsrc + tokens[0].strpos, tokens[0].strsize);
 				NumericVariant value;
 				if (!value.initFromString( valuestr.c_str()))
 				{
@@ -439,114 +492,22 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			for (; ti != te; ++ti)
 			{
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add attribute " << feat.m_config->name() << "=" << feat.normalize( elem + ti->strpos, ti->strsize) << std::endl;
+				std::cout << "add attribute " << feat.m_config->name() << "=" << feat.normalize( segsrc + ti->strpos, ti->strsize) << std::endl;
 #endif
 				res.setAttribute(
 					feat.m_config->name(),
-					feat.normalize( elem + ti->strpos, ti->strsize));
+					feat.normalize( segsrc + ti->strpos, ti->strsize));
 			}
 			break;
 		}
 		case DocumentAnalyzer::FeatSearchIndexTerm:
 		{
-			std::vector<SegPosDef>::const_iterator
-				ci = concatposmap.begin(), ce = concatposmap.end();
-			std::vector<analyzer::Token>::const_iterator
-				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
-			for (; ti != te; ++ti)
-			{
-				// Calculate string position of segment start for concatenated segments:
-				unsigned int str_position = 0;
-				if (ci != ce)
-				{
-					for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
-					if (ci != ce)
-					{
-						str_position = ci->start_strpos;
-						rel_position = ci->segpos;
-					}
-				}
-				std::string termval( feat.normalize( elem + ti->strpos, ti->strsize));
-				if (termval.size() && termval[0] == '\0')
-				{
-					// ... handle normalizers with multiple results
-					char const* vi = termval.c_str();
-					char const* ve = vi + termval.size();
-					for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
-					{
-						BindTerm term(
-							feat.m_config->name(), vi,
-							REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
-							feat.m_config->options().positionBind());
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
-						m_searchTerms.push_back( term);
-					}
-				}
-				else
-				{
-					BindTerm term(
-						feat.m_config->name(), termval,
-						REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
-						feat.m_config->options().positionBind());
-#ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "add search index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
-					m_searchTerms.push_back( term);
-				}
-			}
+			processContentTokens( m_searchTerms, feat, tokens, segsrc, rel_position, concatposmap);
 			break;
 		}
 		case DocumentAnalyzer::FeatForwardIndexTerm:
 		{
-			std::vector<SegPosDef>::const_iterator
-				ci = concatposmap.begin(), ce = concatposmap.end();
-			std::vector<analyzer::Token>::const_iterator
-				ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
-			for (; ti != te; ++ti)
-			{
-				// Calculate string position of segment start for concatenated segments:
-				unsigned int str_position = 0;
-				if (ci != ce)
-				{
-					for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
-					if (ci != ce)
-					{
-						str_position = ci->start_strpos;
-						rel_position = ci->segpos;
-					}
-				}
-				std::string termval( feat.normalize( elem + ti->strpos, ti->strsize));
-				if (termval.size() && termval[0] == '\0')
-				{
-					// ... handle normalizers with multiple results
-					char const* vi = termval.c_str();
-					char const* ve = vi + termval.size();
-					for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
-					{
-						BindTerm term(
-							feat.m_config->name(), vi,
-							REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
-							feat.m_config->options().positionBind());
-#ifdef STRUS_LOWLEVEL_DEBUG
-						std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
-						m_searchTerms.push_back( term);
-					}
-				}
-				else
-				{
-					BindTerm term(
-						feat.m_config->name(), termval,
-						REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
-						feat.m_config->options().positionBind());
-#ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "add forward index term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
-					m_forwardTerms.push_back( term);
-				}
-			}
+			processContentTokens( m_forwardTerms, feat, tokens, segsrc, rel_position, concatposmap);
 			break;
 		}
 	}
@@ -579,21 +540,21 @@ void DocumentAnalyzerContext::processConcatenated(
 	}
 }
 
-void DocumentAnalyzerContext::concatDocumentSegment( int featidx, std::size_t rel_position, const char* elem, std::size_t elemsize)
+void DocumentAnalyzerContext::concatDocumentSegment( int featidx, std::size_t rel_position, const char* segsrc, std::size_t segsrcsize)
 {
 	ConcatenatedMap::iterator ci = m_concatenatedMap.find( featidx);
 	if (ci == m_concatenatedMap.end())
 	{
 		m_concatenatedMap[ featidx]
-			= Chunk( rel_position, std::string( elem, elemsize), rel_position);
+			= Chunk( rel_position, std::string( segsrc, segsrcsize), rel_position);
 	}
 	else
 	{
 		Chunk& cm = m_concatenatedMap[ featidx];
 		cm.content.push_back(' ');
 		std::size_t strpos = cm.content.size();
-		cm.content.append( elem, elemsize);
-		cm.concatposmap.push_back( SegPosDef( strpos, strpos+elemsize, rel_position));
+		cm.content.append( segsrc, segsrcsize);
+		cm.concatposmap.push_back( SegPosDef( strpos, strpos+segsrcsize, rel_position));
 	}
 }
 
@@ -639,17 +600,17 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		doc.clear();
 		m_subdocstack.back().swap( doc);
 		m_subdocstack.pop_back();
-		const char* elem = 0;
-		std::size_t elemsize = 0;
+		const char* segsrc = 0;
+		std::size_t segsrcsize = 0;
 		int featidx = 0;
 	
 		// [1] Scan the document and push the normalized tokenization of the elements to the result:
-		while (m_segmenter->getNext( featidx, m_curr_position, elem, elemsize))
+		while (m_segmenter->getNext( featidx, m_curr_position, segsrc, segsrcsize))
 		{
 			try
 			{
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "fetch document segment '" << featidx << "': " << std::string(elem,elemsize>100?100:elemsize) << std::endl;
+				std::cout << "fetch document segment '" << featidx << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
 				if (featidx >= EndOfSubDocument)
 				{
@@ -680,20 +641,20 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					{
 						// concat chunks that need to be concatenated before tokenization:
 						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-						concatDocumentSegment( featidx, rel_position, elem, elemsize);
+						concatDocumentSegment( featidx, rel_position, segsrc, segsrcsize);
 						continue;
 					}
 					else
 					{
 						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 						processDocumentSegment( doc, featidx, rel_position, 
-									elem, elemsize, std::vector<SegPosDef>());
+									segsrc, segsrcsize, std::vector<SegPosDef>());
 					}
 				}
 			}
 			catch (const std::runtime_error& err)
 			{
-				std::string chunk( elem, elemsize);
+				std::string chunk( segsrc, segsrcsize);
 				throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
 			}
 		}
