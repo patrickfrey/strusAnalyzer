@@ -24,7 +24,7 @@
 #include <cstring>
 #include <limits>
 
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
 ///\brief Correction factor to avoid byte positions of different segments in the original source to overlap in case the UTF-8 string of the decoded segment is longer than the source
 #define REL_POS_CORR_FACTOR  2 
