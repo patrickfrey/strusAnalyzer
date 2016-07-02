@@ -12,6 +12,7 @@
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "segmenterMarkupContext.hpp"
 
 using namespace strus;
 
@@ -115,7 +116,88 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 			}
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter creating context: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+}
+
+SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const DocumentClass& dclass, const std::string& content) const
+{
+	try
+	{
+		typedef textwolf::charset::UTF8 UTF8;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
+		typedef textwolf::charset::IsoLatin IsoLatin;
+		unsigned char codepage = 1;
+	
+		if (dclass.encoding().empty())
+		{
+			return new SegmenterMarkupContext<UTF8>( m_errorhnd, content);
+		}
+		else
+		{
+			if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+			||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+			{
+				char const* cc = dclass.encoding().c_str() + 8;
+				if (*cc == '-')
+				{
+					++cc;
+					if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
+					{
+						codepage = *cc - '0';
+					}
+					else
+					{
+						throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), dclass.encoding().c_str());
+					}
+				}
+				return new SegmenterMarkupContext<IsoLatin>( m_errorhnd, content, IsoLatin(codepage));
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+			{
+				return new SegmenterMarkupContext<UTF8>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+			{
+				return new SegmenterMarkupContext<UTF16BE>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+			{
+				return new SegmenterMarkupContext<UTF16LE>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+			{
+				return new SegmenterMarkupContext<UCS2BE>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+			{
+				return new SegmenterMarkupContext<UCS2LE>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+			{
+				return new SegmenterMarkupContext<UCS4BE>( m_errorhnd, content);
+			}
+			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+			{
+				return new SegmenterMarkupContext<UCS4LE>( m_errorhnd, content);
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
+			}
+		}
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 SegmenterInstanceInterface* Segmenter::createInstance() const

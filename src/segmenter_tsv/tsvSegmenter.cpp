@@ -7,6 +7,8 @@
  */
 
 #include "tsvSegmenter.hpp"
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -17,6 +19,8 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+
+#define SEGMENTER_NAME "tsv"
 
 // TSVParserDefinition
 
@@ -120,6 +124,8 @@ TSVSegmenterContext::~TSVSegmenterContext( )
 			
 void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bool eof )
 {
+	try
+	{	
 #ifdef STRUS_LOWLEVEL_DEBUG	
 	std::cout << "DEBUG: putInput '" << chunksize << " (eof: " << eof << ")" << std::endl;
 #endif
@@ -133,6 +139,8 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 	m_eof |= eof;
 	
 	m_is.str( m_buf );
+	}
+	CATCH_ERROR_MAP_ARG1( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 
 static std::vector<std::string> splitLine( const std::string &s, const std::string &delimiter, bool keepEmpty )
@@ -249,6 +257,8 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 
 bool TSVSegmenterContext::getNext( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
 {
+	try
+	{
 NEXTLINE:
 	
 	bool hasNext = false;
@@ -302,8 +312,9 @@ NEXTLINE:
 #endif
 			return false;
 	}
-	
 	return false;
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, false);
 }
 
 // TSVSegmenterInstance
@@ -316,18 +327,41 @@ TSVSegmenterInstance::TSVSegmenterInstance( strus::ErrorBufferInterface *errbuf,
 
 void TSVSegmenterInstance::defineSelectorExpression( int id, const std::string &expression )
 {
+	try
+	{
 	m_parserDefinition->defineSelectorExpression( id, expression );
+	}
+	CATCH_ERROR_MAP_ARG1( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 		
 void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::string &expression )
 {
+	try
+	{
 	m_parserDefinition->defineSubSection( startId, endId, expression );
+	}
+	CATCH_ERROR_MAP_ARG1( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 
 strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::DocumentClass &dclass ) const
 {
+	try
+	{
 	return new TSVSegmenterContext( m_parserDefinition.get( ), m_errbuf, m_errorReporting );
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
+
+strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContext( const strus::DocumentClass& dclass, const std::string& content) const
+{
+	try
+	{
+	m_errbuf->report( _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	return 0;
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+}
+
 
 // TSVSegmenter
 
@@ -343,5 +377,10 @@ const char* TSVSegmenter::mimeType( ) const
 
 strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( ) const
 {
+	try
+	{
 	return new TSVSegmenterInstance( m_errbuf, m_errorReporting );
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
+

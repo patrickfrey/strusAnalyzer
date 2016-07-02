@@ -17,6 +17,10 @@ namespace strus
 {
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class SegmenterContextInterface;
+/// \brief Forward declaration
+class SegmenterMarkupContextInterface;
 
 class SegmenterInstance
 	:public SegmenterInstanceInterface
@@ -30,6 +34,7 @@ public:
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
 	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
+	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const;
 
 private:
 	void addExpression( int id, const std::string& expression);

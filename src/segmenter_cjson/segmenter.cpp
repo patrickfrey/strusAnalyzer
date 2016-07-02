@@ -45,6 +45,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
+SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const DocumentClass& dclass, const std::string& content) const
+{
+	m_errorhnd->report( _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	return 0;
+}
+
 SegmenterInstanceInterface* Segmenter::createInstance() const
 {
 	try

@@ -124,7 +124,7 @@ public:
 		{
 			++m_itr;
 			if (m_itr == m_end) return false;
-	
+
 			typename XMLScanner::ElementType et = m_itr->type();
 			if (et == XMLScanner::ErrorOccurred)
 			{

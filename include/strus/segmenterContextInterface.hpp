@@ -33,7 +33,7 @@ namespace strus
 {
 
 /// \class SegmenterContextInterface
-/// \brief Defines an instance of a segmenter program
+/// \brief Defines the context for segmenting one document
 class SegmenterContextInterface
 {
 public:
@@ -50,7 +50,7 @@ public:
 	/// \brief Fetch the next text segment
 	/// \param[out] id identifier of the expression that addresses the text segment (defined with SegmenterInterface::defineSelectorExpression(int, const std::string&) or with SegmenterInterface::defineSubSection(int,int,const std::string&))
 	/// \param[out] pos position of the segment in the original source
-	/// \param[out] segment pointer to the start of the segment. Must remain a valid reference during the whole lifetime of this segmented instance.
+	/// \param[out] segment pointer to the start of the segment.
 	/// \param[out] segmentsize size of segment in bytes
 	/// \return true, if a valid segment could be returned, false in case of no segments left or more required to be fed
 	/// \remark throws on error

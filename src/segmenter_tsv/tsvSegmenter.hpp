@@ -15,8 +15,11 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/segmenterMarkupContextInterface.hpp"
+#include "strus/documentClass.hpp"
 
 #include <string> 
+#include <vector> 
 #include <map>
 #include <stdexcept>
 #include <sstream>
@@ -103,6 +106,7 @@ class TSVSegmenterInstance : public strus::SegmenterInstanceInterface
 		virtual void defineSubSection( int startId, int endId, const std::string &expression );
 
 		virtual strus::SegmenterContextInterface* createContext( const strus::DocumentClass &dclass) const;
+		virtual strus::SegmenterMarkupContextInterface* createMarkupContext( const strus::DocumentClass& dclass, const std::string& content) const;
 
 	private:
 

@@ -30,6 +30,7 @@ public:
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
 	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
+	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const;
 
 private:
 	void addExpression( int id, const std::string& expression);
