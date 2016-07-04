@@ -28,19 +28,48 @@ public:
 	/// \param[out] segpos segment position returned 
 	/// \param[out] segment pointer to start of segment
 	/// \param[out] segmentsize size of segment in bytes
-	/// \return the tag level of the content segment returned
+	/// \return true, on success, false on eof or error
 	/// \note this method allows to iterate on content segments for implementing markups covering multiple content segments
-	virtual int getNext( SegmenterPosition& segpos, const char*& segment, std::size_t& segmentsize)=0;
+	virtual bool getNext( SegmenterPosition& segpos, const char*& segment, std::size_t& segmentsize)=0;
 
-	/// \brief Define a marker in the text
+	/// \brief Get the (tag) name of a segment specified by its position in the original source
+	/// \param[in] segpos segment position
+	/// \return the (tag) name of the segment
+	virtual std::string tagName( const SegmenterPosition& segpos) const=0;
+
+	/// \brief Get the (tag) hierarchy level of a segment specified by its position in the original source
+	/// \param[in] segpos segment position
+	/// \return the (tag) hierarchy level of the segment
+	virtual int tagLevel( const SegmenterPosition& segpos) const=0;
+
+	/// \brief Define an open tag markup in the text
 	/// \param[in] segpos segment position returned by the method getNext of the segmenter context created by the same instance as this and fed with the same content
-	/// \param[in] pos byte position in the segment where we want to insert the markup into
-	/// \param[in] marker string to put as markup into the content (as UTF-8)
-	/// \remark The segment must be of type content where markup is allowed
-	virtual void putMarkup(
-			std::size_t segpos,
-			std::size_t pos,
-			const std::string& marker)=0;
+	/// \param[in] ofs byte position offset of the parsed content (UTF-8) in the segment where we want to insert the markup into
+	/// \param[in] name tag name to put as markup into the content (as UTF-8)
+	virtual void putOpenTag(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name)=0;
+
+	/// \brief Define an attribute markup in the text
+	/// \param[in] segpos segment position
+	/// \param[in] ofs offset ot the attribute in the text
+	/// \param[in] name name of the attribute to insert (as UTF-8)
+	/// \param[in] value of the attribute to insert (as UTF-8)
+	virtual void putAttribute(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name,
+			const std::string& value)=0;
+
+	/// \brief Define a close tag markup in the text
+	/// \param[in] segpos segment position returned by the method getNext of the segmenter context created by the same instance as this and fed with the same content
+	/// \param[in] ofs byte position offset of the parsed content (UTF-8) in the segment where we want to insert the markup into
+	/// \param[in] name tag name closed to put as markup into the content (as UTF-8)
+	virtual void putCloseTag(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name)=0;
 
 	/// \brief Get the original document content with all markups declared inserted
 	/// \return the marked up document content

@@ -13,9 +13,16 @@
 #include "private/internationalization.hpp"
 #include "segmenter.hpp"
 #include "private/xpathAutomaton.hpp"
+#include "textwolf/char.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
+#include "textwolf/xmlprinter.hpp"
+#include "textwolf/xmlscanner.hpp"
+#include "textwolf/textscanner.hpp"
 #include <cstdlib>
+#include <vector>
+#include <map>
+#include <string>
 #include <setjmp.h>
 
 namespace strus
@@ -28,82 +35,145 @@ class SegmenterMarkupContext
 public:
 	explicit SegmenterMarkupContext( ErrorBufferInterface* errorhnd_, const std::string& source_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_source(source_)
-		,m_scanner()
-		,m_taglevel(1)
-		,m_eof(false)
+		,m_charset(charset_)
+		,m_markups()
+		,m_segmentmap()
 		,m_errorhnd(errorhnd_)
 	{
-		m_scanner.setSource( textwolf::SrcIterator( m_source.c_str(), m_source.size()));
-		m_itr = m_scanner.begin(false);
-		m_end = m_scanner.end();
+		load();
+		m_segmentitr = m_segmentmap.end();
 	}
 
 	virtual ~SegmenterMarkupContext()
 	{}
 
-	virtual int getNext( SegmenterPosition& segpos, const char*& segment, std::size_t& segmentsize)
+	virtual bool getNext( SegmenterPosition& segpos, const char*& segment, std::size_t& segmentsize)
 	{
 		try
 		{
-			if (m_taglevel == 0) return 0;
-			++m_itr;
-			if (m_itr == m_end) return 0;
-
-			typename XMLScanner::ElementType et = m_itr->type();
-			if (et == XMLScanner::ErrorOccurred)
+			if (m_segmentitr != m_segmentmap.end() && m_segmentitr->first == segpos)
 			{
-				const char* errstr = "";
-				m_scanner.getError( &errstr);
-				m_errorhnd->report( "error in XML document at position %u: %s", (unsigned int)m_scanner.getTokenPosition(), errstr);
-				return false;
+				++m_segmentitr;
 			}
-			else if (et == XMLScanner::Exit)
+			else if (segpos == 0)
 			{
-				return m_taglevel=0;
+				m_segmentitr = m_segmentmap.begin();
 			}
-			segment = m_itr->content();
-			segmentsize = m_itr->size();
-			return m_taglevel;
+			else
+			{
+				m_segmentitr = m_segmentmap.upper_bound( segpos);
+			}
+			if (m_segmentitr == m_segmentmap.end()) return false;
+			segpos = m_segmentitr->first;
+			segment = m_strings.c_str() + m_segmentitr->second.segidx;
+			segmentsize = m_segmentitr->second.segsize;
+			return true;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, 0);
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
 	}
 
 	struct MarkupElement
 	{
-		std::size_t segpos;
+		enum Type {OpenTag,AttributeName,AttributeValue,CloseTag};
+		Type type;
 		std::size_t pos;
 		std::size_t idx;
-		std::string marker;
+		std::string value;
 
-		MarkupElement( std::size_t segpos_, std::size_t pos_, std::size_t idx_, std::string marker_)
-			:segpos(segpos_),pos(pos_),idx(idx_),marker(marker_){}
+		MarkupElement( Type type_, std::size_t pos_, std::size_t idx_, const std::string& value_)
+			:type(type_),pos(pos_),idx(idx_),value(value_){}
 		MarkupElement( const MarkupElement& o)
-			:segpos(o.segpos),pos(o.pos),idx(o.idx),marker(o.marker){}
+			:type(o.type),pos(o.pos),idx(o.idx),value(o.value){}
 
 		bool operator < (const MarkupElement& o) const
 		{
-			if (segpos < o.segpos) return true;
-			if (segpos > o.segpos) return false;
 			if (pos < o.pos) return true;
 			if (pos > o.pos) return false;
 			if (idx < o.idx) return true;
 			if (idx > o.idx) return false;
-			if (marker < o.marker) return true;
-			if (marker > o.marker) return false;
 			return false;
 		}
 	};
 
-	virtual void putMarkup(
-			std::size_t segpos,
-			std::size_t pos,
-			const std::string& marker)
+	virtual std::string tagName( const SegmenterPosition& segpos) const
 	{
 		try
 		{
-			m_markups.push_back( MarkupElement( segpos, pos, m_markups.size(), marker));
+			typename SegmentMap::const_iterator segitr = findSegment( segpos);
+			if (segitr == m_segmentmap.end())
+			{
+				throw strus::runtime_error(_TXT("segment with this position not defined"));
+			}
+			else
+			{
+				std::size_t tagidx = segitr->second.tagidx;
+				return std::string( m_strings.c_str()+tagidx);
+			}
 		}
-		CATCH_ERROR_MAP_ARG1( _TXT("error in put markup of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag name of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, std::string());
+	}
+
+	virtual int tagLevel( const SegmenterPosition& segpos) const
+	{
+		try
+		{
+			typename SegmentMap::const_iterator segitr = findSegment( segpos);
+			if (segitr == m_segmentmap.end())
+			{
+				throw strus::runtime_error(_TXT("segment with this position not defined"));
+			}
+			else
+			{
+				return segitr->second.taglevel;
+			}
+		}
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag hierarchy level of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, 0);
+	}
+
+	virtual void putOpenTag(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name)
+	{
+		std::size_t pos = getOrigPosition( segpos, ofs);
+		m_markups.push_back( MarkupElement( MarkupElement::OpenTag, pos, m_markups.size(), name));
+	}
+
+	virtual void putCloseTag(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name)
+	{
+		std::size_t pos = getOrigPosition( segpos, ofs);
+		m_markups.push_back( MarkupElement( MarkupElement::CloseTag, pos, m_markups.size(), name));
+	}
+
+	virtual void putAttribute(
+			const SegmenterPosition& segpos,
+			std::size_t ofs,
+			const std::string& name,
+			const std::string& value)
+	{
+		try
+		{
+			typename SegmentMap::const_iterator segitr = findSegment( segpos);
+			if (segitr == m_segmentmap.end())
+			{
+				throw strus::runtime_error(_TXT("segment with this position not defined"));
+			}
+			std::size_t pos = getOrigPosition( segpos, ofs);
+			if (m_markups.size() && m_markups.back().pos == pos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
+			{
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, pos, m_markups.size(), name));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, pos, m_markups.size(), value));
+			}
+			else
+			{
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, segitr->second.attrpos, m_markups.size(), name));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, segitr->second.attrpos, m_markups.size(), value));
+			}
+		}
+		CATCH_ERROR_MAP_ARG1( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
 	}
 
 	virtual std::string getContent() const
@@ -113,27 +183,245 @@ public:
 			std::vector<MarkupElement> markups = m_markups;
 			std::sort( markups.begin(), markups.end());
 			std::string rt;
+
+			typedef textwolf::XMLPrinter<CharsetEncoding,textwolf::charset::UTF8,std::string> MyXMLPrinter;
+			MyXMLPrinter printer;
+
+			typename std::vector<MarkupElement>::const_iterator mi = markups.begin(), me = markups.end();
+			std::size_t prevpos = 0;
+			typename MarkupElement::Type prevtype = MarkupElement::CloseTag;
+			for (; mi != me; ++mi)
+			{
+				if (mi->pos > prevpos)
+				{
+					if (prevtype != MarkupElement::CloseTag)
+					{
+						printer.printValue( "", 0, rt);
+					}
+					rt.append( m_source.c_str() + prevpos, mi->pos - prevpos);
+				}
+				switch (mi->type)
+				{
+					case MarkupElement::OpenTag:
+						printer.printOpenTag( mi->value.c_str(), mi->value.size(), rt);
+						break;
+					case MarkupElement::AttributeName:
+						printer.printToBuffer( mi->value.c_str(), mi->value.size(), rt);
+						printer.printToBuffer( '=', rt);
+						++mi;
+						if (mi == me)
+						{
+							--mi;
+							printer.printToBufferAttributeValue( "", 0, rt);
+						}
+						else
+						{
+							printer.printToBufferAttributeValue( mi->value.c_str(), mi->value.size(), rt);
+						}
+						break;
+					case MarkupElement::AttributeValue:
+						throw strus::runtime_error(_TXT("logic error: unexpected attribute value"));
+					case MarkupElement::CloseTag:
+					{
+						bool foundOpenTag = false;
+						typename std::vector<MarkupElement>::const_iterator ma = mi;
+						for (;ma != markups.begin() && (ma-1)->pos == prevpos; --ma)
+						{
+							if ((ma-1)->type == MarkupElement::OpenTag && (ma-1)->value == mi->value)
+							{
+								printer.printCloseTag( rt);
+								foundOpenTag = true;
+								break;
+							}
+						}
+						if (foundOpenTag)
+						{
+							printer.printToBuffer( "</", 2, rt);
+							printer.printToBuffer( mi->value.c_str(), mi->value.size(), rt);
+							printer.printToBuffer( '>', rt);
+						}
+						break;
+					}
+				}
+				prevtype = mi->type;
+				prevpos = mi->pos;
+			}
+			if (prevtype != MarkupElement::CloseTag)
+			{
+				printer.printValue( "", 0, rt);
+			}
+			rt.append( m_source.c_str() + prevpos, m_source.size() - prevpos);
 			return rt;
 		}
 		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, std::string());
 	}
 
 private:
-	typedef textwolf::XMLScanner<
-			textwolf::SrcIterator,
-			CharsetEncoding,
-			textwolf::charset::UTF8,
-			std::string
-		> XMLScanner;
+	struct SegmentDef
+	{
+		std::size_t segidx;
+		std::size_t segsize;
+		std::size_t tagidx;
+		std::size_t attrpos;
+		int taglevel;
 
+		SegmentDef( std::size_t segidx_, std::size_t segsize_, std::size_t tagidx_, std::size_t attrpos_, int taglevel_)
+			:segidx(segidx_),segsize(segsize_),tagidx(tagidx_),attrpos(attrpos_),taglevel(taglevel_){}
+		SegmentDef( const SegmentDef& o)
+			:segidx(o.segidx),segsize(o.segsize),tagidx(o.tagidx),attrpos(o.attrpos),taglevel(o.taglevel){}
+	};
+	typedef std::map<SegmenterPosition,SegmentDef> SegmentMap;
+
+private:
+	typename SegmentMap::const_iterator findSegment( const SegmenterPosition& segpos) const
+	{
+		if (m_segmentitr != m_segmentmap.end() && m_segmentitr->first == segpos)
+		{
+			return m_segmentitr;
+		}
+		else
+		{
+			return m_segmentmap.find( segpos);
+		}
+	}
+
+	void load()
+	{
+		typedef textwolf::XMLScanner<char*,CharsetEncoding,textwolf::charset::UTF8,std::string> MyXMLScanner;
+		char* xmlitr = const_cast<char*>( m_source.c_str());
+	
+		MyXMLScanner scanner( m_charset, xmlitr);
+		std::vector<SegmentDef> stack;
+		SegmentDef segmentDef( 0, 0, 0, 0, 0);
+		stack.push_back( segmentDef);
+		for (;;)
+		{
+			switch (scanner.nextItem())
+			{
+				case MyXMLScanner::None: continue;
+				case MyXMLScanner::HeaderStart: continue;
+				case MyXMLScanner::ErrorOccurred:
+				{
+					if (segmentDef.tagidx)
+					{
+						throw strus::runtime_error( _TXT("error in tag '%s': %s"), m_strings.c_str()+segmentDef.tagidx, scanner.getItemPtr());
+					}
+					else
+					{
+						throw strus::runtime_error( _TXT("error in XML (no tag context): %s"), scanner.getItemPtr());
+					}
+				}
+				case MyXMLScanner::HeaderAttribName: continue;
+				case MyXMLScanner::HeaderAttribValue: continue;
+				case MyXMLScanner::HeaderEnd: continue;
+				case MyXMLScanner::DocAttribValue: continue;
+				case MyXMLScanner::DocAttribEnd: continue;
+				case MyXMLScanner::TagAttribName: continue;
+				case MyXMLScanner::TagAttribValue:
+				{
+					segmentDef.attrpos = scanner.getPosition();
+				}
+				case MyXMLScanner::OpenTag:
+				{
+					stack.push_back( segmentDef);
+					++segmentDef.taglevel;
+					segmentDef.attrpos = scanner.getPosition();
+					segmentDef.tagidx = m_strings.size()+1;
+					m_strings.push_back( '\0');
+					m_strings.append( scanner.getItemPtr(), scanner.getItemSize());
+				}
+				case MyXMLScanner::CloseTagIm:
+				case MyXMLScanner::CloseTag:
+				{
+					if (stack.empty()) throw strus::runtime_error(_TXT("tags not balanced in XML"));
+					segmentDef = stack.back();
+					stack.pop_back();
+				}
+				case MyXMLScanner::Content:
+				{
+					segmentDef.segidx = m_strings.size()+1;
+					m_strings.push_back( '\0');
+					m_strings.append( scanner.getItemPtr(), segmentDef.segsize = scanner.getItemSize());
+					m_segmentmap.insert( std::pair<SegmenterPosition,SegmentDef>( scanner.getTokenPosition(), segmentDef));
+				}
+				case MyXMLScanner::Exit:
+				{
+					if (!stack.empty()) throw strus::runtime_error(_TXT("tags not balanced in XML"));
+					return;
+				}
+			}
+		}
+	}
+
+	std::size_t getOrigPosition( const SegmenterPosition& segpos, std::size_t ofs) const
+	{
+		typename SegmentMap::const_iterator segitr = findSegment( segpos);
+		if (segitr == m_segmentmap.end()) 
+		{
+			throw strus::runtime_error(_TXT("segment with this position not defined"));
+		}
+		if (segitr->second.segsize < ofs) 
+		{
+			throw strus::runtime_error(_TXT("offset in this segment out of range"));
+		}
+		typedef textwolf::TextScanner<char*,CharsetEncoding> OrigTextScanner;
+		typedef textwolf::TextScanner<textwolf::CStringIterator,textwolf::charset::UTF8> ConvTextScanner;
+
+		char* origitr;
+		std::size_t strpos;
+		std::size_t strlen;
+		std::size_t posincr;
+		if (lastPositionInfo.segpos == segpos && lastPositionInfo.ofs <= ofs)
+		{
+			// Seek from last position in the same segment:
+			if (lastPositionInfo.ofs == ofs) return lastPositionInfo.pos;
+			origitr = const_cast<char*>( m_source.c_str() + lastPositionInfo.pos);
+			strpos = segitr->second.segidx + lastPositionInfo.ofs;
+			strlen = ofs - lastPositionInfo.ofs;
+			posincr = lastPositionInfo.pos;
+		}
+		else
+		{
+			// Seek from start of segment:
+			origitr = const_cast<char*>( m_source.c_str() + segpos);
+			strpos = segitr->second.segidx;
+			strlen = ofs;
+			posincr = segpos;
+		}
+		textwolf::CStringIterator convitr( m_strings.c_str() + strpos, strlen);
+
+		OrigTextScanner orig_scanner( m_charset, origitr);
+		ConvTextScanner conv_scanner( convitr);
+		while (conv_scanner.control() != textwolf::EndOfText)
+		{
+			++conv_scanner;
+			++orig_scanner;
+		}
+		lastPositionInfo.pos = orig_scanner.getPosition() + posincr;
+		lastPositionInfo.segpos = segpos;
+		lastPositionInfo.ofs = ofs;
+
+		return lastPositionInfo.pos;
+	}
+
+private:
 	std::string m_source;
-	XMLScanner m_scanner;
-	typename XMLScanner::iterator m_itr;
-	typename XMLScanner::iterator m_end;
-	int m_taglevel;
-	bool m_eof;
-	jmp_buf m_eom;
+	std::string m_strings;
+	CharsetEncoding m_charset;
 	std::vector<MarkupElement> m_markups;
+	SegmentMap m_segmentmap;
+	typename SegmentMap::const_iterator m_segmentitr;
+
+	struct PositionInfo
+	{
+		SegmenterPosition segpos;
+		std::size_t ofs;
+		std::size_t pos;
+
+		PositionInfo()
+			:segpos(0),ofs(0),pos(0){}
+	};
+	mutable PositionInfo lastPositionInfo;
 	ErrorBufferInterface* m_errorhnd;
 };
 
