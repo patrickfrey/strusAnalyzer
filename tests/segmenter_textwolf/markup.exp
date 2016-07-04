@@ -1,0 +1,22 @@
+Input document:
+61: doc 1
+69: title 2
+96: doc 1
+103: text 2
+155: country 3
+171: text 2
+273: date 3
+294: text 2
+303: doc 1
+310:  0
+
+Output document:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<doc>
+<title>A journey to heaven</title>
+<text language="de">I am <action>travelling</action> by bicycle through <country id="FR" label="5">France</country>.
+The journey will last <number val="2">2</number> weeks. I hope I will have good weather.
+It will start <date val="7/13/2006">13th July 2016</date>.
+</text>
+</doc>
+

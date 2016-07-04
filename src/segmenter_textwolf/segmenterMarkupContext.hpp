@@ -23,7 +23,10 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 #include <setjmp.h>
+
+#define STRUS_LOWLEVEL_DEBUG
 
 namespace strus
 {
@@ -79,6 +82,12 @@ public:
 		std::size_t pos;
 		std::size_t idx;
 		std::string value;
+
+		static const char* typeName( Type t)
+		{
+			static const char* ar[] = {"OpenTag","AttributeName","AttributeValue","CloseTag"};
+			return ar[t];
+		}
 
 		MarkupElement( Type type_, std::size_t pos_, std::size_t idx_, const std::string& value_)
 			:type(type_),pos(pos_),idx(idx_),value(value_){}
@@ -185,7 +194,7 @@ public:
 			std::string rt;
 
 			typedef textwolf::XMLPrinter<CharsetEncoding,textwolf::charset::UTF8,std::string> MyXMLPrinter;
-			MyXMLPrinter printer;
+			MyXMLPrinter printer( true);
 
 			typename std::vector<MarkupElement>::const_iterator mi = markups.begin(), me = markups.end();
 			std::size_t prevpos = 0;
@@ -206,6 +215,7 @@ public:
 						printer.printOpenTag( mi->value.c_str(), mi->value.size(), rt);
 						break;
 					case MarkupElement::AttributeName:
+						printer.printToBuffer( ' ', rt);
 						printer.printToBuffer( mi->value.c_str(), mi->value.size(), rt);
 						printer.printToBuffer( '=', rt);
 						++mi;
@@ -225,7 +235,7 @@ public:
 					{
 						bool foundOpenTag = false;
 						typename std::vector<MarkupElement>::const_iterator ma = mi;
-						for (;ma != markups.begin() && (ma-1)->pos == prevpos; --ma)
+						for (;ma != markups.begin() && (ma-1)->pos == mi->pos; --ma)
 						{
 							if ((ma-1)->type == MarkupElement::OpenTag && (ma-1)->value == mi->value)
 							{
@@ -234,7 +244,7 @@ public:
 								break;
 							}
 						}
-						if (foundOpenTag)
+						if (!foundOpenTag)
 						{
 							printer.printToBuffer( "</", 2, rt);
 							printer.printToBuffer( mi->value.c_str(), mi->value.size(), rt);
@@ -245,6 +255,10 @@ public:
 				}
 				prevtype = mi->type;
 				prevpos = mi->pos;
+				if (printer.lasterror())
+				{
+					throw strus::runtime_error(_TXT("error printing XML: %s"), printer.lasterror());
+				}
 			}
 			if (prevtype != MarkupElement::CloseTag)
 			{
@@ -293,10 +307,13 @@ private:
 		MyXMLScanner scanner( m_charset, xmlitr);
 		std::vector<SegmentDef> stack;
 		SegmentDef segmentDef( 0, 0, 0, 0, 0);
-		stack.push_back( segmentDef);
 		for (;;)
 		{
-			switch (scanner.nextItem())
+			typename MyXMLScanner::ElementType et = scanner.nextItem();
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cerr << "SCAN item " << scanner.getElementTypeName( et) << " '" << std::string(scanner.getItemPtr(), scanner.getItemSize()) << "'" << std::endl;
+#endif
+			switch (et)
 			{
 				case MyXMLScanner::None: continue;
 				case MyXMLScanner::HeaderStart: continue;
@@ -310,6 +327,7 @@ private:
 					{
 						throw strus::runtime_error( _TXT("error in XML (no tag context): %s"), scanner.getItemPtr());
 					}
+					break;
 				}
 				case MyXMLScanner::HeaderAttribName: continue;
 				case MyXMLScanner::HeaderAttribValue: continue;
@@ -320,15 +338,17 @@ private:
 				case MyXMLScanner::TagAttribValue:
 				{
 					segmentDef.attrpos = scanner.getPosition();
+					break;
 				}
 				case MyXMLScanner::OpenTag:
 				{
 					stack.push_back( segmentDef);
 					++segmentDef.taglevel;
-					segmentDef.attrpos = scanner.getPosition();
+					segmentDef.attrpos = scanner.getPosition()-1;
 					segmentDef.tagidx = m_strings.size()+1;
 					m_strings.push_back( '\0');
 					m_strings.append( scanner.getItemPtr(), scanner.getItemSize());
+					break;
 				}
 				case MyXMLScanner::CloseTagIm:
 				case MyXMLScanner::CloseTag:
@@ -336,13 +356,24 @@ private:
 					if (stack.empty()) throw strus::runtime_error(_TXT("tags not balanced in XML"));
 					segmentDef = stack.back();
 					stack.pop_back();
+					break;
 				}
 				case MyXMLScanner::Content:
 				{
 					segmentDef.segidx = m_strings.size()+1;
 					m_strings.push_back( '\0');
 					m_strings.append( scanner.getItemPtr(), segmentDef.segsize = scanner.getItemSize());
+#ifdef STRUS_LOWLEVEL_DEBUG
+					std::cerr << "SCAN define segment "
+						  << scanner.getTokenPosition() << ": "
+						  << "segidx=" << segmentDef.segidx << ","
+						  << "segsize=" << segmentDef.segsize << ","
+						  << "tagidx=" << segmentDef.tagidx << ","
+						  << "attrpos=" << segmentDef.attrpos << ","
+						  << "taglevel=" << segmentDef.taglevel << std::endl;
+#endif
 					m_segmentmap.insert( std::pair<SegmenterPosition,SegmentDef>( scanner.getTokenPosition(), segmentDef));
+					break;
 				}
 				case MyXMLScanner::Exit:
 				{
