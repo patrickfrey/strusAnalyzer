@@ -9,6 +9,7 @@
 /// \file analyzerObjectBuilderInterface.hpp
 #ifndef _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
+#include "strus/segmenterOptions.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -18,9 +19,9 @@ namespace strus
 /// \brief Forward declaration
 class DocumentAnalyzerInterface;
 /// \brief Forward declaration
-class QueryAnalyzerInterface;
-/// \brief Forward declaration
 class SegmenterInterface;
+/// \brief Forward declaration
+class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
@@ -47,8 +48,11 @@ public:
 
 	/// \brief Creates a document analyzer object
 	/// \param[in] segmenter the document segmenter to use (ownership passed)
+	/// \param[in] opts (optional) options for the creation of the segmenter instance
 	/// \return the document analyzer (ownership returned)
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const=0;
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer(
+			const SegmenterInterface* segmenter,
+			const SegmenterOptions& opts=SegmenterOptions()) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)

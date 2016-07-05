@@ -99,10 +99,10 @@ public:
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
 	}
-	
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const
+
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const SegmenterOptions& opts) const
 	{
-		return strus::createDocumentAnalyzer( segmenter, m_errorhnd);
+		return strus::createDocumentAnalyzer( segmenter, opts, m_errorhnd);
 	}
 
 	virtual QueryAnalyzerInterface* createQueryAnalyzer() const

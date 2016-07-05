@@ -9,6 +9,7 @@
 /// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
+#include "strus/segmenterOptions.hpp"
 #include <vector>
 #include <string>
 #include <utility>
@@ -16,38 +17,9 @@
 /// \brief strus toplevel namespace
 namespace strus
 {
+
 /// \brief Forward declaration
 class SegmenterInstanceInterface;
-
-/// \class SegmenterOptions
-/// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
-/// \note Available options defined as key value pairs depend on the segmenter implementation
-class SegmenterOptions
-{
-public:
-	/// \brief Default constructor
-	SegmenterOptions()
-		:m_optar(0){}
-	/// \brief Copy constructor
-	SegmenterOptions( const SegmenterOptions& o)
-		:m_optar(o.m_optar){}
-
-	typedef std::pair<std::string,std::string> Item;
-
-	SegmenterOptions& operator()( const std::string& name, const std::string& value)
-	{
-		m_optar.push_back( Item( name, value));
-		return *this;
-	}
-
-	const std::vector<Item>& items() const
-	{
-		return m_optar;
-	}
-private:
-	std::vector<Item> m_optar;
-};
-
 
 /// \class SegmenterInterface
 /// \brief Defines an interface for creating instances of programs for document segmentation

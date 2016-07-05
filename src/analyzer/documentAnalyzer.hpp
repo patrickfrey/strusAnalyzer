@@ -34,7 +34,7 @@ class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( const SegmenterInterface* segmenter_, ErrorBufferInterface* errorhnd);
+	DocumentAnalyzer( const SegmenterInterface* segmenter_, const SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzer()
 	{
