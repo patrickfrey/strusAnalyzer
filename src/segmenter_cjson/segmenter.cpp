@@ -51,10 +51,11 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const D
 	return 0;
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance() const
+SegmenterInstanceInterface* Segmenter::createInstance( const SegmenterOptions& opts) const
 {
 	try
 	{
+		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
 		return new SegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);

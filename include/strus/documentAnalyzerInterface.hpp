@@ -39,7 +39,7 @@ public:
 	virtual ~DocumentAnalyzerInterface(){}
 
 	/// \class FeatureOptions
-	/// \brief Some options to stear the analyzer behaviour
+	/// \brief Options to stear the creation of terms in the analyzer
 	class FeatureOptions
 	{
 	public:

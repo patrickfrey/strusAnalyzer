@@ -375,10 +375,11 @@ const char* TSVSegmenter::mimeType( ) const
 	return "text/tab-separated-values";
 }
 
-strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( ) const
+strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::SegmenterOptions& opts) const
 {
 	try
 	{
+	if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
 	return new TSVSegmenterInstance( m_errbuf, m_errorReporting );
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);

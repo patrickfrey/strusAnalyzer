@@ -58,7 +58,7 @@ public:
 		return "application/json";
 	}
 
-	virtual SegmenterInstanceInterface* createInstance() const;
+	virtual SegmenterInstanceInterface* createInstance( const SegmenterOptions& opts) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

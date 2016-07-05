@@ -123,7 +123,7 @@ class TSVSegmenter : public strus::SegmenterInterface
 		
 		virtual const char* mimeType( ) const;
 
-		virtual strus::SegmenterInstanceInterface* createInstance( ) const;
+		virtual strus::SegmenterInstanceInterface* createInstance( const strus::SegmenterOptions& opts) const;
 
 	private:
 
