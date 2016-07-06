@@ -8,6 +8,7 @@
 #include "strus/lib/analyzer.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
+#include "strus/segmenterOptions.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
@@ -22,7 +23,7 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, ErrorBufferInterface* errorhnd)
+	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, const SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -31,7 +32,7 @@ DLL_PUBLIC DocumentAnalyzerInterface*
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new DocumentAnalyzer( segmenter, errorhnd);
+		return new DocumentAnalyzer( segmenter, opts, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer: %s"), *errorhnd, 0);
 }

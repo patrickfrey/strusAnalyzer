@@ -9,7 +9,6 @@
 /// \file segmenterInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
-#include <vector>
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -19,6 +18,8 @@ namespace strus
 class SegmenterContextInterface;
 /// \brief Forward declaration
 class DocumentClass;
+/// \brief Forward declaration
+class SegmenterMarkupContextInterface;
 
 /// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
 class SegmenterInstanceInterface
@@ -38,10 +39,16 @@ public:
 	/// \param[in] expression expression for selecting the sub section
 	virtual void defineSubSection( int startId, int endId, const std::string& expression)=0;
 
-	/// \brief Creates an instance of the segmenter
+	/// \brief Creates a context for segmenting one document of a specified class
 	/// \param[in] dclass description of the document type and encoding to process
-	/// \return the segmenter object (with ownership, to be desposed with delete by the caller)
+	/// \return the segmenter context object (with ownership, to be desposed with delete by the caller)
 	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const=0;
+
+	/// \brief Creates an instance of the segmenters document markup context
+	/// \param[in] dclass description of the document type and encoding to process
+	/// \param[in] content document content to process (no chunkwise processing)
+	/// \return the segmenter markup object (with ownership, to be desposed with delete by the caller)
+	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const=0;
 };
 
 }//namespace

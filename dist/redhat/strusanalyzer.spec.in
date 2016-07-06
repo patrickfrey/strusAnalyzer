@@ -173,6 +173,7 @@ Requires: boost >= 1.53.0
 Requires: boost-thread >= 1.53.0
 Requires: boost-system >= 1.53.0
 Requires: boost-date-time >= 1.53.0
+Requires: boost-regex >= 1.53.0
 BuildRequires: boost-devel
 %endif
 %endif
@@ -187,6 +188,7 @@ Requires: libboost_thread1_53_0 >= 1.53.0
 Requires: libboost_atomic1_53_0 >= 1.53.0
 Requires: libboost_system1_53_0 >= 1.53.0
 Requires: libboost_date_time1_53_0 >= 1.53.0
+Requires: libboost_regex1_53_0 >= 1.53.0
 BuildRequires: boost-devel
 # for some reason OBS doesn't pull in libboost_atomic1_53_0 automatically!?
 BuildRequires: libboost_atomic1_53_0 >= 1.53.0
@@ -196,6 +198,7 @@ Requires: libboost_thread1_54_0 >= 1.54.0
 Requires: libboost_atomic1_54_0 >= 1.54.0
 Requires: libboost_system1_54_0 >= 1.54.0
 Requires: libboost_date_time1_54_0 >= 1.54.0
+Requires: libboost_regex1_54_0 >= 1.54.0
 BuildRequires: boost-devel
 %endif
 %if %{osufactory}
@@ -203,6 +206,7 @@ Requires: libboost_thread1_60_0 >= 1.60.0
 Requires: libboost_atomic1_60_0 >= 1.60.0
 Requires: libboost_system1_60_0 >= 1.60.0
 Requires: libboost_date_time1_60_0 >= 1.60.0
+Requires: libboost_regex1_60_0 >= 1.60.0
 BuildRequires: boost-devel
 %endif
 %endif
@@ -270,14 +274,28 @@ make test
 %{_libdir}/strus/libstrus_tokenizer_word.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_tokenizer_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_tokenizer_textcat.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_tokenizer_regex.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_tokenizer_regex.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_segmenter_textwolf.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_segmenter_textwolf.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_segmenter_cjson.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_segmenter_cjson.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_segmenter_tsv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_segmenter_tsv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_normalizer_ngram.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_normalizer_ngram.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_normalizer_regex.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_normalizer_regex.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_textproc.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_textproc.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_snowball.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -290,17 +308,29 @@ make test
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
-
+%dir %{_datadir}/strus
+%dir %{_datadir}/strus/textcat
+%dir %{_datadir}/strus/textcat/LM
+%{_datadir}/strus/textcat/conf.txt
+%{_datadir}/strus/textcat/LM/*.lm
 
 %files devel
 %defattr( -, root, root )
 %{_libdir}/strus/libstrus_stemmer.so
 %{_libdir}/strus/libstrus_tokenizer_word.so
+%{_libdir}/strus/libstrus_tokenizer_regex.so
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so
+%{_libdir}/strus/libstrus_textcat.so
+%{_libdir}/strus/libstrus_tokenizer_textcat.so
+%{_libdir}/strus/libstrus_tokenizer_regex.so
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
+%{_libdir}/strus/libstrus_segmenter_cjson.so
+%{_libdir}/strus/libstrus_segmenter_tsv.so
 %{_libdir}/strus/libstrus_analyzer.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
+%{_libdir}/strus/libstrus_normalizer_ngram.so
+%{_libdir}/strus/libstrus_normalizer_regex.so
 %{_libdir}/strus/libstrus_textproc.so
 %{_libdir}/strus/libstrus_normalizer_snowball.so
 %{_libdir}/strus/libstrus_detector_std.so
@@ -315,6 +345,19 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Tue Jul 5 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.10.0-0.1
+- added tsv segmenter
+- added textcat tokenizer (language detection)
+- added options to segmenter interface (e.g. for segmenter wihtout self conained document structure description)
+- fixed bug in JSON MIME type detection (handling control characters)
+
+* Thu Jun 9 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.9.2-0.1
+- added normalizer and tokenizer for regex and normalizer for ngram
+- renamed Token::docpos to Token::ordpos (for ordinal position)
+
+* Tue May 10 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.9.1-0.1
+- added support for JSON (segmenter and standard document detection)
+
 * Thu Apr 28 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.9.0-0.1
 - changes in the object builder interfaces
 

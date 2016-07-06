@@ -10,8 +10,12 @@
 #include "strus/lib/normalizer_dictmap.hpp"
 #include "strus/lib/normalizer_charconv.hpp"
 #include "strus/lib/normalizer_dateconv.hpp"
+#include "strus/lib/normalizer_ngram.hpp"
+#include "strus/lib/normalizer_regex.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
+#include "strus/lib/tokenizer_regex.hpp"
+#include "strus/lib/tokenizer_textcat.hpp"
 #include "strus/lib/aggregator_vsm.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
@@ -68,6 +72,18 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "date2int", nrm);
+	if (0==(nrm = createNormalizer_ngram( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "ngram", nrm);
+	if (0==(nrm = createNormalizer_regex( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "regex", nrm);
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
@@ -80,12 +96,24 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineTokenizer( "word", tkn);
+	if (0==(tkn = createTokenizer_regex( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineTokenizer( "regex", tkn);
 	if (0==(tkn = createTokenizer_whitespace( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
 		return 0;
 	}
 	rt->defineTokenizer( "split", tkn);
+	if (0==(tkn = createTokenizer_textcat( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineTokenizer( "textcat", tkn);
 	if (0==(agr = createAggregator_sumSquareTf( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

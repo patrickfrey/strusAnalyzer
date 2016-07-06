@@ -39,7 +39,7 @@ public:
 	virtual ~DocumentAnalyzerInterface(){}
 
 	/// \class FeatureOptions
-	/// \brief Some options to stear the analyzer behaviour
+	/// \brief Options to stear the creation of terms in the analyzer
 	class FeatureOptions
 	{
 	public:
@@ -54,13 +54,13 @@ public:
 			:m_opt(opt_){}
 
 		/// \enum PositionBind
-		/// \brief Determines how document positions are assigned to terms
-		/// \remark The motivation is to distinguish content elements from markup.
+		/// \brief Determines how ordinal positions are assigned to document terms
+		/// \remark The main motivation is to distinguish content elements from markup.
 		enum PositionBind
 		{
-			BindContent,		///< An element in the document that gets an own position assigned
-			BindSuccessor,		///< An element in the document that gets the position of the succeding content element assigned
-			BindPredecessor		///< An element in the document that gets the position of the preceding content element assigned
+			BindContent,		///< An element in the document that gets an own ordinal position assigned
+			BindSuccessor,		///< An element in the document that gets the ordinal position of the succeding content element assigned
+			BindPredecessor		///< An element in the document that gets the ordinal position of the preceding content element assigned
 		};
 
 		/// \brief Get the PositionBind value set

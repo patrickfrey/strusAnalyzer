@@ -9,6 +9,7 @@
 /// \file analyzerObjectBuilderInterface.hpp
 #ifndef _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
+#include "strus/segmenterOptions.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -18,9 +19,9 @@ namespace strus
 /// \brief Forward declaration
 class DocumentAnalyzerInterface;
 /// \brief Forward declaration
-class QueryAnalyzerInterface;
-/// \brief Forward declaration
 class SegmenterInterface;
+/// \brief Forward declaration
+class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
@@ -35,15 +36,23 @@ public:
 	/// \return the analyzer text processor interface reference
 	virtual const TextProcessorInterface* getTextProcessor() const=0;
 
-	/// \brief Creates a document segmenter object
-	/// \param[in] segmenterName name of the segmenter used (if not specified, find the first one loaded or the default one)
-	/// \return the document segmenter (ownership returned)
-	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const=0;
+	/// \brief Get a loaded document segmenter object reference
+	/// \param[in] segmenterName name of the segmenter used (if empty, find the first one loaded or the default one)
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName) const=0;
+
+	/// \brief Get a loaded document segmenter object reference that is able to process the specified MIME type
+	/// \param[in] mimetype MIME type of the document type to process
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* findMimeTypeSegmenter( const std::string& mimetype) const=0;
 
 	/// \brief Creates a document analyzer object
 	/// \param[in] segmenter the document segmenter to use (ownership passed)
+	/// \param[in] opts (optional) options for the creation of the segmenter instance
 	/// \return the document analyzer (ownership returned)
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const=0;
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer(
+			const SegmenterInterface* segmenter,
+			const SegmenterOptions& opts=SegmenterOptions()) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)

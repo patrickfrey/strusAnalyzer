@@ -148,16 +148,28 @@ std::vector<analyzer::Term>
 			pi = pos.begin(), pe = pos.end();
 	
 		if (pi == pe) return rt;
-		unsigned int prevpos = pi->docpos;
+		unsigned int prevpos = pi->ordpos;
 		for (unsigned int posidx=1; pi != pe; ++pi)
 		{
-			if (pi->docpos > prevpos)
+			if (pi->ordpos > prevpos)
 			{
 				posidx += 1;
-				prevpos = pi->docpos;
+				prevpos = pi->ordpos;
 			}
 			std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
-			rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
+			if (!val.empty() && val[0] == '\0')
+			{
+				char const* vi = val.c_str();
+				char const* ve = vi + val.size();
+				for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
+				{
+					rt.push_back( analyzer::Term( feat.featureType(), vi, posidx));
+				}
+			}
+			else
+			{
+				rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
+			}
 		}
 		return rt;
 	}

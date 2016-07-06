@@ -11,6 +11,8 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
+#include "strus/lib/segmenter_cjson.hpp"
+#include "strus/lib/segmenter_tsv.hpp"
 #include "strus/reference.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
@@ -37,7 +39,10 @@ public:
 	explicit AnalyzerObjectBuilder( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
 		,m_textproc(strus::createTextProcessor(errorhnd_))
-		,m_segmenter(createSegmenter_textwolf(errorhnd_)){}
+		,m_segmenter_textwolf(createSegmenter_textwolf(errorhnd_))
+		,m_segmenter_cjson(createSegmenter_cjson(errorhnd_))
+		,m_segmenter_tsv(createSegmenter_tsv(errorhnd_))
+	{}
 
 	/// \brief Destructor
 	virtual ~AnalyzerObjectBuilder(){}
@@ -47,25 +52,57 @@ public:
 		return m_textproc.get();
 	}
 
-	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName=std::string()) const
+	virtual const SegmenterInterface* getSegmenter( const std::string& segmenterName) const
 	{
 		try
 		{
 			if (segmenterName.empty() || utils::caseInsensitiveEquals( segmenterName, "textwolf"))
 			{
-				return m_segmenter.get();
+				return m_segmenter_textwolf.get();
+			}
+			else if (utils::caseInsensitiveEquals( segmenterName, "cjson"))
+			{
+				return m_segmenter_cjson.get();
+			}
+			else if (utils::caseInsensitiveEquals( segmenterName, "tsv"))
+			{
+				return m_segmenter_tsv.get();
 			}
 			else
 			{
-				throw strus::runtime_error(_TXT("unknown document segmenter: '%s'"), segmenterName.c_str());
+				throw strus::runtime_error(_TXT("unknown document segmenter name: '%s'"), segmenterName.c_str());
 			}
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating document segmenter: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
 	}
 
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter) const
+	virtual const SegmenterInterface* findMimeTypeSegmenter( const std::string& mimetype) const
 	{
-		return strus::createDocumentAnalyzer( segmenter, m_errorhnd);
+		try
+		{
+			if (utils::caseInsensitiveEquals( mimetype, m_segmenter_textwolf->mimeType()))
+			{
+				return m_segmenter_textwolf.get();
+			}
+			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_cjson->mimeType()))
+			{
+				return m_segmenter_cjson.get();
+			}
+			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_tsv->mimeType()))
+			{
+				return m_segmenter_tsv.get();
+			}
+			else
+			{
+				throw strus::runtime_error(_TXT("unknown document mime type: '%s'"), mimetype.c_str());
+			}
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
+	}
+
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const SegmenterOptions& opts) const
+	{
+		return strus::createDocumentAnalyzer( segmenter, opts, m_errorhnd);
 	}
 
 	virtual QueryAnalyzerInterface* createQueryAnalyzer() const
@@ -76,7 +113,9 @@ public:
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<TextProcessorInterface> m_textproc;
-	Reference<SegmenterInterface> m_segmenter;
+	Reference<SegmenterInterface> m_segmenter_textwolf;
+	Reference<SegmenterInterface> m_segmenter_cjson;
+	Reference<SegmenterInterface> m_segmenter_tsv;
 };
 
 

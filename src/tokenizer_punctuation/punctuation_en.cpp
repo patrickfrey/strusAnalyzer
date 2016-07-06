@@ -1071,7 +1071,8 @@ std::vector<analyzer::Token>
 		textwolf::UChar ch0;
 		CharWindow scanner( src, srcsize, m_punctuation_char);
 		unsigned int wordlen=0;
-	
+		unsigned int pos = 0;
+
 		for (; 0!=(ch0=scanner.chr(0)); wordlen=scanner.wordlen(),scanner.skip())
 		{
 			if (ch0 == '-')
@@ -1081,6 +1082,7 @@ std::vector<analyzer::Token>
 			}
 			else if (ch0 == '.')
 			{
+				pos = scanner.itrpos();
 				if (wordlen == 1)
 				{
 					// single characters followed by a dot.
@@ -1107,7 +1109,7 @@ std::vector<analyzer::Token>
 					if (0==ch0)
 					{
 						// push punctuation for other case for previous character position (end of file)
-						rt.push_back( analyzer::Token( scanner.pos()-1, scanner.pos()-1, 1));
+						rt.push_back( analyzer::Token( pos, pos, 1));
 						break;
 					}
 					if (isDigit( ch0))
@@ -1122,7 +1124,7 @@ std::vector<analyzer::Token>
 #ifdef STRUS_LOWLEVEL_DEBUG
 					std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-					rt.push_back( analyzer::Token( scanner.pos()-1, scanner.pos()-1, 1));
+					rt.push_back( analyzer::Token( pos, pos, 1));
 					continue;
 				}
 				else if (isLowercase( ch1))
@@ -1250,12 +1252,21 @@ std::vector<analyzer::Token>
 				}
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+				std::size_t endpos = pos;
+				std::size_t startpos = (endpos > 16)?(endpos-16):0;
+				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
 #endif
-				rt.push_back( analyzer::Token( scanner.pos(), scanner.pos(), 1));
+				rt.push_back( analyzer::Token( pos, pos, 1));
 			}
 			else if (isPunctuation(ch0))
 			{
-				rt.push_back( analyzer::Token( scanner.pos(), scanner.pos(), 1));
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
+				std::size_t endpos = pos;
+				std::size_t startpos = (endpos > 16)?(endpos-16):0;
+				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
+#endif
+				rt.push_back( analyzer::Token( pos, pos, 1));
 			}
 		}
 		return rt;

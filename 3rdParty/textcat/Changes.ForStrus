@@ -1,0 +1,13 @@
+This is textcat 2.2 modified for strus in the following way:
+
+ * change of name to avoid name clashes
+ * renamed Makefile to Makefile.orig
+ * added a textcatcli.cpp: simple command line tool detecting the
+   language(s) of a file
+ * fixed common.c:111:17: warning: implicit declaration of function
+   ‘strdup’ [-Wimplicit-function-declaration]
+   char *result = strdup( s );
+ * removed CVS directories
+ 
+
+   

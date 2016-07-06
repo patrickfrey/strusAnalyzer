@@ -9,8 +9,8 @@
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
-#include "textwolf/xmlpathautomatonparse.hpp"
 #include "strus/documentClass.hpp"
+#include "private/xpathAutomaton.hpp"
 #include <string>
 
 namespace strus
@@ -30,13 +30,13 @@ public:
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
 	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
+	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const;
 
 private:
 	void addExpression( int id, const std::string& expression);
 
 private:
-	typedef textwolf::XMLPathSelectAutomatonParser<> Automaton;
-	Automaton m_automaton;
+	XPathAutomaton m_automaton;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -51,10 +51,10 @@ public:
 
 	virtual const char* mimeType() const
 	{
-		return "text/xml";
+		return "application/xml";
 	}
 
-	virtual SegmenterInstanceInterface* createInstance() const;
+	virtual SegmenterInstanceInterface* createInstance( const SegmenterOptions& opts) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

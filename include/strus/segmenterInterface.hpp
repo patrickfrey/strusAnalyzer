@@ -9,10 +9,15 @@
 /// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
+#include "strus/segmenterOptions.hpp"
+#include <vector>
+#include <string>
+#include <utility>
 
 /// \brief strus toplevel namespace
 namespace strus
 {
+
 /// \brief Forward declaration
 class SegmenterInstanceInterface;
 
@@ -30,7 +35,7 @@ public:
 
 	/// \brief Create a parameterizable segmenter instance
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
-	virtual SegmenterInstanceInterface* createInstance() const=0;
+	virtual SegmenterInstanceInterface* createInstance( const SegmenterOptions& opts=SegmenterOptions()) const=0;
 };
 
 }//namespace

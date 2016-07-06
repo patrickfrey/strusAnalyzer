@@ -1,0 +1,7 @@
+1 firstname
+2 lastname
+3 city
+4 lineno
+5 country
+6 lineno
+7 lastname

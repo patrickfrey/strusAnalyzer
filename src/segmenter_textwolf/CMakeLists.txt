@@ -16,13 +16,14 @@ include_directories(
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
+	"${PROJECT_SOURCE_DIR}/src/segmenter_utils" 
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf strus_private_utils )
+target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strus_private_utils )
 set_target_properties(
     strus_segmenter_textwolf
     PROPERTIES
