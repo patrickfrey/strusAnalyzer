@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -66,7 +66,7 @@
 </div><!--header-->
 <div class="contents">
 
-<p>Some options to stear the analyzer behaviour.  
+<p>Options to stear the creation of terms in the analyzer.  
  <a href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="documentAnalyzerInterface_8hpp_source.html">documentAnalyzerInterface.hpp</a>&gt;</code></p>
@@ -77,7 +77,7 @@ Public Types</h2></td></tr>
 <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408baeacc654f290534a3c2e04e0b7ec25279e4">BindSuccessor</a>, 
 <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408baeae5b24c71ffe6812c3202db3295bac7a5">BindPredecessor</a>
  }</td></tr>
-<tr class="memdesc:a18102b61fcea6ad949c0511953408bae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines how document positions are assigned to terms.  <a href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">More...</a><br/></td></tr>
+<tr class="memdesc:a18102b61fcea6ad949c0511953408bae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines how ordinal positions are assigned to document terms.  <a href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">More...</a><br/></td></tr>
 <tr class="separator:a18102b61fcea6ad949c0511953408bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -102,7 +102,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9280c7730ea65b5b15d96c5990e6699f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Some options to stear the analyzer behaviour. </p>
+<div class="textblock"><p>Options to stear the creation of terms in the analyzer. </p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="a18102b61fcea6ad949c0511953408bae"></a>
 <div class="memitem">
@@ -114,17 +114,17 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Determines how document positions are assigned to terms. </p>
-<dl class="section remark"><dt>Remarks</dt><dd>The motivation is to distinguish content elements from markup. </dd></dl>
+<p>Determines how ordinal positions are assigned to document terms. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>The main motivation is to distinguish content elements from markup. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a18102b61fcea6ad949c0511953408baea1c5a143cfc461ac8ed1db5da84738307"></a>BindContent</em>&#160;</td><td class="fielddoc">
-<p>An element in the document that gets an own position assigned. </p>
+<p>An element in the document that gets an own ordinal position assigned. </p>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a18102b61fcea6ad949c0511953408baeacc654f290534a3c2e04e0b7ec25279e4"></a>BindSuccessor</em>&#160;</td><td class="fielddoc">
-<p>An element in the document that gets the position of the succeding content element assigned. </p>
+<p>An element in the document that gets the ordinal position of the succeding content element assigned. </p>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a18102b61fcea6ad949c0511953408baeae5b24c71ffe6812c3202db3295bac7a5"></a>BindPredecessor</em>&#160;</td><td class="fielddoc">
-<p>An element in the document that gets the position of the preceding content element assigned. </p>
+<p>An element in the document that gets the ordinal position of the preceding content element assigned. </p>
 </td></tr>
 </table>
 
@@ -292,7 +292,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

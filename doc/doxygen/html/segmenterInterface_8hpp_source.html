@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -69,35 +69,42 @@
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">class </span>SegmenterInstanceInterface;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterInterface.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">   25</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">~SegmenterInterface</a>(){}</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c">mimeType</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a>* <a class="code" href="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682">createInstance</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="segmenterOptions_8hpp.html">strus/segmenterOptions.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">class </span>SegmenterInstanceInterface;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterInterface.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">   30</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">~SegmenterInterface</a>(){}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c">mimeType</a>() <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="ttc" id="classstrus_1_1SegmenterInterface_html_aa417e4e2db1402440684ffb29727e682"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682">strus::SegmenterInterface::createInstance</a></div><div class="ttdeci">virtual SegmenterInstanceInterface * createInstance() const =0</div><div class="ttdoc">Create a parameterizable segmenter instance. </div></div>
-<div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html">strus::SegmenterInstanceInterface</a></div><div class="ttdoc">Defines a program for splitting a source text it into chunks with an id correspoding to a selecting e...</div><div class="ttdef"><b>Definition:</b> segmenterInstanceInterface.hpp:24</div></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a>* <a class="code" href="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449">createInstance</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a>&amp; opts=<a class="code" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a>()) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="ttc" id="classstrus_1_1SegmenterOptions_html"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html">strus::SegmenterOptions</a></div><div class="ttdoc">Options to stear the segmenter behaviour or the structure of input if not self defined in the documen...</div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:23</div></div>
+<div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html">strus::SegmenterInstanceInterface</a></div><div class="ttdoc">Defines a program for splitting a source text it into chunks with an id correspoding to a selecting e...</div><div class="ttdef"><b>Definition:</b> segmenterInstanceInterface.hpp:25</div></div>
+<div class="ttc" id="classstrus_1_1SegmenterInterface_html_a61acfd2a5745052bc25af03d78266449"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449">strus::SegmenterInterface::createInstance</a></div><div class="ttdeci">virtual SegmenterInstanceInterface * createInstance(const SegmenterOptions &amp;opts=SegmenterOptions()) const =0</div><div class="ttdoc">Create a parameterizable segmenter instance. </div></div>
 <div class="ttc" id="classstrus_1_1SegmenterInterface_html_a13581b55eec2642f98bbef78d5cd779c"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c">strus::SegmenterInterface::mimeType</a></div><div class="ttdeci">virtual const char * mimeType() const =0</div><div class="ttdoc">Get the mime type accepted by this segmenter. </div></div>
-<div class="ttc" id="classstrus_1_1SegmenterInterface_html_a21aee48e36c41f4e6db4a4a383425001"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">strus::SegmenterInterface::~SegmenterInterface</a></div><div class="ttdeci">virtual ~SegmenterInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> segmenterInterface.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html">strus::SegmenterInterface</a></div><div class="ttdoc">Defines an interface for creating instances of programs for document segmentation. </div><div class="ttdef"><b>Definition:</b> segmenterInterface.hpp:21</div></div>
+<div class="ttc" id="classstrus_1_1SegmenterInterface_html_a21aee48e36c41f4e6db4a4a383425001"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">strus::SegmenterInterface::~SegmenterInterface</a></div><div class="ttdeci">virtual ~SegmenterInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> segmenterInterface.hpp:30</div></div>
+<div class="ttc" id="segmenterOptions_8hpp_html"><div class="ttname"><a href="segmenterOptions_8hpp.html">segmenterOptions.hpp</a></div></div>
+<div class="ttc" id="classstrus_1_1SegmenterInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInterface.html">strus::SegmenterInterface</a></div><div class="ttdoc">Defines an interface for creating instances of programs for document segmentation. </div><div class="ttdef"><b>Definition:</b> segmenterInterface.hpp:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

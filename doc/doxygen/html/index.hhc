@@ -73,9 +73,9 @@
           </UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="ImageNumber" value="1"></OBJECT>
           <UL>
-          <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6"><param name="ImageNumber" value="11"></OBJECT>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c"><param name="ImageNumber" value="11"></OBJECT>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655"><param name="ImageNumber" value="11"></OBJECT>
-          <LI><OBJECT type="text/sitemap"><param name="Name" value="docpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97"><param name="ImageNumber" value="11"></OBJECT>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="ordpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1"><param name="ImageNumber" value="11"></OBJECT>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="strpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c"><param name="ImageNumber" value="11"></OBJECT>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="strsize"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a73dae6196956c28de78e9eba5cd920ac"><param name="ImageNumber" value="11"></OBJECT>
           </UL>
@@ -94,9 +94,10 @@
       <LI><OBJECT type="text/sitemap"><param name="Name" value="AnalyzerObjectBuilderInterface"><param name="ImageNumber" value="1"></OBJECT>
         <UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="~AnalyzerObjectBuilderInterface"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a718b6baa62a286c3b86a366310a62b61"><param name="ImageNumber" value="11"></OBJECT>
-        <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a5a275f9f41c4ab4c5fcf8beac65a4ea6"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="createQueryAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0"><param name="ImageNumber" value="11"></OBJECT>
-        <LI><OBJECT type="text/sitemap"><param name="Name" value="getSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="findMimeTypeSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="getSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="getTextProcessor"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="DocumentAnalyzerContextInterface"><param name="ImageNumber" value="1"></OBJECT>
@@ -191,14 +192,34 @@
         <UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterInstanceInterface"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a5aeeaf51e6430b833c0ebd60f9607f34"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="createContext"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="createMarkupContext"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="defineSelectorExpression"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8991ee271bea5f4ba141da4d820ddb00"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="defineSubSection"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6c694fddf3e1f380dd473da802163f29"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterInterface"><param name="ImageNumber" value="1"></OBJECT>
         <UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterInterface"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="ImageNumber" value="11"></OBJECT>
-        <LI><OBJECT type="text/sitemap"><param name="Name" value="createInstance"><param name="Local" value="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="createInstance"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="mimeType"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterMarkupContextInterface"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterMarkupContextInterface"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="getContent"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a5d7b7e2de9d0ed53fc1f031e9b9a5a2d"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="getNext"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="putAttribute"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="putCloseTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="putOpenTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="tagLevel"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="tagName"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="Item"><param name="Local" value="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="Local" value="classstrus_1_1SegmenterOptions.html#ae667cf3920cf3e875ffdcb7cfa60fc0a"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="items"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="operator()"><param name="Local" value="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="TextProcessorInterface"><param name="ImageNumber" value="1"></OBJECT>
         <UL>
@@ -246,6 +267,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="functions.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Functions"><param name="Local" value="functions_func.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Variables"><param name="Local" value="functions_vars.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Typedefs"><param name="Local" value="functions_type.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Enumerations"><param name="Local" value="functions_enum.html"><param name="ImageNumber" value="11"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Name" value="Enumerator"><param name="Local" value="functions_eval.html"><param name="ImageNumber" value="11"></OBJECT>
     </UL>
@@ -320,9 +342,9 @@
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="ImageNumber" value="1"></OBJECT>
               <UL>
-              <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="Token"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655"><param name="ImageNumber" value="11"></OBJECT>
-              <LI><OBJECT type="text/sitemap"><param name="Name" value="docpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="ordpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="strpos"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="strsize"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a73dae6196956c28de78e9eba5cd920ac"><param name="ImageNumber" value="11"></OBJECT>
               </UL>
@@ -336,7 +358,7 @@
             </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="analyzer.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
-            <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="analyzer_8hpp.html#afccae0d97a995e9343f525b129851f56"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="analyzer_8hpp.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createQueryAnalyzer"><param name="Local" value="analyzer_8hpp.html#ab44bf498faf162d411fc08f3cfc45632"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="analyzer_objbuild.hpp"><param name="ImageNumber" value="1"></OBJECT>
@@ -361,13 +383,29 @@
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createNormalizer_dictmap"><param name="Local" value="normalizer__dictmap_8hpp.html#a31c94bfd5dd39a2c51c14760e0b0355d"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="normalizer_ngram.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createNormalizer_ngram"><param name="Local" value="normalizer__ngram_8hpp.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="normalizer_regex.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createNormalizer_regex"><param name="Local" value="normalizer__regex_8hpp.html#a5640859bc1d7b8e9f0ea5c5db489deba"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="normalizer_snowball.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createNormalizer_snowball"><param name="Local" value="normalizer__snowball_8hpp.html#aa423291af6f69e741fc79383fce5e747"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="segmenter_cjson.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createSegmenter_cjson"><param name="Local" value="segmenter__cjson_8hpp.html#afb64c2f853f6e8d0f4efe36a0ed17851"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="segmenter_textwolf.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createSegmenter_textwolf"><param name="Local" value="segmenter__textwolf_8hpp.html#a9b0d8c92ee134b233ec4698c1d977df4"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="segmenter_tsv.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createSegmenter_tsv"><param name="Local" value="segmenter__tsv_8hpp.html#a73da4437b9590c1f06de1418801d5d3f"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="textproc.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
@@ -376,6 +414,14 @@
           <LI><OBJECT type="text/sitemap"><param name="Name" value="tokenizer_punctuation.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createTokenizer_punctuation"><param name="Local" value="tokenizer__punctuation_8hpp.html#a63d40bdbdb325146e1f3d8f23527f7aa"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="tokenizer_regex.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createTokenizer_regex"><param name="Local" value="tokenizer__regex_8hpp.html#a52d526c3e1a59bab86873db2d0753b83"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="tokenizer_textcat.hpp"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createTokenizer_textcat"><param name="Local" value="tokenizer__textcat_8hpp.html#adf1b53419b3440255e84814b1f00e377"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           <LI><OBJECT type="text/sitemap"><param name="Name" value="tokenizer_word.hpp"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
@@ -405,9 +451,10 @@
           <LI><OBJECT type="text/sitemap"><param name="Name" value="AnalyzerObjectBuilderInterface"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="~AnalyzerObjectBuilderInterface"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a718b6baa62a286c3b86a366310a62b61"><param name="ImageNumber" value="11"></OBJECT>
-            <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createDocumentAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a5a275f9f41c4ab4c5fcf8beac65a4ea6"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createQueryAnalyzer"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0"><param name="ImageNumber" value="11"></OBJECT>
-            <LI><OBJECT type="text/sitemap"><param name="Name" value="getSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="findMimeTypeSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="getSegmenter"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="getTextProcessor"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           </UL>
@@ -555,6 +602,7 @@
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterInstanceInterface"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a5aeeaf51e6430b833c0ebd60f9607f34"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="createContext"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createMarkupContext"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="defineSelectorExpression"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8991ee271bea5f4ba141da4d820ddb00"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="defineSubSection"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6c694fddf3e1f380dd473da802163f29"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
@@ -564,8 +612,33 @@
           <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterInterface"><param name="ImageNumber" value="1"></OBJECT>
             <UL>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterInterface"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="ImageNumber" value="11"></OBJECT>
-            <LI><OBJECT type="text/sitemap"><param name="Name" value="createInstance"><param name="Local" value="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="createInstance"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="mimeType"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="segmenterMarkupContextInterface.hpp"><param name="Local" value="segmenterMarkupContextInterface_8hpp.html"><param name="ImageNumber" value="11"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterMarkupContextInterface"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="~SegmenterMarkupContextInterface"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="getContent"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a5d7b7e2de9d0ed53fc1f031e9b9a5a2d"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="getNext"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="putAttribute"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="putCloseTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="putOpenTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="tagLevel"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="tagName"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="segmenterOptions.hpp"><param name="Local" value="segmenterOptions_8hpp.html"><param name="ImageNumber" value="11"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="Item"><param name="Local" value="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="SegmenterOptions"><param name="Local" value="classstrus_1_1SegmenterOptions.html#ae667cf3920cf3e875ffdcb7cfa60fc0a"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="items"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="operator()"><param name="Local" value="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034"><param name="ImageNumber" value="11"></OBJECT>
             </UL>
           </UL>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="textProcessorInterface.hpp"><param name="Local" value="textProcessorInterface_8hpp.html"><param name="ImageNumber" value="11"></OBJECT>

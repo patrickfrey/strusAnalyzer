@@ -17,7 +17,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8"><param name="Name" value="analyzePhraseBulk"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="analyzer_8hpp.html"><param name="Name" value="analyzer.hpp"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="analyzer_8hpp.html#afccae0d97a995e9343f525b129851f56"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="analyzer_8hpp.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="analyzer_8hpp.html#ab44bf498faf162d411fc08f3cfc45632"><param name="Name" value="createQueryAnalyzer"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="analyzer__objbuild_8hpp.html"><param name="Name" value="analyzer_objbuild.hpp"></OBJECT>
@@ -49,11 +49,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#af1256cf050921c2602ac1161a8be5364"><param name="Name" value="detector_std.hpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#af1256cf050921c2602ac1161a8be5364"><param name="Name" value="strus"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afccae0d97a995e9343f525b129851f56"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afccae0d97a995e9343f525b129851f56"><param name="Name" value="analyzer.hpp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afccae0d97a995e9343f525b129851f56"><param name="Name" value="strus"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123"><param name="Name" value="strus::AnalyzerObjectBuilderInterface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="Name" value="analyzer.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="Name" value="strus"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a5a275f9f41c4ab4c5fcf8beac65a4ea6"><param name="Name" value="strus::AnalyzerObjectBuilderInterface"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1NormalizerFunctionInstanceInterface.html#adef234c5658867be2386988a0726ca3a"><param name="Name" value="createFunctionContext"></OBJECT>
   <UL>
@@ -64,9 +64,10 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInterface.html#a7f007cdef33bb869987e6b323ea83459"><param name="Name" value="strus::AggregatorFunctionInterface"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6"><param name="Name" value="strus::NormalizerFunctionInterface"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682"><param name="Name" value="strus::SegmenterInterface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449"><param name="Name" value="strus::SegmenterInterface"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311"><param name="Name" value="strus::TokenizerFunctionInterface"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93"><param name="Name" value="createMarkupContext"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adea2b5800cdad32e830b59cdbe1673c7"><param name="Name" value="createNormalizer_convdia"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adea2b5800cdad32e830b59cdbe1673c7"><param name="Name" value="normalizer_charconv.hpp"></OBJECT>
@@ -87,6 +88,16 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae01eb9c143e7f0071e10c40bb1277d46"><param name="Name" value="normalizer_charconv.hpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae01eb9c143e7f0071e10c40bb1277d46"><param name="Name" value="strus"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa"><param name="Name" value="createNormalizer_ngram"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa"><param name="Name" value="normalizer_ngram.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa"><param name="Name" value="strus"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5640859bc1d7b8e9f0ea5c5db489deba"><param name="Name" value="createNormalizer_regex"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5640859bc1d7b8e9f0ea5c5db489deba"><param name="Name" value="normalizer_regex.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5640859bc1d7b8e9f0ea5c5db489deba"><param name="Name" value="strus"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#aa423291af6f69e741fc79383fce5e747"><param name="Name" value="createNormalizer_snowball"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#aa423291af6f69e741fc79383fce5e747"><param name="Name" value="normalizer_snowball.hpp"></OBJECT>
@@ -103,10 +114,20 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632"><param name="Name" value="strus"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0"><param name="Name" value="strus::AnalyzerObjectBuilderInterface"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851"><param name="Name" value="createSegmenter_cjson"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851"><param name="Name" value="segmenter_cjson.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851"><param name="Name" value="strus"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a9b0d8c92ee134b233ec4698c1d977df4"><param name="Name" value="createSegmenter_textwolf"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a9b0d8c92ee134b233ec4698c1d977df4"><param name="Name" value="segmenter_textwolf.hpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a9b0d8c92ee134b233ec4698c1d977df4"><param name="Name" value="strus"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a73da4437b9590c1f06de1418801d5d3f"><param name="Name" value="createSegmenter_tsv"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a73da4437b9590c1f06de1418801d5d3f"><param name="Name" value="segmenter_tsv.hpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a73da4437b9590c1f06de1418801d5d3f"><param name="Name" value="strus"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a8fc58b573ab7064c6a4045c6df130a5d"><param name="Name" value="createTextProcessor"></OBJECT>
   <UL>
@@ -117,6 +138,16 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a63d40bdbdb325146e1f3d8f23527f7aa"><param name="Name" value="strus"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a63d40bdbdb325146e1f3d8f23527f7aa"><param name="Name" value="tokenizer_punctuation.hpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a52d526c3e1a59bab86873db2d0753b83"><param name="Name" value="createTokenizer_regex"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a52d526c3e1a59bab86873db2d0753b83"><param name="Name" value="strus"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a52d526c3e1a59bab86873db2d0753b83"><param name="Name" value="tokenizer_regex.hpp"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adf1b53419b3440255e84814b1f00e377"><param name="Name" value="createTokenizer_textcat"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adf1b53419b3440255e84814b1f00e377"><param name="Name" value="strus"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adf1b53419b3440255e84814b1f00e377"><param name="Name" value="tokenizer_textcat.hpp"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afe1ee3fe08e0126ace7f59cb2d42484a"><param name="Name" value="createTokenizer_whitespace"></OBJECT>
   <UL>
@@ -143,14 +174,15 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentClassDetectorInterface.html#aedfbb80d4c8aa7d444a5b04e1545855f"><param name="Name" value="detect"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#af76c31c5908ba4f6dff0598a6b51150c"><param name="Name" value="detectDocumentClass"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="detector__std_8hpp.html"><param name="Name" value="detector_std.hpp"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97"><param name="Name" value="docpos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ae6d17571b5ebd50f19df0c1cff3a42a8"><param name="Name" value="Document"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentClass.html#acb1eab345f64c241b38449ee231f242a"><param name="Name" value="DocumentClass"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentClass.html#a02e0319dd689ad8169f8b6f961598c8f"><param name="Name" value="encoding"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInstanceInterface.html#ae98e82f93f837c2d45d918d7bee033db"><param name="Name" value="evaluate"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#ae730b5c31e65ebfb072d165bbcf30ddd"><param name="Name" value="FeatureOptions"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6"><param name="Name" value="findMimeTypeSegmenter"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ae2074345422ae5aee2128bf02641f4bb"><param name="Name" value="forwardIndexTerms"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383"><param name="Name" value="getAggregator"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a5d7b7e2de9d0ed53fc1f031e9b9a5a2d"><param name="Name" value="getContent"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInterface.html#afbb6fa900a495a4582e0b99d0e4abc14"><param name="Name" value="getDescription"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AggregatorFunctionInterface.html#afbb6fa900a495a4582e0b99d0e4abc14"><param name="Name" value="strus::AggregatorFunctionInterface"></OBJECT>
@@ -159,11 +191,17 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#ad0fd28a5a046a167d8b050a871911a77"><param name="Name" value="getFunctionList"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b"><param name="Name" value="getNext"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b"><param name="Name" value="strus::SegmenterContextInterface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c"><param name="Name" value="strus::SegmenterMarkupContextInterface"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#aebb44ce7df71966c22250488d7cf74ae"><param name="Name" value="getNormalizer"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821"><param name="Name" value="getResourcePath"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85"><param name="Name" value="getSegmenter"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711"><param name="Name" value="getSegmenter"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834"><param name="Name" value="getTextProcessor"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3"><param name="Name" value="getTokenizer"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af"><param name="Name" value="Item"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8"><param name="Name" value="items"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a704f4103959a7cb5c0b0aa3a698149d2"><param name="Name" value="metadata"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1MetaData.html#a7de5842b7cf897191f75b53b9d602eca"><param name="Name" value="MetaData"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentClass.html#af58277fd04a18cf17d3aa493ea4ffe79"><param name="Name" value="mimeType"></OBJECT>
@@ -185,21 +223,31 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="normalizer__dateconv_8hpp.html"><param name="Name" value="normalizer_dateconv.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="normalizer__dictmap_8hpp.html"><param name="Name" value="normalizer_dictmap.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="normalizer__ngram_8hpp.html"><param name="Name" value="normalizer_ngram.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="normalizer__regex_8hpp.html"><param name="Name" value="normalizer_regex.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="normalizer__snowball_8hpp.html"><param name="Name" value="normalizer_snowball.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353aac2f3d1bf0821e31c66feb1c668ef627"><param name="Name" value="NormalizerFunction"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034"><param name="Name" value="operator()"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a9280c7730ea65b5b15d96c5990e6699f"><param name="Name" value="opt"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1"><param name="Name" value="ordpos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#a958cfa5c0ee25e01b967d74acf26b02d"><param name="Name" value="Phrase"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#a3dcf10302667f5d22221f0178477137d"><param name="Name" value="pos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc"><param name="Name" value="positionBind"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="Name" value="putAttribute"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="Name" value="putCloseTag"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerContextInterface.html#a81749bb2cc45aa1c436ff295ab5b5335"><param name="Name" value="putInput"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentAnalyzerContextInterface.html#a81749bb2cc45aa1c436ff295ab5b5335"><param name="Name" value="strus::DocumentAnalyzerContextInterface"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc"><param name="Name" value="strus::SegmenterContextInterface"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="Name" value="putOpenTag"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1DocumentClass.html#ab6da091daa5857b3d98b973d82cafeff"><param name="Name" value="scheme"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a5aba99f02bbaac463589edc0540db48e"><param name="Name" value="searchIndexTerms"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="segmenter__cjson_8hpp.html"><param name="Name" value="segmenter_cjson.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="segmenter__textwolf_8hpp.html"><param name="Name" value="segmenter_textwolf.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="segmenter__tsv_8hpp.html"><param name="Name" value="segmenter_tsv.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="segmenterContextInterface_8hpp.html"><param name="Name" value="segmenterContextInterface.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0"><param name="Name" value="SegmenterOptions"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd"><param name="Name" value="SegmenterPosition"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd"><param name="Name" value="segmenterContextInterface.hpp"></OBJECT>
@@ -265,17 +313,18 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html"><param name="Name" value="strus::analyzer::Token"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97"><param name="Name" value="docpos"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1"><param name="Name" value="ordpos"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c"><param name="Name" value="strpos"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a73dae6196956c28de78e9eba5cd920ac"><param name="Name" value="strsize"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6"><param name="Name" value="Token"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c"><param name="Name" value="Token"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus_1_1analyzer.html"><param name="Name" value="strus::analyzer"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html"><param name="Name" value="strus::AnalyzerObjectBuilderInterface"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a5a275f9f41c4ab4c5fcf8beac65a4ea6"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0"><param name="Name" value="createQueryAnalyzer"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85"><param name="Name" value="getSegmenter"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6"><param name="Name" value="findMimeTypeSegmenter"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711"><param name="Name" value="getSegmenter"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834"><param name="Name" value="getTextProcessor"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1AnalyzerObjectBuilderInterface.html#a718b6baa62a286c3b86a366310a62b61"><param name="Name" value="~AnalyzerObjectBuilderInterface"></OBJECT>
   </UL>
@@ -362,15 +411,34 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html"><param name="Name" value="strus::SegmenterInstanceInterface"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67"><param name="Name" value="createContext"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93"><param name="Name" value="createMarkupContext"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a8991ee271bea5f4ba141da4d820ddb00"><param name="Name" value="defineSelectorExpression"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a6c694fddf3e1f380dd473da802163f29"><param name="Name" value="defineSubSection"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a5aeeaf51e6430b833c0ebd60f9607f34"><param name="Name" value="~SegmenterInstanceInterface"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html"><param name="Name" value="strus::SegmenterInterface"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682"><param name="Name" value="createInstance"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449"><param name="Name" value="createInstance"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a13581b55eec2642f98bbef78d5cd779c"><param name="Name" value="mimeType"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="Name" value="~SegmenterInterface"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html"><param name="Name" value="strus::SegmenterMarkupContextInterface"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a5d7b7e2de9d0ed53fc1f031e9b9a5a2d"><param name="Name" value="getContent"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c"><param name="Name" value="getNext"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="Name" value="putAttribute"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="Name" value="putCloseTag"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="Name" value="putOpenTag"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="Name" value="tagLevel"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="Name" value="tagName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1"><param name="Name" value="~SegmenterMarkupContextInterface"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html"><param name="Name" value="strus::SegmenterOptions"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af"><param name="Name" value="Item"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8"><param name="Name" value="items"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034"><param name="Name" value="operator()"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0"><param name="Name" value="SegmenterOptions"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html"><param name="Name" value="strus::TextProcessorInterface"></OBJECT>
   <UL>
@@ -412,17 +480,23 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a86b286a887261834b5814f5ce40c5e51"><param name="Name" value="createAggregator_sumSquareTf"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a816d5e05df8f785816fb9c419f422f13"><param name="Name" value="createAnalyzerObjectBuilder_default"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#af1256cf050921c2602ac1161a8be5364"><param name="Name" value="createDetector_std"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afccae0d97a995e9343f525b129851f56"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae0cef1feade80cd4b062bf0ec57fac72"><param name="Name" value="createDocumentAnalyzer"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adea2b5800cdad32e830b59cdbe1673c7"><param name="Name" value="createNormalizer_convdia"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a50813aaaf3e39eecf376f05cc4602ea4"><param name="Name" value="createNormalizer_date2int"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a31c94bfd5dd39a2c51c14760e0b0355d"><param name="Name" value="createNormalizer_dictmap"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ae01eb9c143e7f0071e10c40bb1277d46"><param name="Name" value="createNormalizer_lowercase"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa"><param name="Name" value="createNormalizer_ngram"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5640859bc1d7b8e9f0ea5c5db489deba"><param name="Name" value="createNormalizer_regex"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#aa423291af6f69e741fc79383fce5e747"><param name="Name" value="createNormalizer_snowball"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a5087c3b87a3bcb7d9d31994c7da3124a"><param name="Name" value="createNormalizer_uppercase"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632"><param name="Name" value="createQueryAnalyzer"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851"><param name="Name" value="createSegmenter_cjson"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a9b0d8c92ee134b233ec4698c1d977df4"><param name="Name" value="createSegmenter_textwolf"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a73da4437b9590c1f06de1418801d5d3f"><param name="Name" value="createSegmenter_tsv"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a8fc58b573ab7064c6a4045c6df130a5d"><param name="Name" value="createTextProcessor"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a63d40bdbdb325146e1f3d8f23527f7aa"><param name="Name" value="createTokenizer_punctuation"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a52d526c3e1a59bab86873db2d0753b83"><param name="Name" value="createTokenizer_regex"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#adf1b53419b3440255e84814b1f00e377"><param name="Name" value="createTokenizer_textcat"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#afe1ee3fe08e0126ace7f59cb2d42484a"><param name="Name" value="createTokenizer_whitespace"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a79ff202ccbe4c6905584fe62cc3a4f77"><param name="Name" value="createTokenizer_word"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd"><param name="Name" value="SegmenterPosition"></OBJECT>
@@ -433,6 +507,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="versionAnalyzer_8hpp.html#af8a5bbbe7a83c54d2257feb7532ef347"><param name="Name" value="STRUS_ANALYZER_VERSION_STRING"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#a7eef235ae7df82b0fd71dd7a43ca468d"><param name="Name" value="subDocumentTypeName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Document.html#ad5815b8932fc14d05a356287fc403fff"><param name="Name" value="swap"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="Name" value="tagLevel"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="Name" value="tagName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="term_8hpp.html"><param name="Name" value="term.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1analyzer_1_1Term.html#a7c33b6877fd4805b41dc0c2c03f6ad61"><param name="Name" value="Term"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0"><param name="Name" value="TermVector"></OBJECT>
@@ -441,9 +517,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0"><param name="Name" value="term.hpp"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="textproc_8hpp.html"><param name="Name" value="textproc.hpp"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6"><param name="Name" value="Token"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c"><param name="Name" value="Token"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionContextInterface.html#a13a589ddb7f43bca77d17a227b4d0c10"><param name="Name" value="tokenize"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__punctuation_8hpp.html"><param name="Name" value="tokenizer_punctuation.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__regex_8hpp.html"><param name="Name" value="tokenizer_regex.hpp"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__textcat_8hpp.html"><param name="Name" value="tokenizer_textcat.hpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__word_8hpp.html"><param name="Name" value="tokenizer_word.hpp"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="tokenizer__word_8hpp.html#afe1ee3fe08e0126ace7f59cb2d42484a"><param name="Name" value="createTokenizer_whitespace"></OBJECT>
@@ -481,6 +559,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterContextInterface.html#a767e7f224a8c19a1170b90de82ce27b6"><param name="Name" value="~SegmenterContextInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInstanceInterface.html#a5aeeaf51e6430b833c0ebd60f9607f34"><param name="Name" value="~SegmenterInstanceInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001"><param name="Name" value="~SegmenterInterface"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1"><param name="Name" value="~SegmenterMarkupContextInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f"><param name="Name" value="~TextProcessorInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionContextInterface.html#abffc9c6d1fe5fa291794aa434adaded5"><param name="Name" value="~TokenizerFunctionContextInterface"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="classstrus_1_1TokenizerFunctionInstanceInterface.html#a859b6a4664a21084ec91bf8a682282e4"><param name="Name" value="~TokenizerFunctionInstanceInterface"></OBJECT>

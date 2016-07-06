@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -82,8 +82,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a6c694fddf3e1f380dd473da802163f29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an expression for identifying a sub section of the document.  <a href="#a6c694fddf3e1f380dd473da802163f29">More...</a><br/></td></tr>
 <tr class="separator:a6c694fddf3e1f380dd473da802163f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e45397f6685175e07243d3c39b38d67"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67">createContext</a> (const <a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;dclass) const =0</td></tr>
-<tr class="memdesc:a8e45397f6685175e07243d3c39b38d67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an instance of the segmenter.  <a href="#a8e45397f6685175e07243d3c39b38d67">More...</a><br/></td></tr>
+<tr class="memdesc:a8e45397f6685175e07243d3c39b38d67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a context for segmenting one document of a specified class.  <a href="#a8e45397f6685175e07243d3c39b38d67">More...</a><br/></td></tr>
 <tr class="separator:a8e45397f6685175e07243d3c39b38d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a98aab9ab67510567b2437225bb8d93"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html">SegmenterMarkupContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93">createMarkupContext</a> (const <a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;dclass, const std::string &amp;content) const =0</td></tr>
+<tr class="memdesc:a6a98aab9ab67510567b2437225bb8d93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an instance of the segmenters document markup context.  <a href="#a6a98aab9ab67510567b2437225bb8d93">More...</a><br/></td></tr>
+<tr class="separator:a6a98aab9ab67510567b2437225bb8d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression. </p>
@@ -136,14 +140,58 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Creates an instance of the segmenter. </p>
+<p>Creates a context for segmenting one document of a specified class. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">dclass</td><td>description of the document type and encoding to process </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the segmenter object (with ownership, to be desposed with delete by the caller) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the segmenter context object (with ownership, to be desposed with delete by the caller) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6a98aab9ab67510567b2437225bb8d93"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html">SegmenterMarkupContextInterface</a>* strus::SegmenterInstanceInterface::createMarkupContext </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1DocumentClass.html">DocumentClass</a> &amp;&#160;</td>
+          <td class="paramname"><em>dclass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>content</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates an instance of the segmenters document markup context. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dclass</td><td>description of the document type and encoding to process </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">content</td><td>document content to process (no chunkwise processing) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the segmenter markup object (with ownership, to be desposed with delete by the caller) </dd></dl>
 
 </div>
 </div>
@@ -247,7 +295,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

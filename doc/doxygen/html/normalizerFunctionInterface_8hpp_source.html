@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -83,14 +83,16 @@
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">   30</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">~NormalizerFunctionInterface</a>(){}</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">createInstance</a>( <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args, <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">getDescription</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">createInstance</a>(</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; args,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a>* tp) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">getDescription</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;};</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html_a572d50bfdc1d40f83ca2dbce16e30ed3"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html#a572d50bfdc1d40f83ca2dbce16e30ed3">strus::NormalizerFunctionInterface::~NormalizerFunctionInterface</a></div><div class="ttdeci">virtual ~NormalizerFunctionInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInterface.hpp:30</div></div>
 <div class="ttc" id="classstrus_1_1NormalizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInstanceInterface.html">strus::NormalizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for a parameterized normalization function. </div><div class="ttdef"><b>Definition:</b> normalizerFunctionInstanceInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1NormalizerFunctionInterface_html_a6ad77e1f270c82b7f3f7d9eebaf7c58f"><div class="ttname"><a href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">strus::NormalizerFunctionInterface::getDescription</a></div><div class="ttdeci">virtual const char * getDescription() const =0</div><div class="ttdoc">Get a description of the function for user help. </div></div>
@@ -101,7 +103,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

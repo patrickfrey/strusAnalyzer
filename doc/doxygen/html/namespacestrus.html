@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -107,13 +107,19 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a program for analyzing chunks of a query.  <a href="classstrus_1_1QueryAnalyzerInterface.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an instance of a segmenter program.  <a href="classstrus_1_1SegmenterContextInterface.html#details">More...</a><br/></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the context for segmenting one document.  <a href="classstrus_1_1SegmenterContextInterface.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.  <a href="classstrus_1_1SegmenterInstanceInterface.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an interface for creating instances of programs for document segmentation.  <a href="classstrus_1_1SegmenterInterface.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html">SegmenterMarkupContextInterface</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the context for inserting markups into one document.  <a href="classstrus_1_1SegmenterMarkupContextInterface.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed.  <a href="classstrus_1_1SegmenterOptions.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics.  <a href="classstrus_1_1TextProcessorInterface.html#details">More...</a><br/></td></tr>
@@ -139,9 +145,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a86b286a887261834b5814f5ce40c5e51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1AggregatorFunctionInterface.html">AggregatorFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a86b286a887261834b5814f5ce40c5e51">createAggregator_sumSquareTf</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a86b286a887261834b5814f5ce40c5e51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the aggregator function type for the cosine measure normalization factor.  <a href="#a86b286a887261834b5814f5ce40c5e51">More...</a><br/></td></tr>
 <tr class="separator:a86b286a887261834b5814f5ce40c5e51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afccae0d97a995e9343f525b129851f56"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#afccae0d97a995e9343f525b129851f56">createDocumentAnalyzer</a> (const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *segmenter, ErrorBufferInterface *errorhnd)</td></tr>
-<tr class="memdesc:afccae0d97a995e9343f525b129851f56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing documents.  <a href="#afccae0d97a995e9343f525b129851f56">More...</a><br/></td></tr>
-<tr class="separator:afccae0d97a995e9343f525b129851f56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0cef1feade80cd4b062bf0ec57fac72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#ae0cef1feade80cd4b062bf0ec57fac72">createDocumentAnalyzer</a> (const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *segmenter, const <a class="el" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a> &amp;opts, ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:ae0cef1feade80cd4b062bf0ec57fac72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing documents.  <a href="#ae0cef1feade80cd4b062bf0ec57fac72">More...</a><br/></td></tr>
+<tr class="separator:ae0cef1feade80cd4b062bf0ec57fac72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab44bf498faf162d411fc08f3cfc45632"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">QueryAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632">createQueryAnalyzer</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:ab44bf498faf162d411fc08f3cfc45632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing queries.  <a href="#ab44bf498faf162d411fc08f3cfc45632">More...</a><br/></td></tr>
 <tr class="separator:ab44bf498faf162d411fc08f3cfc45632"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,18 +172,36 @@ Functions</h2></td></tr>
 <tr class="memitem:a31c94bfd5dd39a2c51c14760e0b0355d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a31c94bfd5dd39a2c51c14760e0b0355d">createNormalizer_dictmap</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a31c94bfd5dd39a2c51c14760e0b0355d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the mapping of the input with a dictionary as result.  <a href="#a31c94bfd5dd39a2c51c14760e0b0355d">More...</a><br/></td></tr>
 <tr class="separator:a31c94bfd5dd39a2c51c14760e0b0355d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd5ac0b44fc17ac16c9641ba9a0e4eaa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#afd5ac0b44fc17ac16c9641ba9a0e4eaa">createNormalizer_ngram</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:afd5ac0b44fc17ac16c9641ba9a0e4eaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the ngrams of the input as result.  <a href="#afd5ac0b44fc17ac16c9641ba9a0e4eaa">More...</a><br/></td></tr>
+<tr class="separator:afd5ac0b44fc17ac16c9641ba9a0e4eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5640859bc1d7b8e9f0ea5c5db489deba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a5640859bc1d7b8e9f0ea5c5db489deba">createNormalizer_regex</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a5640859bc1d7b8e9f0ea5c5db489deba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the mapping of the input with help of regular expressions as result.  <a href="#a5640859bc1d7b8e9f0ea5c5db489deba">More...</a><br/></td></tr>
+<tr class="separator:a5640859bc1d7b8e9f0ea5c5db489deba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa423291af6f69e741fc79383fce5e747"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#aa423291af6f69e741fc79383fce5e747">createNormalizer_snowball</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:aa423291af6f69e741fc79383fce5e747"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the normalizer that returns the stemming of the input with the snowball stemmer as result.  <a href="#aa423291af6f69e741fc79383fce5e747">More...</a><br/></td></tr>
 <tr class="separator:aa423291af6f69e741fc79383fce5e747"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851">createSegmenter_cjson</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document XML segmenter based on cjson.  <a href="#afb64c2f853f6e8d0f4efe36a0ed17851">More...</a><br/></td></tr>
+<tr class="separator:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b0d8c92ee134b233ec4698c1d977df4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a9b0d8c92ee134b233ec4698c1d977df4">createSegmenter_textwolf</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a9b0d8c92ee134b233ec4698c1d977df4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document XML segmenter based on textwolf.  <a href="#a9b0d8c92ee134b233ec4698c1d977df4">More...</a><br/></td></tr>
 <tr class="separator:a9b0d8c92ee134b233ec4698c1d977df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73da4437b9590c1f06de1418801d5d3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a73da4437b9590c1f06de1418801d5d3f">createSegmenter_tsv</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a73da4437b9590c1f06de1418801d5d3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document segmenter using tab-separated files as input.  <a href="#a73da4437b9590c1f06de1418801d5d3f">More...</a><br/></td></tr>
+<tr class="separator:a73da4437b9590c1f06de1418801d5d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fc58b573ab7064c6a4045c6df130a5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a8fc58b573ab7064c6a4045c6df130a5d">createTextProcessor</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a8fc58b573ab7064c6a4045c6df130a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a text processor.  <a href="#a8fc58b573ab7064c6a4045c6df130a5d">More...</a><br/></td></tr>
 <tr class="separator:a8fc58b573ab7064c6a4045c6df130a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63d40bdbdb325146e1f3d8f23527f7aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a63d40bdbdb325146e1f3d8f23527f7aa">createTokenizer_punctuation</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a63d40bdbdb325146e1f3d8f23527f7aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tokenizer type that creates the tokenization of punctuation elements in the input.  <a href="#a63d40bdbdb325146e1f3d8f23527f7aa">More...</a><br/></td></tr>
 <tr class="separator:a63d40bdbdb325146e1f3d8f23527f7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52d526c3e1a59bab86873db2d0753b83"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a52d526c3e1a59bab86873db2d0753b83">createTokenizer_regex</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a52d526c3e1a59bab86873db2d0753b83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tokenizer type that creates the tokenization with help of regular expressions.  <a href="#a52d526c3e1a59bab86873db2d0753b83">More...</a><br/></td></tr>
+<tr class="separator:a52d526c3e1a59bab86873db2d0753b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf1b53419b3440255e84814b1f00e377"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#adf1b53419b3440255e84814b1f00e377">createTokenizer_textcat</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:adf1b53419b3440255e84814b1f00e377"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tokenizer type that creates the tokenization of words in a recognized language.  <a href="#adf1b53419b3440255e84814b1f00e377">More...</a><br/></td></tr>
+<tr class="separator:adf1b53419b3440255e84814b1f00e377"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79ff202ccbe4c6905584fe62cc3a4f77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a79ff202ccbe4c6905584fe62cc3a4f77">createTokenizer_word</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a79ff202ccbe4c6905584fe62cc3a4f77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the tokenizer type that creates the tokenization of words in the input.  <a href="#a79ff202ccbe4c6905584fe62cc3a4f77">More...</a><br/></td></tr>
 <tr class="separator:a79ff202ccbe4c6905584fe62cc3a4f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -265,7 +289,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afccae0d97a995e9343f525b129851f56"></a>
+<a class="anchor" id="ae0cef1feade80cd4b062bf0ec57fac72"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -274,6 +298,12 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const SegmenterInterface *&#160;</td>
           <td class="paramname"><em>segmenter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SegmenterOptions &amp;&#160;</td>
+          <td class="paramname"><em>opts</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -376,6 +406,44 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="afd5ac0b44fc17ac16c9641ba9a0e4eaa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a>* strus::createNormalizer_ngram </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the normalizer that returns the ngrams of the input as result. </p>
+<dl class="section return"><dt>Returns</dt><dd>the normalization function </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a5640859bc1d7b8e9f0ea5c5db489deba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1NormalizerFunctionInterface.html">NormalizerFunctionInterface</a>* strus::createNormalizer_regex </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the normalizer that returns the mapping of the input with help of regular expressions as result. </p>
+<dl class="section return"><dt>Returns</dt><dd>the normalization function </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="aa423291af6f69e741fc79383fce5e747"></a>
 <div class="memitem">
 <div class="memproto">
@@ -433,6 +501,25 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="afb64c2f853f6e8d0f4efe36a0ed17851"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::createSegmenter_cjson </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a document XML segmenter based on cjson. </p>
+<dl class="section return"><dt>Returns</dt><dd>the segmenter </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a9b0d8c92ee134b233ec4698c1d977df4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -448,6 +535,25 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get a document XML segmenter based on textwolf. </p>
+<dl class="section return"><dt>Returns</dt><dd>the segmenter </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a73da4437b9590c1f06de1418801d5d3f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::createSegmenter_tsv </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a document segmenter using tab-separated files as input. </p>
 <dl class="section return"><dt>Returns</dt><dd>the segmenter </dd></dl>
 
 </div>
@@ -486,6 +592,44 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get the tokenizer type that creates the tokenization of punctuation elements in the input. </p>
+<dl class="section return"><dt>Returns</dt><dd>the tokenization function </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a52d526c3e1a59bab86873db2d0753b83"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a>* strus::createTokenizer_regex </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the tokenizer type that creates the tokenization with help of regular expressions. </p>
+<dl class="section return"><dt>Returns</dt><dd>the tokenization function </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="adf1b53419b3440255e84814b1f00e377"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a>* strus::createTokenizer_textcat </td>
+          <td>(</td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the tokenizer type that creates the tokenization of words in a recognized language. </p>
 <dl class="section return"><dt>Returns</dt><dd>the tokenization function </dd></dl>
 
 </div>
@@ -532,7 +676,7 @@ Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

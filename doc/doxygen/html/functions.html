@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -56,6 +56,7 @@
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
@@ -69,6 +70,7 @@
       <li><a href="#index_e"><span>e</span></a></li>
       <li><a href="#index_f"><span>f</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
+      <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
       <li><a href="#index_n"><span>n</span></a></li>
       <li><a href="#index_o"><span>o</span></a></li>
@@ -115,7 +117,7 @@
 : <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">strus::QueryAnalyzerInterface</a>
 </li>
 <li>Attribute()
-: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a9cf2841b1a6c34bb86880ef09b072d6e">strus::analyzer::Attribute</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Attribute.html#a3a48662f43b0c7a630384e83f1974eb2">strus::analyzer::Attribute</a>
 </li>
 <li>attributes()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a6210190181412859c53846fe3b55d0ef">strus::analyzer::Document</a>
@@ -151,7 +153,7 @@
 , <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67">strus::SegmenterInstanceInterface</a>
 </li>
 <li>createDocumentAnalyzer()
-: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a021c85779e002261339cea6f67f7d123">strus::AnalyzerObjectBuilderInterface</a>
+: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a5a275f9f41c4ab4c5fcf8beac65a4ea6">strus::AnalyzerObjectBuilderInterface</a>
 </li>
 <li>createFunctionContext()
 : <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html#adef234c5658867be2386988a0726ca3a">strus::NormalizerFunctionInstanceInterface</a>
@@ -160,8 +162,11 @@
 <li>createInstance()
 : <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html#a7f007cdef33bb869987e6b323ea83459">strus::AggregatorFunctionInterface</a>
 , <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a167945da094ef0642066266ddaf86cc6">strus::NormalizerFunctionInterface</a>
-, <a class="el" href="classstrus_1_1SegmenterInterface.html#aa417e4e2db1402440684ffb29727e682">strus::SegmenterInterface</a>
+, <a class="el" href="classstrus_1_1SegmenterInterface.html#a61acfd2a5745052bc25af03d78266449">strus::SegmenterInterface</a>
 , <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html#ac9ae3fdd1bbd5c1b212ab5ef5a255311">strus::TokenizerFunctionInterface</a>
+</li>
+<li>createMarkupContext()
+: <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93">strus::SegmenterInstanceInterface</a>
 </li>
 <li>createQueryAnalyzer()
 : <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#afbeb80a3d6c60fe4b684e7091d75e6c0">strus::AnalyzerObjectBuilderInterface</a>
@@ -212,9 +217,6 @@
 <li>detectDocumentClass()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#af76c31c5908ba4f6dff0598a6b51150c">strus::TextProcessorInterface</a>
 </li>
-<li>docpos
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a1c761eb5a862288feef94140a9431c97">strus::analyzer::Token</a>
-</li>
 <li>Document()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ae6d17571b5ebd50f19df0c1cff3a42a8">strus::analyzer::Document</a>
 </li>
@@ -238,6 +240,9 @@
 <li>FeatureOptions()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#ae730b5c31e65ebfb072d165bbcf30ddd">strus::DocumentAnalyzerInterface::FeatureOptions</a>
 </li>
+<li>findMimeTypeSegmenter()
+: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6">strus::AnalyzerObjectBuilderInterface</a>
+</li>
 <li>forwardIndexTerms()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ae2074345422ae5aee2128bf02641f4bb">strus::analyzer::Document</a>
 </li>
@@ -251,6 +256,9 @@
 <li>getAggregator()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">strus::TextProcessorInterface</a>
 </li>
+<li>getContent()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a5d7b7e2de9d0ed53fc1f031e9b9a5a2d">strus::SegmenterMarkupContextInterface</a>
+</li>
 <li>getDescription()
 : <a class="el" href="classstrus_1_1AggregatorFunctionInterface.html#afbb6fa900a495a4582e0b99d0e4abc14">strus::AggregatorFunctionInterface</a>
 , <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">strus::NormalizerFunctionInterface</a>
@@ -261,6 +269,7 @@
 </li>
 <li>getNext()
 : <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
+, <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c">strus::SegmenterMarkupContextInterface</a>
 </li>
 <li>getNormalizer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#aebb44ce7df71966c22250488d7cf74ae">strus::TextProcessorInterface</a>
@@ -269,13 +278,23 @@
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">strus::TextProcessorInterface</a>
 </li>
 <li>getSegmenter()
-: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#af8bcc8a9fba1142d52a223ef77999a85">strus::AnalyzerObjectBuilderInterface</a>
+: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711">strus::AnalyzerObjectBuilderInterface</a>
 </li>
 <li>getTextProcessor()
 : <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834">strus::AnalyzerObjectBuilderInterface</a>
 </li>
 <li>getTokenizer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3">strus::TextProcessorInterface</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>Item
+: <a class="el" href="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af">strus::SegmenterOptions</a>
+</li>
+<li>items()
+: <a class="el" href="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8">strus::SegmenterOptions</a>
 </li>
 </ul>
 
@@ -309,8 +328,14 @@
 
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
+<li>operator()()
+: <a class="el" href="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034">strus::SegmenterOptions</a>
+</li>
 <li>opt()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a9280c7730ea65b5b15d96c5990e6699f">strus::DocumentAnalyzerInterface::FeatureOptions</a>
+</li>
+<li>ordpos
+: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1">strus::analyzer::Token</a>
 </li>
 </ul>
 
@@ -322,15 +347,24 @@
 <li>pos()
 : <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a3dcf10302667f5d22221f0178477137d">strus::analyzer::Term</a>
 </li>
+<li>PositionBind
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">strus::DocumentAnalyzerInterface::FeatureOptions</a>
+</li>
 <li>positionBind()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a1df504e386f7776a38652a8cb354eabc">strus::DocumentAnalyzerInterface::FeatureOptions</a>
 </li>
-<li>PositionBind
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface_1_1FeatureOptions.html#a18102b61fcea6ad949c0511953408bae">strus::DocumentAnalyzerInterface::FeatureOptions</a>
+<li>putAttribute()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b">strus::SegmenterMarkupContextInterface</a>
+</li>
+<li>putCloseTag()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9">strus::SegmenterMarkupContextInterface</a>
 </li>
 <li>putInput()
 : <a class="el" href="classstrus_1_1DocumentAnalyzerContextInterface.html#a81749bb2cc45aa1c436ff295ab5b5335">strus::DocumentAnalyzerContextInterface</a>
 , <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc">strus::SegmenterContextInterface</a>
+</li>
+<li>putOpenTag()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01">strus::SegmenterMarkupContextInterface</a>
 </li>
 </ul>
 
@@ -341,6 +375,9 @@
 </li>
 <li>searchIndexTerms()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a5aba99f02bbaac463589edc0540db48e">strus::analyzer::Document</a>
+</li>
+<li>SegmenterOptions()
+: <a class="el" href="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0">strus::SegmenterOptions</a>
 </li>
 <li>setAttribute()
 : <a class="el" href="classstrus_1_1analyzer_1_1Document.html#a8df384932afadd7854fb1a68767ee225">strus::analyzer::Document</a>
@@ -379,11 +416,17 @@
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>tagLevel()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58">strus::SegmenterMarkupContextInterface</a>
+</li>
+<li>tagName()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb">strus::SegmenterMarkupContextInterface</a>
+</li>
 <li>Term()
-: <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a7c33b6877fd4805b41dc0c2c03f6ad61">strus::analyzer::Term</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Term.html#a21f91ec3c325535c62a4ff0182612253">strus::analyzer::Term</a>
 </li>
 <li>Token()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#aa18d4821ac1f12e60a606a5040d57ef6">strus::analyzer::Token</a>
+: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c">strus::analyzer::Token</a>
 </li>
 <li>tokenize()
 : <a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html#a13a589ddb7f43bca77d17a227b4d0c10">strus::TokenizerFunctionContextInterface</a>
@@ -447,6 +490,9 @@
 <li>~SegmenterInterface()
 : <a class="el" href="classstrus_1_1SegmenterInterface.html#a21aee48e36c41f4e6db4a4a383425001">strus::SegmenterInterface</a>
 </li>
+<li>~SegmenterMarkupContextInterface()
+: <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1">strus::SegmenterMarkupContextInterface</a>
+</li>
 <li>~TextProcessorInterface()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f">strus::TextProcessorInterface</a>
 </li>
@@ -464,7 +510,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

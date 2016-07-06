@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.9</span>
+   &#160;<span id="projectnumber">0.10</span>
    </div>
   </td>
  </tr>
@@ -65,7 +65,7 @@
 </div><!--header-->
 <div class="contents">
 
-<p>Defines an instance of a segmenter program.  
+<p>Defines the context for segmenting one document.  
  <a href="classstrus_1_1SegmenterContextInterface.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="segmenterContextInterface_8hpp_source.html">segmenterContextInterface.hpp</a>&gt;</code></p>
@@ -83,7 +83,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1afbc0c4571a656e839ad98355b9232b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Defines an instance of a segmenter program. </p>
+<div class="textblock"><p>Defines the context for segmenting one document. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a767e7f224a8c19a1170b90de82ce27b6"></a>
 <div class="memitem">
@@ -160,7 +160,7 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">id</td><td>identifier of the expression that addresses the text segment (defined with SegmenterInterface::defineSelectorExpression(int, const std::string&amp;) or with SegmenterInterface::defineSubSection(int,int,const std::string&amp;)) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">pos</td><td>position of the segment in the original source </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">segment</td><td>pointer to the start of the segment. Must remain a valid reference during the whole lifetime of this segmented instance. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">segment</td><td>pointer to the start of the segment. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">segmentsize</td><td>size of segment in bytes </td></tr>
   </table>
   </dd>
@@ -230,7 +230,7 @@ the segments must be delivered in ascending order of positions. Segments with sa
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2016 22:36:46 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
