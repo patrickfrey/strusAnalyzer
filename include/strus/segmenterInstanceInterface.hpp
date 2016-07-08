@@ -48,7 +48,9 @@ public:
 	/// \param[in] dclass description of the document type and encoding to process
 	/// \param[in] content document content to process (no chunkwise processing)
 	/// \return the segmenter markup object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const=0;
+	virtual SegmenterMarkupContextInterface* createMarkupContext(
+			const DocumentClass& dclass,
+			const std::string& content) const=0;
 };
 
 }//namespace
