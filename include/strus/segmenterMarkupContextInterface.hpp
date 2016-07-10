@@ -32,6 +32,11 @@ public:
 	/// \note this method allows to iterate on content segments for implementing markups covering multiple content segments
 	virtual bool getNext( SegmenterPosition& segpos, const char*& segment, std::size_t& segmentsize)=0;
 
+	/// \brief Get the size in bytes of a segment converted to UTF-8
+	/// \param[in] segpos segment position
+	/// \return the size of the segment as UTF-8 in bytes
+	virtual unsigned int segmentSize( const SegmenterPosition& segpos)=0;
+
 	/// \brief Get the (tag) name of a segment specified by its position in the original source
 	/// \param[in] segpos segment position
 	/// \return the (tag) name of the segment

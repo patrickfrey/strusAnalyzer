@@ -1,3 +1,7 @@
+strusanalyzer (0.10.1-1) unstable; urgency=low
+  * completely redesigned document markup interface of the segmenter
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 10 Jul 2016 19:00:00 +0100
+
 strusanalyzer (0.10.0-1) unstable; urgency=low
   * added tsv segmenter
   * added textcat tokenizer (language detection)

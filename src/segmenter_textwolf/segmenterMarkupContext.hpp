@@ -75,6 +75,19 @@ public:
 		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
 	}
 
+	virtual unsigned int segmentSize( const SegmenterPosition& segpos)
+	{
+		if (m_segmentitr == m_segmentmap.end() || m_segmentitr->first != segpos)
+		{
+			m_segmentitr = m_segmentmap.upper_bound( segpos);
+			if (m_segmentitr == m_segmentmap.end())
+			{
+				return 0;
+			}
+		}
+		return m_segmentitr->second.segsize;
+	}
+
 	struct MarkupElement
 	{
 		enum Type {OpenTag,AttributeName,AttributeValue,CloseTag};
