@@ -210,6 +210,7 @@
         <LI><OBJECT type="text/sitemap"><param name="Name" value="putAttribute"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="putCloseTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="putOpenTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="segmentSize"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="tagLevel"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="ImageNumber" value="11"></OBJECT>
         <LI><OBJECT type="text/sitemap"><param name="Name" value="tagName"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="ImageNumber" value="11"></OBJECT>
         </UL>
@@ -626,6 +627,7 @@
             <LI><OBJECT type="text/sitemap"><param name="Name" value="putAttribute"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="putCloseTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="putOpenTag"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="segmentSize"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="tagLevel"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58"><param name="ImageNumber" value="11"></OBJECT>
             <LI><OBJECT type="text/sitemap"><param name="Name" value="tagName"><param name="Local" value="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb"><param name="ImageNumber" value="11"></OBJECT>
             </UL>

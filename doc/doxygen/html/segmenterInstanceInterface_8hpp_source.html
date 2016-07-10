@@ -88,12 +88,14 @@
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterContextInterface.html">SegmenterContextInterface</a>* <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67">createContext</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1DocumentClass.html">DocumentClass</a>&amp; dclass) <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html">SegmenterMarkupContextInterface</a>* <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93">createMarkupContext</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1DocumentClass.html">DocumentClass</a>&amp; dclass, <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html">SegmenterMarkupContextInterface</a>* <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html#a6a98aab9ab67510567b2437225bb8d93">createMarkupContext</a>(</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <span class="keyword">const</span> <a class="code" href="classstrus_1_1DocumentClass.html">DocumentClass</a>&amp; dclass,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html_a5aeeaf51e6430b833c0ebd60f9607f34"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html#a5aeeaf51e6430b833c0ebd60f9607f34">strus::SegmenterInstanceInterface::~SegmenterInstanceInterface</a></div><div class="ttdeci">virtual ~SegmenterInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> segmenterInstanceInterface.hpp:29</div></div>
 <div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html">strus::SegmenterInstanceInterface</a></div><div class="ttdoc">Defines a program for splitting a source text it into chunks with an id correspoding to a selecting e...</div><div class="ttdef"><b>Definition:</b> segmenterInstanceInterface.hpp:25</div></div>
 <div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html_a8e45397f6685175e07243d3c39b38d67"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html#a8e45397f6685175e07243d3c39b38d67">strus::SegmenterInstanceInterface::createContext</a></div><div class="ttdeci">virtual SegmenterContextInterface * createContext(const DocumentClass &amp;dclass) const =0</div><div class="ttdoc">Creates a context for segmenting one document of a specified class. </div></div>
@@ -107,7 +109,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

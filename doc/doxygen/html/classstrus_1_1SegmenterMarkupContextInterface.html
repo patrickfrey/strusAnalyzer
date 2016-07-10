@@ -78,6 +78,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad6ac6fa135f2e8a64c1b864409cc979c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c">getNext</a> (<a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;segpos, const char *&amp;segment, std::size_t &amp;segmentsize)=0</td></tr>
 <tr class="memdesc:ad6ac6fa135f2e8a64c1b864409cc979c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next content segment.  <a href="#ad6ac6fa135f2e8a64c1b864409cc979c">More...</a><br/></td></tr>
 <tr class="separator:ad6ac6fa135f2e8a64c1b864409cc979c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a802a99dea76481924dc9497f6573693b"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b">segmentSize</a> (const <a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;segpos)=0</td></tr>
+<tr class="memdesc:a802a99dea76481924dc9497f6573693b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the size in bytes of a segment converted to UTF-8.  <a href="#a802a99dea76481924dc9497f6573693b">More...</a><br/></td></tr>
+<tr class="separator:a802a99dea76481924dc9497f6573693b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ceefe23b33f5292abd56d7ce252f1fb"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb">tagName</a> (const <a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;segpos) const =0</td></tr>
 <tr class="memdesc:a8ceefe23b33f5292abd56d7ce252f1fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the (tag) name of a segment specified by its position in the original source.  <a href="#a8ceefe23b33f5292abd56d7ce252f1fb">More...</a><br/></td></tr>
 <tr class="separator:a8ceefe23b33f5292abd56d7ce252f1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -361,6 +364,39 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a802a99dea76481924dc9497f6573693b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual unsigned int strus::SegmenterMarkupContextInterface::segmentSize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;&#160;</td>
+          <td class="paramname"><em>segpos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the size in bytes of a segment converted to UTF-8. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">segpos</td><td>segment position </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the size of the segment as UTF-8 in bytes </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a7744553f053766a802d048f679a54c58"></a>
 <div class="memitem">
 <div class="memproto">
@@ -434,7 +470,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jul 6 2016 10:19:14 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
