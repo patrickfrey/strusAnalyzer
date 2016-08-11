@@ -73,7 +73,7 @@ public:
 			}
 			else
 			{
-				for (; ti+m_config.width < te; ++ti)
+				for (; ti+m_config.width <= te; ++ti)
 				{
 					rt.push_back('\0');
 					rt.append( tok.c_str()+ti, m_config.width);
