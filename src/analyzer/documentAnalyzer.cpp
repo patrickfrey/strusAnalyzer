@@ -408,7 +408,7 @@ void DocumentAnalyzerContext::processContentTokens( std::vector<BindTerm>& resul
 	std::vector<SegPosDef>::const_iterator
 		ci = concatposmap.begin(), ce = concatposmap.end();
 	std::vector<analyzer::Token>::const_iterator
-		ts = tokens.begin(), ti = tokens.begin(), te = tokens.end();
+		ti = tokens.begin(), te = tokens.end();
 	for (; ti != te; ++ti)
 	{
 		// Calculate string position of segment start for concatenated segments:
