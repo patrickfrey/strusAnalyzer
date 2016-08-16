@@ -57,6 +57,10 @@ public:
 				m_items.push_back( -idx);
 				pre = fi;
 			}
+			else
+			{
+				++fi;
+			}
 		}
 		if (fi > pre)
 		{
