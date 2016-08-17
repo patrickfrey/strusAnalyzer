@@ -28,7 +28,7 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_lowercase( Error
 		}
 		return new LowercaseNormalizerFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create lowercase character normalizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' normalizer: %s"), "lc", *errorhnd, 0);
 }
 
 DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( ErrorBufferInterface* errorhnd)
@@ -42,7 +42,7 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_uppercase( Error
 		}
 		return new UppercaseNormalizerFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create uppercase character normalizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' normalizer: %s"), "uc", *errorhnd, 0);
 }
 
 DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_convdia( ErrorBufferInterface* errorhnd)
@@ -56,8 +56,24 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_convdia( ErrorBu
 		}
 		return new DiacriticalNormalizerFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create diacritical character normalizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' normalizer: %s"), "convdia", *errorhnd, 0);
 }
+
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_charselect( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new CharSelectNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' normalizer: %s"), "charselect", *errorhnd, 0);
+}
+
+
 
 
 

@@ -66,6 +66,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "convdia", nrm);
+	if (0==(nrm = createNormalizer_charselect( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "charselect", nrm);
 	if (0==(nrm = createNormalizer_date2int( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

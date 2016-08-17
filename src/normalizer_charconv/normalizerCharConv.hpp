@@ -66,7 +66,25 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping all diacritical characters to ascii. The language is passed as first argument and alternative date formats as following argument (currently only german 'de' and english 'en' supported).";
+		return "Normalizer mapping all diacritical characters to ascii. The language is passed as first argument (currently only german 'de' and english 'en' supported).";
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+class CharSelectNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit CharSelectNormalizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+	virtual const char* getDescription() const
+	{
+		return "Normalizer mapping all alpha characters to identity and all other characters to nothing. The language set is passed as first argument (currently only european 'eu' and ASCII 'ascii' supported).";
 	}
 
 private:
