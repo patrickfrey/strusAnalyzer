@@ -26,7 +26,7 @@
 #include <iostream>
 #include <setjmp.h>
 
-#define STRUS_LOWLEVEL_DEBUG
+#undef STRUS_LOWLEVEL_DEBUG
 
 namespace strus
 {
