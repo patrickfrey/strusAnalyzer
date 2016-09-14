@@ -144,7 +144,6 @@ public:
 			uint64_t rtnum = m_config->granularity.getValue( result);
 			std::ostringstream out;
 			out << rtnum;
-			std::cout << "++++ CALL DATE2INT '" << std::string(src,srcsize) << "' = " << out.str() << std::endl;
 			return out.str();
 		}
 		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
