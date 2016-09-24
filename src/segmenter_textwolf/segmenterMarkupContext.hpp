@@ -92,9 +92,9 @@ public:
 	{
 		enum Type {OpenTag,AttributeName,AttributeValue,CloseTag};
 		Type type;
-		std::size_t pos;
-		std::size_t idx;
-		std::string value;
+		std::size_t pos;	//< position of the markup in the original source
+		std::size_t idx;	//< index element in unsorted list of markups to make sort stable
+		std::string value;	//< value of the markup element
 
 		static const char* typeName( Type t)
 		{
@@ -181,7 +181,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error(_TXT("segment with this position not defined"));
+				throw strus::runtime_error(_TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
 			}
 			std::size_t pos = getOrigPosition( segpos, ofs);
 			if (m_markups.size() && m_markups.back().pos == pos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
@@ -191,8 +191,8 @@ public:
 			}
 			else
 			{
-				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, segitr->second.attrpos, m_markups.size(), name));
-				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, segitr->second.attrpos, m_markups.size(), value));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, segitr->second.origpos, m_markups.size(), name));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, segitr->second.origpos, m_markups.size(), value));
 			}
 		}
 		CATCH_ERROR_MAP_ARG1( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
@@ -286,16 +286,16 @@ public:
 private:
 	struct SegmentDef
 	{
-		std::size_t segidx;
-		std::size_t segsize;
-		std::size_t tagidx;
-		std::size_t attrpos;
-		int taglevel;
+		std::size_t segidx;	//< index of processed segment in m_strings
+		std::size_t segsize;	//< size of processed segment in m_strings
+		std::size_t tagidx;	//< index of processed tagname for error messages in m_strings
+		std::size_t origpos;	//< position in original source
+		int taglevel;		//< level of segment in tag hierarchy
 
-		SegmentDef( std::size_t segidx_, std::size_t segsize_, std::size_t tagidx_, std::size_t attrpos_, int taglevel_)
-			:segidx(segidx_),segsize(segsize_),tagidx(tagidx_),attrpos(attrpos_),taglevel(taglevel_){}
+		SegmentDef( std::size_t segidx_, std::size_t segsize_, std::size_t tagidx_, std::size_t origpos_, int taglevel_)
+			:segidx(segidx_),segsize(segsize_),tagidx(tagidx_),origpos(origpos_),taglevel(taglevel_){}
 		SegmentDef( const SegmentDef& o)
-			:segidx(o.segidx),segsize(o.segsize),tagidx(o.tagidx),attrpos(o.attrpos),taglevel(o.taglevel){}
+			:segidx(o.segidx),segsize(o.segsize),tagidx(o.tagidx),origpos(o.origpos),taglevel(o.taglevel){}
 	};
 	typedef std::map<SegmenterPosition,SegmentDef> SegmentMap;
 
@@ -312,11 +312,19 @@ private:
 		}
 	}
 
+	unsigned int origCharLen( char ch) const
+	{
+		std::string buf;
+		m_charset.print( '<', buf);
+		return buf.size();
+	}
+
 	void load()
 	{
 		typedef textwolf::XMLScanner<char*,CharsetEncoding,textwolf::charset::UTF8,std::string> MyXMLScanner;
 		char* xmlitr = const_cast<char*>( m_source.c_str());
-	
+
+		const unsigned int cntrlCharLen = origCharLen( '>');
 		MyXMLScanner scanner( m_charset, xmlitr);
 		std::vector<SegmentDef> stack;
 		SegmentDef segmentDef( 0, 0, 0, 0, 0);
@@ -350,14 +358,14 @@ private:
 				case MyXMLScanner::TagAttribName: continue;
 				case MyXMLScanner::TagAttribValue:
 				{
-					segmentDef.attrpos = scanner.getPosition();
+					segmentDef.origpos = scanner.getPosition();
 					break;
 				}
 				case MyXMLScanner::OpenTag:
 				{
 					stack.push_back( segmentDef);
 					++segmentDef.taglevel;
-					segmentDef.attrpos = scanner.getPosition()-1;
+					segmentDef.origpos = scanner.getPosition()-cntrlCharLen;
 					segmentDef.tagidx = m_strings.size()+1;
 					m_strings.push_back( '\0');
 					m_strings.append( scanner.getItemPtr(), scanner.getItemSize());
@@ -382,7 +390,7 @@ private:
 						  << "segidx=" << segmentDef.segidx << ","
 						  << "segsize=" << segmentDef.segsize << ","
 						  << "tagidx=" << segmentDef.tagidx << ","
-						  << "attrpos=" << segmentDef.attrpos << ","
+						  << "origpos=" << segmentDef.origpos << ","
 						  << "taglevel=" << segmentDef.taglevel << std::endl;
 #endif
 					m_segmentmap.insert( std::pair<SegmenterPosition,SegmentDef>( scanner.getTokenPosition(), segmentDef));
@@ -402,7 +410,7 @@ private:
 		typename SegmentMap::const_iterator segitr = findSegment( segpos);
 		if (segitr == m_segmentmap.end()) 
 		{
-			throw strus::runtime_error(_TXT("segment with this position not defined"));
+			throw strus::runtime_error(_TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
 		}
 		if (segitr->second.segsize < ofs) 
 		{
