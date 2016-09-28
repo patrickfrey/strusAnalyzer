@@ -1,3 +1,10 @@
+strusAnalyzer (0.11.0)
+  * fixed bug in ngram normalizer: items with exactly n characters were mapped to an empty string
+  * fixed bug in regex normalizer: output format string parser
+  * added 'charselect' normalizer
+  * fixed bug in date2int normalizer: separator characters in format string not handled correctly
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 28 Sep 2016 12:00:00 +0100
+
 strusAnalyzer (0.10.1)
   * completely redesigned document markup interface of the segmenter
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 10 Jul 2016 19:00:00 +0100

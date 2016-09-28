@@ -345,6 +345,12 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Wed Sep 28 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.11.0-0.1
+- fixed bug in ngram normalizer: items with exactly n characters were mapped to an empty string
+- fixed bug in regex normalizer: output format string parser
+- added 'charselect' normalizer
+- fixed bug in date2int normalizer: separator characters in format string not handled correctly
+
 * Sun Jul 10 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.10.1-0.1
 - completely redesigned document markup interface of the segmenter
 
