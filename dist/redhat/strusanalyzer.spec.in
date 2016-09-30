@@ -345,6 +345,9 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Fri Sep 30 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.11.1-0.1
+- moved pattern matching interfaces from strus stream here
+
 * Wed Sep 28 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.11.0-0.1
 - fixed bug in ngram normalizer: items with exactly n characters were mapped to an empty string
 - fixed bug in regex normalizer: output format string parser

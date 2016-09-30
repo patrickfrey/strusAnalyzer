@@ -1,3 +1,7 @@
+strusAnalyzer (0.11.1)
+  * moved pattern matching interfaces from strus stream here
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 30 Sep 2016 14:00:00 +0100
+
 strusAnalyzer (0.11.0)
   * fixed bug in ngram normalizer: items with exactly n characters were mapped to an empty string
   * fixed bug in regex normalizer: output format string parser
