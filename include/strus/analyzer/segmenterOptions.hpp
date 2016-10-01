@@ -14,8 +14,8 @@
 #include <utility>
 
 /// \brief strus toplevel namespace
-namespace strus
-{
+namespace strus {
+namespace analyzer {
 
 /// \class SegmenterOptions
 /// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
@@ -54,7 +54,7 @@ private:
 	std::vector<Item> m_optar;
 };
 
-}//namespace
+}}//namespace
 #endif
 
 

@@ -5,10 +5,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief StrusStream interface to instance loading pattern definitions from source
+/// \brief Interface to instance loading pattern definitions from source
 /// \file "patternMatchProgramInstanceInterface.hpp"
-#ifndef _STRUS_STREAM_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
 #include <string>
 
 namespace strus {

@@ -7,10 +7,11 @@
  */
 /// \brief Interface for annotation of text in one document
 /// \file "tokenMarkupContextInterface.hpp"
-#ifndef _STRUS_STREAM_TOKEN_MARKUP_CONTEXT_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_TOKEN_MARKUP_CONTEXT_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKEN_MARKUP_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MARKUP_CONTEXT_INTERFACE_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/tokenMarkup.hpp"
 #include <vector>
 #include <string>
 
@@ -18,47 +19,6 @@ namespace strus
 {
 ///\brief Forward declaration
 class SegmenterInstanceInterface;
-
-class TokenMarkup
-{
-public:
-	class Attribute
-	{
-	public:
-		Attribute( const std::string& name_, const std::string& value_)
-			:m_name(name_),m_value(value_){}
-		Attribute( const Attribute& o)
-			:m_name(o.m_name),m_value(o.m_value){}
-
-		const std::string& name() const			{return m_name;}
-		const std::string& value() const		{return m_value;}
-
-	private:
-		std::string m_name;
-		std::string m_value;
-	};
-
-	TokenMarkup( const std::string& name_)
-		:m_name(name_),m_attributes(){}
-	TokenMarkup( const std::string& name_, const std::vector<Attribute>& attributes_)
-		:m_name(name_),m_attributes(attributes_){}
-	TokenMarkup( const TokenMarkup& o)
-		:m_name(o.m_name),m_attributes(o.m_attributes){}
-
-	const std::string& name() const				{return m_name;}
-	const std::vector<Attribute>& attributes() const	{return m_attributes;}
-
-	TokenMarkup& operator()( const std::string& name_, const std::string& value_)
-	{
-		m_attributes.push_back( Attribute( name_, value_));
-		return *this;
-	}
-
-private:
-	std::string m_name;
-	std::vector<Attribute> m_attributes;
-};
-
 
 /// \brief Interface for annotation of text in one document
 class TokenMarkupContextInterface
@@ -79,7 +39,7 @@ public:
 			std::size_t start_ofs,
 			const SegmenterPosition& end_segpos,
 			std::size_t end_ofs,
-			const TokenMarkup& markup,
+			const analyzer::TokenMarkup& markup,
 			unsigned int level)=0;
 
 	/// \brief Get the original document content with all markups declared inserted
@@ -89,7 +49,7 @@ public:
 	/// \return the marked up document content
 	virtual std::string markupDocument(
 			const SegmenterInstanceInterface* segmenter,
-			const DocumentClass& dclass,
+			const analyzer::DocumentClass& dclass,
 			const std::string& content) const=0;
 };
 

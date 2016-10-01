@@ -343,7 +343,7 @@ void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::
 	CATCH_ERROR_MAP_ARG1( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 
-strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::DocumentClass &dclass ) const
+strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::analyzer::DocumentClass &dclass ) const
 {
 	try
 	{
@@ -352,7 +352,7 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
-strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContext( const strus::DocumentClass& dclass, const std::string& content) const
+strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContext( const strus::analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
 	{
@@ -375,7 +375,7 @@ const char* TSVSegmenter::mimeType( ) const
 	return "text/tab-separated-values";
 }
 
-strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::SegmenterOptions& opts) const
+strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::analyzer::SegmenterOptions& opts) const
 {
 	try
 	{

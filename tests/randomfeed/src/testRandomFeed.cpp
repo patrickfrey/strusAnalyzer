@@ -18,8 +18,6 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/documentClassDetectorInterface.hpp"
-#include "strus/documentClass.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"

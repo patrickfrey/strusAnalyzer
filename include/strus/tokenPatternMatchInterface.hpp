@@ -7,8 +7,8 @@
  */
 /// \brief Interface for creating an automaton for detecting patterns of tokens in a document stream
 /// \file "tokenPatternMatchInterface.hpp"
-#ifndef _STRUS_STREAM_TOKEN_PATTERN_MATCH_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_TOKEN_PATTERN_MATCH_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INTERFACE_HPP_INCLUDED
 #include <vector>
 #include <string>
 

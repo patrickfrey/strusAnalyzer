@@ -14,7 +14,7 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/segmenterMarkupContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/base/fileio.hpp"
 #include <memory>
@@ -193,7 +193,7 @@ int main( int argc, const char* argv[])
 		if (ec) throw std::runtime_error( std::string("error reading markup file ") + inpfile + ": " + ::strerror(ec));
 		std::auto_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( g_errorhnd));
 		if (!detector.get()) throw std::runtime_error("failed to create document class detector");
-		strus::DocumentClass dclass;
+		strus::analyzer::DocumentClass dclass;
 		if (!detector->detect( dclass, inpsrc.c_str(), inpsrc.size())) throw std::runtime_error("failed to detect document class of input source");
 
 		std::ostringstream outstr;

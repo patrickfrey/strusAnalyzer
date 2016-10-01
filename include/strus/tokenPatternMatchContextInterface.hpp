@@ -7,11 +7,11 @@
  */
 /// \brief Interface for detecting patterns (structures formed by tokens) in one document
 /// \file "tokenPatternMatchContextInterface.hpp"
-#ifndef _STRUS_STREAM_TOKEN_PATTERN_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_TOKEN_PATTERN_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
-#include "strus/stream/tokenPatternMatchResult.hpp"
-#include "strus/stream/patternMatchToken.hpp"
-#include "strus/stream/tokenPatternMatchStatistics.hpp"
+#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/tokenPatternMatchResult.hpp"
+#include "strus/analyzer/idToken.hpp"
+#include "strus/analyzer/tokenPatternMatchStatistics.hpp"
 #include <vector>
 
 namespace strus
@@ -27,15 +27,15 @@ public:
 	/// \brief Feed the next input token
 	/// \param[in] token the token to feed
 	/// \remark The input terms must be fed in ascending order of 'ordpos'
-	virtual void putInput( const stream::PatternMatchToken& token)=0;
+	virtual void putInput( const analyzer::IdToken& token)=0;
 
 	/// \brief Get the list of matches detected in the current document
 	/// \return the list of matches
-	virtual std::vector<stream::TokenPatternMatchResult> fetchResults() const=0;
+	virtual std::vector<analyzer::TokenPatternMatchResult> fetchResults() const=0;
 
 	/// \brief Get the statistics for global analysis
 	/// \return the statistics data gathered during processing
-	virtual stream::TokenPatternMatchStatistics getStatistics() const=0;
+	virtual analyzer::TokenPatternMatchStatistics getStatistics() const=0;
 };
 
 } //namespace

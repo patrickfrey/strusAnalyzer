@@ -16,7 +16,7 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/segmenterMarkupContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 
 #include <string> 
 #include <vector> 
@@ -105,8 +105,8 @@ class TSVSegmenterInstance : public strus::SegmenterInstanceInterface
 		
 		virtual void defineSubSection( int startId, int endId, const std::string &expression );
 
-		virtual strus::SegmenterContextInterface* createContext( const strus::DocumentClass &dclass) const;
-		virtual strus::SegmenterMarkupContextInterface* createMarkupContext( const strus::DocumentClass& dclass, const std::string& content) const;
+		virtual strus::SegmenterContextInterface* createContext( const strus::analyzer::DocumentClass &dclass) const;
+		virtual strus::SegmenterMarkupContextInterface* createMarkupContext( const strus::analyzer::DocumentClass& dclass, const std::string& content) const;
 
 	private:
 
@@ -123,7 +123,7 @@ class TSVSegmenter : public strus::SegmenterInterface
 		
 		virtual const char* mimeType( ) const;
 
-		virtual strus::SegmenterInstanceInterface* createInstance( const strus::SegmenterOptions& opts) const;
+		virtual strus::SegmenterInstanceInterface* createInstance( const strus::analyzer::SegmenterOptions& opts) const;
 
 	private:
 

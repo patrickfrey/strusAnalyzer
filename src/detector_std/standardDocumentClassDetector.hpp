@@ -9,7 +9,7 @@
 /// \file detectorStd.hpp
 #ifndef _STRUS_ANALYZER_STANDARD_DOCUMENT_DETECTOR_HPP_INCLUDED
 #define _STRUS_ANALYZER_STANDARD_DOCUMENT_DETECTOR_HPP_INCLUDED
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include <string>
 
@@ -27,7 +27,7 @@ public:
 		:m_errorhnd(errorhnd_){}
 	virtual ~StandardDocumentClassDetector(){}
 
-	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual bool detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

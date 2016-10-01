@@ -14,7 +14,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
@@ -24,6 +24,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/analyzer/positionBind.hpp"
 #include <memory>
 #include <algorithm>
 #include <string>
@@ -127,11 +128,11 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 		strus::DocumentAnalyzerInterface::FeatureOptions opt;
 		if (ci->posbind > 0)
 		{
-			opt.definePositionBind( strus::DocumentAnalyzerInterface::FeatureOptions::BindSuccessor);
+			opt.definePositionBind( strus::analyzer::BindSuccessor);
 		}
 		else if (ci->posbind < 0)
 		{
-			opt.definePositionBind( strus::DocumentAnalyzerInterface::FeatureOptions::BindPredecessor);
+			opt.definePositionBind( strus::analyzer::BindPredecessor);
 		}
 		switch (ci->type)
 		{
@@ -210,7 +211,7 @@ int main( int argc, const char* argv[])
 		ec = strus::readFile( expectedfile, expectedsrc);
 		if (ec) throw std::runtime_error( std::string("error reading expected file ") + expectedfile + ": " + ::strerror(ec));
 
-		strus::DocumentClass documentClass( "application/xml", "UTF-8");
+		strus::analyzer::DocumentClass documentClass( "application/xml", "UTF-8");
 		std::ostringstream output;
 		std::auto_ptr<strus::DocumentAnalyzerContextInterface> analyzerctx( analyzer->createContext( documentClass));
 		analyzerctx->putInput( inputsrc.c_str(), inputsrc.size(), true);

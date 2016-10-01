@@ -13,7 +13,8 @@
 #include "strus/analyzer/attribute.hpp"
 #include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/positionBind.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include <vector>
 #include <string>
 
@@ -53,24 +54,14 @@ public:
 		FeatureOptions( unsigned int opt_)
 			:m_opt(opt_){}
 
-		/// \enum PositionBind
-		/// \brief Determines how ordinal positions are assigned to document terms
-		/// \remark The main motivation is to distinguish content elements from markup.
-		enum PositionBind
-		{
-			BindContent,		///< An element in the document that gets an own ordinal position assigned
-			BindSuccessor,		///< An element in the document that gets the ordinal position of the succeding content element assigned
-			BindPredecessor		///< An element in the document that gets the ordinal position of the preceding content element assigned
-		};
-
 		/// \brief Get the PositionBind value set
-		PositionBind positionBind() const		{return (PositionBind)(m_opt & 0x3);}
+		analyzer::PositionBind positionBind() const		{return (analyzer::PositionBind)(m_opt & 0x3);}
 
 		/// \brief Define the PositionBind value
-		void definePositionBind( PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
+		void definePositionBind( analyzer::PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
 
 		/// \brief Get the options transacription as integer
-		unsigned int opt() const			{return m_opt;}
+		unsigned int opt() const				{return m_opt;}
 
 	private:
 		unsigned int m_opt;
@@ -149,13 +140,13 @@ public:
 	/// \remark Do not use this function in case of a multipart document (defined with 'defineSubDocument(const std::string&,const std::string&)') because you get only one sub document analyzed. Use the interface created with 'createDocumentAnalyzerContext(std::istream&)const' instead.
 	virtual analyzer::Document analyze(
 			const std::string& content,
-			const DocumentClass& dclass) const=0;
+			const analyzer::DocumentClass& dclass) const=0;
 
 	/// \brief Create the context used for analyzing multipart or very big documents
 	/// \param[in] dclass description of the content type and encoding to process
 	/// \return the analyzer context (ownership to caller)
 	virtual DocumentAnalyzerContextInterface* createContext(
-			const DocumentClass& dclass) const=0;
+			const analyzer::DocumentClass& dclass) const=0;
 };
 
 }//namespace

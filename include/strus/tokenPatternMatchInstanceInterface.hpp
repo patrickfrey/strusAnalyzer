@@ -5,11 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Interface for building the automaton for detecting patterns of tokens in a document stream
+/// \brief Interface for building the automaton for detecting patterns of tokens in a document
 /// \file "tokenPatternMatchInstanceInterface.hpp"
-#ifndef _STRUS_STREAM_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/stream/tokenPatternMatchOptions.hpp"
+#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/tokenPatternMatchOptions.hpp"
 #include <string>
 
 namespace strus
@@ -34,7 +34,7 @@ public:
 	/// \param[in] termid term identifier
 	virtual void pushTerm( unsigned int termid)=0;
 
-	///\brief Join operations (same meaning as in query evaluation)
+	///\brief Join operations (similar meaning as in query evaluation)
 	enum JoinOperation
 	{
 		OpSequence,		///< The argument patterns must appear in the specified (strict) order (ordinal span) within a specified proximity range of ordinal positions for the completion of the rule.
@@ -75,7 +75,7 @@ public:
 	/// \brief Compile all patterns defined
 	/// \param[in] opt optimization options
 	/// \note Tries to optimize the program if possible by setting initial key events of the programs to events that are relative rare
-	virtual bool compile( const stream::TokenPatternMatchOptions& opt)=0;
+	virtual bool compile( const analyzer::TokenPatternMatchOptions& opt)=0;
 
 	/// \brief Create the context to process a document with the pattern matcher
 	/// \return the pattern matcher context

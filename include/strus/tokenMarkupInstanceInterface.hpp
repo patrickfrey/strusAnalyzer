@@ -7,8 +7,8 @@
  */
 /// \brief Interface for putting annotations into text documents
 /// \file "tokenMarkupInstanceInterface.hpp"
-#ifndef _STRUS_STREAM_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
+#ifndef _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
 #include <string>
 
 namespace strus

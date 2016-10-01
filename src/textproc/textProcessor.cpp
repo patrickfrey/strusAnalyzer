@@ -311,7 +311,7 @@ public:
 		try
 		{
 			std::vector<analyzer::Token> rt;
-			rt.push_back( analyzer::Token( 0, 0, srcsize));
+			rt.push_back( analyzer::Token( 0/*ord*/, 0/*seg*/, 0/*ofs*/, srcsize));
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
@@ -616,7 +616,7 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 }
 
 
-bool TextProcessor::detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	std::vector<DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
 	for (; ci != ce; ++ci)

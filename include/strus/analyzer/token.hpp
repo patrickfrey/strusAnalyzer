@@ -19,19 +19,46 @@ namespace analyzer {
 /// \brief Structure describing a token in the document by its start and end position
 struct Token
 {
-	unsigned int ordpos;	///< ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
-	unsigned int strpos;	///< start byte position of the token string in the original document segment
-	unsigned int strsize;	///< byte size of the token string in the original document segment
-
+public:
+	/// \brief Default constructor
+	Token()
+		:m_ordpos(0),m_origseg(0),m_origpos(0),m_origsize(0){}
 	/// \brief Constructor
-	/// \param[in] ordpos_ word position of the token starred
-	/// \param[in] strpos_ byte position of the token start
-	/// \param[in] strsize_ size of the token in bytes
-	Token( unsigned int ordpos_, unsigned int strpos_, unsigned int strsize_)
-		:ordpos(ordpos_),strpos(strpos_),strsize(strsize_){}
+	/// \param[in] ordpos_ oridinal term position assigned to the the token
+	/// \param[in] origseg_ start byte position of the document segment
+	/// \param[in] origpos_ byte position of the token start in the translated document segment (UTF-8)
+	/// \param[in] origsize_ size of the token in bytes in the translated document segment (UTF-8)
+	Token( unsigned int ordpos_, unsigned int origseg_, unsigned int origpos_, unsigned int origsize_)
+		:m_ordpos(ordpos_),m_origseg(origseg_),m_origpos(origpos_),m_origsize(origsize_){}
 	/// \brief Copy constructor
 	Token( const Token& o)
-		:ordpos(o.ordpos),strpos(o.strpos),strsize(o.strsize){}
+		:m_ordpos(o.m_ordpos),m_origseg(o.m_origseg),m_origpos(o.m_origpos),m_origsize(o.m_origsize){}
+
+	///\brief Get the ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
+	unsigned int ordpos() const	{return m_ordpos;}
+	///\brief Get the start byte position of the document segment of this token
+	unsigned int origseg() const	{return m_origseg;}
+	///\brief Get the start byte position of the token string in the translated document segment (UTF-8)
+	unsigned int origpos() const	{return m_origpos;}
+	///\brief Get the byte size of the translated token string (UTF-8) in the original document segment
+	unsigned int origsize() const	{return m_origsize;}
+
+	/// \brief Set the original segment index of the token in the source
+	void setOrigseg( std::size_t origseg_)
+	{
+		m_origseg = origseg_;
+	}
+	/// \brief Set the ordinal position of the token in the source (adjusted in case of multiple segments)
+	void setOrdpos( unsigned int ordpos_)
+	{
+		m_ordpos = ordpos_;
+	}
+
+private:
+	unsigned int m_ordpos;		///< ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
+	unsigned int m_origseg;		///< start byte position of the document segment
+	unsigned int m_origpos;		///< start byte position of the token string in the translated document segment (UTF-8)
+	unsigned int m_origsize;	///< byte size of the translated token string (UTF-8) in the original document segment
 };
 
 }}//namespace

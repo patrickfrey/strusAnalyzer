@@ -12,7 +12,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
@@ -34,7 +34,7 @@ class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( const SegmenterInterface* segmenter_, const SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
+	DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzer()
 	{
@@ -77,10 +77,10 @@ public:
 
 	virtual analyzer::Document analyze(
 			const std::string& content,
-			const DocumentClass& dclass) const;
+			const analyzer::DocumentClass& dclass) const;
 
 	virtual DocumentAnalyzerContextInterface* createContext(
-			const DocumentClass& dclass) const;
+			const analyzer::DocumentClass& dclass) const;
 
 public:
 	enum FeatureClass
@@ -214,15 +214,14 @@ class BindTerm
 	:public analyzer::Term
 {
 public:
-	typedef DocumentAnalyzerInterface::FeatureOptions::PositionBind PositionBind;
 	BindTerm( const BindTerm& o)
 		:analyzer::Term(o),m_posbind(o.m_posbind){}
-	BindTerm( const std::string& t, const std::string& v, unsigned int p, PositionBind b)
+	BindTerm( const std::string& t, const std::string& v, unsigned int p, analyzer::PositionBind b)
 		:analyzer::Term(t,v,p),m_posbind(b){}
 
-	PositionBind posbind() const		{return m_posbind;}
+	analyzer::PositionBind posbind() const		{return m_posbind;}
 private:
-	PositionBind m_posbind;
+	analyzer::PositionBind m_posbind;
 };
 
 
@@ -230,7 +229,7 @@ class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
-	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, ErrorBufferInterface* errorhnd);
+	DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd);
 
 	virtual ~DocumentAnalyzerContext()
 	{

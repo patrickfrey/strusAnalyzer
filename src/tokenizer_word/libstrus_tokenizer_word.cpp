@@ -232,7 +232,7 @@ std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src
 			{
 				si = skipChar( si);
 			}
-			rt.push_back( Token( start-src, start-src, si-start));
+			rt.push_back( Token( start-src, 0/*seg*/, start-src, si-start));
 		}
 		return rt;
 	}

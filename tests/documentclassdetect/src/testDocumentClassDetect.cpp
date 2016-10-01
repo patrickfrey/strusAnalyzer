@@ -12,7 +12,7 @@
 #include "strus/textProcessorInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/inputStream.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -80,7 +80,7 @@ int main( int argc, const char* argv[])
 		char hdrbuf[ 1024];
 		std::size_t hdrsize = input.readAhead( hdrbuf, sizeof( hdrbuf));
 
-		strus::DocumentClass dclass;
+		strus::analyzer::DocumentClass dclass;
 		if (!textproc->detectDocumentClass( dclass, hdrbuf, hdrsize))
 		{
 			throw std::runtime_error( _TXT("failed to detect document class")); 

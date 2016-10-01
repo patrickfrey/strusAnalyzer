@@ -52,7 +52,7 @@ public:
 				std::size_t len = what.length();
 				std::size_t pos = what.position();
 				std::size_t abspos = pos + (si - src);
-				rt.push_back( analyzer::Token( abspos, abspos, len));
+				rt.push_back( analyzer::Token( abspos/*ord*/, 0/*seg*/, abspos, len));
 				if (pos + len == 0)
 				{
 					++si;

@@ -27,11 +27,11 @@
 #undef STRUS_LOWLEVEL_DEBUG
 
 ///\brief Correction factor to avoid byte positions of different segments in the original source to overlap in case the UTF-8 string of the decoded segment is longer than the source
-#define REL_POS_CORR_FACTOR  2 
+#define REL_POS_CORR_FACTOR  4
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
+DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance( opts)),m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
@@ -64,7 +64,7 @@ DocumentAnalyzer::FeatureConfig::FeatureConfig(
 {
 	if (tokenizer_->concatBeforeTokenize())
 	{
-		if (m_options.positionBind() != FeatureOptions::BindContent)
+		if (m_options.positionBind() != analyzer::BindContent)
 		{
 			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
 		}
@@ -255,7 +255,7 @@ ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>
 
 analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
-		const DocumentClass& dclass) const
+		const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -272,7 +272,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::analyze: %s"), *m_errorhnd, analyzer::Document());
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const DocumentClass& dclass) const
+DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -289,7 +289,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 	std::vector<BindTerm>::const_iterator ri = m_searchTerms.begin(), re = m_searchTerms.end();
 	for (; ri != re; ++ri)
 	{
-		if (ri->posbind() == DocumentAnalyzerInterface::FeatureOptions::BindContent)
+		if (ri->posbind() == analyzer::BindContent)
 		{
 			pset.insert( ri->pos());
 		}
@@ -297,7 +297,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 	ri = m_forwardTerms.begin(), re = m_forwardTerms.end();
 	for (; ri != re; ++ri)
 	{
-		if (ri->posbind() == DocumentAnalyzerInterface::FeatureOptions::BindContent)
+		if (ri->posbind() == analyzer::BindContent)
 		{
 			pset.insert( ri->pos());
 		}
@@ -322,14 +322,14 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 	{
 		switch (ri->posbind())
 		{
-			case DocumentAnalyzerInterface::FeatureOptions::BindContent:
+			case analyzer::BindContent:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.find( ri->pos()+1);
 				res.addSearchIndexTerm( ri->type(), ri->value(), mi->second + posofs);
 				break;
 			}
-			case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
+			case analyzer::BindSuccessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.upper_bound( ri->pos());
@@ -339,7 +339,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				}
 				break;
 			}
-			case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
+			case analyzer::BindPredecessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.upper_bound( ri->pos()+1);
@@ -355,14 +355,14 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 	{
 		switch (ri->posbind())
 		{
-			case DocumentAnalyzerInterface::FeatureOptions::BindContent:
+			case analyzer::BindContent:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.find( ri->pos()+1);
 				res.addForwardIndexTerm( ri->type(), ri->value(), mi->second + posofs);
 				break;
 			}
-			case DocumentAnalyzerInterface::FeatureOptions::BindSuccessor:
+			case analyzer::BindSuccessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.upper_bound( ri->pos());
@@ -372,7 +372,7 @@ void DocumentAnalyzerContext::mapPositions( analyzer::Document& res) const
 				}
 				break;
 			}
-			case DocumentAnalyzerInterface::FeatureOptions::BindPredecessor:
+			case analyzer::BindPredecessor:
 			{
 				std::map<unsigned int, unsigned int>::const_iterator
 					mi = posmap.upper_bound( ri->pos()+1);
@@ -415,14 +415,14 @@ void DocumentAnalyzerContext::processContentTokens( std::vector<BindTerm>& resul
 		unsigned int str_position = 0;
 		if (ci != ce)
 		{
-			for (; ci != ce && ci->end_strpos < ti->strpos; ++ci){}
+			for (; ci != ce && ci->end_strpos < ti->origpos(); ++ci){}
 			if (ci != ce)
 			{
 				str_position = ci->start_strpos;
 				rel_position = ci->segpos;
 			}
 		}
-		std::string termval( feat.normalize( segsrc + ti->strpos, ti->strsize));
+		std::string termval( feat.normalize( segsrc + ti->origpos(), ti->origsize()));
 		if (termval.size() && termval[0] == '\0')
 		{
 			// ... handle normalizers with multiple results
@@ -432,7 +432,7 @@ void DocumentAnalyzerContext::processContentTokens( std::vector<BindTerm>& resul
 			{
 				BindTerm term(
 					feat.m_config->name(), vi,
-					REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
+					REL_POS_CORR_FACTOR * rel_position + ti->origpos() - str_position,
 					feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -444,7 +444,7 @@ void DocumentAnalyzerContext::processContentTokens( std::vector<BindTerm>& resul
 		{
 			BindTerm term(
 				feat.m_config->name(), termval,
-				REL_POS_CORR_FACTOR * rel_position + ti->strpos - str_position,
+				REL_POS_CORR_FACTOR * rel_position + ti->origpos() - str_position,
 				feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
@@ -468,7 +468,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		{
 			if (!tokens.empty())
 			{
-				std::string valuestr = feat.normalize( segsrc + tokens[0].strpos, tokens[0].strsize);
+				std::string valuestr = feat.normalize( segsrc + tokens[0].origpos(), tokens[0].origsize());
 				NumericVariant value;
 				if (!value.initFromString( valuestr.c_str()))
 				{
@@ -496,7 +496,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 #endif
 				res.setAttribute(
 					feat.m_config->name(),
-					feat.normalize( segsrc + ti->strpos, ti->strsize));
+					feat.normalize( segsrc + ti->origpos(), ti->origsize()));
 			}
 			break;
 		}
@@ -565,7 +565,7 @@ void DocumentAnalyzerContext::clearTermMaps()
 	m_forwardTerms.clear();
 }
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const DocumentClass& dclass, ErrorBufferInterface* errorhnd)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd)
 	:m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->m_segmenter->createContext( dclass))
 	,m_parserContext(analyzer_->m_featurear)

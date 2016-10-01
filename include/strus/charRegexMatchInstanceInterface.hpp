@@ -7,9 +7,10 @@
  */
 /// \brief StrusStream interface for building the automaton for detecting tokens defined as regular expressions in text
 /// \file "charRegexMatchInstanceInterface.hpp"
-#ifndef _STRUS_STREAM_CHAR_REGEX_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_STREAM_CHAR_REGEX_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/stream/charRegexMatchOptions.hpp"
+#ifndef _STRUS_ANALYZER_CHAR_REGEX_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_CHAR_REGEX_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/charRegexMatchOptions.hpp"
+#include "strus/analyzer/positionBind.hpp"
 #include <string>
 
 namespace strus
@@ -25,15 +26,6 @@ public:
 	/// \brief Destructor
 	virtual ~CharRegexMatchInstanceInterface(){}
 
-	/// \enum PositionBind
-	/// \brief Determines how document positions are assigned to terms
-	enum PositionBind
-	{
-		BindContent,		///< An element in the document that gets an own ordinal position assigned
-		BindSuccessor,		///< An element in the document that gets the ordinal position of the element at the same position or the succeding content element assigned
-		BindPredecessor		///< An element in the document that gets the ordinal position of the element at the same position or the preceding content element assigned
-	};
-
 	/// \brief Define a pattern for this regex matcher
 	/// \param[in] id identifier given to the substring matching the pattern, 0 if the pattern is not part of the output.
 	/// \param[in] expression expression string of the pattern
@@ -46,7 +38,7 @@ public:
 			const std::string& expression,
 			unsigned int resultIndex,
 			unsigned int level,
-			PositionBind posbind)=0;
+			analyzer::PositionBind posbind)=0;
 
 	/// \brief Define a symbol, an instance of a pattern, that gets a different id than the pattern
 	/// \param[in] id identifier given to the result substring, 0 if the result term is not appearing in the output
@@ -69,7 +61,7 @@ public:
 	/// \brief Compile all patterns and symbols defined
 	/// \return true on success, false on error (error reported in error buffer)
 	/// \remark This function has to be called in order to make the patterns active, resp. before calling 'createContext()'
-	virtual bool compile( const stream::CharRegexMatchOptions& opts)=0;
+	virtual bool compile( const analyzer::CharRegexMatchOptions& opts)=0;
 
 	/// \brief Create the context to process a chunk of text with this text matcher
 	/// \return the term matcher context

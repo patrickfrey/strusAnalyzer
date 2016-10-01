@@ -9,6 +9,7 @@
 /// \file textProcessorInterface.hpp
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/documentClass.hpp"
 #include <string>
 #include <vector>
 
@@ -23,8 +24,6 @@ class NormalizerFunctionInterface;
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInterface;
-/// \brief Forward declaration
-class DocumentClass;
 
 
 /// \class TextProcessorInterface
@@ -59,7 +58,7 @@ public:
 	/// \param[in,out] dclass content document class
 	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
 	/// \return true, if the document format was recognized, false else
-	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
 
 	/// \brief Define a content detector
 	/// \param[in] tokenizer a tokenizer object (pass ownership)

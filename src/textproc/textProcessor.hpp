@@ -32,7 +32,7 @@ public:
 
 	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const;
 
-	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
 
