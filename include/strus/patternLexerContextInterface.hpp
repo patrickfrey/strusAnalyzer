@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Interface for detecting terms defined as regular expressions
+/// \brief Interface for detecting lexems used as basic entities by pattern matching in text
 /// \file "patternLexerInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_LEXER_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_LEXER_CONTEXT_INTERFACE_HPP_INCLUDED
@@ -15,7 +15,7 @@
 namespace strus
 {
 
-/// \brief Interface of the automaton context for detecting terms
+/// \brief Interface for detecting lexems used as basic entities by pattern matching in text
 class PatternLexerContextInterface
 {
 public:

@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Interface for building the automaton for detecting patterns of tokens in a document
+/// \brief Interface for building the automaton for detecting patterns in text
 /// \file "patternMatcherInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
@@ -18,7 +18,7 @@ namespace strus
 /// \brief Forward declaration
 class PatternMatcherContextInterface;
 
-/// \brief Interface for building the automaton for detecting patterns of tokens in a document stream
+/// \brief Interface for building the automaton for detecting patterns in text
 class PatternMatcherInstanceInterface
 {
 public:
