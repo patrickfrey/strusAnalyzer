@@ -32,6 +32,10 @@ public:
 
 	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const;
 
+	virtual const PatternLexerInterface* getPatternLexer( const std::string& name) const;
+
+	virtual const PatternMatcherInterface* getPatternMatcher( const std::string& name) const;
+
 	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
@@ -42,12 +46,18 @@ public:
 
 	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* statfunc);
 
+	virtual void definePatternLexer( const std::string& name, PatternLexerInterface* lexer);
+
+	virtual void definePatternMatcher( const std::string& name, PatternMatcherInterface* matcher);
+
 	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
 	std::map<std::string,TokenizerFunctionInterface*> m_tokenizer_map;
 	std::map<std::string,NormalizerFunctionInterface*> m_normalizer_map;
 	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;
+	std::map<std::string,PatternLexerInterface*> m_patternlexer_map;
+	std::map<std::string,PatternMatcherInterface*> m_patternmatcher_map;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
 	ErrorBufferInterface* m_errorhnd;

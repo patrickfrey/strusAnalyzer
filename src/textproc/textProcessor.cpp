@@ -16,6 +16,8 @@
 #include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
+#include "strus/patternLexerInterface.hpp"
+#include "strus/patternMatcherInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
@@ -615,6 +617,29 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 	return ni->second;
 }
 
+const PatternLexerInterface* TextProcessor::getPatternLexer( const std::string& name) const
+{
+	std::map<std::string,PatternLexerInterface*>::const_iterator
+		ni = m_patternlexer_map.find( utils::tolower( name));
+	if (ni == m_patternlexer_map.end())
+	{
+		m_errorhnd->report( _TXT("no pattern lexer defined with name '%s'"), name.c_str());
+		return 0;
+	}
+	return ni->second;
+}
+
+const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::string& name) const
+{
+	std::map<std::string,PatternMatcherInterface*>::const_iterator
+		ni = m_patternmatcher_map.find( utils::tolower( name));
+	if (ni == m_patternmatcher_map.end())
+	{
+		m_errorhnd->report( _TXT("no pattern matcher defined with name '%s'"), name.c_str());
+		return 0;
+	}
+	return ni->second;
+}
 
 bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
@@ -715,6 +740,51 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 	}
 }
 
+void TextProcessor::definePatternLexer( const std::string& name, PatternLexerInterface* func)
+{
+	try
+	{
+		std::string id( utils::tolower( name));
+		std::map<std::string,PatternLexerInterface*>::iterator ai = m_patternlexer_map.find(id);
+		if (ai != m_patternlexer_map.end())
+		{
+			delete ai->second;
+			ai->second = func;
+		}
+		else
+		{
+			m_patternlexer_map[ id] = func;
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		delete func;
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+}
+
+void TextProcessor::definePatternMatcher( const std::string& name, PatternMatcherInterface* func)
+{
+	try
+	{
+		std::string id( utils::tolower( name));
+		std::map<std::string,PatternMatcherInterface*>::iterator ai = m_patternmatcher_map.find(id);
+		if (ai != m_patternmatcher_map.end())
+		{
+			delete ai->second;
+			ai->second = func;
+		}
+		else
+		{
+			m_patternmatcher_map[ id] = func;
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		delete func;
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+}
 
 void TextProcessor::addResourcePath( const std::string& path)
 {
@@ -783,6 +853,10 @@ std::vector<std::string> TextProcessor::getFunctionList( const FunctionType& typ
 				return getKeys( m_normalizer_map);
 			case AggregatorFunction:
 				return getKeys( m_aggregator_map);
+			case PatternLexer:
+				return getKeys( m_patternlexer_map);
+			case PatternMatcher:
+				return getKeys( m_patternmatcher_map);
 		}
 	}
 	catch (const std::bad_alloc&)

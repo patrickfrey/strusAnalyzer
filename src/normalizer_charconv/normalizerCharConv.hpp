@@ -10,6 +10,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionContextInterface.hpp"
+#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -30,7 +31,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping all characters to lowercase.";
+		return _TXT("Normalizer mapping all characters to lowercase.");
 	}
 
 private:
@@ -48,7 +49,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping all characters to uppercase.";
+		return _TXT("Normalizer mapping all characters to uppercase.");
 	}
 
 private:
@@ -66,7 +67,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping all diacritical characters to ascii. The language is passed as first argument (currently only german 'de' and english 'en' supported).";
+		return _TXT("Normalizer mapping all diacritical characters to ascii. The language is passed as first argument (currently only german 'de' and english 'en' supported).");
 	}
 
 private:
@@ -84,7 +85,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping all alpha characters to identity and all other characters to nothing. The language set is passed as first argument (currently only european 'eu' and ASCII 'ascii' supported).";
+		return _TXT("Normalizer mapping all alpha characters to identity and all other characters to nothing. The language set is passed as first argument (currently only european 'eu' and ASCII 'ascii' supported).");
 	}
 
 private:

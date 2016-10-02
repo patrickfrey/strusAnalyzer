@@ -25,7 +25,7 @@ public:
 	/// \brief Destructor
 	virtual ~PatternMatcherProgramInstanceInterface(){}
 
-	/// \brief Load the rules of a pattern matcher from a source file
+	/// \brief Load the rules of a pattern matcher from a source (source is the content, not a file path)
 	/// \return true on success, false on failure
 	virtual bool load( const std::string& source)=0;
 

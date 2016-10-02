@@ -24,6 +24,12 @@ class NormalizerFunctionInterface;
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInterface;
+/// \brief Forward declaration
+class PatternLexerInterface;
+/// \brief Forward declaration
+class PatternMatcherInterface;
+/// \brief Forward declaration
+class PatternMatcherProgramInterface;
 
 
 /// \class TextProcessorInterface
@@ -54,6 +60,14 @@ public:
 	/// \return the statistics collector function reference
 	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const=0;
 
+	/// \brief Get a const reference to a pattern lexer 
+	/// \return the pattern lexer
+	virtual const PatternLexerInterface* getPatternLexer( const std::string& name) const=0;
+
+	/// \brief Get a const reference to a pattern lexer 
+	/// \return the pattern lexer
+	virtual const PatternMatcherInterface* getPatternMatcher( const std::string& name) const=0;
+
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class
 	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
@@ -79,12 +93,24 @@ public:
 	/// \param[in] aggregator an aggregator function object (pass ownership)
 	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* aggregator)=0;
 
+	/// \brief Define a pattern matching lexer by name
+	/// \param[in] name name of the lexer to define
+	/// \param[in] lexer a lexer object (pass ownership)
+	virtual void definePatternLexer( const std::string& name, PatternLexerInterface* lexer)=0;
+
+	/// \brief Define a pattern matcher by name
+	/// \param[in] name name of the pattern matcher to define
+	/// \param[in] matcher a pattern matcher object (pass ownership)
+	virtual void definePatternMatcher( const std::string& name, PatternMatcherInterface* matcher)=0;
+
 	/// \brief Function type for fetching descriptions of available functions
 	enum FunctionType
 	{
 		TokenizerFunction,		///< Addresses a tokenizer
 		NormalizerFunction,		///< Addresses a normalizer
-		AggregatorFunction		///< Addresses am aggregator
+		AggregatorFunction,		///< Addresses an aggregator
+		PatternLexer,			///< Addresses a pattern lexer
+		PatternMatcher			///< Addresses a pattern matcher
 	};
 
 	/// \brief Get a list of all functions of a specific type available

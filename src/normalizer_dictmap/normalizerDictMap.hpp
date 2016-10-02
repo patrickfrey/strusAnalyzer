@@ -12,6 +12,7 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
+#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -33,7 +34,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument";
+		return _TXT("Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument");
 	}
 	
 private:

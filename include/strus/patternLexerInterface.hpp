@@ -31,6 +31,10 @@ public:
 	/// \brief Create an instance to build the regular expressions for a term matcher
 	/// \return the term matcher instance
 	virtual PatternLexerInstanceInterface* createInstance() const=0;
+
+	/// \brief Get a description of the function for user help
+	/// \return the description
+	virtual const char* getDescription() const=0;
 };
 
 } //namespace
