@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure describing a token with id (an output item of char regex matching and an input item for token pattern matching)
-/// \file "idToken.hpp"
-#ifndef _STRUS_ANALYZER_PATTERN_MATCH_IDTOKEN_HPP_INCLUDED
-#define _STRUS_ANALYZER_PATTERN_MATCH_IDTOKEN_HPP_INCLUDED
+/// \file "patternLexem.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED
 #include "strus/analyzer/token.hpp"
 #include <cstddef>
 
@@ -17,21 +17,21 @@ namespace analyzer {
 
 /// \brief Structure describing a token with an id
 /// \note Describes an output item of char regex matching and it is an input item for token pattern matching
-class IdToken
+class PatternLexem
 	:public Token
 {
 public:
 	/// \brief Default constructor
-	IdToken()
+	PatternLexem()
 		:m_id(0),Token(){}
 	/// \brief Constructor
-	IdToken( unsigned int id_, unsigned int ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)
+	PatternLexem( unsigned int id_, unsigned int ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)
 		:m_id(id_),Token(ordpos_,origseg_,origpos_,origsize_){}
 	/// \brief Copy constructor
-	IdToken( const IdToken& o)
+	PatternLexem( const PatternLexem& o)
 		:m_id(o.m_id),Token(o){}
 	/// \brief Destructor
-	~IdToken(){}
+	~PatternLexem(){}
 
 	/// \brief Internal identifier of the term
 	unsigned int id() const				{return m_id;}

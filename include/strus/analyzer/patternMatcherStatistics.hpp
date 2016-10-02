@@ -6,16 +6,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Object descriping the statistics of a token pattern match run for runtime analysis
-/// \file "tokenPatternMatchStatistics.hpp"
-#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_STATISTICS_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_STATISTICS_HPP_INCLUDED
+/// \file "patternMatchStatistics.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_STATISTICS_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_STATISTICS_HPP_INCLUDED
 #include <vector>
 
 namespace strus {
 namespace analyzer {
 
 /// \brief Object descriping the statistics of a token pattern match run for runtime analysis
-class TokenPatternMatchStatistics
+class PatternMatcherStatistics
 {
 public:
 	/// \brief Statistics item
@@ -41,9 +41,9 @@ public:
 		double m_value;
 	};
 	/// \brief Constructor
-	TokenPatternMatchStatistics(){}
+	PatternMatcherStatistics(){}
 	/// \brief Copy constructor
-	TokenPatternMatchStatistics( const TokenPatternMatchStatistics& o)
+	PatternMatcherStatistics( const PatternMatcherStatistics& o)
 		:m_items(o.m_items){}
 
 	/// \brief Define statistics item

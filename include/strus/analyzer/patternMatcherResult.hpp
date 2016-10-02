@@ -6,10 +6,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure desribing a result of a token pattern matcher
-/// \file "tokenPatternMatchResult.hpp"
-#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_RESULT_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_RESULT_HPP_INCLUDED
-#include "strus/analyzer/tokenPatternMatchResultItem.hpp"
+/// \file "patternMatcherResult.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_HPP_INCLUDED
+#include "strus/analyzer/patternMatcherResultItem.hpp"
 #include "strus/base/stdint.h"
 #include <string>
 #include <vector>
@@ -18,19 +18,19 @@ namespace strus {
 namespace analyzer {
 
 /// \brief Structure desribing a result of a token pattern matcher
-class TokenPatternMatchResult
+class PatternMatcherResult
 {
 public:
-	typedef analyzer::TokenPatternMatchResultItem Item;
+	typedef analyzer::PatternMatcherResultItem Item;
 
 	/// \brief Constructor
-	TokenPatternMatchResult( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
+	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
 		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_start_origpos(start_origpos_),m_end_origseg(end_origseg_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
-	TokenPatternMatchResult( const TokenPatternMatchResult& o)
+	PatternMatcherResult( const PatternMatcherResult& o)
 		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_start_origpos(o.m_start_origpos),m_end_origseg(o.m_end_origseg),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
 	/// \brief Destructor
-	~TokenPatternMatchResult(){}
+	~PatternMatcherResult(){}
 
 	/// \brief Name of the result, defined by the name of the pattern of the match
 	const char* name() const			{return m_name;}

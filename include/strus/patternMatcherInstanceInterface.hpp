@@ -6,24 +6,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Interface for building the automaton for detecting patterns of tokens in a document
-/// \file "tokenPatternMatchInstanceInterface.hpp"
-#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/tokenPatternMatchOptions.hpp"
+/// \file "patternMatcherInstanceInterface.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/patternMatcherOptions.hpp"
 #include <string>
 
 namespace strus
 {
 
 /// \brief Forward declaration
-class TokenPatternMatchContextInterface;
+class PatternMatcherContextInterface;
 
 /// \brief Interface for building the automaton for detecting patterns of tokens in a document stream
-class TokenPatternMatchInstanceInterface
+class PatternMatcherInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~TokenPatternMatchInstanceInterface(){}
+	virtual ~PatternMatcherInstanceInterface(){}
 
 	/// \brief Define a relative document term frequency used for optimization of the automaton
 	/// \param[in] termid term identifier
@@ -75,12 +75,12 @@ public:
 	/// \brief Compile all patterns defined
 	/// \param[in] opt optimization options
 	/// \note Tries to optimize the program if possible by setting initial key events of the programs to events that are relative rare
-	virtual bool compile( const analyzer::TokenPatternMatchOptions& opt)=0;
+	virtual bool compile( const analyzer::PatternMatcherOptions& opt)=0;
 
 	/// \brief Create the context to process a document with the pattern matcher
 	/// \return the pattern matcher context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
-	virtual TokenPatternMatchContextInterface* createContext() const=0;
+	virtual PatternMatcherContextInterface* createContext() const=0;
 };
 
 } //namespace

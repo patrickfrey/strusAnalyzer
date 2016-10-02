@@ -6,31 +6,31 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure for options descibing the behaviour and some settings of the character regular expression automaton
-/// \file "charRegexMatchInterface.hpp"
-#ifndef _STRUS_ANALYZER_CHAR_REGEX_MATCH_OPTIONS_HPP_INCLUDED
-#define _STRUS_ANALYZER_CHAR_REGEX_MATCH_OPTIONS_HPP_INCLUDED
+/// \file "patternLexerOptions.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_LEXER_OPTIONS_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_LEXER_OPTIONS_HPP_INCLUDED
 #include <vector>
 #include <string>
 
 namespace strus {
 namespace analyzer {
 
-/// \brief Options to stear regular expression automaton
+/// \brief Options to stear the lexer automaton
 /// \remark Available options depend on implementation
 /// \note For the hyperscan backend, the following options are available:
 ///		"CASELESS", "DOTALL", "MULTILINE", "ALLOWEMPTY", "UCP"
 /// \note The options HS_FLAG_UTF8 and HS_FLAG_SOM_LEFTMOST are set implicitely always
-class CharRegexMatchOptions
+class PatternLexerOptions
 {
 public:
 	/// \brief Constructor
-	CharRegexMatchOptions(){}
+	PatternLexerOptions(){}
 	/// \brief Copy constructor
-	CharRegexMatchOptions( const CharRegexMatchOptions& o)
+	PatternLexerOptions( const PatternLexerOptions& o)
 		:m_opts(o.m_opts){}
 
 	/// \brief Add an option definition
-	CharRegexMatchOptions& operator()( const std::string& opt)
+	PatternLexerOptions& operator()( const std::string& opt)
 	{
 		m_opts.push_back( opt);
 		return *this;

@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure desribing a result item of a token pattern matcher
-/// \file "tokenPatternMatchResultItem.hpp"
-#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_RESULT_ITEM_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_RESULT_ITEM_HPP_INCLUDED
+/// \file "patternMatcherResultItem.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_ITEM_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_ITEM_HPP_INCLUDED
 #include <string>
 #include "strus/base/stdint.h"
 
@@ -16,17 +16,17 @@ namespace strus {
 namespace analyzer {
 
 /// \brief Result item structure of a pattern match result
-class TokenPatternMatchResultItem
+class PatternMatcherResultItem
 {
 public:
 	/// \brief Constructor
-	TokenPatternMatchResultItem( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, float weight_)
+	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, float weight_)
 		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_start_origpos(start_origpos_),m_end_origseg(end_origseg_),m_end_origpos(end_origpos_),m_weight(weight_){}
 	/// \brief Copy constructor
-	TokenPatternMatchResultItem( const TokenPatternMatchResultItem& o)
+	PatternMatcherResultItem( const PatternMatcherResultItem& o)
 		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_start_origpos(o.m_start_origpos),m_end_origseg(o.m_end_origseg),m_end_origpos(o.m_end_origpos),m_weight(o.m_weight){}
 	/// \brief Destructor
-	~TokenPatternMatchResultItem(){}
+	~PatternMatcherResultItem(){}
 
 	/// \brief Name of the item, defined by the variable assigned to the match
 	const char* name() const			{return m_name;}

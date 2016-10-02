@@ -6,24 +6,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Interface to instance loading pattern definitions from source
-/// \file "patternMatchProgramInstanceInterface.hpp"
-#ifndef _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
+/// \file "patternMatcherProgramInstanceInterface.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_PROGRAM_INSTANCE_INTERFACE_HPP_INCLUDED
 #include <string>
 
 namespace strus {
 
 /// \brief Forward declaration
-class CharRegexMatchInstanceInterface;
+class PatternLexerInstanceInterface;
 /// \brief Forward declaration
-class TokenPatternMatchInstanceInterface;
+class PatternMatcherInstanceInterface;
 
 /// \brief StrusStream interface to load pattern definitions from source
-class PatternMatchProgramInstanceInterface
+class PatternMatcherProgramInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~PatternMatchProgramInstanceInterface(){}
+	virtual ~PatternMatcherProgramInstanceInterface(){}
 
 	/// \brief Load the rules of a pattern matcher from a source file
 	/// \return true on success, false on failure
@@ -35,11 +35,11 @@ public:
 
 	/// \brief Get a const reference to this instance of a character regular expression matcher
 	/// \return this character regular expression matcher instance
-	virtual const CharRegexMatchInstanceInterface* getCharRegexMatchInstance() const=0;
+	virtual const PatternLexerInstanceInterface* getPatternLexerInstance() const=0;
 
 	/// \brief Get a const reference to this instance of a character token pattern matcher
 	/// \return this token pattern match instance
-	virtual const TokenPatternMatchInstanceInterface* getTokenPatternMatchInstance() const=0;
+	virtual const PatternMatcherInstanceInterface* getPatternMatcherInstance() const=0;
 
 	/// \brief Get the name of the token or its symbol string from its id
 	/// \param[in] id of the token

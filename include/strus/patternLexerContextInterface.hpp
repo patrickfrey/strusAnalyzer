@@ -6,27 +6,27 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Interface for detecting terms defined as regular expressions
-/// \file "charRegexMatchContextInterface.hpp"
-#ifndef _STRUS_ANALYZER_CHAR_REGEX_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_CHAR_REGEX_MATCH_CONTEXT_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/idToken.hpp"
+/// \file "patternLexerInterface.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_LEXER_CONTEXT_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_LEXER_CONTEXT_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/patternLexem.hpp"
 #include <vector>
 
 namespace strus
 {
 
 /// \brief Interface of the automaton context for detecting terms
-class CharRegexMatchContextInterface
+class PatternLexerContextInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~CharRegexMatchContextInterface(){}
+	virtual ~PatternLexerContextInterface(){}
 
-	/// \brief Do process a document source string to return a list of labeled terms found that matched
+	/// \brief Do process a document source string to return a list of labeled terms (lexems) found that matched
 	/// \param[in] src pointer to source of the tokens to match against
 	/// \param[in] srclen length of src to scan in bytes
-	/// \return list of matched terms
-	virtual std::vector<analyzer::IdToken> match( const char* src, std::size_t srclen)=0;
+	/// \return list of matched lexems
+	virtual std::vector<analyzer::PatternLexem> match( const char* src, std::size_t srclen)=0;
 };
 
 } //namespace

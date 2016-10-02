@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure with options for optimization of a token pattern match automaton
-/// \file "tokenPatternMatchOptions.hpp"
-#ifndef _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_OPTIONS_HPP_INCLUDED
-#define _STRUS_ANALYZER_TOKEN_PATTERN_MATCH_OPTIONS_HPP_INCLUDED
+/// \file "patternMatcherOptions.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_OPTIONS_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_OPTIONS_HPP_INCLUDED
 #include <vector>
 #include <string>
 
@@ -16,13 +16,13 @@ namespace strus {
 namespace analyzer {
 
 /// \brief Structure with options for optimization of a token pattern match automaton
-class TokenPatternMatchOptions
+class PatternMatcherOptions
 {
 public:
 	///\brief Default constructor
-	TokenPatternMatchOptions(){}
+	PatternMatcherOptions(){}
 	///\brief Copy constructor
-	TokenPatternMatchOptions( const TokenPatternMatchOptions& o)
+	PatternMatcherOptions( const PatternMatcherOptions& o)
 		:m_opts(o.m_opts){}
 
 	/// \brief Add an option definition
@@ -30,7 +30,7 @@ public:
 	///		"stopwordOccurrenceFactor"	: what fraction of the whole collection a word must occurr (df) to be considered a stopword
 	///		"weightFactor"			: what weight factor an alternative event must have to be considered as alernative key event triggering the detection of the rule
 	///		"maxRange"			: maximum proximity range a rule can reach before not considered anymore for a rule rewriting (alternative key event)
-	TokenPatternMatchOptions& operator()( const std::string& opt, double value)
+	PatternMatcherOptions& operator()( const std::string& opt, double value)
 	{
 		m_opts.push_back( OptionDef( opt, value));
 		return *this;

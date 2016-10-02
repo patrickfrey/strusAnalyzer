@@ -6,30 +6,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Interface to load pattern definitions from source
-/// \file "patternMatchProgramInterface.hpp"
-#ifndef _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INTERFACE_HPP_INCLUDED
-#define _STRUS_ANALYZER_PATTERN_MATCH_PROGRAM_INTERFACE_HPP_INCLUDED
+/// \file "patternMatcherProgramInterface.hpp"
+#ifndef _STRUS_ANALYZER_PATTERN_MATCHER_PROGRAM_INTERFACE_HPP_INCLUDED
+#define _STRUS_ANALYZER_PATTERN_MATCHER_PROGRAM_INTERFACE_HPP_INCLUDED
 
 namespace strus {
 
 /// \brief Forward declaration
-class PatternMatchProgramInstanceInterface;
-/// \brief Forward declaration
-class TokenPatternMatchInterface;
-/// \brief Forward declaration
-class CharRegexMatchInterface;
-
+class PatternMatcherProgramInstanceInterface;
 
 /// \brief StrusStream interface to load pattern definitions from source
-class PatternMatchProgramInterface
+class PatternMatcherProgramInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~PatternMatchProgramInterface(){}
+	virtual ~PatternMatcherProgramInterface(){}
 
 	/// \brief Create an instance to load the rules of a pattern matcher from source
 	/// \return the pattern matcher program instance
-	virtual PatternMatchProgramInstanceInterface* createInstance() const=0;
+	virtual PatternMatcherProgramInstanceInterface* createInstance() const=0;
 };
 
 } //namespace
