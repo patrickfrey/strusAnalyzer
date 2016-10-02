@@ -15,8 +15,7 @@
 namespace strus {
 namespace analyzer {
 
-/// \brief Structure describing a token with an id
-/// \note Describes an output item of char regex matching and it is an input item for token pattern matching
+/// \brief Structure describing a token with an id used for pattern matching
 class PatternLexem
 	:public Token
 {
@@ -35,14 +34,6 @@ public:
 
 	/// \brief Internal identifier of the term
 	unsigned int id() const				{return m_id;}
-	/// \brief Ordinal (counting) position assigned to the token
-	unsigned int ordpos() const			{return ordpos();}
-	/// \brief Original segment index of the token in the source
-	std::size_t origseg() const			{return origseg();}
-	/// \brief Original byte position of the token in the source segment as UTF-8 specified with origseg
-	std::size_t origpos() const			{return origpos();}
-	/// \brief Original byte size of the token in the source as UTF-8
-	std::size_t origsize() const			{return origsize();}
 
 private:
 	unsigned int m_id;
