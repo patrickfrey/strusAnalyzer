@@ -65,16 +65,16 @@
 %endif
 
 %define fedora 0
-%define fc22 0
 %define fc23 0
-%if 0%{?fedora_version} == 22
-%define dist fc22
-%define fc22 1
-%define fedora 1
-%endif
+%define fc24 0
 %if 0%{?fedora_version} == 23
 %define dist fc23
 %define fc23 1
+%define fedora 1
+%endif
+%if 0%{?fedora_version} == 24
+%define dist fc24
+%define fc24 1
 %define fedora 1
 %endif
 
@@ -308,6 +308,8 @@ make test
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_markup_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_markup_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %dir %{_datadir}/strus
 %dir %{_datadir}/strus/textcat
 %dir %{_datadir}/strus/textcat/LM
@@ -322,7 +324,6 @@ make test
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so
 %{_libdir}/strus/libstrus_textcat.so
 %{_libdir}/strus/libstrus_tokenizer_textcat.so
-%{_libdir}/strus/libstrus_tokenizer_regex.so
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
 %{_libdir}/strus/libstrus_segmenter_cjson.so
 %{_libdir}/strus/libstrus_segmenter_tsv.so
@@ -337,6 +338,7 @@ make test
 %{_libdir}/strus/libstrus_normalizer_dateconv.so
 %{_libdir}/strus/libstrus_aggregator_vsm.so
 %{_libdir}/strus/libstrus_analyzer_objbuild.so
+%{_libdir}/strus/libstrus_markup_std.so
 %dir %{_includedir}/strus
 %{_includedir}/strus/*.hpp
 %dir %{_includedir}/strus/lib
