@@ -308,6 +308,8 @@ make test
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_markup_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_markup_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %dir %{_datadir}/strus
 %dir %{_datadir}/strus/textcat
 %dir %{_datadir}/strus/textcat/LM
@@ -322,7 +324,6 @@ make test
 %{_libdir}/strus/libstrus_tokenizer_punctuation.so
 %{_libdir}/strus/libstrus_textcat.so
 %{_libdir}/strus/libstrus_tokenizer_textcat.so
-%{_libdir}/strus/libstrus_tokenizer_regex.so
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
 %{_libdir}/strus/libstrus_segmenter_cjson.so
 %{_libdir}/strus/libstrus_segmenter_tsv.so
@@ -337,6 +338,7 @@ make test
 %{_libdir}/strus/libstrus_normalizer_dateconv.so
 %{_libdir}/strus/libstrus_aggregator_vsm.so
 %{_libdir}/strus/libstrus_analyzer_objbuild.so
+%{_libdir}/strus/libstrus_markup_std.so
 %dir %{_includedir}/strus
 %{_includedir}/strus/*.hpp
 %dir %{_includedir}/strus/lib
