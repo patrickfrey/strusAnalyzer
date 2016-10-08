@@ -22,13 +22,13 @@ class PatternLexem
 public:
 	/// \brief Default constructor
 	PatternLexem()
-		:m_id(0),Token(){}
+		:Token(),m_id(0){}
 	/// \brief Constructor
 	PatternLexem( unsigned int id_, unsigned int ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)
-		:m_id(id_),Token(ordpos_,origseg_,origpos_,origsize_){}
+		:Token(ordpos_,origseg_,origpos_,origsize_),m_id(id_){}
 	/// \brief Copy constructor
 	PatternLexem( const PatternLexem& o)
-		:m_id(o.m_id),Token(o){}
+		:Token(o),m_id(o.m_id){}
 	/// \brief Destructor
 	~PatternLexem(){}
 
