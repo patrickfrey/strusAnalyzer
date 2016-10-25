@@ -9,6 +9,7 @@
 /// \file token.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_TOKEN_HPP_INCLUDED
+#include "strus/base/stdint.h"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -55,10 +56,10 @@ public:
 	}
 
 private:
-	unsigned int m_ordpos;		///< ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
-	unsigned int m_origseg;		///< start byte position of the document segment
-	unsigned int m_origpos;		///< start byte position of the token string in the translated document segment (UTF-8)
-	unsigned int m_origsize;	///< byte size of the translated token string (UTF-8) in the original document segment
+	uint32_t m_ordpos;	///< ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
+	uint32_t m_origseg;	///< start byte position of the document segment
+	uint32_t m_origpos;	///< start byte position of the token string in the translated document segment (UTF-8)
+	uint32_t m_origsize;	///< byte size of the translated token string (UTF-8) in the original document segment
 };
 
 }}//namespace
