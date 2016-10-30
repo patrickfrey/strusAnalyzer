@@ -20,11 +20,12 @@ using namespace strus;
 struct RegexConfiguration
 {
 	boost::regex expression;
+	unsigned int index;
 
-	explicit RegexConfiguration( const std::string& expressionstr)
-		:expression(expressionstr){}
+	RegexConfiguration( const std::string& expressionstr, unsigned int index_)
+		:expression(expressionstr),index(index_){}
 	RegexConfiguration( const RegexConfiguration& o)
-		:expression(o.expression){}
+		:expression(o.expression),index(o.index){}
 };
 
 class RegexTokenizerFunctionContext
@@ -49,8 +50,8 @@ public:
 					si, se, what, m_config.expression,
 					boost::match_posix))
 			{
-				std::size_t len = what.length();
-				std::size_t pos = what.position();
+				std::size_t len = what.length( m_config.index);
+				std::size_t pos = what.position( m_config.index);
 				std::size_t abspos = pos + (si - src);
 				rt.push_back( analyzer::Token( abspos/*ord*/, 0/*seg*/, abspos, len));
 				if (pos + len == 0)
@@ -108,15 +109,20 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 {
 	try
 	{
-		if (args.size() > 1)
+		if (args.size() > 2)
 		{
-			throw strus::runtime_error(_TXT("too many arguments for \"regex\" tokenizer (one argument, the regular expression to find tokens)"));
+			throw strus::runtime_error(_TXT("too many arguments for \"regex\" tokenizer (maximum two arguments, the regular expression to find tokens and an opional selector index)"));
 		}
 		else if (args.size() < 1)
 		{
 			throw strus::runtime_error(_TXT("expected argument for \"regex\" tokenizer: the regular expression to find tokens)"));
 		}
-		return new RegexTokenizerFunctionInstance( RegexConfiguration( args[0]), m_errorhnd);
+		unsigned int selectIndex = 0;
+		if (args.size() == 2)
+		{
+			selectIndex = utils::touint( args[1]);
+		}
+		return new RegexTokenizerFunctionInstance( RegexConfiguration( args[0], selectIndex), m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating \"regex\" tokenizer instance: %s"), *m_errorhnd, 0);
 }
