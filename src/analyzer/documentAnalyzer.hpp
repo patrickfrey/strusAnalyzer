@@ -18,6 +18,7 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "private/utils.hpp"
+#include "featureConfig.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -83,52 +84,6 @@ public:
 			const analyzer::DocumentClass& dclass) const;
 
 public:
-	enum FeatureClass
-	{
-		FeatMetaData,
-		FeatAttribute,
-		FeatSearchIndexTerm,
-		FeatForwardIndexTerm
-	};
-	static const char* featureClassName( FeatureClass i)
-	{
-		static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm"};
-		return  ar[i];
-	}
-
-	class FeatureConfig
-	{
-	public:
-		FeatureConfig( const std::string& name_,
-				TokenizerFunctionInstanceInterface* tokenizer,
-				const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-				FeatureClass featureClass_,
-				const FeatureOptions& options_);
-
-		FeatureConfig( const FeatureConfig& o)
-			:m_name(o.m_name)
-			,m_tokenizer(o.m_tokenizer)
-			,m_normalizerlist(o.m_normalizerlist)
-			,m_featureClass(o.m_featureClass)
-			,m_options(o.m_options){}
-	
-		typedef utils::SharedPtr<NormalizerFunctionInstanceInterface> NormalizerReference;
-		typedef utils::SharedPtr<TokenizerFunctionInstanceInterface> TokenizerReference;
-
-		const std::string& name() const					{return m_name;}
-		const TokenizerReference& tokenizer() const			{return m_tokenizer;}
-		const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
-		FeatureClass featureClass() const				{return m_featureClass;}
-		FeatureOptions options() const					{return m_options;}
-
-	private:
-		std::string m_name;
-		TokenizerReference m_tokenizer;
-		std::vector<NormalizerReference> m_normalizerlist;
-		FeatureClass m_featureClass;
-		FeatureOptions m_options;
-	};
-
 	typedef utils::SharedPtr<AggregatorFunctionInstanceInterface> StatisticsReference;
 	class StatisticsConfig
 	{
@@ -175,7 +130,7 @@ private:
 class ParserContext
 {
 public:
-	ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config);
+	ParserContext( const std::vector<FeatureConfig>& config);
 	ParserContext( const ParserContext& o)
 		:m_featureContextAr(o.m_featureContextAr){}
 	~ParserContext(){}
@@ -186,7 +141,7 @@ public:
 		typedef std::vector<NormalizerFunctionContextReference> NormalizerFunctionContextArray;
 		typedef utils::SharedPtr<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
 
-		FeatureContext( const DocumentAnalyzer::FeatureConfig& config);
+		FeatureContext( const FeatureConfig& config);
 		FeatureContext( const FeatureContext& o)
 			:m_config(o.m_config)
 			,m_normalizerContextAr(o.m_normalizerContextAr)
@@ -194,7 +149,7 @@ public:
 
 		std::string normalize( const char* tok, std::size_t toksize);
 
-		const DocumentAnalyzer::FeatureConfig* m_config;
+		const FeatureConfig* m_config;
 		NormalizerFunctionContextArray m_normalizerContextAr;
 		TokenizerFunctionContextReference m_tokenizerContext;
 	};

@@ -31,18 +31,25 @@ public:
 		:m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
-	virtual void definePhraseType(
-			const std::string& phraseType,
-			const std::string& featureType,
+	virtual void addSearchIndexElement(
+			const std::string& termtype,
+			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual std::vector<analyzer::Term> analyzePhrase(
-			const std::string& phraseType,
-			const std::string& content) const;
+	virtual void addForwardIndexElement(
+			const std::string& termtype,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual std::vector<analyzer::TermArray> analyzePhraseBulk(
-			const std::vector<Phrase>& phraseBulk) const;
+	virtual void addMetaDataElement(
+			const std::string& metaname,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual QueryAnalyzerContextInterface* createContext() const;
 
 private:
 	class FeatureConfig

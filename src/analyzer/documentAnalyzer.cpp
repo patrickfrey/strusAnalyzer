@@ -41,7 +41,7 @@ DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const 
 }
 
 
-const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
+const FeatureConfig& DocumentAnalyzer::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_featurear.size())
 	{
@@ -51,34 +51,6 @@ const DocumentAnalyzer::FeatureConfig& DocumentAnalyzer::featureConfig( int feat
 }
 
 enum {MaxNofFeatures=(1<<24)-1, EndOfSubDocument=(1<<24), OfsSubDocument=(1<<24)+1, MaxNofSubDocuments=(1<<7)};
-
-DocumentAnalyzer::FeatureConfig::FeatureConfig(
-		const std::string& name_,
-		TokenizerFunctionInstanceInterface* tokenizer_,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
-		FeatureClass featureClass_,
-		const FeatureOptions& options_)
-	:m_name(utils::tolower(name_))
-	,m_featureClass(featureClass_)
-	,m_options(options_)
-{
-	if (tokenizer_->concatBeforeTokenize())
-	{
-		if (m_options.positionBind() != analyzer::BindContent)
-		{
-			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
-		}
-	}
-	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
-	m_normalizerlist.reserve( normalizers_.size());
-	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers_.begin(), ce = normalizers_.end();
-	for (; ci != ce; ++ci)
-	{
-		m_normalizerlist.push_back( *ci);
-	}
-	m_tokenizer.reset( tokenizer_);
-}
 
 static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
@@ -200,7 +172,7 @@ void DocumentAnalyzer::defineSubDocument(
 }
 
 
-ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureConfig& config)
+ParserContext::FeatureContext::FeatureContext( const FeatureConfig& config)
 	:m_config(&config)
 	,m_tokenizerContext(config.tokenizer()->createFunctionContext())
 {
@@ -208,7 +180,7 @@ ParserContext::FeatureContext::FeatureContext( const DocumentAnalyzer::FeatureCo
 	{
 		throw strus::runtime_error( _TXT("failed to create tokenizer context"));
 	}
-	std::vector<DocumentAnalyzer::FeatureConfig::NormalizerReference>::const_iterator
+	std::vector<FeatureConfig::NormalizerReference>::const_iterator
 		ni = config.normalizerlist().begin(),
 		ne = config.normalizerlist().end();
 
@@ -243,9 +215,9 @@ std::string ParserContext::FeatureContext::normalize( char const* tok, std::size
 	return rt;
 }
 
-ParserContext::ParserContext( const std::vector<DocumentAnalyzer::FeatureConfig>& config)
+ParserContext::ParserContext( const std::vector<FeatureConfig>& config)
 {
-	std::vector<DocumentAnalyzer::FeatureConfig>::const_iterator
+	std::vector<FeatureConfig>::const_iterator
 		ci = config.begin(), ce = config.end();
 	for (; ci != ce; ++ci)
 	{
@@ -464,7 +436,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 		tokens = feat.m_tokenizerContext->tokenize( segsrc, segsrcsize);
 	switch (feat.m_config->featureClass())
 	{
-		case DocumentAnalyzer::FeatMetaData:
+		case FeatMetaData:
 		{
 			if (!tokens.empty())
 			{
@@ -485,7 +457,7 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			}
 			break;
 		}
-		case DocumentAnalyzer::FeatAttribute:
+		case FeatAttribute:
 		{
 			std::vector<analyzer::Token>::const_iterator
 				ti = tokens.begin(), te = tokens.end();
@@ -500,12 +472,12 @@ void DocumentAnalyzerContext::processDocumentSegment( analyzer::Document& res, i
 			}
 			break;
 		}
-		case DocumentAnalyzer::FeatSearchIndexTerm:
+		case FeatSearchIndexTerm:
 		{
 			processContentTokens( m_searchTerms, feat, tokens, segsrc, rel_position, concatposmap);
 			break;
 		}
-		case DocumentAnalyzer::FeatForwardIndexTerm:
+		case FeatForwardIndexTerm:
 		{
 			processContentTokens( m_forwardTerms, feat, tokens, segsrc, rel_position, concatposmap);
 			break;
@@ -636,7 +608,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				}
 				else
 				{
-					const DocumentAnalyzer::FeatureConfig& feat = m_analyzer->featureConfig( featidx);
+					const FeatureConfig& feat = m_analyzer->featureConfig( featidx);
 					if (feat.tokenizer()->concatBeforeTokenize())
 					{
 						// concat chunks that need to be concatenated before tokenization:

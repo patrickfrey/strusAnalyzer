@@ -94,23 +94,23 @@ public:
 			const FeatureOptions& options=FeatureOptions())=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
-	/// \param[in] fieldname name of the field in the meta data table this feature is written to
+	/// \param[in] metaname name of the column in the meta data table this feature is written to
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
 	/// \remark The field in the meta data table must exist before this function is called
 	virtual void defineMetaData(
-			const std::string& fieldname,
+			const std::string& metaname,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
 	/// \brief Declare some collected statistics of the document to be put into the meta data table used for restrictions, weighting and summarization.
-	/// \param[in] fieldname name of the field in the meta data table this feature is written to
+	/// \param[in] metaname name of the column in the meta data table this feature is written to
 	/// \param[in] statfunc function (ownership passed to this) that decribes how the value to be inserted is calculated from a document
 	/// \remark The field in the meta data table must exist before this function is called
 	virtual void defineAggregatedMetaData(
-			const std::string& fieldname,
+			const std::string& metaname,
 			AggregatorFunctionInstanceInterface* statfunc)=0;
 
 	/// \brief Declare a feature to be defined as document attribute used for summarization (document title, document id, etc.)
@@ -144,7 +144,7 @@ public:
 
 	/// \brief Create the context used for analyzing multipart or very big documents
 	/// \param[in] dclass description of the content type and encoding to process
-	/// \return the analyzer context (ownership to caller)
+	/// \return the document analyzer context (with ownership)
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const=0;
 };
