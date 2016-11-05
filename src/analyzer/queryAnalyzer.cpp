@@ -176,12 +176,12 @@ std::vector<analyzer::Term>
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'QueryAnalyzer::analyzePhrase': %s"), *m_errorhnd, std::vector<analyzer::Term>());
 }
 
-std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
+std::vector<analyzer::TermArray> QueryAnalyzer::analyzePhraseBulk(
 		const std::vector<Phrase>& phraseBulk) const
 {
 	try
 	{
-		std::vector<analyzer::TermVector> rt;
+		std::vector<analyzer::TermArray> rt;
 		std::vector<Phrase>::const_iterator pi = phraseBulk.begin(), pe = phraseBulk.end();
 		for (; pi != pe; ++pi)
 		{
@@ -192,7 +192,7 @@ std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
 	catch (const std::bad_alloc& err)
 	{
 		m_errorhnd->report( _TXT("memory alloc error in '%s'"), "QueryAnalyzer::analyzePhraseBulk");
-		return std::vector<analyzer::TermVector>();
+		return std::vector<analyzer::TermArray>();
 	}
 }
 

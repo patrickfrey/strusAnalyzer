@@ -54,7 +54,7 @@ private:
 	unsigned int m_pos;
 };
 
-typedef std::vector<Term> TermVector;
+typedef std::vector<Term> TermArray;
 
 }}//namespace
 #endif

@@ -41,7 +41,7 @@ public:
 			const std::string& phraseType,
 			const std::string& content) const;
 
-	virtual std::vector<analyzer::TermVector> analyzePhraseBulk(
+	virtual std::vector<analyzer::TermArray> analyzePhraseBulk(
 			const std::vector<Phrase>& phraseBulk) const;
 
 private:
