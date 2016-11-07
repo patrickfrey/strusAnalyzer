@@ -297,10 +297,10 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 		switch (elem.type())
 		{
 			case analyzer::Query::Element::MetaData:
-				qry.pushMetaDataOperand( node.queryelement);
+				qry.pushMetaDataOperand( elem.idx());
 				break;
 			case analyzer::Query::Element::SearchIndexTerm:
-				qry.pushSearchIndexTermOperand( node.queryelement);
+				qry.pushSearchIndexTermOperand( elem.idx());
 				break;
 			default:
 				throw strus::runtime_error(_TXT("internal: illegal leaf element in query tree"));
