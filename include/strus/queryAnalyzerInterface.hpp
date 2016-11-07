@@ -39,18 +39,7 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
-	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
-	/// \param[in] termtype term type name of the feature
-	/// \param[in] fieldtype type of the field of this element in the query
-	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
-	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
-	virtual void addForwardIndexElement(
-			const std::string& termtype,
-			const std::string& fieldtype,
-			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
-
-	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
+	/// \brief Declare a feature to be searched in the meta data table
 	/// \param[in] metaname name of the column in the meta data table this feature is searched in
 	/// \param[in] fieldtype type of the field of this element in the query
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature

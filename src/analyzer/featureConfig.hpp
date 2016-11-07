@@ -12,6 +12,7 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/featureOptions.hpp"
 #include "private/utils.hpp"
 #include <vector>
 #include <string>
@@ -31,8 +32,6 @@ enum FeatureClass
 
 const char* featureClassName( FeatureClass i);
 
-typedef DocumentAnalyzerInterface::FeatureOptions FeatureOptions;
-
 class FeatureConfig
 {
 public:
@@ -40,7 +39,7 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			FeatureClass featureClass_,
-			const FeatureOptions& options_);
+			const analyzer::FeatureOptions& options_);
 
 	FeatureConfig( const FeatureConfig& o)
 		:m_name(o.m_name)
@@ -56,14 +55,14 @@ public:
 	const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 	FeatureClass featureClass() const				{return m_featureClass;}
-	FeatureOptions options() const					{return m_options;}
+	analyzer::FeatureOptions options() const			{return m_options;}
 
 private:
 	std::string m_name;
 	TokenizerReference m_tokenizer;
 	std::vector<NormalizerReference> m_normalizerlist;
 	FeatureClass m_featureClass;
-	FeatureOptions m_options;
+	analyzer::FeatureOptions m_options;
 };
 
 } //namespace

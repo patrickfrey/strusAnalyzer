@@ -5,9 +5,13 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # --------------------------------------
 set(source_files
 	featureConfig.cpp
+	featureConfigMap.cpp
+	featureContextMap.cpp
+	segmentProcessor.cpp
 	documentAnalyzer.cpp
-	libstrus_analyzer.cpp
+	documentAnalyzerContext.cpp
 	queryAnalyzer.cpp
+	queryAnalyzerContext.cpp
 )
 
 include_directories(  
@@ -27,7 +31,7 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_library( strus_analyzer SHARED ${source_files} )
+add_library( strus_analyzer SHARED  libstrus_analyzer.cpp  ${source_files} )
 target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strus_private_utils )
 set_target_properties(
     strus_analyzer

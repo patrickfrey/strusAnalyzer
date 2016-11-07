@@ -11,7 +11,7 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "private/internationalization.hpp"
-#include "private/inputStream.hpp"
+#include "strus/base/inputStream.hpp"
 #include "strus/analyzer/documentClass.hpp"
 
 #include <iostream>

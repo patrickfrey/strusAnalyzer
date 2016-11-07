@@ -74,6 +74,13 @@ public:
 		m_searchIndexTerms.push_back( Term( t, v, p));
 	}
 
+	/// \brief Define a list of search index terms of the document
+	/// \param[in] terms list of terms to add
+	void addSearchIndexTerms( const std::vector<Term>& terms)
+	{
+		m_searchIndexTerms.insert( m_searchIndexTerms.end(), terms.begin(), terms.end());
+	}
+
 	/// \brief Define a forward index term of the document
 	/// \param[in] t type name of the forward index term
 	/// \param[in] v value of the forward index term
@@ -81,6 +88,13 @@ public:
 	void addForwardIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
 		m_forwardIndexTerms.push_back( Term( t, v, p));
+	}
+
+	/// \brief Define a list of forward index terms of the document
+	/// \param[in] terms list of terms to add
+	void addForwardIndexTerms( const std::vector<Term>& terms)
+	{
+		m_forwardIndexTerms.insert( m_forwardIndexTerms.end(), terms.begin(), terms.end());
 	}
 
 	/// \brief Clear the document content

@@ -15,6 +15,7 @@
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/featureOptions.hpp"
 #include <vector>
 #include <string>
 
@@ -39,34 +40,6 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentAnalyzerInterface(){}
 
-	/// \class FeatureOptions
-	/// \brief Options to stear the creation of terms in the analyzer
-	class FeatureOptions
-	{
-	public:
-		/// \brief Default constructor
-		FeatureOptions()
-			:m_opt(0){}
-		/// \brief Copy constructor
-		FeatureOptions( const FeatureOptions& o)
-			:m_opt(o.m_opt){}
-		/// \brief Constructor
-		FeatureOptions( unsigned int opt_)
-			:m_opt(opt_){}
-
-		/// \brief Get the PositionBind value set
-		analyzer::PositionBind positionBind() const		{return (analyzer::PositionBind)(m_opt & 0x3);}
-
-		/// \brief Define the PositionBind value
-		void definePositionBind( analyzer::PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
-
-		/// \brief Get the options transacription as integer
-		unsigned int opt() const				{return m_opt;}
-
-	private:
-		unsigned int m_opt;
-	};
-
 	/// \brief Declare a feature to be put into the search index
 	/// \param[in] type type name of the feature
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
@@ -78,7 +51,7 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options=FeatureOptions())=0;
+			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
 	/// \param[in] type type name of the feature
@@ -91,7 +64,7 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			const FeatureOptions& options=FeatureOptions())=0;
+			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
 	/// \param[in] metaname name of the column in the meta data table this feature is written to

@@ -25,6 +25,7 @@
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/analyzer/positionBind.hpp"
+#include "strus/analyzer/featureOptions.hpp"
 #include <memory>
 #include <algorithm>
 #include <string>
@@ -125,7 +126,7 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 			}
 			normalizers.push_back( nmi.release());
 		}
-		strus::DocumentAnalyzerInterface::FeatureOptions opt;
+		strus::analyzer::FeatureOptions opt;
 		if (ci->posbind > 0)
 		{
 			opt.definePositionBind( strus::analyzer::BindSuccessor);

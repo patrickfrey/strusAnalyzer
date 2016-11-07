@@ -5,11 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Interface for the execution context of a document analyzer
-/// \file documentAnalyzerContextInterface.hpp
+/// \brief Interface for the execution context of a query analyzer
+/// \file queryAnalyzerContextInterface.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/document.hpp"
+#include "strus/analyzer/query.hpp"
 #include <vector>
 #include <string>
 
@@ -41,10 +41,11 @@ public:
 	/// \param[in] name of the group operator
 	/// \param[in] fieldnolist number of the fields to take as arguments
 	/// \param[in] groupBy how to group elements together
+	/// \param[in] groupSingle true, if this operator should also be applied on single elements, false, if the operator is not applied on single argument elements and the elements apear as they are
 	/// \note This method influences how a query is iterated on
-	virtual void groupElements( const std::string& name, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy)=0;
+	virtual void groupElements( const std::string& name, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
 
-	/// \brief Analyze the query feeded with putInput(const char*,std::size_t)
+	/// \brief Analyze the query feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
 	/// \return the query structure
 	virtual analyzer::Query analyze()=0;
 };
