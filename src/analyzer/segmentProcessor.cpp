@@ -173,7 +173,7 @@ analyzer::Document SegmentProcessor::fetchDocument( const analyzer::Document& pr
 	fillTerms( fwterms, m_forwardTerms, posmap, posofs);
 
 	rt.addSearchIndexTerms( seterms);
-	rt.addForwardIndexTerms( seterms);
+	rt.addForwardIndexTerms( fwterms);
 
 	std::vector<BindTerm>::const_iterator mi = m_metadataTerms.begin(), me = m_metadataTerms.end();
 	for (; mi != me; ++mi)
