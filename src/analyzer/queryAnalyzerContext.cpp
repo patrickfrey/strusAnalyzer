@@ -110,7 +110,7 @@ static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned 
 	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
 	for (; ai != ae; ++ai)
 	{
-		if (uniq.find( *ai) != uniq.end())
+		if (uniq.find( *ai) == uniq.end())
 		{
 			uniq.insert( *ai);
 			rt.push_back( *ai);
