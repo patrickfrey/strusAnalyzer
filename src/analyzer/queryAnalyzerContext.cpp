@@ -282,7 +282,7 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 	{
 		qry.pushOperator( node.groupname, node.nofChild);
 	}
-	else if (node.queryelement)
+	else
 	{
 		analyzer::Query::Element elem = qry.elements()[node.queryelement];
 		switch (elem.type())
@@ -296,10 +296,6 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 			default:
 				throw strus::runtime_error(_TXT("internal: illegal leaf element in query tree"));
 		}
-	}
-	else
-	{
-		throw strus::runtime_error(_TXT("internal: corrupt node in query"));
 	}
 }
 
