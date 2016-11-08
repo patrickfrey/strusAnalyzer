@@ -30,35 +30,35 @@ public:
 
 	virtual ~QueryAnalyzerContext(){}
 
-	virtual void putField( unsigned int fieldno, const std::string& fieldtype, const std::string& content);
+	virtual void putField( unsigned int fieldNo, const std::string& fieldType, const std::string& content);
 
-	virtual void groupElements( const std::string& name, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle);
+	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
 	virtual analyzer::Query analyze();
 
 public:
 	struct Field
 	{
-		unsigned int fieldno;
-		std::string fieldtype;
+		unsigned int fieldNo;
+		std::string fieldType;
 		std::string content;
 
-		Field( unsigned int fieldno_, const std::string& fieldtype_, const std::string& content_)
-			:fieldno(fieldno_), fieldtype(fieldtype_), content(content_) {}
+		Field( unsigned int fieldNo_, const std::string& fieldType_, const std::string& content_)
+			:fieldNo(fieldNo_), fieldType(fieldType_), content(content_) {}
 		Field( const Field& o)
-			:fieldno(o.fieldno), fieldtype(o.fieldtype), content(o.content) {}
+			:fieldNo(o.fieldNo), fieldType(o.fieldType), content(o.content) {}
 	};
 	struct Group
 	{
-		std::string name;
-		std::vector<unsigned int> fieldnoList;
+		unsigned int groupId;
 		GroupBy groupBy;
 		bool groupSingle;
+		std::vector<unsigned int> fieldNoList;
 
-		Group( const std::string& name_, const std::vector<unsigned int>& fieldnoList_, const GroupBy& groupBy_, bool groupSingle_)
-			:name(name_), fieldnoList(fieldnoList_), groupBy(groupBy_), groupSingle(groupSingle_) {}
+		Group( unsigned int groupId_, const std::vector<unsigned int>& fieldNoList_, const GroupBy& groupBy_, bool groupSingle_)
+			:groupId(groupId_), groupBy(groupBy_), groupSingle(groupSingle_), fieldNoList(fieldNoList_) {}
 		Group( const Group& o)
-			:name(o.name), fieldnoList(o.fieldnoList), groupBy(o.groupBy), groupSingle(o.groupSingle) {}
+			:groupId(o.groupId), groupBy(o.groupBy), groupSingle(o.groupSingle), fieldNoList(o.fieldNoList) {}
 	};
 
 private:

@@ -31,15 +31,12 @@ public:
 		:m_metadata(o.m_metadata)
 		,m_searchIndexTerms(o.m_searchIndexTerms)
 		,m_elements(o.m_elements)
-		,m_operatorNames(o.m_operatorNames)
 		,m_instructions(o.m_instructions){}
 
 	/// \brief Get a metadata element by index
 	const MetaData& metadata( std::size_t idx) const	{return m_metadata[ idx];}
 	/// \brief Get a search index term by index
 	const Term& searchIndexTerm( std::size_t idx) const	{return m_searchIndexTerms[ idx];}
-	/// \brief Get a operator name by index
-	const std::string& operatorName( std::size_t idx) const	{return m_operatorNames[ idx];}
 	/// \brief Test if query is empty
 	bool empty() const					{return m_searchIndexTerms.empty() && m_metadata.empty();}
 
@@ -56,7 +53,7 @@ public:
 
 		/// \brief Opcode identifier
 		OpCode opCode() const			{return m_opCode;}
-		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t),metadata(std::size_t) or operatorName(std::size_t)
+		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t),metadata(std::size_t) of the operatorId
 		unsigned int idx() const		{return m_idx;}
 		/// \brief Number of operands
 		unsigned int nofOperands() const	{return m_nofOperands;}
@@ -73,10 +70,10 @@ public:
 	public:
 		enum Type {MetaData,SearchIndexTerm};
 
-		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int fieldno_)
-			:m_type(type_),m_idx(idx_),m_position(position_),m_fieldno(fieldno_){}
+		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int fieldNo_)
+			:m_type(type_),m_idx(idx_),m_position(position_),m_fieldNo(fieldNo_){}
 		Element( const Element& o)
-			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_fieldno(o.m_fieldno){}
+			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_fieldNo(o.m_fieldNo){}
 
 		/// \brief Type identifier referencing the list this element belongs to
 		Type type() const			{return m_type;}
@@ -85,13 +82,13 @@ public:
 		/// \brief Query element ordinal position
 		unsigned int position() const		{return m_position;}
 		/// \brief Query field number
-		unsigned int fieldno() const		{return m_fieldno;}
+		unsigned int fieldNo() const		{return m_fieldNo;}
 
 	private:
 		Type m_type;
 		unsigned int m_idx;
 		unsigned int m_position;
-		unsigned int m_fieldno;
+		unsigned int m_fieldNo;
 	};
 
 	/// \brief Get the list of query meta data elements
@@ -104,25 +101,24 @@ public:
 
 	/* Add query elements (tokenized and normalized items) */
 	/// \brief Add a search index term to the query
-	void addSearchIndexTerm( unsigned int fieldno, const analyzer::Term& term)
+	void addSearchIndexTerm( unsigned int fieldNo, const analyzer::Term& term)
 	{
-		m_elements.push_back( Element( Element::SearchIndexTerm, m_searchIndexTerms.size(), term.pos(), fieldno));
+		m_elements.push_back( Element( Element::SearchIndexTerm, m_searchIndexTerms.size(), term.pos(), fieldNo));
 		m_searchIndexTerms.push_back( term);
 	}
 
 	/// \brief Add a meta data element to the query
-	void addMetaData( unsigned int fieldno, unsigned int position, const analyzer::MetaData& elem)
+	void addMetaData( unsigned int fieldNo, unsigned int position, const analyzer::MetaData& elem)
 	{
-		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), position, fieldno));
+		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), position, fieldNo));
 		m_metadata.push_back( elem);
 	}
 
 	/* Build query structure */
 	/// \brief Add an instruction
-	void pushOperator( const std::string& name, unsigned int nofOperands)
+	void pushOperator( unsigned int operatorId, unsigned int nofOperands)
 	{
-		m_instructions.push_back( Instruction( Instruction::Operator, m_operatorNames.size(), nofOperands));
-		m_operatorNames.push_back( name);
+		m_instructions.push_back( Instruction( Instruction::Operator, operatorId, nofOperands));
 	}
 
 	/// \brief Add a meta data operand
@@ -141,7 +137,6 @@ private:
 	std::vector<analyzer::MetaData> m_metadata;
 	std::vector<analyzer::Term> m_searchIndexTerms;
 	std::vector<Element> m_elements;
-	std::vector<std::string> m_operatorNames;
 	std::vector<Instruction> m_instructions;
 };
 

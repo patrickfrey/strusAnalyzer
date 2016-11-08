@@ -38,12 +38,12 @@ public:
 	};
 
 	/// \brief Group elements of the query together
-	/// \param[in] name of the group operator
+	/// \param[in] groupid identifier of the grouping operation
 	/// \param[in] fieldnolist number of the fields to take as arguments
 	/// \param[in] groupBy how to group elements together
 	/// \param[in] groupSingle true, if this operator should also be applied on single elements, false, if the operator is not applied on single argument elements and the elements apear as they are
 	/// \note This method influences how a query is iterated on
-	virtual void groupElements( const std::string& name, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
+	virtual void groupElements( unsigned int groupid, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
 
 	/// \brief Analyze the query feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
 	/// \return the query structure

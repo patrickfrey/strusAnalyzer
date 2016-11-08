@@ -25,33 +25,33 @@ QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, Erro
 	,m_errorhnd(errorhnd_)
 {}
 
-void QueryAnalyzerContext::putField( unsigned int fieldno, const std::string& fieldtype, const std::string& content)
+void QueryAnalyzerContext::putField( unsigned int fieldNo, const std::string& fieldType, const std::string& content)
 {
 	try
 	{
-		m_fields.push_back( Field( fieldno, fieldtype, content));
+		m_fields.push_back( Field( fieldNo, fieldType, content));
 	}
 	CATCH_ERROR_MAP( _TXT("error defining query field: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerContext::groupElements( const std::string& name, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)
+void QueryAnalyzerContext::groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle)
 {
 	try
 	{
-		m_groups.push_back( Group( name, fieldnoList, groupBy, groupSingle));
+		m_groups.push_back( Group( groupId, fieldNoList, groupBy, groupSingle));
 	}
 	CATCH_ERROR_MAP( _TXT("error grouping query fields: %s"), *m_errorhnd);
 }
 
 struct QueryTreeNode
 {
-	QueryTreeNode( const char* groupname_, unsigned int queryelement_, unsigned int position_, unsigned int nofChild_, unsigned int child_, unsigned int next_)
-		:groupname(groupname_),queryelement(queryelement_),position(position_),nofChild(nofChild_),child(child_),next(next_){}
+	QueryTreeNode( unsigned int groupId_, unsigned int queryElement_, unsigned int position_, unsigned int nofChild_, unsigned int child_, unsigned int next_)
+		:groupId(groupId_),queryElement(queryElement_),position(position_),nofChild(nofChild_),child(child_),next(next_){}
 	QueryTreeNode( const QueryTreeNode& o)
-		:groupname(o.groupname),queryelement(o.queryelement),position(o.position),nofChild(o.nofChild),child(o.child),next(o.next){}
+		:groupId(o.groupId),queryElement(o.queryElement),position(o.position),nofChild(o.nofChild),child(o.child),next(o.next){}
 
-	const char* groupname;
-	unsigned int queryelement;
+	unsigned int groupId;
+	unsigned int queryElement;
 	unsigned int position;
 	unsigned int nofChild;
 	unsigned int child;
@@ -69,9 +69,9 @@ struct QueryTree
 	std::vector<QueryTreeNode> nodear;
 };
 
-static void buildQueryTreeNode( std::vector<QueryTreeNode>& nodear, const std::string& groupname, unsigned int position, const std::vector<unsigned int>& children)
+static void buildQueryTreeNode( std::vector<QueryTreeNode>& nodear, unsigned int groupId, unsigned int position, const std::vector<unsigned int>& children)
 {
-	nodear.push_back( QueryTreeNode( groupname.c_str(), std::numeric_limits<unsigned int>::max(), position, children.size(), children.empty()?0:children[0], 0));
+	nodear.push_back( QueryTreeNode( groupId, std::numeric_limits<unsigned int>::max(), position, children.size(), children.empty()?0:children[0], 0));
 	std::vector<unsigned int>::const_iterator ci = children.begin(), ce = children.end();
 	for (; ci != ce; ++ci)
 	{
@@ -94,7 +94,7 @@ static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Que
 	std::vector<analyzer::Query::Element>::const_iterator ei = qry.elements().begin(), ee = qry.elements().end();
 	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
-		while (rt.size() < ei->fieldno())
+		while (rt.size() < ei->fieldNo())
 		{
 			rt.push_back( ElementRange( eidx, eidx));
 		}
@@ -142,7 +142,7 @@ static QueryTree buildQueryTree(
 		std::vector<unsigned int> args;
 		std::vector<ElementRootAssignment> elemAssignments;
 		std::vector<unsigned int>::const_iterator
-			fi = gi->fieldnoList.begin(), fe = gi->fieldnoList.end();
+			fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
 			ElementRange range = fieldElementRanges[ *fi];
@@ -184,7 +184,7 @@ static QueryTree buildQueryTree(
 				for (; mi != me; ++mi)
 				{
 					std::vector<unsigned int> uargs = reduceUnifiedNodes( mi->second);
-					if (uargs.size() > 1 || gi->groupSingle)
+					if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
 					{
 						std::vector<unsigned int>::const_iterator
 							ui = uargs.begin(), ue = uargs.end();
@@ -193,7 +193,7 @@ static QueryTree buildQueryTree(
 							nodeRootMap[ *ui] = rt.nodear.size();
 						}
 						unsigned int position = mi->first;
-						buildQueryTreeNode( rt.nodear, gi->name, position, uargs);
+						buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 					}
 				}
 				break;
@@ -202,7 +202,7 @@ static QueryTree buildQueryTree(
 			{
 				// Group all selected nodes into the same group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
-				if (uargs.size() > 1 || gi->groupSingle)
+				if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
 				{
 					std::vector<unsigned int>::const_iterator
 						ui = uargs.begin(), ue = uargs.end();
@@ -211,7 +211,7 @@ static QueryTree buildQueryTree(
 						nodeRootMap[ *ui] = rt.nodear.size();
 					}
 					unsigned int position = rt.nodear[ uargs[0]].position;
-					buildQueryTreeNode( rt.nodear, gi->name, position, uargs);
+					buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 				}
 				break;
 			}
@@ -258,7 +258,7 @@ static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const 
 	{
 		typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
 		std::pair<FieldTypeFeatureMap::const_iterator,FieldTypeFeatureMap::const_iterator>
-			range = analyzer->fieldTypeFeatureMap().equal_range( fi->fieldtype);
+			range = analyzer->fieldTypeFeatureMap().equal_range( fi->fieldType);
 		FieldTypeFeatureMap::const_iterator ti = range.first, te = range.second;
 		for (;ti != te; ++ti)
 		{
@@ -273,18 +273,18 @@ static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const 
 static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& queryTree, unsigned int nodeidx)
 {
 	const QueryTreeNode& node = queryTree.nodear[ nodeidx];
-	unsigned int chld = node.child;
-	for (; chld; chld = queryTree.nodear[ chld].next)
+	if (node.child)
 	{
-		buildQueryInstructions( qry, queryTree, chld);
-	}
-	if (node.groupname)
-	{
-		qry.pushOperator( node.groupname, node.nofChild);
+		unsigned int chld = node.child;
+		for (; chld; chld = queryTree.nodear[ chld].next)
+		{
+			buildQueryInstructions( qry, queryTree, chld);
+		}
+		qry.pushOperator( node.groupId, node.nofChild);
 	}
 	else
 	{
-		analyzer::Query::Element elem = qry.elements()[node.queryelement];
+		analyzer::Query::Element elem = qry.elements()[node.queryElement];
 		switch (elem.type())
 		{
 			case analyzer::Query::Element::MetaData:
