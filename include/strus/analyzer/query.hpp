@@ -40,6 +40,8 @@ public:
 	const Term& searchIndexTerm( std::size_t idx) const	{return m_searchIndexTerms[ idx];}
 	/// \brief Get a operator name by index
 	const std::string& operatorName( std::size_t idx) const	{return m_operatorNames[ idx];}
+	/// \brief Test if query is empty
+	bool empty() const					{return m_searchIndexTerms.empty() && m_metadata.empty();}
 
 	/// \brief Query instruction
 	class Instruction

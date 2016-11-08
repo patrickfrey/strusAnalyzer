@@ -61,11 +61,11 @@ struct QueryTreeNode
 struct QueryTree
 {
 	QueryTree()
-		:root(0),nodear(){}
+		:root(),nodear(){}
 	QueryTree( const QueryTree& o)
 		:root(o.root),nodear(o.nodear){}
 
-	unsigned int root;
+	std::vector<unsigned int> root;
 	std::vector<QueryTreeNode> nodear;
 };
 
@@ -226,7 +226,7 @@ static QueryTree buildQueryTree(
 			}
 		}
 	}
-	// Group all to one root element if not already unique:
+	// Evaluate the root elements:
 	std::vector<unsigned int> args;
 	unsigned int ei = 0, ee = qry.elements().size();
 	for (; ei != ee; ++ei)
@@ -246,16 +246,7 @@ static QueryTree buildQueryTree(
 			}
 		}
 	}
-	args = reduceUnifiedNodes( args);
-	if (args.size() > 1)
-	{
-		buildQueryTreeNode( rt.nodear, "", rt.nodear[ args[0]].position, args);
-	}
-	// Choose last element as query tree root:
-	if (!elementRootMap.empty())
-	{
-		rt.root = elementRootMap.rbegin()->second;
-	}
+	rt.root = reduceUnifiedNodes( args);
 	return rt;
 }
 
@@ -318,7 +309,11 @@ analyzer::Query QueryAnalyzerContext::analyze()
 	{
 		analyzer::Query rt = analyzeQueryFields( m_analyzer, m_fields);
 		QueryTree queryTree = buildQueryTree( m_groups, m_fields, rt);
-		buildQueryInstructions( rt, queryTree, queryTree.root);
+		std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
+		for (; ri != re; ++ri)
+		{
+			buildQueryInstructions( rt, queryTree, *ri);
+		}
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::Query());
