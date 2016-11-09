@@ -34,6 +34,7 @@ public:
 	enum GroupBy
 	{
 		GroupByPosition,	///< Elements with same position are grouped together
+		GroupEvery,		///< Every element gets its own group
 		GroupAll		///< All elements are grouped together
 	};
 

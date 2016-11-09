@@ -215,6 +215,21 @@ static QueryTree buildQueryTree(
 				}
 				break;
 			}
+			case QueryAnalyzerContextInterface::GroupEvery:
+			{
+				// Group every selected node into its own group:
+				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
+				std::vector<unsigned int>::const_iterator
+					ui = uargs.begin(), ue = uargs.end();
+				for (; ui != ue; ++ui)
+				{
+					nodeRootMap[ *ui] = rt.nodear.size();
+					unsigned int position = rt.nodear[ *ui].position;
+					std::vector<unsigned int> sargs;
+					sargs.push_back( *ui);
+					buildQueryTreeNode( rt.nodear, gi->groupId, position, sargs);
+				}
+			}
 		}
 		// Update map that assigns every element to its tree root node:
 		std::vector<ElementRootAssignment>::const_iterator mi = elemAssignments.begin(), me = elemAssignments.end();
