@@ -91,7 +91,7 @@ public:
 		unsigned int m_fieldNo;
 	};
 
-	/// \brief Get the list of query meta data elements
+	/// \brief Get the list of query elements
 	/// \return the list
 	const std::vector<Element>& elements() const			{return m_elements;}
 
@@ -114,7 +114,7 @@ public:
 		m_metadata.push_back( elem);
 	}
 
-	/* Build query structure */
+	/* Build query structure (list of instructions) */
 	/// \brief Add an instruction
 	void pushOperator( unsigned int operatorId, unsigned int nofOperands)
 	{

@@ -94,11 +94,11 @@ static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Que
 	std::vector<analyzer::Query::Element>::const_iterator ei = qry.elements().begin(), ee = qry.elements().end();
 	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
-		while (rt.size() < ei->fieldNo())
+		while (rt.size() <= ei->fieldNo())
 		{
 			rt.push_back( ElementRange( eidx, eidx));
 		}
-		rt.back().second = eidx;
+		rt.back().second = eidx+1;
 	}
 	return rt;
 }
@@ -288,13 +288,14 @@ static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const 
 static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& queryTree, unsigned int nodeidx)
 {
 	const QueryTreeNode& node = queryTree.nodear[ nodeidx];
-	if (node.child)
+	if (node.nofChild)
 	{
 		unsigned int chld = node.child;
-		for (; chld; chld = queryTree.nodear[ chld].next)
+		do
 		{
 			buildQueryInstructions( qry, queryTree, chld);
-		}
+			chld = queryTree.nodear[ chld].next;
+		} while (chld);
 		qry.pushOperator( node.groupId, node.nofChild);
 	}
 	else
@@ -319,11 +320,33 @@ analyzer::Query QueryAnalyzerContext::analyze()
 	try
 	{
 		analyzer::Query rt = analyzeQueryFields( m_analyzer, m_fields);
-		QueryTree queryTree = buildQueryTree( m_groups, m_fields, rt);
-		std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
-		for (; ri != re; ++ri)
+		if (m_groups.empty())
 		{
-			buildQueryInstructions( rt, queryTree, *ri);
+			// Groups are empty, so we just copy the elements into the instructions
+			// and avoid building the query tree for the same result:
+			std::vector<analyzer::Query::Element>::const_iterator
+				ei = rt.elements().begin(), ee = rt.elements().end();
+			for ( ;ei!=ee; ++ei)
+			{
+				switch (ei->type())
+				{
+					case analyzer::Query::Element::MetaData:
+						rt.pushMetaDataOperand( ei->idx());
+						break;
+					case analyzer::Query::Element::SearchIndexTerm:
+						rt.pushSearchIndexTermOperand( ei->idx());
+						break;
+				}
+			}
+		}
+		else
+		{
+			QueryTree queryTree = buildQueryTree( m_groups, m_fields, rt);
+			std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
+			for (; ri != re; ++ri)
+			{
+				buildQueryInstructions( rt, queryTree, *ri);
+			}
 		}
 		return rt;
 	}
