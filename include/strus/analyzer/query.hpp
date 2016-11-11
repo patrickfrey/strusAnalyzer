@@ -38,7 +38,7 @@ public:
 	/// \brief Get a search index term by index
 	const Term& searchIndexTerm( std::size_t idx) const	{return m_searchIndexTerms[ idx];}
 	/// \brief Test if query is empty
-	bool empty() const					{return m_searchIndexTerms.empty() && m_metadata.empty();}
+	bool empty() const					{return m_elements.empty();}
 
 	/// \brief Query instruction
 	class Instruction
@@ -52,11 +52,11 @@ public:
 			:m_opCode(o.m_opCode),m_idx(o.m_idx),m_nofOperands(o.m_nofOperands){}
 
 		/// \brief Opcode identifier
-		OpCode opCode() const			{return m_opCode;}
+		OpCode opCode() const				{return m_opCode;}
 		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t),metadata(std::size_t) of the operatorId
-		unsigned int idx() const		{return m_idx;}
+		unsigned int idx() const			{return m_idx;}
 		/// \brief Number of operands
-		unsigned int nofOperands() const	{return m_nofOperands;}
+		unsigned int nofOperands() const		{return m_nofOperands;}
 
 	private:
 		OpCode m_opCode;
@@ -76,13 +76,13 @@ public:
 			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_fieldNo(o.m_fieldNo){}
 
 		/// \brief Type identifier referencing the list this element belongs to
-		Type type() const			{return m_type;}
+		Type type() const				{return m_type;}
 		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t) or metadata(std::size_t)
-		unsigned int idx() const		{return m_idx;}
+		unsigned int idx() const			{return m_idx;}
 		/// \brief Query element ordinal position
-		unsigned int position() const		{return m_position;}
+		unsigned int position() const			{return m_position;}
 		/// \brief Query field number
-		unsigned int fieldNo() const		{return m_fieldNo;}
+		unsigned int fieldNo() const			{return m_fieldNo;}
 
 	private:
 		Type m_type;
@@ -93,11 +93,11 @@ public:
 
 	/// \brief Get the list of query elements
 	/// \return the list
-	const std::vector<Element>& elements() const			{return m_elements;}
+	const std::vector<Element>& elements() const		{return m_elements;}
 
 	/// \brief Get the list of query instructions
 	/// \return the list
-	const std::vector<Instruction>& instructions() const		{return m_instructions;}
+	const std::vector<Instruction>& instructions() const	{return m_instructions;}
 
 	/* Add query elements (tokenized and normalized items) */
 	/// \brief Add a search index term to the query

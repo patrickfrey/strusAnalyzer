@@ -34,7 +34,7 @@ public:
 
 	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
-	virtual analyzer::Query analyze();
+	virtual analyzer::Query analyze() const;
 
 public:
 	struct Field

@@ -315,7 +315,7 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 	}
 }
 
-analyzer::Query QueryAnalyzerContext::analyze()
+analyzer::Query QueryAnalyzerContext::analyze() const
 {
 	try
 	{
