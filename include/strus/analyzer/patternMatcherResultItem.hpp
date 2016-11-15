@@ -20,11 +20,11 @@ class PatternMatcherResultItem
 {
 public:
 	/// \brief Constructor
-	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, float weight_)
-		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_start_origpos(start_origpos_),m_end_origseg(end_origseg_),m_end_origpos(end_origpos_),m_weight(weight_){}
+	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint16_t start_origpos_, uint32_t end_origseg_, uint16_t end_origpos_, float weight_)
+		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_weight(weight_){}
 	/// \brief Copy constructor
 	PatternMatcherResultItem( const PatternMatcherResultItem& o)
-		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_start_origpos(o.m_start_origpos),m_end_origseg(o.m_end_origseg),m_end_origpos(o.m_end_origpos),m_weight(o.m_weight){}
+		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_weight(o.m_weight){}
 	/// \brief Destructor
 	~PatternMatcherResultItem(){}
 
@@ -46,9 +46,9 @@ public:
 private:
 	const char* m_name;
 	unsigned int m_ordpos;
-	uint16_t m_start_origseg;
+	uint32_t m_start_origseg;
+	uint32_t m_end_origseg;
 	uint16_t m_start_origpos;
-	uint16_t m_end_origseg;
 	uint16_t m_end_origpos;
 	float m_weight;
 };

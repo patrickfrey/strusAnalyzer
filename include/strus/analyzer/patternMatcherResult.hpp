@@ -24,11 +24,11 @@ public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
 	/// \brief Constructor
-	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint16_t start_origseg_, uint16_t start_origpos_, uint16_t end_origseg_, uint16_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
-		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_start_origpos(start_origpos_),m_end_origseg(end_origseg_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
+	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint16_t start_origpos_, uint32_t end_origseg_, uint16_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
+		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_start_origpos(o.m_start_origpos),m_end_origseg(o.m_end_origseg),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
+		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
 	/// \brief Destructor
 	~PatternMatcherResult(){}
 
@@ -50,9 +50,9 @@ public:
 private:
 	const char* m_name;
 	unsigned int m_ordpos;
-	uint16_t m_start_origseg;
+	uint32_t m_start_origseg;
+	uint32_t m_end_origseg;
 	uint16_t m_start_origpos;
-	uint16_t m_end_origseg;
 	uint16_t m_end_origpos;
 	std::vector<Item> m_itemlist;
 };
