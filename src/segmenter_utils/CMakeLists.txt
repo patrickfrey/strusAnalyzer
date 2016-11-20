@@ -14,7 +14,10 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 	"${strusbase_INCLUDE_DIRS}"
 )
+
 link_directories(
+	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
 )
 
 # -------------------------------------------
