@@ -26,6 +26,10 @@ namespace strus
 	{\
 		(errorBuffer).report( contextExplainText, err.what());\
 	}\
+	catch (const std::logic_error& err)\
+	{\
+		(errorBuffer).report( _TXT("logic error in strus analyzer: %s"), err.what());\
+	}\
 	catch (const std::exception& err)\
 	{\
 		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
@@ -38,6 +42,10 @@ namespace strus
 	catch (const std::runtime_error& err)\
 	{\
 		(errorBuffer).report( contextExplainText, arg, err.what());\
+	}\
+	catch (const std::logic_error& err)\
+	{\
+		(errorBuffer).report( _TXT("logic error in strus analyzer: %s"), err.what());\
 	}\
 	catch (const std::exception& err)\
 	{\
@@ -55,6 +63,11 @@ namespace strus
 		(errorBuffer).report( contextExplainText, err.what());\
 		return errorReturnValue;\
 	}\
+	catch (const std::logic_error& err)\
+	{\
+		(errorBuffer).report( _TXT("logic error in strus analyzer: %s"), err.what());\
+		return errorReturnValue;\
+	}\
 	catch (const std::exception& err)\
 	{\
 		(errorBuffer).report( _TXT("uncaught exception: %s"), err.what());\
@@ -69,6 +82,11 @@ namespace strus
 	catch (const std::runtime_error& err)\
 	{\
 		(errorBuffer).report( contextExplainText, arg, err.what());\
+		return errorReturnValue;\
+	}\
+	catch (const std::logic_error& err)\
+	{\
+		(errorBuffer).report( _TXT("logic error in strus analyzer: %s"), err.what());\
 		return errorReturnValue;\
 	}\
 	catch (const std::exception& err)\
