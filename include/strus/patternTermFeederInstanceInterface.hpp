@@ -48,10 +48,10 @@ public:
 			unsigned int lexemid,
 			const std::string& name) const=0;
 
-	/// \brief Map an analyzer document to
+	/// \brief Map an analyzer term list to a list of pattern matching lexems as input of pattern matching
 	/// \return list of pattern matching lexems
-	virtual std::vector<analyzer::PatternLexem> mapDocument(
-			const std::vector<analyzer::Document>& doc)=0;
+	virtual std::vector<analyzer::PatternLexem> mapTerms(
+			const std::vector<analyzer::Term>& termlist)=0;
 };
 
 } //namespace
