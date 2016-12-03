@@ -9,7 +9,9 @@
 /// \file "patternTermFeederInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/term.hpp"
 #include "strus/analyzer/patternLexem.hpp"
+#include "strus/analyzer/patternMatcherResult.hpp"
 #include <string>
 
 namespace strus
@@ -49,9 +51,16 @@ public:
 			const std::string& name) const=0;
 
 	/// \brief Map an analyzer term list to a list of pattern matching lexems as input of pattern matching
+	/// \param[in] termlist list of terms to convert
 	/// \return list of pattern matching lexems
 	virtual std::vector<analyzer::PatternLexem> mapTerms(
-			const std::vector<analyzer::Term>& termlist)=0;
+			const std::vector<analyzer::Term>& termlist) const=0;
+
+	/// \brief Map the result of pattern matching feeded by this to terms
+	/// \param[in] resultlist list of results to map
+	/// \return list of pattern matching terms
+	virtual std::vector<analyzer::Term> mapResults(
+			const std::vector<analyzer::PatternMatcherResult>& resultlist) const=0;
 };
 
 } //namespace
