@@ -6,7 +6,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 /// \brief Library with some convenient functions to create analyzer objects
-/// \file "analyzer_objbuild.cpp"
+/// \file "libstrus_analyzer_objbuild.cpp"
 #include "strus/lib/analyzer_objbuild.hpp"
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"

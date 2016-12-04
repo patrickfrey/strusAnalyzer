@@ -20,4 +20,5 @@ add_subdirectory( aggregator_vsm )
 add_subdirectory( markup )
 add_subdirectory( textproc )
 add_subdirectory( analyzer )
+add_subdirectory( pattern )
 

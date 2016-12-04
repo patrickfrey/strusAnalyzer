@@ -24,7 +24,7 @@ public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
 	/// \brief Constructor
-	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint16_t start_origpos_, uint32_t end_origseg_, uint16_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
+	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
 		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
 	PatternMatcherResult( const PatternMatcherResult& o)
@@ -52,8 +52,8 @@ private:
 	unsigned int m_ordpos;
 	uint32_t m_start_origseg;
 	uint32_t m_end_origseg;
-	uint16_t m_start_origpos;
-	uint16_t m_end_origpos;
+	uint32_t m_start_origpos;
+	uint32_t m_end_origpos;
 	std::vector<Item> m_itemlist;
 };
 

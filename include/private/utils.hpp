@@ -11,6 +11,7 @@
 #include "strus/numericVariant.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace strus {
 namespace utils {
@@ -48,6 +49,16 @@ public:
 		:boost::scoped_ptr<X>(o){}
 	ScopedPtr()
 		:boost::scoped_ptr<X>(){}
+};
+
+template<typename Key, typename Elem>
+class UnorderedMap
+	:public boost::unordered_map<Key,Elem>
+{
+public:
+	UnorderedMap(){}
+	UnorderedMap( const UnorderedMap& o)
+		:boost::unordered_map<Key,Elem>(){}
 };
 
 }} //namespace
