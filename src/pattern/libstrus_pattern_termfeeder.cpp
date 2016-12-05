@@ -94,7 +94,7 @@ public:
 		{
 			std::vector<analyzer::PatternLexem> rt;
 			std::vector<analyzer::Term>::const_iterator ti = termlist.begin(), te = termlist.end();
-			for (; ti != te; ++ti)
+			for (std::size_t tidx=0; ti != te; ++ti,++tidx)
 			{
 				std::map<std::string,unsigned int>::const_iterator pi = m_typeTable.find( ti->type());
 				if (pi != m_typeTable.end())
@@ -119,7 +119,7 @@ public:
 							itr = &m_syminfoar[ itr->next -1];
 						}
 					}
-					rt.push_back( analyzer::PatternLexem( elemid, ti->pos(), 0, ti->pos(), 1));
+					rt.push_back( analyzer::PatternLexem( elemid, ti->pos(), 0, tidx, 1));
 				}
 			}
 			return rt;
@@ -128,15 +128,42 @@ public:
 	}
 
 	virtual std::vector<analyzer::Term> mapResults(
-			const std::vector<analyzer::PatternMatcherResult>& resultlist) const
+			const std::string& resultFeatureType,
+			const std::vector<analyzer::PatternMatcherResult>& resultList,
+			const std::vector<analyzer::Term>& orig_termlist) const
 	{
 		try
 		{
 			std::vector<analyzer::Term> rt;
 			std::vector<analyzer::PatternMatcherResult>::const_iterator
-				ri = resultlist.begin(), re = resultlist.end();
+				ri = resultList.begin(), re = resultList.end();
 			for (; ri != re; ++ri)
 			{
+				if (!resultFeatureType.empty())
+				{
+					rt.push_back( analyzer::Term( resultFeatureType, ri->name(), ri->ordpos()));
+				}
+				std::vector<analyzer::PatternMatcherResultItem>::const_iterator
+					pi = ri->items().begin(), pe = ri->items().end();
+				for (; pi != pe; ++pi)
+				{
+					std::size_t ii = pi->start_origpos(), ie = pi->end_origpos();
+					if (ii+1 < ie)
+					{
+						std::string value;
+						value.append( orig_termlist[ ii].value());
+						for (++ii; ii < ie; ++ii)
+						{
+							value.push_back( ' ');
+							value.append( orig_termlist[ ii].value());
+						}
+						rt.push_back( analyzer::Term( pi->name(), value, pi->ordpos()));
+					}
+					else
+					{
+						rt.push_back( analyzer::Term( pi->name(), orig_termlist[ pi->start_origpos()].value(), pi->ordpos()));
+					}
+				}
 			}
 			return rt;
 		}
