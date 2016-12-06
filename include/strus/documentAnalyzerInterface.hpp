@@ -111,7 +111,7 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr)=0;
 
-	/// \brief Declare a pattern matcher on the document feaures after other document analysis
+	/// \brief Declare a pattern matcher on the document features after other document analysis
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
 	/// \param[in] feeder feeder that maps document analysis term to pattern lexems as input of the matcher (ownership passed to this) 
@@ -120,7 +120,7 @@ public:
 			PatternMatcherInstanceInterface* matcher,
 			PatternTermFeederInstanceInterface* feeder)=0;
 
-	/// \brief Declare a pattern matcher on the document feaures after other document analysis
+	/// \brief Declare a pattern matcher on the document features after other document analysis
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
 	/// \param[in] lexer lexer that tokenizes a document segment as input of pattern matching (ownership passed to this) 

@@ -48,6 +48,51 @@ void QueryAnalyzer::addMetaDataElement(
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
 
+void QueryAnalyzer::definePatternMatcherPostProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternTermFeederInstanceInterface* feeder)
+{
+	try
+	{
+	}
+	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::definePatternMatcherPreProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternLexerInstanceInterface* lexer,
+		const std::vector<std::string>& selectexpr)
+{
+	try
+	{
+	}
+	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::addSearchIndexFeatureFromPatternMatch(
+		const std::string& type,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+	}
+	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::defineMetaDataFromPatternMatch(
+		const std::string& metaname,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+	}
+	CATCH_ERROR_MAP( _TXT("error in define meta data from pattern match: %s"), *m_errorhnd);
+}
+
 QueryAnalyzerContextInterface* QueryAnalyzer::createContext() const
 {
 	try

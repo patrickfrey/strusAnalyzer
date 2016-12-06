@@ -43,6 +43,27 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder);
+
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& selectexpr);
+
+	virtual void addSearchIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineMetaDataFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
 	virtual QueryAnalyzerContextInterface* createContext() const;
 
 public:/*QueryAnalyzerContext*/

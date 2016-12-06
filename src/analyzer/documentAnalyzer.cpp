@@ -220,7 +220,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::analyze: %s"), *m_errorhnd, analyzer::Document());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyze: %s"), *m_errorhnd, analyzer::Document());
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyzer::DocumentClass& dclass) const
@@ -229,5 +229,5 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyze
 	{
 		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::createContext: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }
