@@ -48,6 +48,20 @@ public:
 	/// \param[in] pos_ position (word count index) of the term in the document
 	void setPos( unsigned int pos_)		{m_pos = pos_;}
 
+	bool operator < (const Term& o) const
+	{
+		if (m_pos == o.m_pos)
+		{
+			return (m_type == o.m_type)
+				? m_value < o.m_value
+				: m_type < o.m_type;
+		}
+		else
+		{
+			return m_pos < o.m_pos;
+		}
+	}
+
 private:
 	std::string m_type;
 	std::string m_value;

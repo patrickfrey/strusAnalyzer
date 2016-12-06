@@ -20,7 +20,7 @@ class PatternMatcherResultItem
 {
 public:
 	/// \brief Constructor
-	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint16_t start_origpos_, uint32_t end_origseg_, uint16_t end_origpos_, float weight_)
+	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, float weight_)
 		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_weight(weight_){}
 	/// \brief Copy constructor
 	PatternMatcherResultItem( const PatternMatcherResultItem& o)
@@ -48,8 +48,8 @@ private:
 	unsigned int m_ordpos;
 	uint32_t m_start_origseg;
 	uint32_t m_end_origseg;
-	uint16_t m_start_origpos;
-	uint16_t m_end_origpos;
+	uint32_t m_start_origpos;
+	uint32_t m_end_origpos;
 	float m_weight;
 };
 
