@@ -29,7 +29,7 @@ class PatternTermFeederInstance
 {
 public:
 	explicit PatternTermFeederInstance( ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_){}
+		:m_errorhnd(errorhnd_),m_typeTable(),m_symbolTable(errorhnd_){}
 
 	virtual ~PatternTermFeederInstance(){}
 
