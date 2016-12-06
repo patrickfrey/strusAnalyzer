@@ -10,6 +10,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
+#include "strus/base/symbolTable.hpp"
 #include "featureConfig.hpp"
 #include <vector>
 #include <string>
@@ -28,7 +29,8 @@ enum {
 class FeatureConfigMap
 {
 public:
-	FeatureConfigMap(){}
+	explicit FeatureConfigMap( ErrorBufferInterface* errorhnd_)
+		:m_ar(),m_featTypeSymbolTable(errorhnd_){}
 	~FeatureConfigMap(){}
 
 	unsigned int defineFeature(
@@ -46,6 +48,7 @@ public:
 
 private:
 	std::vector<FeatureConfig> m_ar;
+	SymbolTable m_featTypeSymbolTable;
 };
 
 }//namespace

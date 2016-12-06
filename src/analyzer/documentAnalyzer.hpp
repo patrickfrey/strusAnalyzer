@@ -75,6 +75,39 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
 
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder);
+
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& selectexpr);
+
+	virtual void addSearchIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options);
+
+	virtual void addForwardIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options);
+
+	virtual void defineMetaDataFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineAttributeFromPatternMatch(
+			const std::string& attribname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+	
 	virtual analyzer::Document analyze(
 			const std::string& content,
 			const analyzer::DocumentClass& dclass) const;

@@ -39,12 +39,13 @@ unsigned int FeatureConfigMap::defineFeature(
 {
 	try
 	{
+		const char* featType = m_featTypeSymbolTable.key( m_featTypeSymbolTable.getOrCreate( utils::tolower( name)));
 		if (m_ar.size()+1 >= MaxNofFeatures)
 		{
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( name, tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( featType, tokenizer, normalizers, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

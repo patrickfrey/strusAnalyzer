@@ -35,7 +35,7 @@ const char* featureClassName( FeatureClass i);
 class FeatureConfig
 {
 public:
-	FeatureConfig( const std::string& name_,
+	FeatureConfig( const char* name_,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			FeatureClass featureClass_,
@@ -51,14 +51,14 @@ public:
 	typedef utils::SharedPtr<NormalizerFunctionInstanceInterface> NormalizerReference;
 	typedef utils::SharedPtr<TokenizerFunctionInstanceInterface> TokenizerReference;
 
-	const std::string& name() const					{return m_name;}
+	const char* name() const					{return m_name;}
 	const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 	FeatureClass featureClass() const				{return m_featureClass;}
 	analyzer::FeatureOptions options() const			{return m_options;}
 
 private:
-	std::string m_name;
+	const char* m_name;
 	TokenizerReference m_tokenizer;
 	std::vector<NormalizerReference> m_normalizerlist;
 	FeatureClass m_featureClass;

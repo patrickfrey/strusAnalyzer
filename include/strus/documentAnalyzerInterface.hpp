@@ -31,7 +31,12 @@ class NormalizerFunctionInstanceInterface;
 class TokenizerFunctionInstanceInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInstanceInterface;
-
+/// \brief Forward declaration
+class PatternTermFeederInstanceInterface;
+/// \brief Forward declaration
+class PatternMatcherInstanceInterface;
+/// \brief Forward declaration
+class PatternLexerInstanceInterface;
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
 class DocumentAnalyzerInterface
@@ -105,6 +110,68 @@ public:
 	virtual void defineSubDocument(
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr)=0;
+
+	/// \brief Declare a pattern matcher on the document feaures after other document analysis
+	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
+	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
+	/// \param[in] feeder feeder that maps document analysis term to pattern lexems as input of the matcher (ownership passed to this) 
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder)=0;
+
+	/// \brief Declare a pattern matcher on the document feaures after other document analysis
+	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
+	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
+	/// \param[in] lexer lexer that tokenizes a document segment as input of pattern matching (ownership passed to this) 
+	/// \param[in] selectexpr list of selection expressions as input of the pattern matching
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& selectexpr)=0;
+
+	/// \brief Declare a feature to be put into the search index derived from a pattern matcher result item
+	/// \param[in] type type name of the feature
+	/// \param[in] patternTypeName type name of the pattern match result or result item
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
+	virtual void addSearchIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options)=0;
+
+	/// \brief Declare a feature to be put into the forward index derived from a pattern matcher result item
+	/// \param[in] type type name of the feature
+	/// \param[in] patternTypeName type name of the pattern match result or result item
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
+	virtual void addForwardIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options)=0;
+
+	/// \brief Declare a feature to be put into the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item
+	/// \param[in] metaname name of the column in the meta data table this feature is written to
+	/// \param[in] patternTypeName type name of the pattern match result or result item
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \remark The field in the meta data table must exist before this function is called
+	virtual void defineMetaDataFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
+
+	/// \brief Declare a feature to be defined as document attribute used for summarization, derived from a pattern matcher result item
+	/// \param[in] attribname name of the document attribute assigned
+	/// \param[in] patternTypeName type name of the pattern match result or result item
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \remark The field in the meta data table must exist before this function is called
+	virtual void defineAttributeFromPatternMatch(
+			const std::string& attribname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
