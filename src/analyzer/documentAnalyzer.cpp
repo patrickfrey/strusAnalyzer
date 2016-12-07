@@ -31,7 +31,7 @@ using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance( opts))
-	,m_featureConfigMap()
+	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
 	,m_errorhnd(errorhnd)
@@ -130,7 +130,7 @@ void DocumentAnalyzer::defineSubDocument(
 		{
 			throw strus::runtime_error( _TXT("too many sub documents defined"));
 		}
-		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
+		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
 }
@@ -142,6 +142,7 @@ void DocumentAnalyzer::definePatternMatcherPostProc(
 {
 	try
 	{
+		m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }

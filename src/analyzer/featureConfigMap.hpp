@@ -7,10 +7,6 @@
  */
 #ifndef _STRUS_DOCUMENT_ANALYZER_FEATURE_CONFIG_MAP_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_FEATURE_CONFIG_MAP_HPP_INCLUDED
-#include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/aggregatorFunctionInstanceInterface.hpp"
-#include "strus/base/symbolTable.hpp"
 #include "featureConfig.hpp"
 #include <vector>
 #include <string>
@@ -19,10 +15,21 @@ namespace strus
 {
 
 enum {
-	MaxNofFeatures=(1<<24)-1,
-	EndOfSubDocument=(1<<24),
-	OfsSubDocument=(1<<24)+1,
-	MaxNofSubDocuments=(1<<7)
+	MaxSegmenterId=(1<<30),
+	SubDocumentEnd=(1<<24),
+	OfsSubDocument=SubDocumentEnd+1,
+	MaxNofSubDocuments=(MaxSegmenterId - OfsSubDocument - 1),
+
+	OfsPreProcPatternMatchSegment=(1<<22),
+	MaxNofPreProcPatternMatchSegments=(SubDocumentEnd-OfsPreProcPatternMatchSegment-1),
+
+	OfsPostProcPatternMatchSegment=(1<<20),
+	MaxNofPostProcPatternMatchSegments=(OfsPreProcPatternMatchSegment-OfsPostProcPatternMatchSegment-1),
+
+	OfsPatternMatchSegment=OfsPostProcPatternMatchSegment,
+
+	EndOfFeatures=OfsPatternMatchSegment-1,
+	MaxNofFeatures=EndOfFeatures-1
 };
 
 /// \brief Set of configured features

@@ -14,6 +14,7 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "featureConfigMap.hpp"
+#include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -138,14 +139,18 @@ public:/*DocumentAnalyzerContext*/
 		StatisticsReference m_statfunc;
 	};
 
-	const FeatureConfigMap& featureConfigMap() const			{return m_featureConfigMap;}
-	const SegmenterInstanceInterface* segmenter() const			{return m_segmenter;}
-	const std::vector<std::string>& subdoctypes() const			{return m_subdoctypear;}
-	const std::vector<StatisticsConfig>& statisticsConfigs() const		{return m_statistics;}
+	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
+	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
+	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
+	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
+	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
+	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
 
 private:
 	SegmenterInstanceInterface* m_segmenter;
 	FeatureConfigMap m_featureConfigMap;
+	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
 	ErrorBufferInterface* m_errorhnd;

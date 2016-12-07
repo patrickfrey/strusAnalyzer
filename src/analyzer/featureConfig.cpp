@@ -36,14 +36,24 @@ FeatureConfig::FeatureConfig(
 			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
 		}
 	}
-	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
-	m_normalizerlist.reserve( normalizers_.size());
-	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers_.begin(), ce = normalizers_.end();
-	for (; ci != ce; ++ci)
+	try
 	{
-		m_normalizerlist.push_back( *ci);
+		m_normalizerlist.reserve( normalizers_.size());
+		std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+			ci = normalizers_.begin(), ce = normalizers_.end();
+		for (; ci != ce; ++ci)
+		{
+			m_normalizerlist.push_back( *ci);
+		}
+		m_tokenizer.reset( tokenizer_);
 	}
-	m_tokenizer.reset( tokenizer_);
+	catch (const std::string& bad_alloc)
+	{
+		std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
+			ci = m_normalizers.begin(), ce = m_normalizers.end();
+		for (; ci != ce; ++ci) ci->release();
+		m_tokenizer.release();
+		throw std::bad_alloc();
+	}
 }
 

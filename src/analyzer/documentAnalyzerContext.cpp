@@ -94,10 +94,10 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "fetch document segment '" << featidx << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
-				if (featidx >= EndOfSubDocument)
+				if (featidx >= SubDocumentEnd)
 				{
 					//... start or end of document marker
-					if (featidx == EndOfSubDocument)
+					if (featidx == SubDocumentEnd)
 					{
 						//... end of sub document -> out of loop and return document
 						have_document = true;
@@ -114,6 +114,17 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						m_subdocstack.push_back( doc);
 						doc.setSubDocumentTypeName( m_analyzer->subdoctypes()[ featidx-OfsSubDocument]);
 						m_start_position = m_curr_position;
+					}
+				}
+				else if (featidx >= OfsPatternMatchSegment)
+				{
+					if (featidx >= OfsPreProcPatternMatchSegment)
+					{
+						!!!! PRE PROCESS PATTERN MATCHING
+					}
+					else //featidx >= OfsPostProcPatternMatchSegment
+					{
+						// ... later
 					}
 				}
 				else
