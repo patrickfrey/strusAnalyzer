@@ -14,6 +14,7 @@ include_directories(
 )
 
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 )
 
 
@@ -21,7 +22,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_pattern_termfeeder SHARED  libstrus_pattern_termfeeder.cpp  ${source_files} )
-target_link_libraries( strus_pattern_termfeeder  strus_private_utils )
+target_link_libraries( strus_pattern_termfeeder  strus_private_utils strus_base )
 set_target_properties(
     strus_pattern_termfeeder
     PROPERTIES
