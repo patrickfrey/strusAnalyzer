@@ -32,20 +32,19 @@ static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterfa
 
 unsigned int FeatureConfigMap::defineFeature(
 		FeatureClass featureClass,
-		const std::string& name,
+		const std::string& featType,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		const char* featType = m_featTypeSymbolTable.key( m_featTypeSymbolTable.getOrCreate( utils::tolower( name)));
 		if (m_ar.size()+1 >= MaxNofFeatures)
 		{
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( featType, tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( utils::tolower( featType), tokenizer, normalizers, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)
@@ -61,5 +60,4 @@ unsigned int FeatureConfigMap::defineFeature(
 		throw strus::runtime_error( _TXT("error defining feature: '%s'"), err.what());
 	}
 }
-
 

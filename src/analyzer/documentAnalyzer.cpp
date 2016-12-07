@@ -31,7 +31,7 @@ using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance( opts))
-	,m_featureConfigMap(errorhnd)
+	,m_featureConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
 	,m_errorhnd(errorhnd)

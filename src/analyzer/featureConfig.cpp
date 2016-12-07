@@ -20,7 +20,7 @@ const char* strus::featureClassName( FeatureClass i)
 }
 
 FeatureConfig::FeatureConfig(
-		const char* name_,
+		const std::string& name_,
 		TokenizerFunctionInstanceInterface* tokenizer_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
 		FeatureClass featureClass_,

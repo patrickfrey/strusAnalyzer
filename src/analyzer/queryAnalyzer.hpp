@@ -28,7 +28,7 @@ class QueryAnalyzer
 {
 public:
 	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
-		:m_featureConfigMap(errorhnd),m_fieldTypeFeatureMap(),m_errorhnd(errorhnd){}
+		:m_featureConfigMap(),m_fieldTypeFeatureMap(),m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
 	virtual void addSearchIndexElement(

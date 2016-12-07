@@ -29,8 +29,8 @@ enum {
 class FeatureConfigMap
 {
 public:
-	explicit FeatureConfigMap( ErrorBufferInterface* errorhnd_)
-		:m_ar(),m_featTypeSymbolTable(errorhnd_){}
+	FeatureConfigMap()
+		:m_ar(){}
 	~FeatureConfigMap(){}
 
 	unsigned int defineFeature(
@@ -48,7 +48,6 @@ public:
 
 private:
 	std::vector<FeatureConfig> m_ar;
-	SymbolTable m_featTypeSymbolTable;
 };
 
 }//namespace
