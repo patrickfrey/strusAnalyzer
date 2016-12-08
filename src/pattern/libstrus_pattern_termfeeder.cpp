@@ -39,9 +39,11 @@ public:
 	{
 		try
 		{
-			m_typeTable[ type] = id;
+			if (!id) throw strus::runtime_error(_TXT("used 0 as lexem identifier"));
+
+			m_typeTable[ utils::tolower(type)] = id;
 		}
-		CATCH_ERROR_MAP( _TXT("cannot define term feeded lexem: %s"), *m_errorhnd);
+		CATCH_ERROR_MAP( _TXT("cannot define term feeder lexem: %s"), *m_errorhnd);
 	}
 
 	virtual void defineSymbol(
@@ -51,6 +53,8 @@ public:
 	{
 		try
 		{
+			if (!id) throw strus::runtime_error(_TXT("used 0 as symbol identifier"));
+
 			std::size_t idx = m_symbolTable.getOrCreate( name);
 			if (idx == 0) throw strus::runtime_error( m_errorhnd->fetchError());
 			if (m_symbolTable.isNew(idx))
@@ -66,9 +70,17 @@ public:
 				m_syminfotab[ idx-1] = m_syminfoar.size();
 			}
 		}
-		CATCH_ERROR_MAP( _TXT("cannot define term feeded lexem: %s"), *m_errorhnd);
+		CATCH_ERROR_MAP( _TXT("cannot define term feeder symbol: %s"), *m_errorhnd);
 	}
 
+	virtual unsigned int getLexem(
+			const std::string& type) const
+	{
+		TypeTable::const_iterator ti = m_typeTable.find( type);
+		if (ti == m_typeTable.end()) return 0;
+		return ti->second;
+	}
+	
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const
@@ -88,92 +100,12 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to retrieve lexem symbol: %s"), *m_errorhnd, 0);
 	}
 
-	virtual std::vector<analyzer::PatternLexem> mapTerms(
-			const std::vector<analyzer::Term>& termlist) const
-	{
-		try
-		{
-			std::vector<analyzer::PatternLexem> rt;
-			std::vector<analyzer::Term>::const_iterator ti = termlist.begin(), te = termlist.end();
-			for (std::size_t tidx=0; ti != te; ++ti,++tidx)
-			{
-				std::map<std::string,unsigned int>::const_iterator pi = m_typeTable.find( ti->type());
-				if (pi != m_typeTable.end())
-				{
-					unsigned int elemid = pi->second;
-	
-					std::size_t symidx = m_symbolTable.get( ti->value());
-					if (symidx)
-					{
-						const SymbolInfo* itr = &m_syminfoar[ symidx -1];
-						for (;;)
-						{
-							if (itr->lexemid == elemid)
-							{
-								elemid = itr->id;
-								break;
-							}
-							if (itr->next == 0)
-							{
-								break;
-							}
-							itr = &m_syminfoar[ itr->next -1];
-						}
-					}
-					rt.push_back( analyzer::PatternLexem( elemid, ti->pos(), 0, tidx, 1));
-				}
-			}
-			return rt;
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("failed to map analyzer term list to pattern matching lexems: %s"), *m_errorhnd, std::vector<analyzer::PatternLexem>());
-	}
-
-	virtual std::vector<analyzer::Term> mapResults(
-			const std::string& resultFeatureType,
-			const std::vector<analyzer::PatternMatcherResult>& resultList,
-			const std::vector<analyzer::Term>& orig_termlist) const
-	{
-		try
-		{
-			std::vector<analyzer::Term> rt;
-			std::vector<analyzer::PatternMatcherResult>::const_iterator
-				ri = resultList.begin(), re = resultList.end();
-			for (; ri != re; ++ri)
-			{
-				if (!resultFeatureType.empty())
-				{
-					rt.push_back( analyzer::Term( resultFeatureType, ri->name(), ri->ordpos()));
-				}
-				std::vector<analyzer::PatternMatcherResultItem>::const_iterator
-					pi = ri->items().begin(), pe = ri->items().end();
-				for (; pi != pe; ++pi)
-				{
-					std::size_t ii = pi->start_origpos(), ie = pi->end_origpos();
-					if (ii+1 < ie)
-					{
-						std::string value;
-						value.append( orig_termlist[ ii].value());
-						for (++ii; ii < ie; ++ii)
-						{
-							value.push_back( ' ');
-							value.append( orig_termlist[ ii].value());
-						}
-						rt.push_back( analyzer::Term( pi->name(), value, pi->ordpos()));
-					}
-					else
-					{
-						rt.push_back( analyzer::Term( pi->name(), orig_termlist[ pi->start_origpos()].value(), pi->ordpos()));
-					}
-				}
-			}
-			return rt;
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("failed to pattern matching results to analyzer term list: %s"), *m_errorhnd, std::vector<analyzer::Term>());
-	}
+private:
+	typedef std::map<std::string,unsigned int> TypeTable;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
-	std::map<std::string,unsigned int> m_typeTable;
+	TypeTable m_typeTable;
 	SymbolTable m_symbolTable;
 
 	struct SymbolInfo

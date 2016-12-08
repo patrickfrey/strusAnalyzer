@@ -24,17 +24,16 @@ const PreProcPatternMatchConfig& PreProcPatternMatchConfigMap::config( int idx) 
 unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
-		PatternLexerInstanceInterface* lexer,
-		const analyzer::FeatureOptions& options)
+		PatternLexerInstanceInterface* lexer)
 {
 	try
 	{
-		if (m_ar.size()+1 >= MaxNofPreProcPatternMatchSegments)
+		if (m_ar.size()+1 >= MaxNofPatternMatchSegments)
 		{
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PreProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, lexer, options));
+		m_ar.push_back( PreProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, lexer));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)
@@ -69,7 +68,7 @@ unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 {
 	try
 	{
-		if (m_ar.size()+1 >= MaxNofPostProcPatternMatchSegments)
+		if (m_ar.size()+1 >= MaxNofPatternMatchSegments)
 		{
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}

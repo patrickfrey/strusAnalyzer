@@ -20,13 +20,8 @@ enum {
 	OfsSubDocument=SubDocumentEnd+1,
 	MaxNofSubDocuments=(MaxSegmenterId - OfsSubDocument - 1),
 
-	OfsPreProcPatternMatchSegment=(1<<22),
-	MaxNofPreProcPatternMatchSegments=(SubDocumentEnd-OfsPreProcPatternMatchSegment-1),
-
-	OfsPostProcPatternMatchSegment=(1<<20),
-	MaxNofPostProcPatternMatchSegments=(OfsPreProcPatternMatchSegment-OfsPostProcPatternMatchSegment-1),
-
-	OfsPatternMatchSegment=OfsPostProcPatternMatchSegment,
+	OfsPatternMatchSegment=(1<<20),
+	MaxNofPatternMatchSegments=(SubDocumentEnd-OfsPatternMatchSegment-1),
 
 	EndOfFeatures=OfsPatternMatchSegment-1,
 	MaxNofFeatures=EndOfFeatures-1

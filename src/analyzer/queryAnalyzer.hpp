@@ -12,6 +12,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
 #include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
@@ -29,7 +30,8 @@ class QueryAnalyzer
 {
 public:
 	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
-		:m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap()
+		:m_featureConfigMap()
+		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 		,m_fieldTypeFeatureMap(),m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
@@ -54,7 +56,7 @@ public:
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
 			PatternLexerInstanceInterface* lexer,
-			const std::vector<std::string>& selectexpr);
+			const std::vector<std::string>& fieldTypeNames);
 
 	virtual void addSearchIndexFeatureFromPatternMatch(
 			const std::string& type,
@@ -69,6 +71,7 @@ public:
 	virtual QueryAnalyzerContextInterface* createContext() const;
 
 public:/*QueryAnalyzerContext*/
+	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
 
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
@@ -80,7 +83,9 @@ private:
 	FeatureConfigMap m_featureConfigMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
 	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
+	FieldTypeFeatureMap m_fieldTypePatternMap;
 	ErrorBufferInterface* m_errorhnd;
 };
 

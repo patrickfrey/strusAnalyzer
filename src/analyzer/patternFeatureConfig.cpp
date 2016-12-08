@@ -5,6 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+#include "patternFeatureConfig.hpp"
 #include "featureConfig.hpp"
 #include "private/internationalization.hpp"
 #include "private/utils.hpp"
@@ -13,46 +14,30 @@
 
 using namespace strus;
 
-const char* strus::featureClassName( FeatureClass i)
-{
-	static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm"};
-	return  ar[i];
-}
-
-FeatureConfig::FeatureConfig(
+PatternFeatureConfig::PatternFeatureConfig(
 		const std::string& name_,
-		TokenizerFunctionInstanceInterface* tokenizer_,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	if (tokenizer_->concatBeforeTokenize())
-	{
-		if (m_options.positionBind() != analyzer::BindContent)
-		{
-			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
-		}
-	}
 	try
 	{
-		m_normalizerlist.reserve( normalizers_.size());
+		m_normalizerlist.reserve( normalizers.size());
 		std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-			ci = normalizers_.begin(), ce = normalizers_.end();
+			ci = normalizers.begin(), ce = normalizers.end();
 		for (; ci != ce; ++ci)
 		{
 			m_normalizerlist.push_back( *ci);
 		}
-		m_tokenizer.reset( tokenizer_);
 	}
 	catch (const std::string& bad_alloc)
 	{
 		std::vector<NormalizerReference>::iterator
 			ci = m_normalizerlist.begin(), ce = m_normalizerlist.end();
 		for (; ci != ce; ++ci) ci->release();
-		m_tokenizer.release();
 		throw std::bad_alloc();
 	}
 }

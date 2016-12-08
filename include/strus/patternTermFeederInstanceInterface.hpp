@@ -27,6 +27,7 @@ public:
 	/// \brief Define a term type
 	/// \param[in] id identifier given to the lexem assiciated with this term type
 	/// \param[in] type term type string
+	/// \remark Because 0 is reserved for undefined values, the id parameter must not be 0
 	/// \remark For performance it may be significantly better to define rules without resultIndex selection.
 	virtual void defineLexem(
 			unsigned int id,
@@ -41,7 +42,13 @@ public:
 			unsigned int lexemid,
 			const std::string& name)=0;
 
-	/// \brief Get the value of a defined symbol
+	/// \brief Get the value of a defined lexem by type
+	/// \param[in] type type name of the lexem
+	/// \return the lexem identifier or 0, if not defined
+	virtual unsigned int getLexem(
+			const std::string& type) const=0;
+
+	/// \brief Get the identifier of a defined symbol
 	/// \param[in] lexemid identifier of the basic lexem this symbol belongs to
 	/// \param[in] name name (value string) of the symbol
 	/// \return the symbol identifier or 0, if not defined
@@ -49,22 +56,6 @@ public:
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const=0;
-
-	/// \brief Map an analyzer term list to a list of pattern matching lexems as input of pattern matching
-	/// \param[in] termList list of terms to convert (in ascending order)
-	/// \return list of pattern matching lexems
-	virtual std::vector<analyzer::PatternLexem> mapTerms(
-			const std::vector<analyzer::Term>& termList) const=0;
-
-	/// \brief Map the result of pattern matching feeded by this to terms
-	/// \param[in] resultFeatureType feature type name to use for the result (empty: use only items of results)
-	/// \param[in] resultList list of results to map
-	/// \param[in] orig_termList original list of terms
-	/// \return list of pattern matching terms
-	virtual std::vector<analyzer::Term> mapResults(
-			const std::string& resultFeatureType,
-			const std::vector<analyzer::PatternMatcherResult>& resultList,
-			const std::vector<analyzer::Term>& orig_termlist) const=0;
 };
 
 } //namespace

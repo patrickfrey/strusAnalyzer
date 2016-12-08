@@ -31,7 +31,7 @@ using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_segmenter(segmenter_->createInstance( opts))
-	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap()
+	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
 	,m_errorhnd(errorhnd)
@@ -142,7 +142,7 @@ void DocumentAnalyzer::definePatternMatcherPostProc(
 {
 	try
 	{
-		m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
@@ -155,6 +155,14 @@ void DocumentAnalyzer::definePatternMatcherPreProc(
 {
 	try
 	{
+		unsigned int idx = OfsPatternMatchSegment
+				+ m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer);
+		std::vector<std::string>::const_iterator
+			si = selectexpr.begin(), se = selectexpr.end();
+		for (; si != se; ++si)
+		{
+			m_segmenter->defineSelectorExpression( idx, *si);
+		}
 	}
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
@@ -167,6 +175,7 @@ void DocumentAnalyzer::addSearchIndexFeatureFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, options);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining search index feature from pattern matching result: %s"), *m_errorhnd);
 }
@@ -179,6 +188,7 @@ void DocumentAnalyzer::addForwardIndexFeatureFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatForwardIndexTerm, type, patternTypeName, normalizers, options);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining forward index feature from pattern matching result: %s"), *m_errorhnd);
 }
@@ -190,6 +200,7 @@ void DocumentAnalyzer::defineMetaDataFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error defining document meta data from pattern matching result: %s"), *m_errorhnd);
 }
@@ -201,6 +212,7 @@ void DocumentAnalyzer::defineAttributeFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatAttribute, attribname, patternTypeName, normalizers, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error defining document attribute from pattern matching result: %s"), *m_errorhnd);
 }

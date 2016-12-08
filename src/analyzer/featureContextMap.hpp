@@ -9,8 +9,8 @@
 #define _STRUS_ANALYZER_FEATURE_CONTEXT_MAP_HPP_INCLUDED
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/reference.hpp"
 #include "featureConfigMap.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <stdexcept>
@@ -19,9 +19,9 @@ namespace strus {
 
 struct FeatureContext
 {
-	typedef utils::SharedPtr<NormalizerFunctionContextInterface> NormalizerFunctionContextReference;
+	typedef Reference<NormalizerFunctionContextInterface> NormalizerFunctionContextReference;
 	typedef std::vector<NormalizerFunctionContextReference> NormalizerFunctionContextArray;
-	typedef utils::SharedPtr<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
+	typedef Reference<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
 
 	FeatureContext( const FeatureConfig& config);
 	FeatureContext( const FeatureContext& o)

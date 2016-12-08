@@ -29,7 +29,7 @@ void QueryAnalyzer::addSearchIndexElement(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
-		m_fieldTypeFeatureMap.insert( std::pair<std::string,int>( fieldtype, featidx));
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding search index query feature: %s"), *m_errorhnd);
 }
@@ -43,7 +43,7 @@ void QueryAnalyzer::addMetaDataElement(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, tokenizer, normalizers, analyzer::FeatureOptions());
-		m_fieldTypeFeatureMap.insert( std::pair<std::string,int>( fieldtype, featidx));
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
@@ -55,6 +55,7 @@ void QueryAnalyzer::definePatternMatcherPostProc(
 {
 	try
 	{
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
@@ -63,10 +64,17 @@ void QueryAnalyzer::definePatternMatcherPreProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternLexerInstanceInterface* lexer,
-		const std::vector<std::string>& selectexpr)
+		const std::vector<std::string>& fieldTypeNames)
 {
 	try
 	{
+		unsigned int idx = m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer);
+		std::vector<std::string>::const_iterator
+			si = fieldTypeNames.begin(), se = fieldTypeNames.end();
+		for (; si != se; ++si)
+		{
+			m_fieldTypePatternMap.insert( FieldTypeFeatureDef( *si, idx));
+		}
 	}
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
@@ -78,6 +86,7 @@ void QueryAnalyzer::addSearchIndexFeatureFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
 }
@@ -89,6 +98,7 @@ void QueryAnalyzer::defineMetaDataFromPatternMatch(
 {
 	try
 	{
+		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error in define meta data from pattern match: %s"), *m_errorhnd);
 }

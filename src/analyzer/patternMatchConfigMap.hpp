@@ -25,8 +25,7 @@ public:
 	unsigned int definePatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
-		PatternLexerInstanceInterface* lexer,
-		const analyzer::FeatureOptions& options);
+		PatternLexerInstanceInterface* lexer);
 
 	const PreProcPatternMatchConfig& config( int idx) const;
 

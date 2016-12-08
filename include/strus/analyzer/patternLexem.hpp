@@ -35,6 +35,21 @@ public:
 	/// \brief Internal identifier of the term
 	unsigned int id() const				{return m_id;}
 
+	bool operator < (const PatternLexem& o) const
+	{
+		return (origseg() == o.origseg())
+			? (
+				(origpos() == o.origpos())
+				? (
+					(origsize() == o.origsize())
+					? (m_id < o.m_id)
+					: (origsize() < o.origsize())
+				)
+				: (origpos() < o.origpos())
+			)
+			: (origseg() < o.origseg());
+	}
+
 private:
 	unsigned int m_id;
 };

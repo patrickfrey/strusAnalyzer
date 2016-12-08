@@ -11,6 +11,7 @@
 #include "strus/patternTermFeederInstanceInterface.hpp"
 #include "strus/patternLexerInstanceInterface.hpp"
 #include "strus/analyzer/featureOptions.hpp"
+#include "strus/reference.hpp"
 #include <string>
 
 namespace strus
@@ -24,9 +25,8 @@ public:
 	PreProcPatternMatchConfig(
 			const std::string& patternTypeName_,
 			PatternMatcherInstanceInterface* matcher_,
-			PatternLexerInstanceInterface* lexer_,
-			const analyzer::FeatureOptions& options_)
-		:m_patternTypeName(patternTypeName_),m_matcher(),m_lexer(),m_options(options_)
+			PatternLexerInstanceInterface* lexer_)
+		:m_patternTypeName(patternTypeName_),m_matcher(),m_lexer()
 	{
 		try
 		{
@@ -43,19 +43,16 @@ public:
 	PreProcPatternMatchConfig( const PreProcPatternMatchConfig& o)
 		:m_patternTypeName(o.m_patternTypeName)
 		,m_matcher(o.m_matcher)
-		,m_lexer(o.m_lexer)
-		,m_options(o.m_options){}
+		,m_lexer(o.m_lexer){}
 
 	const std::string& patternTypeName() const			{return m_patternTypeName;}
 	const PatternMatcherInstanceInterface* matcher() const		{return m_matcher.get();}
 	const PatternLexerInstanceInterface* lexer() const		{return m_lexer.get();}
-	analyzer::FeatureOptions options() const			{return m_options;}
 
 private:
 	std::string m_patternTypeName;
 	Reference<PatternMatcherInstanceInterface> m_matcher;
 	Reference<PatternLexerInstanceInterface> m_lexer;
-	analyzer::FeatureOptions m_options;
 };
 
 
@@ -66,7 +63,7 @@ public:
 			const std::string& patternTypeName_,
 			PatternMatcherInstanceInterface* matcher_,
 			PatternTermFeederInstanceInterface* feeder_)
-		:m_patternTypeName(patternTypeName_),m_matcher(),m_feeder(),m_options(options_)
+		:m_patternTypeName(patternTypeName_),m_matcher(),m_feeder()
 	{
 		try
 		{

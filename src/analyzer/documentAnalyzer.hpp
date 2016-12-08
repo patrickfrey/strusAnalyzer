@@ -14,6 +14,7 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
 #include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
@@ -117,7 +118,7 @@ public:
 			const analyzer::DocumentClass& dclass) const;
 
 public:/*DocumentAnalyzerContext*/
-	typedef utils::SharedPtr<AggregatorFunctionInstanceInterface> StatisticsReference;
+	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
 	class StatisticsConfig
 	{
 	public:
@@ -149,8 +150,9 @@ public:/*DocumentAnalyzerContext*/
 private:
 	SegmenterInstanceInterface* m_segmenter;
 	FeatureConfigMap m_featureConfigMap;
-	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
+	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
 	ErrorBufferInterface* m_errorhnd;

@@ -118,14 +118,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				}
 				else if (featidx >= OfsPatternMatchSegment)
 				{
-					if (featidx >= OfsPreProcPatternMatchSegment)
-					{
-						!!!! PRE PROCESS PATTERN MATCHING
-					}
-					else //featidx >= OfsPostProcPatternMatchSegment
-					{
-						// ... later
-					}
+					
 				}
 				else
 				{
