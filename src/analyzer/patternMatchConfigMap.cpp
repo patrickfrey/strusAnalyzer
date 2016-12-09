@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -24,7 +24,8 @@ const PreProcPatternMatchConfig& PreProcPatternMatchConfigMap::config( int idx) 
 unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
-		PatternLexerInstanceInterface* lexer)
+		PatternLexerInstanceInterface* lexer,
+		bool allowCrossSegmentMatches)
 {
 	try
 	{
@@ -33,7 +34,7 @@ unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PreProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, lexer));
+		m_ar.push_back( PreProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, lexer, allowCrossSegmentMatches));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)
@@ -64,7 +65,8 @@ const PostProcPatternMatchConfig& PostProcPatternMatchConfigMap::config( int idx
 unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
-		PatternTermFeederInstanceInterface* feeder)
+		PatternTermFeederInstanceInterface* feeder,
+		bool allowCrossSegmentMatches)
 {
 	try
 	{
@@ -73,7 +75,7 @@ unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PostProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, feeder));
+		m_ar.push_back( PostProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, feeder, allowCrossSegmentMatches));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

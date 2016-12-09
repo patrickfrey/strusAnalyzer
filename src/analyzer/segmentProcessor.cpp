@@ -386,4 +386,33 @@ void SegmentProcessor::processConcatenated()
 	}
 }
 
+void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& result)
+{
+	std::vector<BindTerm>::const_iterator ri = result.begin(), re = result.end();
+	for (; ri != re; ++ri)
+	{
+		PatternFeatureContext* ctx = m_patternFeatureContextMap.getContext( ri->type());
+		if (ctx)
+		{
+			std::string value = ctx->normalize( ri->value());
+			const PatternFeatureConfig* cfg = ctx->config();
+			switch (cfg->featureClass())
+			{
+				case FeatMetaData:
+					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
+					break;
+				case FeatAttribute:
+					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
+					break;
+				case FeatSearchIndexTerm:
+					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
+					break;
+				case FeatForwardIndexTerm:
+					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
+					break;
+			}
+		}
+	}
+}
+
 

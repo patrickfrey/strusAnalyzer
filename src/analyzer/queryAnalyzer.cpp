@@ -55,7 +55,7 @@ void QueryAnalyzer::definePatternMatcherPostProc(
 {
 	try
 	{
-		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, false);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
@@ -68,7 +68,7 @@ void QueryAnalyzer::definePatternMatcherPreProc(
 {
 	try
 	{
-		unsigned int idx = m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer);
+		unsigned int idx = m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, false);
 		std::vector<std::string>::const_iterator
 			si = fieldTypeNames.begin(), se = fieldTypeNames.end();
 		for (; si != se; ++si)

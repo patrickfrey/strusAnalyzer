@@ -29,7 +29,9 @@
 using namespace strus;
 
 DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd)
-	:m_segmentProcessor(analyzer_->featureConfigMap())
+	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap())
+	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap())
+	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
 	,m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
 	,m_eof(false)
@@ -68,6 +70,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 		res.setMetaData( si->name(), value);
 	}
 }
+
 
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
@@ -118,7 +121,10 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				}
 				else if (featidx >= OfsPatternMatchSegment)
 				{
-					
+					PreProcPatternMatchContext& ppctx
+						= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
+					std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+					ppctx.process( rel_position, segsrc, segsrcsize);
 				}
 				else
 				{
@@ -129,7 +135,6 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 						m_segmentProcessor.concatDocumentSegment(
 								featidx, rel_position, segsrc, segsrcsize);
-						continue;
 					}
 					else
 					{
@@ -154,6 +159,27 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 	
 		// process concatenated chunks:
 		m_segmentProcessor.processConcatenated();
+
+		// fetch pre processing pattern outputs:
+		PreProcPatternMatchContextMap::iterator
+			vi = m_preProcPatternMatchContextMap.begin(),
+			ve = m_preProcPatternMatchContextMap.end();
+		for (; vi != ve; ++vi)
+		{
+			m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
+		}
+
+		// process post processing patterns:
+		PostProcPatternMatchContextMap::iterator
+			pi = m_postProcPatternMatchContextMap.begin(),
+			pe = m_postProcPatternMatchContextMap.end();
+		for (; pi != pe; ++pi)
+		{
+			pi->process( m_segmentProcessor.searchTerms());
+			pi->process( m_segmentProcessor.forwardTerms());
+			m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
+		}
+
 		// create output (with real positions):
 		doc = m_segmentProcessor.fetchDocument( doc);
 

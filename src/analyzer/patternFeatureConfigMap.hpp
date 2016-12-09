@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -33,6 +33,7 @@ public:
 	const PatternFeatureConfig* getConfig( const std::string& patternTypeName) const;
 
 private:
+	friend class PatternFeatureContextMap;
 	std::vector<PatternFeatureConfig> m_ar;
 	std::map<std::string,std::size_t> m_map;
 };

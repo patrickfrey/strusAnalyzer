@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -83,6 +83,10 @@ public:
 		if (idx <= 0 || idx > m_ar.size()) throw std::logic_error("array bound write (document analyzer pattern match context)");
 		return m_ar[ idx-1];
 	}
+
+	typedef std::vector<PreProcPatternMatchContext>::iterator iterator;
+	iterator begin()		{return m_ar.begin();}
+	iterator end()			{return m_ar.end();}
 
 private:
 	std::vector<PreProcPatternMatchContext> m_ar;

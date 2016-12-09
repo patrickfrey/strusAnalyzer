@@ -8,6 +8,7 @@
 #ifndef _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #include "featureContextMap.hpp"
+#include "patternFeatureContextMap.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/query.hpp"
@@ -35,8 +36,12 @@ struct SegPosDef
 class SegmentProcessor
 {
 public:
-	explicit SegmentProcessor( const FeatureConfigMap& featureConfigMap)
-		:m_featureContextMap(featureConfigMap){}
+	SegmentProcessor(
+			const FeatureConfigMap& featureConfigMap_,
+			const PatternFeatureConfigMap& patternFeatureConfigMap_)
+		:m_featureContextMap(featureConfigMap_)
+		,m_patternFeatureContextMap(patternFeatureConfigMap_)
+		,m_concatenatedMap(){}
 
 	void clearTermMaps();
 	void processDocumentSegment(
@@ -51,6 +56,7 @@ public:
 			std::size_t segmentsize);
 
 	void processConcatenated();
+	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
 	analyzer::Document fetchDocument( const analyzer::Document& prevdoc);
@@ -58,6 +64,9 @@ public:
 	/// \brief Fetch the currently processed query
 	/// \return the query object without grouping
 	analyzer::Query fetchQuery();
+
+	const std::vector<BindTerm>& searchTerms() const	{return m_searchTerms;}
+	const std::vector<BindTerm>& forwardTerms() const	{return m_forwardTerms;}
 
 private:
 	void processDocumentSegment( int featidx, std::size_t segmentpos, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
@@ -83,6 +92,7 @@ private:
 
 private:
 	FeatureContextMap m_featureContextMap;
+	PatternFeatureContextMap m_patternFeatureContextMap;
 	ConcatenatedMap m_concatenatedMap;
 	std::vector<BindTerm> m_searchTerms;
 	std::vector<BindTerm> m_forwardTerms;

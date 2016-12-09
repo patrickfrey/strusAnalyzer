@@ -9,6 +9,8 @@
 #define _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
 #include "documentAnalyzer.hpp"
 #include "segmentProcessor.hpp"
+#include "patternMatchContextMap.hpp"
+#include "patternFeatureContextMap.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 
@@ -35,13 +37,15 @@ public:
 
 private:
 	void mapStatistics( analyzer::Document& res) const;
+	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 private:
 	SegmentProcessor m_segmentProcessor;
+	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
+	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const DocumentAnalyzer* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
 	std::vector<analyzer::Document> m_subdocstack;
-
 	bool m_eof;
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -32,7 +32,7 @@ void PatternFeatureConfigMap::defineFeature(
 {
 	try
 	{
-		m_map[ utils::tolower( patternTypeName)] = m_ar.size();
+		m_map[ patternTypeName] = m_ar.size();
 		m_ar.reserve( m_ar.size()+1);
 		m_ar.push_back( PatternFeatureConfig( utils::tolower( name), normalizers, featureClass, options));
 	}

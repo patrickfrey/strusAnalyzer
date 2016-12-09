@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -25,8 +25,9 @@ public:
 	PreProcPatternMatchConfig(
 			const std::string& patternTypeName_,
 			PatternMatcherInstanceInterface* matcher_,
-			PatternLexerInstanceInterface* lexer_)
-		:m_patternTypeName(patternTypeName_),m_matcher(),m_lexer()
+			PatternLexerInstanceInterface* lexer_,
+			bool allowCrossSegmentMatches_)
+		:m_patternTypeName(patternTypeName_),m_matcher(),m_lexer(),m_allowCrossSegmentMatches(allowCrossSegmentMatches_)
 	{
 		try
 		{
@@ -43,16 +44,19 @@ public:
 	PreProcPatternMatchConfig( const PreProcPatternMatchConfig& o)
 		:m_patternTypeName(o.m_patternTypeName)
 		,m_matcher(o.m_matcher)
-		,m_lexer(o.m_lexer){}
+		,m_lexer(o.m_lexer)
+		,m_allowCrossSegmentMatches(o.m_allowCrossSegmentMatches){}
 
 	const std::string& patternTypeName() const			{return m_patternTypeName;}
 	const PatternMatcherInstanceInterface* matcher() const		{return m_matcher.get();}
 	const PatternLexerInstanceInterface* lexer() const		{return m_lexer.get();}
+	bool allowCrossSegmentMatches() const				{return m_allowCrossSegmentMatches;}
 
 private:
 	std::string m_patternTypeName;
 	Reference<PatternMatcherInstanceInterface> m_matcher;
 	Reference<PatternLexerInstanceInterface> m_lexer;
+	bool m_allowCrossSegmentMatches;
 };
 
 
@@ -62,8 +66,9 @@ public:
 	PostProcPatternMatchConfig(
 			const std::string& patternTypeName_,
 			PatternMatcherInstanceInterface* matcher_,
-			PatternTermFeederInstanceInterface* feeder_)
-		:m_patternTypeName(patternTypeName_),m_matcher(),m_feeder()
+			PatternTermFeederInstanceInterface* feeder_,
+			bool allowCrossSegmentMatches_)
+		:m_patternTypeName(patternTypeName_),m_matcher(),m_feeder(),m_allowCrossSegmentMatches(allowCrossSegmentMatches_)
 	{
 		try
 		{
@@ -80,16 +85,19 @@ public:
 	PostProcPatternMatchConfig( const PostProcPatternMatchConfig& o)
 		:m_patternTypeName(o.m_patternTypeName)
 		,m_matcher(o.m_matcher)
-		,m_feeder(o.m_feeder){}
+		,m_feeder(o.m_feeder)
+		,m_allowCrossSegmentMatches(o.m_allowCrossSegmentMatches){}
 
 	const std::string& patternTypeName() const			{return m_patternTypeName;}
 	const PatternMatcherInstanceInterface* matcher() const		{return m_matcher.get();}
 	const PatternTermFeederInstanceInterface* feeder() const	{return m_feeder.get();}
+	bool allowCrossSegmentMatches() const				{return m_allowCrossSegmentMatches;}
 
 private:
 	std::string m_patternTypeName;
 	Reference<PatternMatcherInstanceInterface> m_matcher;
 	Reference<PatternTermFeederInstanceInterface> m_feeder;
+	bool m_allowCrossSegmentMatches;
 };
 
 } //namespace

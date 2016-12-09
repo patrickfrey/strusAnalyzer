@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -53,6 +53,8 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 	std::vector<analyzer::PatternMatcherResult>::const_iterator ri = results.begin(), re = results.end();
 	for (; ri != re; ++ri)
 	{
+		if (!m_config->allowCrossSegmentMatches() && ri->start_origseg() != ri->end_origseg()) continue;
+
 		rt.push_back( BindTerm( ri->start_origseg(), ri->start_origpos(), m_config->patternTypeName(), ri->name(), analyzer::BindContent));
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
 		for (; ti != te; ++ti)
@@ -156,6 +158,8 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	std::vector<analyzer::PatternMatcherResult>::const_iterator ri = results.begin(), re = results.end();
 	for (; ri != re; ++ri)
 	{
+		if (!m_config->allowCrossSegmentMatches() && ri->start_origseg() != ri->end_origseg()) continue;
+
 		const BindTerm& startelem = m_input[ ri->start_origpos()];
 		rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), m_config->patternTypeName(), ri->name(), analyzer::BindContent));
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();

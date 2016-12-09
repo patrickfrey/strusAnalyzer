@@ -142,7 +142,7 @@ void DocumentAnalyzer::definePatternMatcherPostProc(
 {
 	try
 	{
-		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder);
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, true);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
@@ -156,7 +156,7 @@ void DocumentAnalyzer::definePatternMatcherPreProc(
 	try
 	{
 		unsigned int idx = OfsPatternMatchSegment
-				+ m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer);
+				+ m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, true);
 		std::vector<std::string>::const_iterator
 			si = selectexpr.begin(), se = selectexpr.end();
 		for (; si != se; ++si)

@@ -140,10 +140,11 @@ public:/*DocumentAnalyzerContext*/
 		StatisticsReference m_statfunc;
 	};
 
+	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
-	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
+	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
 	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
 	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
 

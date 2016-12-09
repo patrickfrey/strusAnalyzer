@@ -9,6 +9,7 @@ set(source_files
 	featureContextMap.cpp
 	patternFeatureConfig.cpp
 	patternFeatureConfigMap.cpp
+	patternFeatureContextMap.cpp
 	patternMatchConfigMap.cpp
 	patternMatchContextMap.cpp
 	segmentProcessor.cpp
