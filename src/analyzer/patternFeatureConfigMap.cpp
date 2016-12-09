@@ -1,24 +1,17 @@
 /*
- * Copyright (c) 2014 Patrick P. Frey
+ * Copyright (c) 2016 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+#include "patternFeatureConfigMap.hpp"
+#include "featureConfig.hpp"
 #include "featureConfigMap.hpp"
 #include "private/internationalization.hpp"
 #include "private/utils.hpp"
 
 using namespace strus;
-
-const FeatureConfig& FeatureConfigMap::featureConfig( int featidx) const
-{
-	if (featidx <= 0 || (std::size_t)featidx > m_ar.size())
-	{
-		throw strus::runtime_error( _TXT("internal: unknown index of feature"));
-	}
-	return m_ar[ featidx-1];
-}
 
 static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
@@ -30,34 +23,35 @@ static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterfa
 	}
 }
 
-unsigned int FeatureConfigMap::defineFeature(
-		FeatureClass featureClass,
-		const std::string& featType,
-		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		const analyzer::FeatureOptions& options)
+void PatternFeatureConfigMap::defineFeature(
+	FeatureClass featureClass,
+	const std::string& name,
+	const std::string& patternTypeName,
+	const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+	const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		if (m_ar.size()+1 >= MaxNofFeatures)
-		{
-			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
-		}
+		m_map[ patternTypeName] = m_ar.size();
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( utils::tolower( featType), tokenizer, normalizers, featureClass, options));
-		return m_ar.size();
+		m_ar.push_back( PatternFeatureConfig( utils::tolower( name), normalizers, featureClass, options));
 	}
 	catch (const std::bad_alloc&)
 	{
 		freeNormalizers( normalizers);
-		delete tokenizer;
 		throw strus::runtime_error( _TXT("memory allocation error defining feature"));
 	}
 	catch (const std::runtime_error& err)
 	{
 		freeNormalizers( normalizers);
-		delete tokenizer;
 		throw strus::runtime_error( _TXT("error defining feature: '%s'"), err.what());
 	}
+}
+
+const PatternFeatureConfig* PatternFeatureConfigMap::getConfig( const std::string& patternTypeName) const
+{
+	std::map<std::string,std::size_t>::const_iterator mi = m_map.find( patternTypeName);
+	if (mi == m_map.end()) return 0;
+	return &m_ar[ mi->second];
 }
 

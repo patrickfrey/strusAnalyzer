@@ -267,7 +267,7 @@ static QueryTree buildQueryTree(
 
 static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const std::vector<QueryAnalyzerContext::Field>& fields)
 {
-	SegmentProcessor segmentProcessor( analyzer->featureConfigMap());
+	SegmentProcessor segmentProcessor( analyzer->featureConfigMap(), analyzer->patternFeatureConfigMap());
 	std::vector<QueryAnalyzerContext::Field>::const_iterator fi = fields.begin(), fe = fields.end();
 	for (unsigned int fidx=0; fi != fe; ++fi,++fidx)
 	{

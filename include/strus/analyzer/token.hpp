@@ -55,6 +55,17 @@ public:
 		m_ordpos = ordpos_;
 	}
 
+	bool operator < (const Token& o) const
+	{
+		return (m_origseg == o.m_origseg)
+			? (
+				(m_origpos == o.m_origpos)
+				? (m_origsize < o.m_origsize)
+				: (m_origpos < o.m_origpos)
+			)
+			: (m_origseg < o.m_origseg);
+	}
+
 private:
 	uint32_t m_ordpos;	///< ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
 	uint32_t m_origseg;	///< start byte position of the document segment

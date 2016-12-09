@@ -7,6 +7,11 @@ set(source_files
 	featureConfig.cpp
 	featureConfigMap.cpp
 	featureContextMap.cpp
+	patternFeatureConfig.cpp
+	patternFeatureConfigMap.cpp
+	patternFeatureContextMap.cpp
+	patternMatchConfigMap.cpp
+	patternMatchContextMap.cpp
 	segmentProcessor.cpp
 	documentAnalyzer.cpp
 	documentAnalyzerContext.cpp

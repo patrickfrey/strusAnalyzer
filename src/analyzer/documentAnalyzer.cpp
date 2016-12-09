@@ -30,7 +30,11 @@
 using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
-	:m_segmenter(segmenter_->createInstance( opts)),m_errorhnd(errorhnd)
+	:m_segmenter(segmenter_->createInstance( opts))
+	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
+	,m_subdoctypear()
+	,m_statistics()
+	,m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
 	{
@@ -111,16 +115,7 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 		m_statistics.reserve( m_statistics.size()+1);
 		m_statistics.push_back( StatisticsConfig( metaname, statfunc));
 	}
-	catch (const std::bad_alloc&)
-	{
-		delete statfunc;
-		m_errorhnd->report(_TXT("memory allocation error defining aggregated meta data"));
-	}
-	catch (const std::runtime_error& err)
-	{
-		delete statfunc;
-		m_errorhnd->report(_TXT("error defining aggregated meta data: '%s'"), err.what());
-	}
+	CATCH_ERROR_MAP( _TXT("error defining aggregated metadata: %s"), *m_errorhnd);
 }
 
 void DocumentAnalyzer::defineSubDocument(
@@ -135,11 +130,92 @@ void DocumentAnalyzer::defineSubDocument(
 		{
 			throw strus::runtime_error( _TXT("too many sub documents defined"));
 		}
-		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, EndOfSubDocument, selectexpr);
+		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
 }
 
+void DocumentAnalyzer::definePatternMatcherPostProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternTermFeederInstanceInterface* feeder)
+{
+	try
+	{
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, true);
+	}
+	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::definePatternMatcherPreProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternLexerInstanceInterface* lexer,
+		const std::vector<std::string>& selectexpr)
+{
+	try
+	{
+		unsigned int idx = OfsPatternMatchSegment
+				+ m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, true);
+		std::vector<std::string>::const_iterator
+			si = selectexpr.begin(), se = selectexpr.end();
+		for (; si != se; ++si)
+		{
+			m_segmenter->defineSelectorExpression( idx, *si);
+		}
+	}
+	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::addSearchIndexFeatureFromPatternMatch(
+		const std::string& type,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const analyzer::FeatureOptions& options)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, options);
+	}
+	CATCH_ERROR_MAP( _TXT("error defining search index feature from pattern matching result: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::addForwardIndexFeatureFromPatternMatch(
+		const std::string& type,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		const analyzer::FeatureOptions& options)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatForwardIndexTerm, type, patternTypeName, normalizers, options);
+	}
+	CATCH_ERROR_MAP( _TXT("error defining forward index feature from pattern matching result: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::defineMetaDataFromPatternMatch(
+		const std::string& metaname,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
+	}
+	CATCH_ERROR_MAP( _TXT("error defining document meta data from pattern matching result: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::defineAttributeFromPatternMatch(
+		const std::string& attribname,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatAttribute, attribname, patternTypeName, normalizers, analyzer::FeatureOptions());
+	}
+	CATCH_ERROR_MAP( _TXT("error defining document attribute from pattern matching result: %s"), *m_errorhnd);
+}
 
 analyzer::Document DocumentAnalyzer::analyze(
 		const std::string& content,
@@ -157,7 +233,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::analyze: %s"), *m_errorhnd, analyzer::Document());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyze: %s"), *m_errorhnd, analyzer::Document());
 }
 
 DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyzer::DocumentClass& dclass) const
@@ -166,5 +242,5 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyze
 	{
 		return new DocumentAnalyzerContext( this, dclass, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzer::createContext: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }

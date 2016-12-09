@@ -14,6 +14,8 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
+#include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -75,6 +77,39 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
 
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder);
+
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& selectexpr);
+
+	virtual void addSearchIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options);
+
+	virtual void addForwardIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			const analyzer::FeatureOptions& options);
+
+	virtual void defineMetaDataFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineAttributeFromPatternMatch(
+			const std::string& attribname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+	
 	virtual analyzer::Document analyze(
 			const std::string& content,
 			const analyzer::DocumentClass& dclass) const;
@@ -83,7 +118,7 @@ public:
 			const analyzer::DocumentClass& dclass) const;
 
 public:/*DocumentAnalyzerContext*/
-	typedef utils::SharedPtr<AggregatorFunctionInstanceInterface> StatisticsReference;
+	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
 	class StatisticsConfig
 	{
 	public:
@@ -105,14 +140,20 @@ public:/*DocumentAnalyzerContext*/
 		StatisticsReference m_statfunc;
 	};
 
-	const FeatureConfigMap& featureConfigMap() const			{return m_featureConfigMap;}
-	const SegmenterInstanceInterface* segmenter() const			{return m_segmenter;}
-	const std::vector<std::string>& subdoctypes() const			{return m_subdoctypear;}
-	const std::vector<StatisticsConfig>& statisticsConfigs() const		{return m_statistics;}
+	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
+	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
+	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
+	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
+	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
+	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
+	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
 
 private:
 	SegmenterInstanceInterface* m_segmenter;
 	FeatureConfigMap m_featureConfigMap;
+	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
+	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
 	ErrorBufferInterface* m_errorhnd;

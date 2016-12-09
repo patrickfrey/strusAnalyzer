@@ -8,10 +8,12 @@
 #ifndef _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #include "featureContextMap.hpp"
-#include "featureContextMap.hpp"
+#include "patternFeatureContextMap.hpp"
+#include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/query.hpp"
 #include "strus/analyzer/positionBind.hpp"
+#include "strus/analyzer/token.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -31,34 +33,15 @@ struct SegPosDef
 		:start_strpos(o.start_strpos),end_strpos(o.end_strpos),segpos(o.segpos){}
 };
 
-class BindTerm
-{
-public:
-	BindTerm( const BindTerm& o)
-		:m_seg(o.m_seg),m_ofs(o.m_ofs),m_type(o.m_type),m_value(o.m_value),m_posbind(o.m_posbind){}
-	BindTerm( unsigned int seg_, unsigned int ofs_, const std::string& type_, const std::string& value_, analyzer::PositionBind posbind_)
-		:m_seg(seg_),m_ofs(ofs_),m_type(type_),m_value(value_),m_posbind(posbind_){}
-
-	unsigned int seg() const			{return m_seg;}
-	unsigned int ofs() const			{return m_ofs;}
-	const std::string& type() const			{return m_type;}
-	const std::string& value() const		{return m_value;}
-	analyzer::PositionBind posbind() const		{return m_posbind;}
-
-private:
-	unsigned int m_seg;
-	unsigned int m_ofs;
-	std::string m_type;
-	std::string m_value;
-	analyzer::PositionBind m_posbind;
-};
-
-
 class SegmentProcessor
 {
 public:
-	explicit SegmentProcessor( const FeatureConfigMap& featureConfigMap)
-		:m_featureContextMap(featureConfigMap){}
+	SegmentProcessor(
+			const FeatureConfigMap& featureConfigMap_,
+			const PatternFeatureConfigMap& patternFeatureConfigMap_)
+		:m_featureContextMap(featureConfigMap_)
+		,m_patternFeatureContextMap(patternFeatureConfigMap_)
+		,m_concatenatedMap(){}
 
 	void clearTermMaps();
 	void processDocumentSegment(
@@ -73,6 +56,7 @@ public:
 			std::size_t segmentsize);
 
 	void processConcatenated();
+	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
 	analyzer::Document fetchDocument( const analyzer::Document& prevdoc);
@@ -80,6 +64,9 @@ public:
 	/// \brief Fetch the currently processed query
 	/// \return the query object without grouping
 	analyzer::Query fetchQuery();
+
+	const std::vector<BindTerm>& searchTerms() const	{return m_searchTerms;}
+	const std::vector<BindTerm>& forwardTerms() const	{return m_forwardTerms;}
 
 private:
 	void processDocumentSegment( int featidx, std::size_t segmentpos, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
@@ -105,6 +92,7 @@ private:
 
 private:
 	FeatureContextMap m_featureContextMap;
+	PatternFeatureContextMap m_patternFeatureContextMap;
 	ConcatenatedMap m_concatenatedMap;
 	std::vector<BindTerm> m_searchTerms;
 	std::vector<BindTerm> m_forwardTerms;

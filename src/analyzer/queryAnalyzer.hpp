@@ -12,6 +12,8 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
+#include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
 #include <utility>
@@ -28,7 +30,9 @@ class QueryAnalyzer
 {
 public:
 	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
+		:m_featureConfigMap()
+		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
+		,m_fieldTypeFeatureMap(),m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
 	virtual void addSearchIndexElement(
@@ -43,17 +47,46 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder);
+
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& fieldTypeNames);
+
+	virtual void addSearchIndexFeatureFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void defineMetaDataFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
 	virtual QueryAnalyzerContextInterface* createContext() const;
 
 public:/*QueryAnalyzerContext*/
+	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
 
-	const FeatureConfigMap& featureConfigMap() const		{return m_featureConfigMap;}
-	const FieldTypeFeatureMap& fieldTypeFeatureMap() const		{return m_fieldTypeFeatureMap;}
+	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
+	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
+	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
+	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
+	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
 
 private:
 	FeatureConfigMap m_featureConfigMap;
+	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
+	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
+	FieldTypeFeatureMap m_fieldTypePatternMap;
 	ErrorBufferInterface* m_errorhnd;
 };
 

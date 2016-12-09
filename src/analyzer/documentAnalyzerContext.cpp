@@ -29,7 +29,9 @@
 using namespace strus;
 
 DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd)
-	:m_segmentProcessor(analyzer_->featureConfigMap())
+	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap())
+	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap())
+	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
 	,m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
 	,m_eof(false)
@@ -69,6 +71,7 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 	}
 }
 
+
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
 	try 
@@ -94,10 +97,10 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "fetch document segment '" << featidx << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
-				if (featidx >= EndOfSubDocument)
+				if (featidx >= SubDocumentEnd)
 				{
 					//... start or end of document marker
-					if (featidx == EndOfSubDocument)
+					if (featidx == SubDocumentEnd)
 					{
 						//... end of sub document -> out of loop and return document
 						have_document = true;
@@ -116,6 +119,13 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						m_start_position = m_curr_position;
 					}
 				}
+				else if (featidx >= OfsPatternMatchSegment)
+				{
+					PreProcPatternMatchContext& ppctx
+						= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
+					std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+					ppctx.process( rel_position, segsrc, segsrcsize);
+				}
 				else
 				{
 					const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
@@ -125,7 +135,6 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 						m_segmentProcessor.concatDocumentSegment(
 								featidx, rel_position, segsrc, segsrcsize);
-						continue;
 					}
 					else
 					{
@@ -150,6 +159,27 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 	
 		// process concatenated chunks:
 		m_segmentProcessor.processConcatenated();
+
+		// fetch pre processing pattern outputs:
+		PreProcPatternMatchContextMap::iterator
+			vi = m_preProcPatternMatchContextMap.begin(),
+			ve = m_preProcPatternMatchContextMap.end();
+		for (; vi != ve; ++vi)
+		{
+			m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
+		}
+
+		// process post processing patterns:
+		PostProcPatternMatchContextMap::iterator
+			pi = m_postProcPatternMatchContextMap.begin(),
+			pe = m_postProcPatternMatchContextMap.end();
+		for (; pi != pe; ++pi)
+		{
+			pi->process( m_segmentProcessor.searchTerms());
+			pi->process( m_segmentProcessor.forwardTerms());
+			m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
+		}
+
 		// create output (with real positions):
 		doc = m_segmentProcessor.fetchDocument( doc);
 

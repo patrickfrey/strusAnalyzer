@@ -7,9 +7,6 @@
  */
 #ifndef _STRUS_DOCUMENT_ANALYZER_FEATURE_CONFIG_MAP_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_FEATURE_CONFIG_MAP_HPP_INCLUDED
-#include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "featureConfig.hpp"
 #include <vector>
 #include <string>
@@ -18,17 +15,24 @@ namespace strus
 {
 
 enum {
-	MaxNofFeatures=(1<<24)-1,
-	EndOfSubDocument=(1<<24),
-	OfsSubDocument=(1<<24)+1,
-	MaxNofSubDocuments=(1<<7)
+	MaxSegmenterId=(1<<30),
+	SubDocumentEnd=(1<<24),
+	OfsSubDocument=SubDocumentEnd+1,
+	MaxNofSubDocuments=(MaxSegmenterId - OfsSubDocument - 1),
+
+	OfsPatternMatchSegment=(1<<20),
+	MaxNofPatternMatchSegments=(SubDocumentEnd-OfsPatternMatchSegment-1),
+
+	EndOfFeatures=OfsPatternMatchSegment-1,
+	MaxNofFeatures=EndOfFeatures-1
 };
 
 /// \brief Set of configured features
 class FeatureConfigMap
 {
 public:
-	FeatureConfigMap(){}
+	FeatureConfigMap()
+		:m_ar(){}
 	~FeatureConfigMap(){}
 
 	unsigned int defineFeature(
