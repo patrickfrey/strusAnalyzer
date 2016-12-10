@@ -64,6 +64,7 @@ PatternFeatureContextMap::PatternFeatureContextMap( const PatternFeatureConfigMa
 
 PatternFeatureContext* PatternFeatureContextMap::getContext( const std::string& patternTypeName)
 {
+	if (!m_map) return 0;
 	std::map<std::string,std::size_t>::const_iterator mi = m_map->find( patternTypeName);
 	if (mi == m_map->end()) return 0;
 	return &m_ar[ mi->second];

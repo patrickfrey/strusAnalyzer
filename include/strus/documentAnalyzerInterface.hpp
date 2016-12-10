@@ -111,6 +111,17 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr)=0;
 
+	/// \brief Declare an element to be used as lexem by post processing pattern matching but not put into the result of document analysis
+	/// \param[in] termtype term type name of the lexem to be feed to the pattern matching
+	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
+	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	virtual void addPatternLexem(
+			const std::string& termtype,
+			const std::string& selectexpr,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
+
 	/// \brief Declare a pattern matcher on the document features after other document analysis
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 

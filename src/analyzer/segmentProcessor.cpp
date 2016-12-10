@@ -25,6 +25,7 @@ void SegmentProcessor::clearTermMaps()
 	m_forwardTerms.clear();
 	m_metadataTerms.clear();
 	m_attributeTerms.clear();
+	m_patternLexemTerms.clear();
 }
 
 void SegmentProcessor::concatDocumentSegment(
@@ -360,6 +361,11 @@ void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentp
 			processContentTokens( m_forwardTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
+		case FeatPatternLexem:
+		{
+			processContentTokens( m_patternLexemTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			break;
+		}
 	}
 }
 
@@ -409,6 +415,9 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 					break;
 				case FeatForwardIndexTerm:
 					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
+					break;
+				case FeatPatternLexem:
+					throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
 					break;
 			}
 		}

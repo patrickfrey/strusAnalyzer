@@ -38,6 +38,8 @@ private:
 class PatternFeatureContextMap
 {
 public:
+	PatternFeatureContextMap()
+		:m_map(0){}
 	PatternFeatureContextMap( const PatternFeatureConfigMap& configMap);
 	PatternFeatureContextMap( const PatternFeatureContextMap& o)
 		:m_ar(o.m_ar),m_map(o.m_map){}

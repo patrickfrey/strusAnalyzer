@@ -20,7 +20,9 @@
 using namespace strus;
 
 QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
-	:m_analyzer(analyzer_)
+	:m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap())
+	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
+	,m_analyzer(analyzer_)
 	,m_fields(),m_groups()
 	,m_errorhnd(errorhnd_)
 {}
@@ -265,15 +267,17 @@ static QueryTree buildQueryTree(
 	return rt;
 }
 
-static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const std::vector<QueryAnalyzerContext::Field>& fields)
+
+analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 {
-	SegmentProcessor segmentProcessor( analyzer->featureConfigMap(), analyzer->patternFeatureConfigMap());
-	std::vector<QueryAnalyzerContext::Field>::const_iterator fi = fields.begin(), fe = fields.end();
-	for (unsigned int fidx=0; fi != fe; ++fi,++fidx)
+	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
+	std::vector<Field>::const_iterator fi = m_fields.begin(), fe = m_fields.end();
+	unsigned int fidx=0;
+	for (fidx=0; fi != fe; ++fi,++fidx)
 	{
 		typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
 		std::pair<FieldTypeFeatureMap::const_iterator,FieldTypeFeatureMap::const_iterator>
-			range = analyzer->fieldTypeFeatureMap().equal_range( fi->fieldType);
+			range = m_analyzer->fieldTypeFeatureMap().equal_range( fi->fieldType);
 		FieldTypeFeatureMap::const_iterator ti = range.first, te = range.second;
 		for (;ti != te; ++ti)
 		{
@@ -281,6 +285,39 @@ static analyzer::Query analyzeQueryFields( const QueryAnalyzer* analyzer, const 
 				ti->second/*feature type index*/, fidx/*segment pos = field index*/, 
 				fi->content.c_str(), fi->content.size());
 		}
+	}
+	if (!m_analyzer->fieldTypePatternMap().empty()) for (fidx=0,fi=m_fields.begin(); fi != fe; ++fi,++fidx)
+	{
+		typedef QueryAnalyzer::FieldTypePatternMap FieldTypePatternMap;
+		std::pair<FieldTypePatternMap::const_iterator,FieldTypePatternMap::const_iterator>
+			range = m_analyzer->fieldTypePatternMap().equal_range( fi->fieldType);
+		FieldTypePatternMap::const_iterator ti = range.first, te = range.second;
+		for (;ti != te; ++ti)
+		{
+			PreProcPatternMatchContext& ppctx
+				= m_preProcPatternMatchContextMap.context( ti->second);
+			ppctx.process( fidx/*segment pos = field index*/, fi->content.c_str(), fi->content.size());
+		}
+	}
+	// fetch pre processing pattern outputs:
+	PreProcPatternMatchContextMap::iterator
+		vi = m_preProcPatternMatchContextMap.begin(),
+		ve = m_preProcPatternMatchContextMap.end();
+	for (; vi != ve; ++vi)
+	{
+		segmentProcessor.processPatternMatchResult( vi->fetchResults());
+	}
+
+	// process post processing patterns:
+	PostProcPatternMatchContextMap::iterator
+		pi = m_postProcPatternMatchContextMap.begin(),
+		pe = m_postProcPatternMatchContextMap.end();
+	for (; pi != pe; ++pi)
+	{
+		pi->process( segmentProcessor.searchTerms());
+		pi->process( segmentProcessor.forwardTerms());
+		pi->process( segmentProcessor.patternLexemTerms());
+		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
 	return segmentProcessor.fetchQuery();
 }
@@ -315,11 +352,11 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 	}
 }
 
-analyzer::Query QueryAnalyzerContext::analyze() const
+analyzer::Query QueryAnalyzerContext::analyze()
 {
 	try
 	{
-		analyzer::Query rt = analyzeQueryFields( m_analyzer, m_fields);
+		analyzer::Query rt = analyzeQueryFields();
 		if (m_groups.empty())
 		{
 			// Groups are empty, so we just copy the elements into the instructions

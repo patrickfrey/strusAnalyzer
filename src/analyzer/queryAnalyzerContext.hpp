@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_IMPLEMENTATION_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_IMPLEMENTATION_HPP_INCLUDED
 #include "strus/queryAnalyzerContextInterface.hpp"
+#include "patternMatchContextMap.hpp"
 #include <vector>
 #include <string>
 
@@ -34,7 +35,10 @@ public:
 
 	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
-	virtual analyzer::Query analyze() const;
+	virtual analyzer::Query analyze();
+
+private:
+	analyzer::Query analyzeQueryFields();
 
 public:
 	struct Field
@@ -62,6 +66,8 @@ public:
 	};
 
 private:
+	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
+	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const QueryAnalyzer* m_analyzer;
 	std::vector<Field> m_fields;
 	std::vector<Group> m_groups;
