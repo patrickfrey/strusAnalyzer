@@ -29,6 +29,7 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_textcat"
  	"${PROJECT_SOURCE_DIR}/src/aggregator_vsm"
  	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
 )
 
 
