@@ -42,6 +42,7 @@ public:
 		:m_featureContextMap(featureConfigMap_)
 		,m_patternFeatureContextMap(patternFeatureConfigMap_)
 		,m_concatenatedMap(){}
+	~SegmentProcessor(){}
 
 	void clearTermMaps();
 	void processDocumentSegment(
@@ -90,6 +91,10 @@ private:
 	};
 
 	typedef std::map<int,Chunk> ConcatenatedMap;
+
+private:
+	SegmentProcessor( const SegmentProcessor&){}	//... non copyable
+	void operator=( const SegmentProcessor&){}	//... non copyable
 
 private:
 	FeatureContextMap m_featureContextMap;
