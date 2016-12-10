@@ -24,7 +24,8 @@ enum FeatureClass
 	FeatMetaData,
 	FeatAttribute,
 	FeatSearchIndexTerm,
-	FeatForwardIndexTerm
+	FeatForwardIndexTerm,
+	FeatPatternLexem
 };
 
 const char* featureClassName( FeatureClass i);

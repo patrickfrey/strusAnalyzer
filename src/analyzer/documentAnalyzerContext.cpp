@@ -177,6 +177,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		{
 			pi->process( m_segmentProcessor.searchTerms());
 			pi->process( m_segmentProcessor.forwardTerms());
+			pi->process( m_segmentProcessor.patternLexemTerms());
 			m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
 		}
 

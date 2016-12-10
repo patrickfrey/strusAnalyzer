@@ -77,6 +77,12 @@ public:
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
 
+	virtual void addPatternLexem(
+			const std::string& termtype,
+			const std::string& selectexpr,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
 	virtual void definePatternMatcherPostProc(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,

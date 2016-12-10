@@ -57,6 +57,17 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
+	/// \brief Declare an element to be used as lexem by post processing pattern matching but not put into the result of query analysis
+	/// \param[in] termtype term type name of the lexem to be feed to the pattern matching
+	/// \param[in] fieldtype type of the field of this element in the query
+	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
+	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	virtual void addPatternLexem(
+			const std::string& termtype,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
+
 	/// \brief Declare a pattern matcher on the query features after other query analysis
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 

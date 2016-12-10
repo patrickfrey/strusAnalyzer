@@ -48,7 +48,7 @@ public:
 
 	/// \brief Analyze the query feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
 	/// \return the query structure
-	virtual analyzer::Query analyze() const=0;
+	virtual analyzer::Query analyze()=0;
 };
 
 }//namespace
