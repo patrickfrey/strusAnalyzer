@@ -47,6 +47,12 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
+	virtual void addPatternLexem(
+			const std::string& termtype,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
 	virtual void definePatternMatcherPostProc(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
@@ -73,9 +79,11 @@ public:
 public:/*QueryAnalyzerContext*/
 	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
+	typedef std::multimap<std::string,int> FieldTypePatternMap;
 
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
+	const FieldTypePatternMap& fieldTypePatternMap() const				{return m_fieldTypePatternMap;}
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
 	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
@@ -86,7 +94,7 @@ private:
 	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
 	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
-	FieldTypeFeatureMap m_fieldTypePatternMap;
+	FieldTypePatternMap m_fieldTypePatternMap;
 	ErrorBufferInterface* m_errorhnd;
 };
 

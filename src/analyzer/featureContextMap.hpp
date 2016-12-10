@@ -28,6 +28,7 @@ struct FeatureContext
 		:m_config(o.m_config)
 		,m_normalizerContextAr(o.m_normalizerContextAr)
 		,m_tokenizerContext(o.m_tokenizerContext){}
+	~FeatureContext(){}
 
 	std::string normalize( const char* tok, std::size_t toksize);
 
@@ -39,6 +40,7 @@ struct FeatureContext
 class FeatureContextMap
 {
 public:
+	FeatureContextMap(){}
 	FeatureContextMap( const FeatureConfigMap& config);
 	FeatureContextMap( const FeatureContextMap& o)
 		:m_featureContextAr(o.m_featureContextAr){}

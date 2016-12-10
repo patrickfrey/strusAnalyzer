@@ -48,6 +48,20 @@ void QueryAnalyzer::addMetaDataElement(
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
 
+void QueryAnalyzer::addPatternLexem(
+		const std::string& termtype,
+		const std::string& fieldtype,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
+	}
+	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
+}
+
 void QueryAnalyzer::definePatternMatcherPostProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,

@@ -135,6 +135,16 @@ void DocumentAnalyzer::defineSubDocument(
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
 }
 
+void DocumentAnalyzer::addPatternLexem(
+		const std::string& termtype,
+		const std::string& selectexpr,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+	m_segmenter->defineSelectorExpression( featidx, selectexpr);
+}
+
 void DocumentAnalyzer::definePatternMatcherPostProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
