@@ -30,6 +30,7 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
  	"${PROJECT_SOURCE_DIR}/src/textproc"
  	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
 )
 
 
