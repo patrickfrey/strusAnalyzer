@@ -19,6 +19,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 #include <utility>
 #include <stdexcept>
 
@@ -125,6 +126,8 @@ public:
 
 public:/*DocumentAnalyzerContext*/
 	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
+	typedef std::set<std::string> TermTypeSet;
+
 	class StatisticsConfig
 	{
 	public:
@@ -151,6 +154,8 @@ public:/*DocumentAnalyzerContext*/
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
 	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
+	const TermTypeSet forwardIndexTermTypeSet() const				{return m_forwardIndexTermTypeSet;}
+	const TermTypeSet searchIndexTermTypeSet() const				{return m_searchIndexTermTypeSet;}
 	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
 	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
 
@@ -162,6 +167,8 @@ private:
 	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
+	TermTypeSet m_forwardIndexTermTypeSet;
+	TermTypeSet m_searchIndexTermTypeSet;
 	ErrorBufferInterface* m_errorhnd;
 };
 

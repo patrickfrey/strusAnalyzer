@@ -175,8 +175,20 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			pe = m_postProcPatternMatchContextMap.end();
 		for (; pi != pe; ++pi)
 		{
-			pi->process( m_segmentProcessor.searchTerms());
-			pi->process( m_segmentProcessor.forwardTerms());
+			std::vector<std::string> lexems = pi->m_feeder->lexemTypes();
+			std::vector<std::string>::const_iterator li, le = lexems.end();
+			for (li = lexems.begin(); li != le; ++li)
+			{
+				if (m_analyzer->searchIndexTermTypeSet().find(*li) == m_analyzer->searchIndexTermTypeSet().end()) break;
+			}
+			if (li != le) pi->process( m_segmentProcessor.searchTerms());
+
+			for (li = lexems.begin(); li != le; ++li)
+			{
+				if (m_analyzer->forwardIndexTermTypeSet().find(*li) == m_analyzer->forwardIndexTermTypeSet().end()) break;
+			}
+			if (li != le) pi->process( m_segmentProcessor.forwardTerms());
+
 			pi->process( m_segmentProcessor.patternLexemTerms());
 			m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
 		}

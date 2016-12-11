@@ -30,6 +30,7 @@ void QueryAnalyzer::addSearchIndexElement(
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
+		m_searchIndexTermTypeSet.insert( utils::tolower( termtype));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding search index query feature: %s"), *m_errorhnd);
 }

@@ -315,7 +315,6 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 	for (; pi != pe; ++pi)
 	{
 		pi->process( segmentProcessor.searchTerms());
-		pi->process( segmentProcessor.forwardTerms());
 		pi->process( segmentProcessor.patternLexemTerms());
 		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}

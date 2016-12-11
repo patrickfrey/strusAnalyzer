@@ -80,7 +80,18 @@ public:
 		if (ti == m_typeTable.end()) return 0;
 		return ti->second;
 	}
-	
+
+	virtual std::vector<std::string> lexemTypes() const
+	{
+		std::vector<std::string> rt;
+		TypeTable::const_iterator ti = m_typeTable.begin(), te = m_typeTable.end();
+		for (; ti != te; ++ti)
+		{
+			rt.push_back( ti->first);
+		}
+		return rt;
+	}
+
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const

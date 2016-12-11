@@ -34,6 +34,8 @@ DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const 
 	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
+	,m_forwardIndexTermTypeSet()
+	,m_searchIndexTermTypeSet()
 	,m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
@@ -58,6 +60,7 @@ void DocumentAnalyzer::addSearchIndexFeature(
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, tokenizer, normalizers, options);
 		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		m_searchIndexTermTypeSet.insert( utils::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding search index feature: %s"), *m_errorhnd);
 }
@@ -73,6 +76,7 @@ void DocumentAnalyzer::addForwardIndexFeature(
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, tokenizer, normalizers, options);
 		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		m_forwardIndexTermTypeSet.insert( utils::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding forward index feature: %s"), *m_errorhnd);
 }

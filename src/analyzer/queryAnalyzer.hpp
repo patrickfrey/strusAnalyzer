@@ -18,6 +18,7 @@
 #include <string>
 #include <utility>
 #include <map>
+#include <set>
 
 namespace strus
 {
@@ -32,7 +33,9 @@ public:
 	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
 		:m_featureConfigMap()
 		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
-		,m_fieldTypeFeatureMap(),m_errorhnd(errorhnd){}
+		,m_fieldTypeFeatureMap()
+		,m_searchIndexTermTypeSet()
+		,m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
 	virtual void addSearchIndexElement(
@@ -80,6 +83,7 @@ public:/*QueryAnalyzerContext*/
 	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
 	typedef std::multimap<std::string,int> FieldTypePatternMap;
+	typedef std::set<std::string> TermTypeSet;
 
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
@@ -95,6 +99,7 @@ private:
 	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
 	FieldTypePatternMap m_fieldTypePatternMap;
+	TermTypeSet m_searchIndexTermTypeSet;
 	ErrorBufferInterface* m_errorhnd;
 };
 

@@ -48,6 +48,10 @@ public:
 	virtual unsigned int getLexem(
 			const std::string& type) const=0;
 
+	/// \brief Get the list of lexem types defined
+	/// \return the list of lexem types
+	virtual std::vector<std::string> lexemTypes() const=0;
+
 	/// \brief Get the identifier of a defined symbol
 	/// \param[in] lexemid identifier of the basic lexem this symbol belongs to
 	/// \param[in] name name (value string) of the symbol
