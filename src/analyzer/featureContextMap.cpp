@@ -34,6 +34,13 @@ FeatureContext::FeatureContext( const FeatureConfig& config)
 	}
 }
 
+FeatureContext::FeatureContext( const FeatureContext& o)
+	:m_config(o.m_config)
+	,m_normalizerContextAr(o.m_normalizerContextAr)
+	,m_tokenizerContext(o.m_tokenizerContext){}
+
+FeatureContext::~FeatureContext(){}
+
 std::string FeatureContext::normalize( char const* tok, std::size_t toksize)
 {
 	NormalizerFunctionContextArray::iterator
