@@ -17,6 +17,7 @@ include_directories(
 
 link_directories(
 	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
 )
 
 # -------------------------------------------

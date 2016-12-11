@@ -15,6 +15,11 @@ include_directories(
 	"${strusbase_INCLUDE_DIRS}"
 )
 
+link_directories(
+	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
+)
+
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
