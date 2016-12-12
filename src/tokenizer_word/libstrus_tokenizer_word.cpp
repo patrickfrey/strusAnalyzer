@@ -14,6 +14,7 @@
 #include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "unicodeWordDelimiters.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include <vector>
 #include <string>
@@ -161,6 +162,8 @@ private:
 };
 
 
+static const UnicodeWordDelimiters g_unicodeWordDelimiters;
+
 static bool wordBoundaryDelimiter( char const* si, const char* se)
 {
 	static const CharTable wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -171,10 +174,7 @@ static bool wordBoundaryDelimiter( char const* si, const char* se)
 	else if ((unsigned char)*si >= 128)
 	{
 		unsigned int chr = utf8decode( si, se);
-		if (chr == 133) return true;
-		if (chr >= 0x2000 && chr <= 0x206F) return true;
-		if (chr == 0x3000) return true;
-		if (chr == 0xFEFF) return true;
+		if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end()) return true;
 		return false;
 	}
 	else if (wordCharacter[ *si])
@@ -251,7 +251,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferI
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries for european languages"), wordBoundaryDelimiter, errorhnd);
+		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries"), wordBoundaryDelimiter, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
 }
