@@ -161,6 +161,7 @@ std::vector<analyzer::Token>
 			}
 			else if (isPunctuation(ch0))
 			{
+				pos = scanner.itrpos();
 				rt.push_back( analyzer::Token( pos/*ordpos*/, 0, pos, 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::size_t endpos = pos;
