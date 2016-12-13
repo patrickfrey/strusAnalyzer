@@ -756,6 +756,7 @@ public:
 			0xFE68,
 			0xFE6A,
 			0xFE6B,
+			0xFEFF,
 			0xFF01,
 			0xFF02,
 			0xFF03,
@@ -786,6 +787,7 @@ public:
 			0xFF63,
 			0xFF64,
 			0xFF65,
+			0xFFFE,
 			0}; 
 		unsigned int const* ai = ar;
 		while (*ai) insert( *ai++);

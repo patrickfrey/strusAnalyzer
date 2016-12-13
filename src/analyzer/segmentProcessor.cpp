@@ -13,6 +13,7 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include <set>
+#include <iostream>
 
 using namespace strus;
 
@@ -280,7 +281,7 @@ analyzer::Query SegmentProcessor::fetchQuery()
 void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, FeatureContext& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
 #ifdef STRUS_LOWLEVEL_DEBUG
-	const char* indextype = feat.m_config->featureClass()==DocumentAnalyzer::FeatSearchIndexTerm?"search index":"forward index";
+	const char* indextype = feat.m_config->featureClass()==FeatSearchIndexTerm?"search index":"forward index";
 #endif
 	std::vector<SegPosDef>::const_iterator
 		ci = concatposmap.begin(), ce = concatposmap.end();
@@ -312,7 +313,7 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 					feat.m_config->name()/*type*/, vi/*value*/,
 					feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+				std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 				result.push_back( term);
 			}
@@ -324,7 +325,7 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 				feat.m_config->name()/*type*/, termval/*value*/,
 				feat.m_config->options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "add " << indextype << " term " << "[" << term.pos() << "] " << term.type() << " " << term.value() << std::endl;
+			std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
 			result.push_back( term);
 		}
