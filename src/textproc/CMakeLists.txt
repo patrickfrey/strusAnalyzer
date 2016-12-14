@@ -28,8 +28,10 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_regex"
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_textcat"
  	"${PROJECT_SOURCE_DIR}/src/aggregator_vsm"
+ 	"${PROJECT_SOURCE_DIR}/src/pattern"
  	"${PROJECT_SOURCE_DIR}/src/utils"
 	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
 )
 
 
@@ -51,6 +53,7 @@ target_link_libraries(
 	strus_tokenizer_regex
 	strus_tokenizer_textcat
 	strus_aggregator_vsm
+	strus_pattern_termfeeder
 	strus_private_utils )
 
 set_target_properties(

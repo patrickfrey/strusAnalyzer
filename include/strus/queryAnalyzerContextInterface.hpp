@@ -39,7 +39,7 @@ public:
 	};
 
 	/// \brief Group elements of the query together
-	/// \param[in] groupid identifier of the grouping operation
+	/// \param[in] groupid identifier of the grouping operation defined by the caller that gets into the resulting query as operator identifier of the query instructions
 	/// \param[in] fieldnolist number of the fields to take as arguments
 	/// \param[in] groupBy how to group elements together
 	/// \param[in] groupSingle true, if this operator should also be applied on single elements, false, if the operator is not applied on single argument elements and the elements apear as they are

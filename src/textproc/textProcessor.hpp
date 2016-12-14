@@ -36,6 +36,8 @@ public:
 
 	virtual const PatternMatcherInterface* getPatternMatcher( const std::string& name) const;
 
+	virtual const PatternTermFeederInterface* getPatternTermFeeder() const;
+
 	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
@@ -58,6 +60,7 @@ private:
 	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;
 	std::map<std::string,PatternLexerInterface*> m_patternlexer_map;
 	std::map<std::string,PatternMatcherInterface*> m_patternmatcher_map;
+	PatternTermFeederInterface* m_patterntermfeeder;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
 	ErrorBufferInterface* m_errorhnd;

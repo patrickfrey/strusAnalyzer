@@ -30,6 +30,8 @@ class PatternLexerInterface;
 class PatternMatcherInterface;
 /// \brief Forward declaration
 class PatternMatcherProgramInterface;
+/// \brief Forward declaration
+class PatternTermFeederInterface;
 
 
 /// \class TextProcessorInterface
@@ -67,6 +69,10 @@ public:
 	/// \brief Get a const reference to a pattern lexer 
 	/// \return the pattern lexer
 	virtual const PatternMatcherInterface* getPatternMatcher( const std::string& name) const=0;
+
+	/// \brief Get the default pattern term feeder interface for post processing pattern matching on analyzer output
+	/// \return the pattern term feeder
+	virtual const PatternTermFeederInterface* getPatternTermFeeder() const=0;
 
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class

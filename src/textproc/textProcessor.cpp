@@ -18,10 +18,12 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/patternLexerInterface.hpp"
 #include "strus/patternMatcherInterface.hpp"
+#include "strus/patternTermFeederInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/lib/detector_std.hpp"
+#include "strus/lib/pattern_termfeeder.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -56,6 +58,7 @@ TextProcessor::~TextProcessor()
 	{
 		delete *di;
 	}
+	delete m_patterntermfeeder;
 }
 
 class EmptyNormalizerFunctionContext
@@ -566,8 +569,9 @@ private:
 };
 
 TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
-	:m_errorhnd(errorhnd)
+	:m_patterntermfeeder(createPatternTermFeeder_default(errorhnd)),m_errorhnd(errorhnd)
 {
+	if (!m_patterntermfeeder) throw strus::runtime_error(_TXT("error creating default pattern term feeder interface for text processor"));
 	DocumentClassDetectorInterface* dtc;
 	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error(_TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
@@ -639,6 +643,11 @@ const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::stri
 		return 0;
 	}
 	return ni->second;
+}
+
+const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
+{
+	return m_patterntermfeeder;
 }
 
 bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const

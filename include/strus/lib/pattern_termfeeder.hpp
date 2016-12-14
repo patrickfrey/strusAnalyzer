@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Library with the default implentation of the pattern term feeder interface
-/// \file "analyzer_objbuild.hpp"
+/// \file "pattern_termfeeder.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_TERMFEEDER_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_TERMFEEDER_LIB_HPP_INCLUDED
 

@@ -31,6 +31,7 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/textproc"
  	"${PROJECT_SOURCE_DIR}/src/utils"
 	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
 )
 
 
