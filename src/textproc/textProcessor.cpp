@@ -449,8 +449,8 @@ class MaxPosAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, unsigned int incr_, ErrorBufferInterface* errorhnd)
+		:m_featuretype( utils::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -463,11 +463,12 @@ public:
 		{
 			if (si->type() == m_featuretype && rt < si->pos()) rt = si->pos();
 		}
-		return rt;
+		return rt + m_incr;
 	}
 
 private:
 	std::string m_featuretype;
+	unsigned int m_incr;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -475,8 +476,8 @@ class MaxPosAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	explicit MaxPosAggregatorFunction( ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_){}
+	MaxPosAggregatorFunction( unsigned int incr_, ErrorBufferInterface* errorhnd_)
+		:m_incr(incr_),m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
 	{
@@ -492,7 +493,7 @@ public:
 		}
 		try
 		{
-			return new MaxPosAggregatorFunctionInstance( args[0], m_errorhnd);
+			return new MaxPosAggregatorFunctionInstance( args[0], m_incr, m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'maxpos' aggregator: %s"), *m_errorhnd, 0);
 	}
@@ -503,6 +504,7 @@ public:
 	}
 
 private:
+	unsigned int m_incr;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -582,7 +584,8 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
 	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
 	defineAggregator( "minpos", new MinPosAggregatorFunction(errorhnd));
-	defineAggregator( "maxpos", new MaxPosAggregatorFunction(errorhnd));
+	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,errorhnd));
+	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,errorhnd));
 }
 
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
