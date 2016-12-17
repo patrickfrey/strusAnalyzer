@@ -93,7 +93,7 @@ public:
 	/// \param[in] patternTypeName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
 	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
-	virtual void addSearchIndexFeatureFromPatternMatch(
+	virtual void addSearchIndexElementFromPatternMatch(
 			const std::string& type,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
@@ -103,7 +103,7 @@ public:
 	/// \param[in] patternTypeName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
 	/// \remark The field in the meta data table must exist before this function is called
-	virtual void defineMetaDataFromPatternMatch(
+	virtual void addMetaDataElementFromPatternMatch(
 			const std::string& metaname,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;

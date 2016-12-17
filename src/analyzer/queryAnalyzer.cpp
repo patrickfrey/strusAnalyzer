@@ -94,7 +94,7 @@ void QueryAnalyzer::definePatternMatcherPreProc(
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::addSearchIndexFeatureFromPatternMatch(
+void QueryAnalyzer::addSearchIndexElementFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
@@ -106,7 +106,7 @@ void QueryAnalyzer::addSearchIndexFeatureFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::defineMetaDataFromPatternMatch(
+void QueryAnalyzer::addMetaDataElementFromPatternMatch(
 		const std::string& metaname,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)

@@ -67,12 +67,12 @@ public:
 			PatternLexerInstanceInterface* lexer,
 			const std::vector<std::string>& fieldTypeNames);
 
-	virtual void addSearchIndexFeatureFromPatternMatch(
+	virtual void addSearchIndexElementFromPatternMatch(
 			const std::string& type,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual void defineMetaDataFromPatternMatch(
+	virtual void addMetaDataElementFromPatternMatch(
 			const std::string& metaname,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
