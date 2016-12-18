@@ -131,7 +131,15 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	for (std::size_t bidx=0; bi != be; ++bi,++bidx)
 	{
 		unsigned int lexemid = m_feeder->getLexem( bi->type());
-		pinput.push_back( analyzer::PatternLexem( lexemid, 0, 0/*seg*/, bidx/*ofs*/, 1));
+		unsigned int symbolid = m_feeder->getSymbol( lexemid, bi->value());
+		if (symbolid)
+		{
+			pinput.push_back( analyzer::PatternLexem( symbolid, 0, 0/*seg*/, bidx/*ofs*/, 1));
+		}
+		else
+		{
+			pinput.push_back( analyzer::PatternLexem( lexemid, 0, 0/*seg*/, bidx/*ofs*/, 1));
+		}
 	}
 
 	// Assign ordinal position:
