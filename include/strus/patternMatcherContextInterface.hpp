@@ -36,6 +36,9 @@ public:
 	/// \brief Get the statistics for global analysis
 	/// \return the statistics data gathered during processing
 	virtual analyzer::PatternMatcherStatistics getStatistics() const=0;
+
+	/// \brief Reset the pattern matching context for a reuse within another document or query
+	virtual void reset()=0;
 };
 
 } //namespace

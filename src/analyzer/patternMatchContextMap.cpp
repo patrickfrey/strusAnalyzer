@@ -10,6 +10,7 @@
 #include "strus/analyzer/patternLexem.hpp"
 #include <cstring>
 #include <algorithm>
+/*[-]*/#include <iostream>
 
 using namespace strus;
 
@@ -97,6 +98,14 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 	return rt;
 }
 
+void PreProcPatternMatchContext::clear()
+{
+	m_matcher->reset();
+	m_lexer->reset();
+	m_content.clear();
+	m_segPosContentPosMap.clear();
+}
+
 PostProcPatternMatchContext::PostProcPatternMatchContext( const PostProcPatternMatchConfig& config)
 	:m_config(&config)
 	,m_matcher(config.matcher()->createContext())
@@ -159,8 +168,10 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	pi = pinput.begin(), pe = pinput.end();
 	for (; pi != pe; ++pi)
 	{
+		/*[-]*/std::cout << "INPUT " << pi->id() << " pos " << pi->ordpos() << " orig " << pi->origseg() << ":" << pi->origpos() << " size " << pi->origsize() << std::endl;
 		m_matcher->putInput( *pi);
 	}
+	/*[-]*/std::cout << "DONE" << std::endl;
 
 	// Build result:
 	std::vector<BindTerm> rt;
@@ -199,6 +210,12 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	return rt;
 }
 
+void PostProcPatternMatchContext::clear()
+{
+	m_matcher->reset();
+	m_input.clear();
+}
+
 
 PreProcPatternMatchContextMap::PreProcPatternMatchContextMap( const PreProcPatternMatchConfigMap& config)
 {
@@ -209,12 +226,21 @@ PreProcPatternMatchContextMap::PreProcPatternMatchContextMap( const PreProcPatte
 	}
 }
 
-PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config)
+void PreProcPatternMatchContextMap::clear()
 {
-	PostProcPatternMatchConfigMap::const_iterator ci = config.begin(), ce = config.end();
+	PreProcPatternMatchContextMap::iterator ci = begin(), ce = end();
 	for (; ci != ce; ++ci)
 	{
-		m_ar.push_back( PostProcPatternMatchContext( *ci));
+		ci->clear();
+	}
+}
+
+PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config)
+{
+	PostProcPatternMatchContextMap::iterator ci = begin(), ce = end();
+	for (; ci != ce; ++ci)
+	{
+		ci->clear();
 	}
 }
 

@@ -21,6 +21,10 @@ using namespace strus;
 
 void SegmentProcessor::clearTermMaps()
 {
+/*
+	!!! FeatureContextMap m_featureContextMap;
+	!!! PatternFeatureContextMap m_patternFeatureContextMap;
+*/
 	m_concatenatedMap.clear();
 	m_searchTerms.clear();
 	m_forwardTerms.clear();

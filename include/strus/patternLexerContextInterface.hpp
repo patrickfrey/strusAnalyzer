@@ -27,6 +27,9 @@ public:
 	/// \param[in] srclen length of src to scan in bytes
 	/// \return list of matched lexems
 	virtual std::vector<analyzer::PatternLexem> match( const char* src, std::size_t srclen)=0;
+
+	/// \brief Reset the pattern lexer context for a reuse within another document or query
+	virtual void reset()=0;
 };
 
 } //namespace

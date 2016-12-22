@@ -35,6 +35,7 @@ struct PreProcPatternMatchContext
 
 	void process( std::size_t segpos, const char* seg, std::size_t segsize);
 	std::vector<BindTerm> fetchResults();
+	void clear();
 
 	const PreProcPatternMatchConfig* m_config;
 	PatternMatcherContextReference m_matcher;
@@ -55,6 +56,7 @@ struct PostProcPatternMatchContext
 
 	void process( const std::vector<BindTerm>& input);
 	std::vector<BindTerm> fetchResults();
+	void clear();
 
 	const PostProcPatternMatchConfig* m_config;
 	PatternMatcherContextReference m_matcher;
@@ -88,6 +90,8 @@ public:
 	iterator begin()		{return m_ar.begin();}
 	iterator end()			{return m_ar.end();}
 
+	void clear();
+
 private:
 	std::vector<PreProcPatternMatchContext> m_ar;
 };
@@ -105,6 +109,8 @@ public:
 	typedef std::vector<PostProcPatternMatchContext>::iterator iterator;
 	iterator begin()		{return m_ar.begin();}
 	iterator end()			{return m_ar.end();}
+
+	void clear();
 
 private:
 	std::vector<PostProcPatternMatchContext> m_ar;
