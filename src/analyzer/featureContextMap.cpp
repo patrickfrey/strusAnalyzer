@@ -46,6 +46,7 @@ std::string FeatureContext::normalize( char const* tok, std::size_t toksize)
 	NormalizerFunctionContextArray::iterator
 		ci = m_normalizerContextAr.begin(),
 		ce = m_normalizerContextAr.end();
+	if (ci == ce) return std::string( tok, toksize);
 
 	std::string rt;
 	std::string origstr;
