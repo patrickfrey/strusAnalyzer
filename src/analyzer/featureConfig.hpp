@@ -55,6 +55,9 @@ public:
 	FeatureClass featureClass() const				{return m_featureClass;}
 	analyzer::FeatureOptions options() const			{return m_options;}
 
+	std::string normalize( char const* tok, std::size_t toksize) const;
+	std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
+
 private:
 	std::string m_name;
 	TokenizerReference m_tokenizer;

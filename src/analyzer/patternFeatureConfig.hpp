@@ -43,6 +43,8 @@ public:
 	FeatureClass featureClass() const				{return m_featureClass;}
 	analyzer::FeatureOptions options() const			{return m_options;}
 
+	std::string normalize( const std::string& value) const;
+
 private:
 	std::string m_name;
 	std::vector<NormalizerReference> m_normalizerlist;

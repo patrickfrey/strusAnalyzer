@@ -8,7 +8,6 @@
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/base/dll_tags.hpp"
@@ -24,23 +23,6 @@ using namespace strus::analyzer;
 
 typedef bool (*TokenDelimiter)( char const* si, const char* se);
 
-class SeparationTokenizerFunctionContext
-	:public TokenizerFunctionContextInterface
-{
-public:
-	SeparationTokenizerFunctionContext( TokenDelimiter delim, ErrorBufferInterface* errorhnd)
-		:m_delim(delim),m_errorhnd(errorhnd){}
-
-	const char* skipToToken( char const* si, const char* se) const;
-
-	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize);
-
-private:
-	TokenDelimiter m_delim;
-	ErrorBufferInterface* m_errorhnd;
-};
-
-
 class SeparationTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
@@ -48,14 +30,9 @@ public:
 	SeparationTokenizerInstance( TokenDelimiter delim, ErrorBufferInterface* errorhnd)
 		:m_delim(delim),m_errorhnd(errorhnd){}
 
-	TokenizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new SeparationTokenizerFunctionContext( m_delim, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("cannot create tokenizer: %s"), *m_errorhnd, 0);
-	}
+	const char* skipToToken( char const* si, const char* se) const;
+
+	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize) const;
 
 	virtual bool concatBeforeTokenize() const
 	{
@@ -211,13 +188,13 @@ static bool whiteSpaceDelimiter( char const* si, const char* se)
 	}
 }
 
-const char* SeparationTokenizerFunctionContext::skipToToken( char const* si, const char* se) const
+const char* SeparationTokenizerInstance::skipToToken( char const* si, const char* se) const
 {
 	for (; si < se && m_delim( si, se); si = skipChar( si)){}
 	return si;
 }
 
-std::vector<Token> SeparationTokenizerFunctionContext::tokenize( const char* src, std::size_t srcsize)
+std::vector<Token> SeparationTokenizerInstance::tokenize( const char* src, std::size_t srcsize) const
 {
 	try
 	{

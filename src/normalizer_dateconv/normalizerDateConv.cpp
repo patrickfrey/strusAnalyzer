@@ -108,23 +108,23 @@ struct Date2IntNormalizerConfig
 		:granularity(o.granularity),fmtar(o.fmtar){}
 };
 
-class Date2IntNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+
+class Date2IntNormalizerFunctionInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionContext( const Date2IntNormalizerConfig* config_, ErrorBufferInterface* errorhnd)
-		:m_config(config_),m_errorhnd(errorhnd)
-	{}
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_, ErrorBufferInterface* errorhnd)
+		:m_config(granularity_,fmtar_),m_errorhnd(errorhnd){}
 
 	virtual std::string normalize(
 			const char* src,
-			std::size_t srcsize)
+			std::size_t srcsize) const
 	{
 		try
 		{
 			TimeStruct result;
 
-			std::vector<std::string>::const_iterator ci = m_config->fmtar.begin(), ce = m_config->fmtar.end();
+			std::vector<std::string>::const_iterator ci = m_config.fmtar.begin(), ce = m_config.fmtar.end();
 			for (; ci != ce; ++ci)
 			{
 				std::memset( &result, 0, sizeof(result));
@@ -141,33 +141,12 @@ public:
 				throw strus::runtime_error(_TXT("unknown time format: '%s'"), inputstr.c_str());
 			}
 			std::mktime( &result);
-			uint64_t rtnum = m_config->granularity.getValue( result);
+			uint64_t rtnum = m_config.granularity.getValue( result);
 			std::ostringstream out;
 			out << rtnum;
 			return out.str();
 		}
 		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
-	}
-
-private:
-	const Date2IntNormalizerConfig* m_config;
-	ErrorBufferInterface* m_errorhnd;
-};
-
-class Date2IntNormalizerFunctionInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_, ErrorBufferInterface* errorhnd)
-		:m_config(granularity_,fmtar_),m_errorhnd(errorhnd){}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new Date2IntNormalizerFunctionContext( &m_config, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
 	}
 
 private:

@@ -7,9 +7,7 @@
  */
 #include "queryAnalyzer.hpp"
 #include "queryAnalyzerContext.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"

@@ -42,3 +42,27 @@ PatternFeatureConfig::PatternFeatureConfig(
 	}
 }
 
+std::string PatternFeatureConfig::normalize( const std::string& value) const
+{
+	std::vector<NormalizerReference>::const_iterator
+		ci = m_normalizerlist.begin(),
+		ce = m_normalizerlist.end();
+
+	if (ci == ce) return value;
+
+	const char* tok = value.c_str();
+	std::size_t toksize = value.size();
+	std::string rt;
+	std::string origstr;
+	for (; ci != ce; ++ci)
+	{
+		rt = (*ci)->normalize( tok, toksize);
+		if (ci + 1 != ce)
+		{
+			origstr.swap( rt);
+			tok = origstr.c_str();
+			toksize = origstr.size();
+		}
+	}
+	return rt;
+}

@@ -7,7 +7,6 @@
  */
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
@@ -35,7 +34,7 @@ public:
 		sb_stemmer_delete_env( m_stemmer, m_env);
 	}
 
-	virtual std::string normalize( const char* src, std::size_t srcsize)
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		const sb_symbol* res
 			= sb_stemmer_stem_threadsafe(

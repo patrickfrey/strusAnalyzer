@@ -6,11 +6,12 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #include "patternFeatureContextMap.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
 #include <map>
 #include <vector>
 #include <string>
 
+#error DEPREACATED
 using namespace strus;
 
 PatternFeatureContext::PatternFeatureContext( const PatternFeatureConfig* config_)
@@ -23,31 +24,6 @@ PatternFeatureContext::PatternFeatureContext( const PatternFeatureConfig* config
 	{
 		m_normalizerlist.push_back( (*ni)->createFunctionContext());
 	}
-}
-
-std::string PatternFeatureContext::normalize( const std::string& value)
-{
-	std::vector<NormalizerReference>::iterator
-		ci = m_normalizerlist.begin(),
-		ce = m_normalizerlist.end();
-
-	if (ci == ce) return value;
-
-	const char* tok = value.c_str();
-	std::size_t toksize = value.size();
-	std::string rt;
-	std::string origstr;
-	for (; ci != ce; ++ci)
-	{
-		rt = (*ci)->normalize( tok, toksize);
-		if (ci + 1 != ce)
-		{
-			origstr.swap( rt);
-			tok = origstr.c_str();
-			toksize = origstr.size();
-		}
-	}
-	return rt;
 }
 
 PatternFeatureContextMap::PatternFeatureContextMap( const PatternFeatureConfigMap& configMap)

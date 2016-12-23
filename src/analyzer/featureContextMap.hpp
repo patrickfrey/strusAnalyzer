@@ -15,6 +15,8 @@
 #include <string>
 #include <stdexcept>
 
+#error DEPRECATED
+
 namespace strus {
 
 struct FeatureContext

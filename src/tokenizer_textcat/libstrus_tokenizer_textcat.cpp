@@ -8,7 +8,6 @@
 #include "strus/lib/tokenizer_textcat.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/base/dll_tags.hpp"
@@ -36,21 +35,67 @@ using namespace strus::analyzer;
 #include <iostream>
 #endif
 
-class TextcatTokenizerFunctionContext
-	:public TokenizerFunctionContextInterface
+
+class TextcatTokenizerInstance
+	:public TokenizerFunctionInstanceInterface
 {
 public:
-	TextcatTokenizerFunctionContext( const std::string& language, ErrorBufferInterface* errorhnd, void *textcat)
-		:m_language(language), m_errorhnd(errorhnd), m_textcat(textcat) {}
-	
+	TextcatTokenizerInstance( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
+		:m_language(language), m_errorhnd(errorhnd)
+	{
+		initialize( config );
+	}
+
+	virtual ~TextcatTokenizerInstance() {
+		if (m_textcat) {
+			textcat_Done(m_textcat);
+		}
+	}
+
 	const char* skipToToken( char const* si, const char* se) const;
 
-	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize);
+	std::vector<Token> tokenize( const char* src, std::size_t srcsize) const;
+
+	virtual bool concatBeforeTokenize() const
+	{
+		return true;
+	}
 
 private:
 	std::string m_language;
 	ErrorBufferInterface* m_errorhnd;
 	void *m_textcat;
+
+	void initialize( const std::string &config )
+	{
+		char* oldDir = new char[PATH_MAX];
+		if( getcwd( oldDir, PATH_MAX ) == NULL) {
+			delete[] oldDir;
+			throw std::runtime_error( "Cannot get current working directory");
+		}
+		char* configCopy = strdup( config.c_str());
+		if( configCopy == NULL) {
+			delete[] oldDir;
+			throw std::runtime_error( "Failed to allocate memory for name of textcat configuration file");
+		}
+		char* dir = dirname( configCopy);
+		if( chdir( dir) < 0) {
+			free( configCopy);
+			delete[] oldDir;
+			throw std::runtime_error( "Cannot change to directory of textcat configuration file");
+		}
+		free( configCopy);
+
+		m_textcat = textcat_Init( config.c_str());
+		if( chdir( oldDir) < 0) {
+			delete[] oldDir;
+			throw std::runtime_error( "Cannot change to original directory");
+		}
+		delete[] oldDir;
+		if( !m_textcat) {
+			throw std::runtime_error( "Cannot open textcat configuration");
+		}
+	}
 };
 
 static textwolf::charset::UTF8::CharLengthTab g_charLengthTab;
@@ -68,13 +113,13 @@ static inline const char* skipChar( const char* si)
 	}
 }
 
-const char* TextcatTokenizerFunctionContext::skipToToken( char const* si, const char* se) const
+const char* TextcatTokenizerInstance::skipToToken( char const* si, const char* se) const
 {
 	for (; si < se && isspace( *si); si = skipChar( si)){}
 	return si;
 }
 
-std::vector<Token> TextcatTokenizerFunctionContext::tokenize( const char* src, std::size_t srcsize)
+std::vector<Token> TextcatTokenizerInstance::tokenize( const char* src, std::size_t srcsize) const
 {
 	try
 	{
@@ -130,73 +175,6 @@ std::vector<Token> TextcatTokenizerFunctionContext::tokenize( const char* src, s
 	CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, std::vector<Token>());
 
 }
-
-class TextcatTokenizerInstance
-	:public TokenizerFunctionInstanceInterface
-{
-public:
-	TextcatTokenizerInstance( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
-		:m_language(language), m_errorhnd(errorhnd)
-	{
-		initialize( config );
-	}
-
-	virtual ~TextcatTokenizerInstance() {
-		if (m_textcat) {
-			textcat_Done(m_textcat);
-		}
-	}
-
-	TokenizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new TextcatTokenizerFunctionContext( m_language, m_errorhnd, m_textcat);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("cannot create tokenizer: %s"), *m_errorhnd, 0);
-	}
-
-	virtual bool concatBeforeTokenize() const
-	{
-		return true;
-	}
-
-private:
-	std::string m_language;
-	ErrorBufferInterface* m_errorhnd;
-	void *m_textcat;
-
-	void initialize( const std::string &config )
-	{
-		char* oldDir = new char[PATH_MAX];
-		if( getcwd( oldDir, PATH_MAX ) == NULL) {
-			delete[] oldDir;
-			throw std::runtime_error( "Cannot get current working directory");
-		}
-		char* configCopy = strdup( config.c_str());
-		if( configCopy == NULL) {
-			delete[] oldDir;
-			throw std::runtime_error( "Failed to allocate memory for name of textcat configuration file");
-		}
-		char* dir = dirname( configCopy);
-		if( chdir( dir) < 0) {
-			free( configCopy);
-			delete[] oldDir;
-			throw std::runtime_error( "Cannot change to directory of textcat configuration file");
-		}
-		free( configCopy);
-
-		m_textcat = textcat_Init( config.c_str());
-		if( chdir( oldDir) < 0) {
-			delete[] oldDir;
-			throw std::runtime_error( "Cannot change to original directory");
-		}
-		delete[] oldDir;
-		if( !m_textcat) {
-			throw std::runtime_error( "Cannot open textcat configuration");
-		}
-	}
-};
 
 class TextcatTokenizerFunction
 	:public TokenizerFunctionInterface
@@ -254,3 +232,4 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_textcat( ErrorBuff
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create textcat tokenizer: %s"), *errorhnd, 0);
 }
+

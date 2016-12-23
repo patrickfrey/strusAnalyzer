@@ -8,8 +8,6 @@
 #include "segmentProcessor.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include <set>
@@ -21,10 +19,6 @@ using namespace strus;
 
 void SegmentProcessor::clearTermMaps()
 {
-/*
-	!!! FeatureContextMap m_featureContextMap;
-	!!! PatternFeatureContextMap m_patternFeatureContextMap;
-*/
 	m_concatenatedMap.clear();
 	m_searchTerms.clear();
 	m_forwardTerms.clear();
@@ -282,7 +276,7 @@ analyzer::Query SegmentProcessor::fetchQuery()
 }
 
 
-void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, FeatureContext& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
+void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
 #ifdef STRUS_LOWLEVEL_DEBUG
 	const char* indextype = feat.m_config->featureClass()==FeatSearchIndexTerm?"search index":"forward index";
@@ -338,37 +332,36 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 
 void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentpos, const char* segsrc, std::size_t segsrcsize, const std::vector<SegPosDef>& concatposmap)
 {
-	FeatureContext& feat = m_featureContextMap.featureContext( featidx);
+	const FeatureConfig* feat = m_featureConfigMap->featureConfig( featidx);
 #ifdef STRUS_LOWLEVEL_DEBUG
 	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
-	std::vector<analyzer::Token>
-		tokens = feat.m_tokenizerContext->tokenize( segsrc, segsrcsize);
+	std::vector<analyzer::Token> tokens = feat->tokenize( segsrc, segsrcsize);
 	switch (feat.m_config->featureClass())
 	{
 		case FeatMetaData:
 		{
-			processContentTokens( m_metadataTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_metadataTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatAttribute:
 		{
-			processContentTokens( m_attributeTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_attributeTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatSearchIndexTerm:
 		{
-			processContentTokens( m_searchTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_searchTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatForwardIndexTerm:
 		{
-			processContentTokens( m_forwardTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_forwardTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatPatternLexem:
 		{
-			processContentTokens( m_patternLexemTerms, feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_patternLexemTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 	}
@@ -402,7 +395,7 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 	std::vector<BindTerm>::const_iterator ri = result.begin(), re = result.end();
 	for (; ri != re; ++ri)
 	{
-		PatternFeatureContext* ctx = m_patternFeatureContextMap.getContext( ri->type());
+		PatternFeatureConfig* ctx = m_patternFeatureConfigMap->getConfig( ri->type());
 		if (ctx)
 		{
 			std::string value = ctx->normalize( ri->value());

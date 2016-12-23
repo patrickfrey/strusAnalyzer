@@ -7,8 +7,8 @@
  */
 #include "normalizerRegex.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/normalizerFunctionInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -116,32 +116,6 @@ struct RegexConfiguration
 	}
 };
 
-class RegexNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	RegexNormalizerFunctionContext( const RegexConfiguration& config_, ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_config(config_){}
-
-	virtual ~RegexNormalizerFunctionContext(){}
-
-	virtual std::string normalize( const char* src, std::size_t srcsize)
-	{
-		try
-		{
-			return boost::regex_replace(
-				std::string( src, srcsize), m_config.expression, m_config.output,
-				boost::match_posix);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" normalizer function: %s"), *m_errorhnd, std::string());
-	}
-
-private:
-	ErrorBufferInterface* m_errorhnd;
-	RegexConfiguration m_config; 
-};
-
-
 class RegexNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
@@ -151,13 +125,15 @@ public:
 
 	virtual ~RegexNormalizerFunctionInstance(){}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
-			return new RegexNormalizerFunctionContext( m_config, m_errorhnd);
+			return boost::regex_replace(
+				std::string( src, srcsize), m_config.expression, m_config.output,
+				boost::match_posix);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating \"regex\" normalizer function context: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" normalizer function: %s"), *m_errorhnd, std::string());
 	}
 
 private:

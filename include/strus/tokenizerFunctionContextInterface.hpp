@@ -14,6 +14,8 @@
 #include <cstddef>
 #include <vector>
 
+#error DEPRECATED
+
 /// \brief strus toplevel namespace
 namespace strus {
 

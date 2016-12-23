@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 
+#error DEPRECATED
+
 namespace strus
 {
 
@@ -23,10 +25,10 @@ public:
 
 	const PatternFeatureConfig* config() const	{return m_config;}
 
-	std::string normalize( const std::string& value);
+	std::string normalize( const std::string& value) const;
 
 private:
-	typedef Reference<NormalizerFunctionContextInterface> NormalizerReference;
+	typedef Reference<NormalizerFunctionInstanceInterface> NormalizerReference;
 
 private:
 	const PatternFeatureConfig* m_config;

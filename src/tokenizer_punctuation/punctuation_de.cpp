@@ -16,15 +16,15 @@ using namespace strus;
 #undef STRUS_LOWLEVEL_DEBUG
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerFunctionContext_de::tokenize(
-		const char* src, std::size_t srcsize)
+	PunctuationTokenizerInstance_de::tokenize(
+		const char* src, std::size_t srcsize) const
 {
 	try
 	{
 		std::vector<analyzer::Token> rt;
 	
 		textwolf::UChar ch0;
-		CharWindow scanner( src, srcsize, m_punctuation_char);
+		CharWindow scanner( src, srcsize, &m_punctuation_char);
 		unsigned int wordlen=0;
 		unsigned int pos = 0;
 	
@@ -173,15 +173,5 @@ std::vector<analyzer::Token>
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
-}
-
-
-TokenizerFunctionContextInterface* PunctuationTokenizerInstance_de::createFunctionContext() const
-{
-	try
-	{
-		return new PunctuationTokenizerFunctionContext_de( &m_punctuation_char, m_errorhnd);
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 }
 

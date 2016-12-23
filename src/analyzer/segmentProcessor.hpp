@@ -7,8 +7,8 @@
  */
 #ifndef _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
-#include "featureContextMap.hpp"
-#include "patternFeatureContextMap.hpp"
+#include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/query.hpp"
@@ -39,8 +39,8 @@ public:
 	SegmentProcessor(
 			const FeatureConfigMap& featureConfigMap_,
 			const PatternFeatureConfigMap& patternFeatureConfigMap_)
-		:m_featureContextMap(featureConfigMap_)
-		,m_patternFeatureContextMap(patternFeatureConfigMap_)
+		:m_featureConfigMap(&featureConfigMap_)
+		,m_patternFeatureConfigMap(&patternFeatureConfigMap_)
 		,m_concatenatedMap(){}
 	~SegmentProcessor(){}
 
@@ -72,7 +72,7 @@ public:
 
 private:
 	void processDocumentSegment( int featidx, std::size_t segmentpos, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
-	void processContentTokens( std::vector<BindTerm>& result, FeatureContext& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const;
+	void processContentTokens( std::vector<BindTerm>& result, FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const;
 
 private:
 	struct Chunk
@@ -97,8 +97,8 @@ private:
 	void operator=( const SegmentProcessor&){}	//... non copyable
 
 private:
-	FeatureContextMap m_featureContextMap;
-	PatternFeatureContextMap m_patternFeatureContextMap;
+	const FeatureConfigMap* m_featureConfigMap;
+	const PatternFeatureConfigMap* m_patternFeatureConfigMap;
 	ConcatenatedMap m_concatenatedMap;
 	std::vector<BindTerm> m_searchTerms;
 	std::vector<BindTerm> m_forwardTerms;

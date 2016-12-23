@@ -9,12 +9,12 @@
 /// \file tokenizerFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/token.hpp"
+#include <string>
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
-
-/// \brief Forward declaration
-class TokenizerFunctionContextInterface;
 
 /// \brief Interface for tokenization
 class TokenizerFunctionInstanceInterface
@@ -28,9 +28,10 @@ public:
 	/// \remark This flag is needed for context sensitive tokenization like for example for recognizing punctuation.
 	virtual bool concatBeforeTokenize() const=0;
 
-	/// \brief Create an instance (context for one document) for tokenization
-	/// \return the created tokenizer instance (with ownership)
-	virtual TokenizerFunctionContextInterface* createFunctionContext() const=0;
+	/// \brief Tokenize a segment into a list of tokens
+	/// \param[in] src pointer to segment to tokenize
+	/// \param[in] srcsize size of the segment to tokenize in bytes
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const=0;
 };
 
 }//namespace

@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 
+#error DEPRECATED
+
 /// \brief strus toplevel namespace
 namespace strus
 {
@@ -27,7 +29,7 @@ public:
 	/// \param[in] src start of the token to normalize
 	/// \param[in] srcsize size of the token in bytes
 	/// \return list of normalized tokens
-	virtual std::string normalize( const char* src, std::size_t srcsize)=0;
+	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
 };
 
 }//namespace

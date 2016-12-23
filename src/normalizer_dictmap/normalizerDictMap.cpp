@@ -8,7 +8,6 @@
 #include "normalizerDictMap.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -140,38 +139,6 @@ void DictMap::loadFile( const std::string& filename)
 }
 
 
-class DictMapNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	DictMapNormalizerFunctionContext( const DictMap* map_, ErrorBufferInterface* errorhnd)
-		:m_map( map_),m_errorhnd(errorhnd){}
-	
-	virtual std::string normalize(
-			const char* src,
-			std::size_t srcsize)
-	{
-		try
-		{
-			std::string key( src, srcsize);
-			std::string rt;
-			if (m_map->get( key, rt))
-			{
-				return rt;
-			}
-			else
-			{
-				return key;
-			}
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, std::string());
-	}
-
-private:
-	const DictMap* m_map;
-	ErrorBufferInterface* m_errorhnd;
-};
-
 class DictMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
@@ -185,13 +152,24 @@ public:
 		m_map.loadFile( textproc->getResourcePath( filename));
 	}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize) const
 	{
 		try
 		{
-			return new DictMapNormalizerFunctionContext( &m_map, m_errorhnd);
+			std::string key( src, srcsize);
+			std::string rt;
+			if (m_map.get( key, rt))
+			{
+				return rt;
+			}
+			else
+			{
+				return key;
+			}
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
 private:

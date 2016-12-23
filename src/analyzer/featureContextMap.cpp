@@ -7,9 +7,10 @@
  */
 #include "featureContextMap.hpp"
 #include "private/internationalization.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
+#include "strus/normalizerFunctionInstanceInterface.hpp"
+#include "strus/tokenizerFunctionInstanceInterface.hpp"
 
+#error DEPRECATED
 using namespace strus;
 
 FeatureContext::FeatureContext( const FeatureConfig& config)

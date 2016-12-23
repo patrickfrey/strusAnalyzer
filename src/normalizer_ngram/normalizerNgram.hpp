@@ -9,7 +9,6 @@
 #define _STRUS_NORMALIZER_NGRAM_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "private/internationalization.hpp"
 #include <string>
 #include <vector>

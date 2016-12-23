@@ -9,12 +9,11 @@
 /// \file normalizerFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#include <string>
 
 /// \brief strus toplevel namespace
 namespace strus
 {
-/// \brief Forward declaration
-class NormalizerFunctionContextInterface;
 
 /// \class NormalizerFunctionInstanceInterface
 /// \brief Interface for a parameterized normalization function
@@ -24,9 +23,11 @@ public:
 	/// \brief Destructor
 	virtual ~NormalizerFunctionInstanceInterface(){}
 
-	/// \brief Create an instance (context for one document) for normalization
-	/// \return the created normalizer instance (with ownership)
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const=0;
+	/// \brief Normalization of a token
+	/// \param[in] src start of the token to normalize
+	/// \param[in] srcsize size of the token in bytes
+	/// \return list of normalized tokens
+	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
 };
 
 }//namespace

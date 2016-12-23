@@ -57,3 +57,31 @@ FeatureConfig::FeatureConfig(
 	}
 }
 
+std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) const
+{
+	std::vector<NormalizerReference>::iterator
+		ci = m_normalizerlist.begin(),
+		ce = m_normalizerlist.end();
+	if (ci == ce) return std::string( tok, toksize);
+	
+	std::string rt;
+	std::string origstr;
+	for (; ci != ce; ++ci)
+	{
+		rt = (*ci)->normalize( tok, toksize);
+		if (ci + 1 != ce)
+		{
+			origstr.swap( rt);
+			tok = origstr.c_str();
+			toksize = origstr.size();
+		}
+	}
+	return rt;
+}
+
+std::vector<analyzer::Token> FeatureConfig::tokenize( const char* src, std::size_t srcsize) const
+{
+	return m_tokenizer->tokenize( src, srcsize);
+}
+
+

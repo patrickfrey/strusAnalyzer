@@ -33,16 +33,17 @@ struct NgramConfiguration
 		:width(o.width),withEnd(o.withEnd),withStart(o.withStart),roundRobin(o.roundRobin){}
 };
 
-class NgramNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+
+class NgramNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	NgramNormalizerFunctionContext( const NgramConfiguration& config_, ErrorBufferInterface* errorhnd)
-		:m_config( config_),m_errorhnd(errorhnd){}
-	
+	NgramNormalizerInstance( const NgramConfiguration& config_, ErrorBufferInterface* errorhnd)
+		:m_config(config_),m_errorhnd(errorhnd){}
+
 	virtual std::string normalize(
 			const char* src,
-			std::size_t srcsize)
+			std::size_t srcsize) const
 	{
 		try
 		{
@@ -82,27 +83,6 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in normalize: %s"), *m_errorhnd, std::string());
-	}
-
-private:
-	NgramConfiguration m_config;
-	ErrorBufferInterface* m_errorhnd;
-};
-
-class NgramNormalizerInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	NgramNormalizerInstance( const NgramConfiguration& config_, ErrorBufferInterface* errorhnd)
-		:m_config(config_),m_errorhnd(errorhnd){}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new NgramNormalizerFunctionContext( m_config, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in create normalizer context: %s"), *m_errorhnd, 0);
 	}
 
 private:
