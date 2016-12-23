@@ -10,10 +10,8 @@
 #include "textwolf/cstringiterator.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/patternLexerInterface.hpp"
@@ -61,20 +59,6 @@ TextProcessor::~TextProcessor()
 	delete m_patterntermfeeder;
 }
 
-class EmptyNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	explicit EmptyNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
-
-	virtual std::string normalize( const char* src, std::size_t srcsize)
-	{
-		return std::string();
-	}
-private:
-	ErrorBufferInterface* m_errorhnd;
-};
 
 class EmptyNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
@@ -83,14 +67,9 @@ public:
 	explicit EmptyNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
-		
-		try
-		{
-			return new EmptyNormalizerFunctionContext( m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
+		return std::string();
 	}
 
 private:
@@ -127,14 +106,15 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
-class OrigNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+
+class OrigNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit OrigNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
+	explicit OrigNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
-	virtual std::string normalize( const char* src, std::size_t srcsize)
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
@@ -156,25 +136,7 @@ public:
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
-private:
-	ErrorBufferInterface* m_errorhnd;
-};
 
-class OrigNormalizerInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	explicit OrigNormalizerInstance( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new OrigNormalizerFunctionContext( m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
-	}
 private:
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -209,14 +171,15 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
-class TextNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+
+class TextNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit TextNormalizerFunctionContext( ErrorBufferInterface* errorhnd)
+	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
-	virtual std::string normalize( const char* src, std::size_t srcsize)
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
@@ -250,25 +213,7 @@ public:
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
-private:
-	ErrorBufferInterface* m_errorhnd;
-};
 
-class TextNormalizerInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new TextNormalizerFunctionContext( m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'text' normalizer: %s"), *m_errorhnd, 0);
-	}
 private:
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -303,28 +248,6 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
-class ContentTokenizerFunctionContext
-	:public TokenizerFunctionContextInterface
-{
-public:
-	explicit ContentTokenizerFunctionContext( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
-
-	virtual std::vector<analyzer::Token>
-			tokenize( const char* src, std::size_t srcsize)
-	{
-		try
-		{
-			std::vector<analyzer::Token> rt;
-			rt.push_back( analyzer::Token( 0/*ord*/, 0/*seg*/, 0/*ofs*/, srcsize));
-			return rt;
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
-	}
-
-private:
-	ErrorBufferInterface* m_errorhnd;
-};
 
 class ContentTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
@@ -333,13 +256,16 @@ public:
 	explicit ContentTokenizerInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
 
-	virtual TokenizerFunctionContextInterface* createFunctionContext() const
+	virtual std::vector<analyzer::Token>
+			tokenize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
-			return new ContentTokenizerFunctionContext( m_errorhnd);
+			std::vector<analyzer::Token> rt;
+			rt.push_back( analyzer::Token( 0/*ord*/, 0/*seg*/, 0/*ofs*/, srcsize));
+			return rt;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
 	virtual bool concatBeforeTokenize() const

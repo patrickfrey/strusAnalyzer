@@ -1146,7 +1146,7 @@ std::vector<analyzer::Token>
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "check abbreviation candidate '" << (word+wi) << "'" << std::endl;
 #endif
-						if (m_abbrevDict->get( word+wi, val))
+						if (m_abbrevDict.get( word+wi, val))
 						{
 #ifdef STRUS_LOWLEVEL_DEBUG
 							std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;

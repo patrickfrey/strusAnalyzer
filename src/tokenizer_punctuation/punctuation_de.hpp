@@ -7,7 +7,6 @@
  */
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "punctuation_utils.hpp"
 

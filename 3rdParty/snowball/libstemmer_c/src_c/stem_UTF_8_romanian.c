@@ -26,8 +26,7 @@ extern "C" {
 #endif
 
 
-extern struct SN_env * romanian_UTF_8_create_env(void);
-extern void romanian_UTF_8_close_env(struct SN_env * z);
+extern int romanian_UTF_8_init_env(struct SN_env *env);
 
 
 #ifdef __cplusplus
@@ -998,7 +997,6 @@ extern int romanian_UTF_8_stem(struct SN_env * z) {
     return 1;
 }
 
-extern struct SN_env * romanian_UTF_8_create_env(void) { return SN_create_env(0, 3, 1); }
+extern int romanian_UTF_8_init_env(struct SN_env *env) { return SN_init_env( env, 0, 3, 1); }
 
-extern void romanian_UTF_8_close_env(struct SN_env * z) { SN_close_env(z, 0); }
 

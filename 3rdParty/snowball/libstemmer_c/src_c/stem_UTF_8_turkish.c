@@ -54,10 +54,7 @@ static int r_append_U_to_stems_ending_with_d_or_g(struct SN_env * z);
 extern "C" {
 #endif
 
-
-extern struct SN_env * turkish_UTF_8_create_env(void);
-extern void turkish_UTF_8_close_env(struct SN_env * z);
-
+extern int turkish_UTF_8_init_env(struct SN_env *env);
 
 #ifdef __cplusplus
 }
@@ -2199,7 +2196,5 @@ extern int turkish_UTF_8_stem(struct SN_env * z) {
     return 1;
 }
 
-extern struct SN_env * turkish_UTF_8_create_env(void) { return SN_create_env(0, 1, 1); }
-
-extern void turkish_UTF_8_close_env(struct SN_env * z) { SN_close_env(z, 0); }
+extern int turkish_UTF_8_init_env(struct SN_env *env) { return SN_init_env( env, 0, 1, 1); }
 

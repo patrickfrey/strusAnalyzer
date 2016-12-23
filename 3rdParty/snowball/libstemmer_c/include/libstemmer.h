@@ -6,7 +6,10 @@ extern "C" {
 
 struct sb_stemmer;
 typedef unsigned char sb_symbol;
-struct SN_env;
+typedef struct
+{
+	unsigned char _[6*128];	//... sizeof(sb_stemmer_env) > sizeof(SN_env)
+} sb_stemmer_env;
 
 /* FIXME - should be able to get a version number for each stemming
  * algorithm (which will be incremented each time the output changes). */
@@ -56,7 +59,7 @@ struct sb_stemmer * sb_stemmer_new_threadsafe( const char * algorithm, const cha
  *  It is safe to pass a null pointer to this function - this will have
  *  no effect.
  */
-void                sb_stemmer_delete(struct sb_stemmer * stemmer);
+void sb_stemmer_delete(struct sb_stemmer * stemmer);
 
 /** Stem a word.
  *
@@ -70,27 +73,18 @@ void                sb_stemmer_delete(struct sb_stemmer * stemmer);
  */
 
 /** Create context for thread safe variant of stem a word. */
-struct SN_env* sb_stemmer_create_env( const struct sb_stemmer * stemmer);
-/** Destroy context for thread safe variant of stem a word. */
-void sb_stemmer_delete_env( const struct sb_stemmer * stemmer, struct SN_env* env);
+extern int sb_stemmer_UTF_8_init_env( const struct sb_stemmer * stemmer, sb_stemmer_env* env);
 
 /** Thread safe variant of stem a word. */
 const sb_symbol *   sb_stemmer_stem_threadsafe( 
                                 const struct sb_stemmer * stemmer,
-                                struct SN_env* env,
+                                sb_stemmer_env* env,
                                 const sb_symbol * word, int size);
 
 
-/** Get the length of the result of the last stemmed word.
- *  This should not be called before sb_stemmer_stem() has been called.
- */
-int                 sb_stemmer_length(
-                                struct sb_stemmer * stemmer);
-
 /** Threadsafe version of getting the length of the result of the last stemmed word.
  */
-int                 sb_stemmer_length_threadsafe(
-                                struct SN_env* env);
+int sb_stemmer_length_threadsafe( sb_stemmer_env* env);
 
 #ifdef __cplusplus
 }

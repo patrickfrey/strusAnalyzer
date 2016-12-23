@@ -43,25 +43,6 @@ private:
 	std::string m_strings;
 };
 
-class CharMapNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	CharMapNormalizerFunctionContext( const CharMap* map_, ErrorBufferInterface* errorhnd)
-		:m_map( map_),m_errorhnd(errorhnd){}
-	
-	virtual std::string normalize(
-			const char* src,
-			std::size_t srcsize)
-	{
-		return m_map->rewrite( src, srcsize, m_errorhnd);
-	}
-
-private:
-	const CharMap* m_map;
-	ErrorBufferInterface* m_errorhnd;
-};
-
 class CharMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
@@ -69,13 +50,11 @@ public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype, ErrorBufferInterface* errorhnd)
 		:m_map(maptype),m_errorhnd(errorhnd){}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize) const
 	{
-		try
-		{
-			return new CharMapNormalizerFunctionContext( &m_map, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in normalizer: %s"), *m_errorhnd, 0);
+		return m_map.rewrite( src, srcsize, m_errorhnd);
 	}
 
 private:
@@ -575,17 +554,16 @@ private:
 	std::vector<Range> m_ranges;
 };
 
-
-class CharSelectNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+class CharSelectNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	CharSelectNormalizerFunctionContext( const CharSet* set_, ErrorBufferInterface* errorhnd)
-		:m_set( set_),m_errorhnd(errorhnd){}
-	
+	CharSelectNormalizerInstance( const std::vector<std::string>& setnames, ErrorBufferInterface* errorhnd)
+		:m_set(setnames),m_errorhnd(errorhnd){}
+
 	virtual std::string normalize(
 			const char* src,
-			std::size_t srcsize)
+			std::size_t srcsize) const
 	{
 		try
 		{
@@ -600,7 +578,7 @@ public:
 			{
 				bufpos = 0;
 				textwolf::UChar value = utf8.value( buf, bufpos, itr);
-				if (m_set->isMember( value))
+				if (m_set.isMember( value))
 				{
 					rt.append( buf, bufpos);
 					selected = true;
@@ -617,27 +595,6 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
-	}
-
-private:
-	const CharSet* m_set;
-	ErrorBufferInterface* m_errorhnd;
-};
-
-class CharSelectNormalizerInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	CharSelectNormalizerInstance( const std::vector<std::string>& setnames, ErrorBufferInterface* errorhnd)
-		:m_set(setnames),m_errorhnd(errorhnd){}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new CharSelectNormalizerFunctionContext( &m_set, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating '%s' normalizer context: %s"), "charselect", *m_errorhnd, 0);
 	}
 
 private:

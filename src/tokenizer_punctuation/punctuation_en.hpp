@@ -7,7 +7,6 @@
  */
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_EN_HPP_INCLUDED
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "compactNodeTrie.hpp"
 #include "punctuation_utils.hpp"
@@ -30,7 +29,7 @@ public:
 		return true;
 	}
 
-	inline bool isPunctuation( textwolf::UChar ch)
+	inline bool isPunctuation( textwolf::UChar ch) const
 	{
 		return (ch <= 127 && (m_punctuation_char)[(unsigned char)ch]);
 	}

@@ -24,9 +24,7 @@ static int r_prelude(struct SN_env * z);
 extern "C" {
 #endif
 
-
-extern struct SN_env * italian_UTF_8_create_env(void);
-extern void italian_UTF_8_close_env(struct SN_env * z);
+extern int italian_UTF_8_init_env(struct SN_env *env);
 
 
 #ifdef __cplusplus
@@ -1067,7 +1065,5 @@ extern int italian_UTF_8_stem(struct SN_env * z) {
     return 1;
 }
 
-extern struct SN_env * italian_UTF_8_create_env(void) { return SN_create_env(0, 3, 0); }
-
-extern void italian_UTF_8_close_env(struct SN_env * z) { SN_close_env(z, 0); }
+extern int italian_UTF_8_init_env(struct SN_env *env) { return SN_init_env( env, 0, 3, 0); }
 

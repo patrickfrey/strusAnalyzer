@@ -7,7 +7,6 @@
  */
 #include "tokenizerRegex.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -28,16 +27,22 @@ struct RegexConfiguration
 		:expression(o.expression),index(o.index){}
 };
 
-class RegexTokenizerFunctionContext
-	:public TokenizerFunctionContextInterface
+
+class RegexTokenizerFunctionInstance
+	:public TokenizerFunctionInstanceInterface
 {
 public:
-	RegexTokenizerFunctionContext( const RegexConfiguration& config_, ErrorBufferInterface* errorhnd_)
+	RegexTokenizerFunctionInstance( const RegexConfiguration& config_, ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_),m_config(config_){}
 
-	virtual ~RegexTokenizerFunctionContext(){}
+	virtual ~RegexTokenizerFunctionInstance(){}
 
-	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize)
+	virtual bool concatBeforeTokenize() const
+	{
+		return false;
+	}
+
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
@@ -66,35 +71,6 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" tokenizer function: %s"), *m_errorhnd, std::vector<analyzer::Token>());
-	}
-
-private:
-	ErrorBufferInterface* m_errorhnd;
-	RegexConfiguration m_config;
-};
-
-
-class RegexTokenizerFunctionInstance
-	:public TokenizerFunctionInstanceInterface
-{
-public:
-	RegexTokenizerFunctionInstance( const RegexConfiguration& config_, ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_config(config_){}
-
-	virtual ~RegexTokenizerFunctionInstance(){}
-
-	virtual bool concatBeforeTokenize() const
-	{
-		return false;
-	}
-
-	virtual TokenizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new RegexTokenizerFunctionContext( m_config, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating \"regex\" tokenizer function context: %s"), *m_errorhnd, 0);
 	}
 
 private:

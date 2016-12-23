@@ -1,4 +1,4 @@
-
+#include "api.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,29 +8,6 @@
 #define unless(C) if(!(C))
 
 #define CREATE_SIZE 1
-
-extern symbol * create_s(void) {
-    symbol * p;
-    void * mem = malloc(HEAD + (CREATE_SIZE + 1) * sizeof(symbol));
-    if (mem == NULL) return NULL;
-    p = (symbol *) (HEAD + (char *) mem);
-    CAPACITY(p) = CREATE_SIZE;
-    SET_SIZE(p, CREATE_SIZE);
-    return p;
-}
-
-extern void lose_s(symbol * p) {
-    if (p == NULL) return;
-    free((char *) p - HEAD);
-}
-
-/*
-   new_p = skip_utf8(p, c, lb, l, n); skips n characters forwards from p + c
-   if n +ve, or n characters backwards from p + c - 1 if n -ve. new_p is the new
-   position, or 0 on failure.
-
-   -- used to implement hop and next in the utf8 case.
-*/
 
 extern int skip_utf8(const symbol * p, int c, int lb, int l, int n) {
     int b;
@@ -329,7 +306,7 @@ extern int find_among_b(struct SN_env * z, const struct among * v, int v_size) {
 static symbol * increase_size(symbol * p, int n) {
     symbol * q;
     int new_size = n + 20;
-    if (new_size >= sizeof(symbol_struct::buf)) return 0;
+    if (new_size >= SymbolBufSize) return 0;
     CAPACITY(q) = new_size;
     return q;
 }
