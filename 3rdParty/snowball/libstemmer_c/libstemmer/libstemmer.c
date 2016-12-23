@@ -98,21 +98,6 @@ sb_stemmer_delete(struct sb_stemmer * stemmer)
 }
 
 const sb_symbol *
-sb_stemmer_stem(struct sb_stemmer * stemmer, const sb_symbol * word, int size)
-{
-    int ret;
-    if (SN_set_current(stemmer->env, size, (const symbol *)(word)))
-    {
-        stemmer->env->l = 0;
-        return NULL;
-    }
-    ret = stemmer->stem(stemmer->env);
-    if (ret < 0) return NULL;
-    stemmer->env->p[stemmer->env->l] = 0;
-    return (const sb_symbol *)(stemmer->env->p);
-}
-
-const sb_symbol *
 sb_stemmer_stem_threadsafe( const struct sb_stemmer * stemmer, struct SN_env* env, const sb_symbol * word, int size)
 {
     int ret;

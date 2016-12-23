@@ -329,13 +329,7 @@ extern int find_among_b(struct SN_env * z, const struct among * v, int v_size) {
 static symbol * increase_size(symbol * p, int n) {
     symbol * q;
     int new_size = n + 20;
-    void * mem = realloc((char *) p - HEAD,
-                         HEAD + (new_size + 1) * sizeof(symbol));
-    if (mem == NULL) {
-        lose_s(p);
-        return NULL;
-    }
-    q = (symbol *) (HEAD + (char *)mem);
+    if (new_size >= sizeof(symbol_struct::buf)) return 0;
     CAPACITY(q) = new_size;
     return q;
 }

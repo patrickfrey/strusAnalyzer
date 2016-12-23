@@ -68,10 +68,6 @@ void                sb_stemmer_delete(struct sb_stemmer * stemmer);
  *
  *  If an out-of-memory error occurs, this will return NULL.
  */
-const sb_symbol *   sb_stemmer_stem(
-                                struct sb_stemmer * stemmer,
-                                const sb_symbol * word, int size);
-
 
 /** Create context for thread safe variant of stem a word. */
 struct SN_env* sb_stemmer_create_env( const struct sb_stemmer * stemmer);

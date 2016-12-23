@@ -2,6 +2,7 @@
 #include <stdlib.h> /* for calloc, free */
 #include "header.h"
 
+#if 0 //DEPRECATED
 extern struct SN_env * SN_create_env(int S_size, int I_size, int B_size)
 {
     struct SN_env * z = (struct SN_env *) calloc(1, sizeof(struct SN_env));
@@ -38,29 +39,26 @@ error:
     SN_close_env(z, S_size);
     return NULL;
 }
+#endif
 
-extern void SN_close_env(struct SN_env * z, int S_size)
+extern int SN_init_env( struct SN_env* env, int S_size, int I_size, int B_size)
 {
-    if (z == NULL) return;
-    if (S_size)
-    {
-        int i;
-        for (i = 0; i < S_size; i++)
-        {
-            lose_s(z->S[i]);
-        }
-        free(z->S);
-    }
-    free(z->I);
-    free(z->B);
-    if (z->p) lose_s(z->p);
-    free(z);
+	std::memset( env, 0, sizeof(*env));
+	if (S_size > max_S_size || I_size > max_I_size || B_size > max_B_size) return -1;
+	env->S = buf_S;
+	env->I = buf_I;
+	env->B = buf_B;
+	int si=0;
+	for (; si <= S_size; ++si)
+	{
+		env->symbuf_S[ si].capacity = SymbolBufSize;
+	}
+	sev->p = env->symbuf_S[ 0].buf; 
+	si = 1;
+	for (; si < S_size; ++si)
+	{
+		env->S[ si-1] = env->symbuf_S[ si].buf;
+	}
 }
 
-extern int SN_set_current(struct SN_env * z, int size, const symbol * s)
-{
-    int err = replace_s(z, 0, z->l, size, s, NULL);
-    z->c = 0;
-    return err;
-}
 
