@@ -10,7 +10,7 @@
 #include "documentAnalyzer.hpp"
 #include "segmentProcessor.hpp"
 #include "patternMatchContextMap.hpp"
-#include "patternFeatureContextMap.hpp"
+#include "patternFeatureConfigMap.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 

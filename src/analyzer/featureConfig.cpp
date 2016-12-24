@@ -59,7 +59,7 @@ FeatureConfig::FeatureConfig(
 
 std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) const
 {
-	std::vector<NormalizerReference>::iterator
+	std::vector<NormalizerReference>::const_iterator
 		ci = m_normalizerlist.begin(),
 		ce = m_normalizerlist.end();
 	if (ci == ce) return std::string( tok, toksize);

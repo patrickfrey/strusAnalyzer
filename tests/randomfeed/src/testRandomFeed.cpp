@@ -18,14 +18,12 @@
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/analyzer/token.hpp"
@@ -186,12 +184,7 @@ static void testTokenizer( strus::TextProcessorInterface* textproc, unsigned int
 		{
 			throw std::runtime_error( std::string("failed to create tokenizer  '") + name + "' instance: " + g_errorhnd->fetchError());
 		}
-		std::auto_ptr<strus::TokenizerFunctionContextInterface> context( instance->createFunctionContext());
-		if (!context.get())
-		{
-			throw std::runtime_error( std::string("failed to create tokenizer  '") + name + "' context: " + g_errorhnd->fetchError());
-		}
-		std::vector<strus::analyzer::Token> result( context->tokenize( value.c_str(), value.size()));
+		std::vector<strus::analyzer::Token> result( instance->tokenize( value.c_str(), value.size()));
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "output tokenizer " << name << ":";
 		std::vector<strus::analyzer::Token>::const_iterator ri = result.begin(), re = result.end();
@@ -258,12 +251,7 @@ static void testNormalizer( strus::TextProcessorInterface* textproc, unsigned in
 		{
 			throw std::runtime_error( std::string("failed to create normalizer '") + name + "' instance: " + g_errorhnd->fetchError());
 		}
-		std::auto_ptr<strus::NormalizerFunctionContextInterface> context( instance->createFunctionContext());
-		if (!context.get())
-		{
-			throw std::runtime_error( std::string("failed to create normalizer '") + name + "' context: " + g_errorhnd->fetchError());
-		}
-		std::string result( context->normalize( value.c_str(), value.size()));
+		std::string result( instance->normalize( value.c_str(), value.size()));
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "output normalizer " << name << ": ";
 		print( std::cout, result);

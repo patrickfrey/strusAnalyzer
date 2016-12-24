@@ -276,7 +276,7 @@ analyzer::Query SegmentProcessor::fetchQuery()
 }
 
 
-void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
+void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, const FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
 #ifdef STRUS_LOWLEVEL_DEBUG
 	const char* indextype = feat.m_config->featureClass()==FeatSearchIndexTerm?"search index":"forward index";
@@ -308,8 +308,8 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 			{
 				BindTerm term(
 					segmentpos, ti->origpos() - str_position/*ofs*/,
-					feat.m_config->name()/*type*/, vi/*value*/,
-					feat.m_config->options().positionBind());
+					feat.name()/*type*/, vi/*value*/,
+					feat.options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -320,8 +320,8 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 		{
 			BindTerm term(
 				segmentpos, ti->origpos() - str_position/*ofs*/,
-				feat.m_config->name()/*type*/, termval/*value*/,
-				feat.m_config->options().positionBind());
+				feat.name()/*type*/, termval/*value*/,
+				feat.options().positionBind());
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -332,36 +332,36 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, Feat
 
 void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentpos, const char* segsrc, std::size_t segsrcsize, const std::vector<SegPosDef>& concatposmap)
 {
-	const FeatureConfig* feat = m_featureConfigMap->featureConfig( featidx);
+	const FeatureConfig& feat = m_featureConfigMap->featureConfig( featidx);
 #ifdef STRUS_LOWLEVEL_DEBUG
 	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
-	std::vector<analyzer::Token> tokens = feat->tokenize( segsrc, segsrcsize);
-	switch (feat.m_config->featureClass())
+	std::vector<analyzer::Token> tokens = feat.tokenize( segsrc, segsrcsize);
+	switch (feat.featureClass())
 	{
 		case FeatMetaData:
 		{
-			processContentTokens( m_metadataTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_metadataTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatAttribute:
 		{
-			processContentTokens( m_attributeTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_attributeTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatSearchIndexTerm:
 		{
-			processContentTokens( m_searchTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_searchTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatForwardIndexTerm:
 		{
-			processContentTokens( m_forwardTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_forwardTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 		case FeatPatternLexem:
 		{
-			processContentTokens( m_patternLexemTerms, *feat, tokens, segsrc, segmentpos, concatposmap);
+			processContentTokens( m_patternLexemTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
 	}
@@ -395,29 +395,24 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 	std::vector<BindTerm>::const_iterator ri = result.begin(), re = result.end();
 	for (; ri != re; ++ri)
 	{
-		PatternFeatureConfig* ctx = m_patternFeatureConfigMap->getConfig( ri->type());
-		if (ctx)
+		const PatternFeatureConfig* cfg = m_patternFeatureConfigMap->getConfig( ri->type());
+		if (cfg) switch (cfg->featureClass())
 		{
-			std::string value = ctx->normalize( ri->value());
-			const PatternFeatureConfig* cfg = ctx->config();
-			switch (cfg->featureClass())
-			{
-				case FeatMetaData:
-					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
-					break;
-				case FeatAttribute:
-					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
-					break;
-				case FeatSearchIndexTerm:
-					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
-					break;
-				case FeatForwardIndexTerm:
-					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), value, cfg->options().positionBind()));
-					break;
-				case FeatPatternLexem:
-					throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
-					break;
-			}
+			case FeatMetaData:
+				m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				break;
+			case FeatAttribute:
+				m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				break;
+			case FeatSearchIndexTerm:
+				m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				break;
+			case FeatForwardIndexTerm:
+				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				break;
+			case FeatPatternLexem:
+				throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
+				break;
 		}
 	}
 }

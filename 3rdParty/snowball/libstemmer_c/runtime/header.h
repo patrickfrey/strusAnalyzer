@@ -20,9 +20,6 @@ struct among
     int (* function)(struct SN_env *);
 };
 
-extern symbol * create_s(void);
-extern void lose_s(symbol * p);
-
 extern int skip_utf8(const symbol * p, int c, int lb, int l, int n);
 
 extern int in_grouping_U(struct SN_env * z, const unsigned char * s, int min, int max, int repeat);

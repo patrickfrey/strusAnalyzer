@@ -321,8 +321,7 @@ extern int replace_s(struct SN_env * z, int c_bra, int c_ket, int s_size, const 
     int adjustment;
     int len;
     if (z->p == NULL) {
-        z->p = create_s();
-        if (z->p == NULL) return -1;
+        return -1;
     }
     adjustment = s_size - (c_ket - c_bra);
     len = SIZE(z->p);
@@ -398,7 +397,6 @@ extern int insert_v(struct SN_env * z, int bra, int ket, const symbol * p) {
 
 extern symbol * slice_to(struct SN_env * z, symbol * p) {
     if (slice_check(z)) {
-        lose_s(p);
         return NULL;
     }
     {
