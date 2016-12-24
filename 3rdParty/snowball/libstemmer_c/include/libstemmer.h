@@ -8,7 +8,7 @@ struct sb_stemmer;
 typedef unsigned char sb_symbol;
 typedef struct
 {
-	unsigned char _[6*128];	//... sizeof(sb_stemmer_env) > sizeof(SN_env)
+	unsigned char _[10*128];	//... sizeof(sb_stemmer_env) > sizeof(SN_env)
 } sb_stemmer_env;
 
 /* FIXME - should be able to get a version number for each stemming

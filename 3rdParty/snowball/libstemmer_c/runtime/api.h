@@ -3,13 +3,13 @@
 
 typedef unsigned char symbol;
 
-#define SymbolBufSize 120
+#define SymbolBufSize 248
 
 typedef struct
 {
 	int capacity;
 	int size;
-	unsigned char buf[ SymbolBufSize];
+	symbol buf[ SymbolBufSize];
 } symbol_struct;
 
 /* Or replace 'char' above with 'short' for 16 bit characters.
@@ -26,6 +26,7 @@ typedef struct
 #define max_I_size 4
 #define max_B_size 4
 
+/// [ASSERT] The size of this structure must not be greater than the size of sb_stemmer_env in libstemmer.h
 struct SN_env {
     symbol * p;
     int c; int l; int lb; int bra; int ket;
