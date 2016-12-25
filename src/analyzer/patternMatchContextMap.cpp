@@ -226,6 +226,15 @@ PreProcPatternMatchContextMap::PreProcPatternMatchContextMap( const PreProcPatte
 	}
 }
 
+PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config)
+{
+	PostProcPatternMatchConfigMap::const_iterator ci = config.begin(), ce = config.end();
+	for (; ci != ce; ++ci)
+	{
+		m_ar.push_back( PostProcPatternMatchContext( *ci));
+	}
+}
+
 void PreProcPatternMatchContextMap::clear()
 {
 	PreProcPatternMatchContextMap::iterator ci = begin(), ce = end();
@@ -235,7 +244,7 @@ void PreProcPatternMatchContextMap::clear()
 	}
 }
 
-PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config)
+void PostProcPatternMatchContextMap::clear()
 {
 	PostProcPatternMatchContextMap::iterator ci = begin(), ce = end();
 	for (; ci != ce; ++ci)

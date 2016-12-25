@@ -52,7 +52,8 @@ struct PostProcPatternMatchContext
 	PostProcPatternMatchContext( const PostProcPatternMatchContext& o)
 		:m_config(o.m_config)
 		,m_matcher(o.m_matcher)
-		,m_feeder(o.m_feeder){}
+		,m_feeder(o.m_feeder)
+		,m_input(o.m_input){}
 
 	void process( const std::vector<BindTerm>& input);
 	std::vector<BindTerm> fetchResults();
