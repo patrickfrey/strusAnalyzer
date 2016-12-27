@@ -279,7 +279,7 @@ analyzer::Query SegmentProcessor::fetchQuery()
 void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, const FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
 #ifdef STRUS_LOWLEVEL_DEBUG
-	const char* indextype = feat.m_config->featureClass()==FeatSearchIndexTerm?"search index":"forward index";
+	const char* indextype = feat.featureClass()==FeatSearchIndexTerm?"search index":"forward index";
 #endif
 	std::vector<SegPosDef>::const_iterator
 		ci = concatposmap.begin(), ce = concatposmap.end();
@@ -334,7 +334,7 @@ void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentp
 {
 	const FeatureConfig& feat = m_featureConfigMap->featureConfig( featidx);
 #ifdef STRUS_LOWLEVEL_DEBUG
-	std::cout << "process document segment '" << feat.m_config->name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
+	std::cout << "process document segment '" << feat.name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
 	std::vector<analyzer::Token> tokens = feat.tokenize( segsrc, segsrcsize);
 	switch (feat.featureClass())
