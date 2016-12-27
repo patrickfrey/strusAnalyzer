@@ -10,7 +10,6 @@
 #include "strus/analyzer/patternLexem.hpp"
 #include <cstring>
 #include <algorithm>
-/*[-]*/#include <iostream>
 
 using namespace strus;
 
@@ -168,10 +167,8 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	pi = pinput.begin(), pe = pinput.end();
 	for (; pi != pe; ++pi)
 	{
-		/*[-]*/std::cout << "INPUT " << pi->id() << " pos " << pi->ordpos() << " orig " << pi->origseg() << ":" << pi->origpos() << " size " << pi->origsize() << std::endl;
 		m_matcher->putInput( *pi);
 	}
-	/*[-]*/std::cout << "DONE" << std::endl;
 
 	// Build result:
 	std::vector<BindTerm> rt;
