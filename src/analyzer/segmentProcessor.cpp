@@ -412,7 +412,6 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 				break;
 			case FeatPatternLexem:
 				throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
-				break;
 		}
 	}
 }

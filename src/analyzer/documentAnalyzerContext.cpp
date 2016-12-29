@@ -166,7 +166,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		{
 			// process concatenated chunks:
 			m_segmentProcessor.processConcatenated();
-	
+
 			// fetch pre processing pattern outputs:
 			PreProcPatternMatchContextMap::iterator
 				vi = m_preProcPatternMatchContextMap.begin(),
@@ -175,7 +175,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			{
 				m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
 			}
-	
+
 			// process post processing patterns:
 			PostProcPatternMatchContextMap::iterator
 				pi = m_postProcPatternMatchContextMap.begin(),
@@ -199,7 +199,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				pi->process( m_segmentProcessor.patternLexemTerms());
 				m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
 			}
-	
+
 			// create output (with real positions):
 			doc = m_segmentProcessor.fetchDocument( doc);
 	
