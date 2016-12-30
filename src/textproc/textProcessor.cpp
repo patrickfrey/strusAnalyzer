@@ -107,6 +107,54 @@ private:
 };
 
 
+class ConstNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
+{
+public:
+	explicit ConstNormalizerInstance( const std::string& value_, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_value(value_){}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	{
+		return m_value;
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::string m_value;
+};
+
+class ConstNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit ConstNormalizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size() != 1)
+		{
+			m_errorhnd->report( "one argument expected for 'const' normalizer");
+			return 0;
+		}
+		try
+		{
+			return new ConstNormalizerInstance( args[0], m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in 'const' normalizer: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Normalizer mapping input tokens to a constant string");
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+
 class OrigNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
@@ -508,6 +556,7 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
 	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
 	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
+	defineNormalizer( "const", new ConstNormalizerFunction(errorhnd));
 	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
 	defineAggregator( "minpos", new MinPosAggregatorFunction(errorhnd));
 	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,errorhnd));
