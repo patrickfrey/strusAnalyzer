@@ -203,10 +203,21 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			// create output (with real positions):
 			doc = m_segmentProcessor.fetchDocument( doc);
 	
-			// Map statistics, if defined
+			// Map statistics, if defined:
 			mapStatistics( doc);
 
+			// Reset current document processing state:
 			m_segmentProcessor.clearTermMaps();
+			pi = m_postProcPatternMatchContextMap.begin();
+			for (; pi != pe; ++pi)
+			{
+				pi->clear();
+			}
+			vi = m_preProcPatternMatchContextMap.begin();
+			for (; vi != ve; ++vi)
+			{
+				vi->clear();
+			}
 		}
 		else
 		{

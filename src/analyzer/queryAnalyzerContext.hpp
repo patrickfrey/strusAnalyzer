@@ -66,8 +66,6 @@ public:
 	};
 
 private:
-	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
-	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const QueryAnalyzer* m_analyzer;
 	std::vector<Field> m_fields;
 	std::vector<Group> m_groups;

@@ -20,9 +20,7 @@
 using namespace strus;
 
 QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
-	:m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap())
-	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
-	,m_analyzer(analyzer_)
+	:m_analyzer(analyzer_)
 	,m_fields(),m_groups()
 	,m_errorhnd(errorhnd_)
 {}
@@ -271,6 +269,9 @@ static QueryTree buildQueryTree(
 analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 {
 	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
+	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap());
+	PostProcPatternMatchContextMap postProcPatternMatchContextMap( m_analyzer->postProcPatternMatchConfigMap());
+
 	std::vector<Field>::const_iterator fi = m_fields.begin(), fe = m_fields.end();
 	unsigned int fidx=0;
 	for (fidx=0; fi != fe; ++fi,++fidx)
@@ -295,14 +296,14 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 		for (;ti != te; ++ti)
 		{
 			PreProcPatternMatchContext& ppctx
-				= m_preProcPatternMatchContextMap.context( ti->second);
+				= preProcPatternMatchContextMap.context( ti->second);
 			ppctx.process( fidx/*segment pos = field index*/, fi->content.c_str(), fi->content.size());
 		}
 	}
 	// fetch pre processing pattern outputs:
 	PreProcPatternMatchContextMap::iterator
-		vi = m_preProcPatternMatchContextMap.begin(),
-		ve = m_preProcPatternMatchContextMap.end();
+		vi = preProcPatternMatchContextMap.begin(),
+		ve = preProcPatternMatchContextMap.end();
 	for (; vi != ve; ++vi)
 	{
 		segmentProcessor.processPatternMatchResult( vi->fetchResults());
@@ -310,15 +311,16 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 
 	// process post processing patterns:
 	PostProcPatternMatchContextMap::iterator
-		pi = m_postProcPatternMatchContextMap.begin(),
-		pe = m_postProcPatternMatchContextMap.end();
+		pi = postProcPatternMatchContextMap.begin(),
+		pe = postProcPatternMatchContextMap.end();
 	for (; pi != pe; ++pi)
 	{
 		pi->process( segmentProcessor.searchTerms());
 		pi->process( segmentProcessor.patternLexemTerms());
 		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
-	return segmentProcessor.fetchQuery();
+	analyzer::Query rt = segmentProcessor.fetchQuery();
+	return rt;
 }
 
 static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& queryTree, unsigned int nodeidx)
