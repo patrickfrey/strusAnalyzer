@@ -15,7 +15,7 @@ using namespace strus;
 
 const char* strus::featureClassName( FeatureClass i)
 {
-	static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm"};
+	static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm", "PatternLexem"};
 	return  ar[i];
 }
 

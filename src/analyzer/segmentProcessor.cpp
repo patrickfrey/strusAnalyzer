@@ -275,11 +275,25 @@ analyzer::Query SegmentProcessor::fetchQuery()
 	return rt;
 }
 
+#ifdef STRUS_LOWLEVEL_DEBUG
+static const char* featureClassType( FeatureClass featclass)
+{
+	switch (featclass)
+	{
+		case FeatMetaData: return "metadata";
+		case FeatAttribute: return "attribute";
+		case FeatSearchIndexTerm: return "search index";
+		case FeatForwardIndexTerm: return "forward index";
+		case FeatPatternLexem: return "pattern lexem";
+	}
+	return 0;
+}
+#endif
 
 void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, const FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
 #ifdef STRUS_LOWLEVEL_DEBUG
-	const char* indextype = feat.featureClass()==FeatSearchIndexTerm?"search index":"forward index";
+	const char* indextype = featureClassType( feat.featureClass());
 #endif
 	std::vector<SegPosDef>::const_iterator
 		ci = concatposmap.begin(), ce = concatposmap.end();

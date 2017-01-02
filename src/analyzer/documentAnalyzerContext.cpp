@@ -186,13 +186,13 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				std::vector<std::string>::const_iterator li, le = lexems.end();
 				for (li = lexems.begin(); li != le; ++li)
 				{
-					if (m_analyzer->searchIndexTermTypeSet().find(*li) == m_analyzer->searchIndexTermTypeSet().end()) break;
+					if (m_analyzer->searchIndexTermTypeSet().find(*li) != m_analyzer->searchIndexTermTypeSet().end()) break;
 				}
 				if (li != le) pi->process( m_segmentProcessor.searchTerms());
 	
 				for (li = lexems.begin(); li != le; ++li)
 				{
-					if (m_analyzer->forwardIndexTermTypeSet().find(*li) == m_analyzer->forwardIndexTermTypeSet().end()) break;
+					if (m_analyzer->forwardIndexTermTypeSet().find(*li) != m_analyzer->forwardIndexTermTypeSet().end()) break;
 				}
 				if (li != le) pi->process( m_segmentProcessor.forwardTerms());
 	
