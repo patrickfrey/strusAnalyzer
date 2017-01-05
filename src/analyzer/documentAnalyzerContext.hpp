@@ -36,8 +36,9 @@ public:
 	virtual bool analyzeNext( analyzer::Document& doc);
 
 private:
-	void mapStatistics( analyzer::Document& res) const;
+	void processAggregatedMetadata( analyzer::Document& res) const;
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
+	void completeDocumentProcessing( analyzer::Document& res);
 
 private:
 	SegmentProcessor m_segmentProcessor;
@@ -45,10 +46,11 @@ private:
 	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const DocumentAnalyzer* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
-	std::vector<analyzer::Document> m_subdocstack;
 	bool m_eof;
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
+	unsigned int m_nof_segments;
+	std::string m_subdocTypeName;
 	ErrorBufferInterface* m_errorhnd;
 };
 

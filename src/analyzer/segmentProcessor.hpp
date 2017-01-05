@@ -60,7 +60,7 @@ public:
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
-	analyzer::Document fetchDocument( const analyzer::Document& prevdoc);
+	analyzer::Document fetchDocument();
 
 	/// \brief Fetch the currently processed query
 	/// \return the query object without grouping

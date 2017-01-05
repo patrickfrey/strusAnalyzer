@@ -35,13 +35,14 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_eof(false)
 	,m_curr_position(0)
 	,m_start_position(0)
+	,m_nof_segments(0)
+	,m_subdocTypeName()
 	,m_errorhnd(errorhnd)
 {
 	if (!m_segmenter)
 	{
 		throw strus::runtime_error( _TXT("failed to create document analyzer context"));
 	}
-	m_subdocstack.push_back( analyzer::Document());
 }
 
 DocumentAnalyzerContext::~DocumentAnalyzerContext()
@@ -55,7 +56,7 @@ void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize
 	m_eof = eof;
 }
 
-void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
+void DocumentAnalyzerContext::processAggregatedMetadata( analyzer::Document& res) const
 {
 	std::vector<DocumentAnalyzer::StatisticsConfig>::const_iterator
 		si = m_analyzer->statisticsConfigs().begin(), se = m_analyzer->statisticsConfigs().end();
@@ -70,23 +71,73 @@ void DocumentAnalyzerContext::mapStatistics( analyzer::Document& res) const
 }
 
 
+void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& res)
+{
+	// process concatenated chunks:
+	m_segmentProcessor.processConcatenated();
+
+	// fetch pre processing pattern outputs:
+	PreProcPatternMatchContextMap::iterator
+		vi = m_preProcPatternMatchContextMap.begin(),
+		ve = m_preProcPatternMatchContextMap.end();
+	for (; vi != ve; ++vi)
+	{
+		m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
+	}
+
+	// process post processing patterns:
+	PostProcPatternMatchContextMap::iterator
+		pi = m_postProcPatternMatchContextMap.begin(),
+		pe = m_postProcPatternMatchContextMap.end();
+	for (; pi != pe; ++pi)
+	{
+		std::vector<std::string> lexems = pi->m_feeder->lexemTypes();
+		std::vector<std::string>::const_iterator li, le = lexems.end();
+		for (li = lexems.begin(); li != le; ++li)
+		{
+			if (m_analyzer->searchIndexTermTypeSet().find(*li) != m_analyzer->searchIndexTermTypeSet().end()) break;
+		}
+		if (li != le) pi->process( m_segmentProcessor.searchTerms());
+
+		for (li = lexems.begin(); li != le; ++li)
+		{
+			if (m_analyzer->forwardIndexTermTypeSet().find(*li) != m_analyzer->forwardIndexTermTypeSet().end()) break;
+		}
+		if (li != le) pi->process( m_segmentProcessor.forwardTerms());
+
+		pi->process( m_segmentProcessor.patternLexemTerms());
+		m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
+	}
+
+	// create output (with real positions):
+	res = m_segmentProcessor.fetchDocument();
+	res.setSubDocumentTypeName( m_subdocTypeName);
+
+	// Map aggregated metadata, if defined:
+	processAggregatedMetadata( res);
+
+	// Reset current document processing state:
+	m_segmentProcessor.clearTermMaps();
+	pi = m_postProcPatternMatchContextMap.begin();
+	for (; pi != pe; ++pi)
+	{
+		pi->clear();
+	}
+	vi = m_preProcPatternMatchContextMap.begin();
+	for (; vi != ve; ++vi)
+	{
+		vi->clear();
+	}
+}
+
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
 	try 
 	{
-	AGAIN:
-		if (m_subdocstack.empty())
-		{
-			return false;
-		}
-		bool have_document = false;
 		doc.clear();
-		m_subdocstack.back().swap( doc);
-		m_subdocstack.pop_back();
 		const char* segsrc = 0;
 		std::size_t segsrcsize = 0;
 		int featidx = 0;
-		int nofSegments = 0;
 	
 		// [1] Scan the document and push the normalized tokenization of the elements to the result:
 		while (m_segmenter->getNext( featidx, m_curr_position, segsrc, segsrcsize))
@@ -101,26 +152,30 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					//... start or end of document marker
 					if (featidx == SubDocumentEnd)
 					{
+						if (m_nof_segments == 0)
+						{
+							return false;
+						}
 						//... end of sub document -> out of loop and return document
-						have_document = true;
-						break;
+						m_nof_segments = 0;
+						completeDocumentProcessing( doc);
+						m_subdocTypeName.clear();
+						return true;
 					}
 					else
 					{
-						// process what is left to process for the current sub document:
-						m_segmentProcessor.processConcatenated();
-						doc = m_segmentProcessor.fetchDocument( doc);
-						m_segmentProcessor.clearTermMaps();
-	
+						if (m_nof_segments > 0)
+						{
+							throw strus::runtime_error(_TXT("addressing segments outside of a sub document or overlapping sub documents found"));
+						}
 						// create new sub document:
-						m_subdocstack.push_back( doc);
-						doc.setSubDocumentTypeName( m_analyzer->subdoctypes()[ featidx-OfsSubDocument]);
+						m_subdocTypeName = m_analyzer->subdoctypes()[ featidx-OfsSubDocument];
 						m_start_position = m_curr_position;
 					}
 				}
 				else
 				{
-					++nofSegments;
+					++m_nof_segments;
 					if (featidx >= OfsPatternMatchSegment)
 					{
 						PreProcPatternMatchContext& ppctx
@@ -153,77 +208,17 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
 			}
 		}
-		if (!m_eof)
+		if (m_eof && m_nof_segments > 0)
 		{
-			if (!have_document)
+			if (!m_subdocTypeName.empty())
 			{
-				m_subdocstack.push_back( analyzer::Document());
-				m_subdocstack.back().swap( doc);
-				return false;
+				throw strus::runtime_error( _TXT( "sub document '%s' not terminated"), m_subdocTypeName.c_str());
 			}
+			completeDocumentProcessing( doc);
+			m_nof_segments = 0;
+			return true;
 		}
-		if (nofSegments)
-		{
-			// process concatenated chunks:
-			m_segmentProcessor.processConcatenated();
-
-			// fetch pre processing pattern outputs:
-			PreProcPatternMatchContextMap::iterator
-				vi = m_preProcPatternMatchContextMap.begin(),
-				ve = m_preProcPatternMatchContextMap.end();
-			for (; vi != ve; ++vi)
-			{
-				m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
-			}
-
-			// process post processing patterns:
-			PostProcPatternMatchContextMap::iterator
-				pi = m_postProcPatternMatchContextMap.begin(),
-				pe = m_postProcPatternMatchContextMap.end();
-			for (; pi != pe; ++pi)
-			{
-				std::vector<std::string> lexems = pi->m_feeder->lexemTypes();
-				std::vector<std::string>::const_iterator li, le = lexems.end();
-				for (li = lexems.begin(); li != le; ++li)
-				{
-					if (m_analyzer->searchIndexTermTypeSet().find(*li) != m_analyzer->searchIndexTermTypeSet().end()) break;
-				}
-				if (li != le) pi->process( m_segmentProcessor.searchTerms());
-	
-				for (li = lexems.begin(); li != le; ++li)
-				{
-					if (m_analyzer->forwardIndexTermTypeSet().find(*li) != m_analyzer->forwardIndexTermTypeSet().end()) break;
-				}
-				if (li != le) pi->process( m_segmentProcessor.forwardTerms());
-	
-				pi->process( m_segmentProcessor.patternLexemTerms());
-				m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
-			}
-
-			// create output (with real positions):
-			doc = m_segmentProcessor.fetchDocument( doc);
-	
-			// Map statistics, if defined:
-			mapStatistics( doc);
-
-			// Reset current document processing state:
-			m_segmentProcessor.clearTermMaps();
-			pi = m_postProcPatternMatchContextMap.begin();
-			for (; pi != pe; ++pi)
-			{
-				pi->clear();
-			}
-			vi = m_preProcPatternMatchContextMap.begin();
-			for (; vi != ve; ++vi)
-			{
-				vi->clear();
-			}
-		}
-		else
-		{
-			goto AGAIN;
-		}
-		return true;
+		return false;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzerContext::analyzeNext: %s"), *m_errorhnd, false);
 }

@@ -149,9 +149,9 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 	}
 }
 
-analyzer::Document SegmentProcessor::fetchDocument( const analyzer::Document& prevdoc)
+analyzer::Document SegmentProcessor::fetchDocument()
 {
-	analyzer::Document rt = prevdoc;
+	analyzer::Document rt;
 
 	std::set<Position> pset;
 	fillPositionSet( pset, m_searchTerms);
@@ -159,14 +159,6 @@ analyzer::Document SegmentProcessor::fetchDocument( const analyzer::Document& pr
 	PositionMap posmap = getPositionMap( pset);
 
 	std::size_t posofs = 0;
-	if (prevdoc.searchIndexTerms().size() && prevdoc.searchIndexTerms().back().pos() > posofs)
-	{
-		posofs = prevdoc.searchIndexTerms().back().pos();
-	}
-	if (prevdoc.forwardIndexTerms().size() && prevdoc.forwardIndexTerms().back().pos() > posofs)
-	{
-		posofs = prevdoc.forwardIndexTerms().back().pos();
-	}
 	std::vector<analyzer::Term> seterms;
 	fillTerms( seterms, m_searchTerms, posmap, posofs);
 	std::vector<analyzer::Term> fwterms;
