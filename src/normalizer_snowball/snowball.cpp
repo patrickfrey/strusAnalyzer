@@ -41,17 +41,16 @@ public:
 
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
-		sb_stemmer_env env;
-		sb_stemmer_UTF_8_init_env( m_stemmer, &env);
-		const sb_symbol* res = sb_stemmer_stem_threadsafe( m_stemmer, &env, (const sb_symbol*)src, srcsize);
-		if (!res)
-		{
-			m_errorhnd->report( "memory allocation error in stemmer");
-			return std::string();
-		}
-		std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( &env);
 		try
 		{
+			sb_stemmer_env env;
+			sb_stemmer_UTF_8_init_env( m_stemmer, &env);
+			const sb_symbol* res = sb_stemmer_stem_threadsafe( m_stemmer, &env, (const sb_symbol*)src, srcsize);
+			if (!res)
+			{
+				return std::string( src, srcsize);
+			}
+			std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( &env);
 			return std::string( (const char*)res, len);
 		}
 		catch (const std::bad_alloc& )
