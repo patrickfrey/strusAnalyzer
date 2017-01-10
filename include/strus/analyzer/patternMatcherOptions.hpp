@@ -45,6 +45,8 @@ public:
 	/// \brief Get iterator marking the end of the option list
 	const_iterator end() const	{return m_opts.end();}
 
+	std::size_t size() const	{return m_opts.size();}
+
 private:
 	std::vector<OptionDef> m_opts;	///< list of option definitions
 };
