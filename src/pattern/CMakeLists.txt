@@ -31,10 +31,22 @@ set_target_properties(
     VERSION ${STRUS_VERSION}
 )
 
+add_library( strus_pattern_serialize SHARED  libstrus_pattern_serialize.cpp  ${source_files} )
+target_link_libraries( strus_pattern_serialize  strus_private_utils strus_base )
+set_target_properties(
+    strus_pattern_serialize
+    PROPERTIES
+    DEBUG_POSTFIX "_d"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
+
 # ------------------------------
 # INSTALLATION
 # ------------------------------
 install( TARGETS strus_pattern_termfeeder
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
+install( TARGETS strus_pattern_serialize
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 
 
