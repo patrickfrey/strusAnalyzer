@@ -47,7 +47,7 @@ public:
 				{
 					si = skipChar( si);
 				}
-				if (rt.empty())
+				if (!rt.empty())
 				{
 					rt.append( m_jointoken);
 				}
