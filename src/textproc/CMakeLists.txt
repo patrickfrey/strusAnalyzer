@@ -23,6 +23,7 @@ link_directories(
 	"${PROJECT_SOURCE_DIR}/src/normalizer_charconv"
 	"${PROJECT_SOURCE_DIR}/src/normalizer_dateconv"
 	"${PROJECT_SOURCE_DIR}/src/normalizer_regex"
+	"${PROJECT_SOURCE_DIR}/src/normalizer_wordjoin"
 	"${PROJECT_SOURCE_DIR}/src/tokenizer_punctuation"
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_word"
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_regex"
@@ -48,6 +49,7 @@ target_link_libraries(
 	strus_normalizer_ngram
 	strus_normalizer_dateconv
 	strus_normalizer_regex
+	strus_normalizer_wordjoin
 	strus_tokenizer_punctuation
 	strus_tokenizer_word
 	strus_tokenizer_regex

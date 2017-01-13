@@ -304,11 +304,10 @@ extern int find_among_b(struct SN_env * z, const struct among * v, int v_size) {
  * If insufficient memory, returns NULL and frees the old buffer.
  */
 static symbol * increase_size(symbol * p, int n) {
-    symbol * q;
     int new_size = n + 20;
     if (new_size >= SymbolBufSize) return 0;
-    CAPACITY(q) = new_size;
-    return q;
+    CAPACITY(p) = new_size;
+    return p;
 }
 
 /* to replace symbols between c_bra and c_ket in z->p by the

@@ -264,6 +264,8 @@ make test
 %{_libdir}/strus/libstrus_detector_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dateconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dateconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_normalizer_wordjoin.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_normalizer_wordjoin.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -300,6 +302,7 @@ make test
 %{_libdir}/strus/libstrus_normalizer_snowball.so
 %{_libdir}/strus/libstrus_detector_std.so
 %{_libdir}/strus/libstrus_normalizer_dateconv.so
+%{_libdir}/strus/libstrus_normalizer_wordjoin.so
 %{_libdir}/strus/libstrus_aggregator_vsm.so
 %{_libdir}/strus/libstrus_analyzer_objbuild.so
 %{_libdir}/strus/libstrus_markup_std.so

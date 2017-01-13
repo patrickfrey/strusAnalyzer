@@ -13,8 +13,8 @@
 #include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "unicodeWordDelimiters.hpp"
-#include "textwolf/charset_utf8.hpp"
+#include "private/unicodeWordDelimiters.hpp"
+#include "private/tokenizeHelpers.hpp"
 #include <vector>
 #include <string>
 
@@ -77,116 +77,6 @@ private:
 };
 
 
-static textwolf::charset::UTF8::CharLengthTab g_charLengthTab;
-
-static inline const char* skipChar( const char* si)
-{
-	unsigned char charsize = g_charLengthTab[ *si];
-	if (!charsize)
-	{
-		throw strus::runtime_error(_TXT( "illegal UTF-8 character in input: %u"), (unsigned int)(unsigned char)*si);
-	}
-	else
-	{
-		return si+charsize;
-	}
-}
-
-static inline unsigned int utf8decode( char const* si, const char* se)
-{
-	enum {
-		B00111111=0x3F,
-		B00011111=0x1F
-	};
-	unsigned int res = (unsigned char)*si;
-	unsigned char charsize = g_charLengthTab[ *si];
-	if (!charsize)
-	{
-		throw strus::runtime_error(_TXT( "illegal UTF-8 character in input: %u"), (unsigned int)(unsigned char)*si);
-	}
-	if (res > 127)
-	{
-		res = ((unsigned char)*si)&(B00011111>>(charsize-2));
-		for (++si,--charsize; si != se && charsize; ++si,--charsize)
-		{
-			res <<= 6;
-			res |= (unsigned char)(*si & B00111111);
-		}
-	}
-	return res;
-}
-
-class CharTable
-{
-public:
-	CharTable( const char* op)
-	{
-		std::size_t ii;
-		for (ii=0; ii<sizeof(m_ar); ++ii) m_ar[ii] = false;
-		for (ii=0; op[ii]; ++ii)
-		{
-			m_ar[(unsigned char)(op[ii])] = true;
-		}
-	}
-
-	bool operator[]( char ch) const
-	{
-		return m_ar[ (unsigned char)ch];
-	}
-
-private:
-	bool m_ar[128];
-};
-
-
-static const UnicodeWordDelimiters g_unicodeWordDelimiters;
-
-static bool wordBoundaryDelimiter( char const* si, const char* se)
-{
-	static const CharTable wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-	if ((unsigned char)*si <= 32)
-	{
-		return true;
-	}
-	else if ((unsigned char)*si >= 128)
-	{
-		unsigned int chr = utf8decode( si, se);
-		if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end()) return true;
-		return false;
-	}
-	else if (wordCharacter[ *si])
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-static bool whiteSpaceDelimiter( char const* si, const char* se)
-{
-	if ((unsigned char)*si <= 32)
-	{
-		return true;
-	}
-	else if ((unsigned char)*si >= 128)
-	{
-		unsigned int chr = utf8decode( si, se);
-		if (chr == 133) return true;
-		if (chr >= 0x2000 && chr <= 0x200F) return true;
-		if (chr >= 0x2028 && chr <= 0x2029) return true;
-		if (chr == 0x202F) return true;
-		if (chr >= 0x205F && chr <= 0x2060) return true;
-		if (chr == 0x3000) return true;
-		if (chr == 0xFEFF) return true;
-		return false;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 const char* SeparationTokenizerInstance::skipToToken( char const* si, const char* se) const
 {
