@@ -33,7 +33,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return _TXT("Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument");
+		return _TXT("normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument");
 	}
 	
 private:
