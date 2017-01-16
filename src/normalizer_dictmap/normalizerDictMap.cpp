@@ -107,41 +107,34 @@ static void loadFile( KeyMap* keymap, const std::string& filename)
 	if (ec) throw strus::runtime_error(_TXT("failed to load file '%s': %s"), filename.c_str(), ::strerror(ec));
 	char delim = ' ';
 	char const* cc = content.c_str();
-	if (content[0] >= 32 && (content[1] == '\r' || content[1] == '\n'))
+	const char* ee = (const char*)std::strchr( cc,'\n');
+	if (!ee) ee = cc + content.size();
+	if (0!=std::memchr( cc, '\t', ee - cc))
 	{
-		delim = content[0];
-		++cc;
-		while (*cc == '\r' || *cc == '\n') ++cc;
+		delim = '\t';
 	}
 	while (*cc)
 	{
-		const char* eoln = std::strchr( cc, '\n');
-		if (eoln == 0) eoln = std::strchr( cc, '\0');
-		char const* ci = cc;
-		for (; ci != eoln && *ci == delim; ++ci){}
-		if (ci == eoln)
-		{
-			cc = (*eoln)?(eoln+1):eoln;
-			continue;
-		}
-		const char* mid = std::strchr( cc, delim);
-		if (!mid || mid >= eoln) mid = eoln;
-
-		std::string key( cc, mid - cc);
+		std::string key;
 		std::string val;
-		if (mid != eoln)
+		for (; *cc && *cc != delim && *cc != '\n'; ++cc)
 		{
-			val.append( mid+1, eoln-mid-1);
-			if (val.size() && val[ val.size()-1] == '\r')
+			key.push_back( *cc);
+		}
+		if (*cc == delim)
+		{
+			++cc;
+			for (; *cc && *cc != '\n'; ++cc)
 			{
-				val.resize( val.size()-1);
+				if (*cc == '\r') continue;
+				val.push_back( *cc);
 			}
 		}
 		if (!keymap->set( key, val))
 		{
 			throw strus::runtime_error(_TXT("too many term mappings inserted into structure of normalizer '%s'"), NORMALIZER_NAME);
 		}
-		cc = (*eoln)?(eoln+1):eoln;
+		cc = (*cc)?(cc+1):cc;
 	}
 }
 
