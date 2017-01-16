@@ -127,14 +127,14 @@ static void loadFile( KeyMap* keymap, const std::string& filename)
 		const char* mid = std::strchr( cc, delim);
 		if (!mid || mid >= eoln) mid = eoln;
 
-		std::string val( cc, mid - cc);
-		std::string key;
+		std::string key( cc, mid - cc);
+		std::string val;
 		if (mid != eoln)
 		{
-			key.append( mid+1, eoln-mid-1);
-			if (key.size() && key[ key.size()-1] == '\r')
+			val.append( mid+1, eoln-mid-1);
+			if (val.size() && val[ val.size()-1] == '\r')
 			{
-				key.resize( key.size()-1);
+				val.resize( val.size()-1);
 			}
 		}
 		if (!keymap->set( key, val))
@@ -209,26 +209,27 @@ private:
 
 NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
 {
-	if (args.size() == 0)
-	{
-		m_errorhnd->report( _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
-		return 0;
-	}
-	if (args.size() > 1)
-	{
-		if (args.size() > 2)
-		{
-			m_errorhnd->report( _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
-			return 0;
-		}
-		else
-		{
-			return new DictMapNormalizerInstance( args[0], args[1], false, textproc, m_errorhnd);
-		}
-	}
 	try
 	{
-		return new DictMapNormalizerInstance( args[0], std::string(), true, textproc, m_errorhnd);
+		if (args.size() == 0)
+		{
+			m_errorhnd->report( _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
+			return 0;
+		}
+		std::string defaultValue;
+		bool defaultOrig = true;
+		if (args.size() > 1)
+		{
+			defaultValue = args[1];
+			defaultOrig = false;
+
+			if (args.size() > 2)
+			{
+				m_errorhnd->report( _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
+				return 0;
+			}
+		}
+		return new DictMapNormalizerInstance( args[0], defaultValue, defaultOrig, textproc, m_errorhnd);
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
