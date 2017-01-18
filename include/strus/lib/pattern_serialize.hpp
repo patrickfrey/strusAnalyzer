@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_PATTERN_SERIALIZE_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_SERIALIZE_LIB_HPP_INCLUDED
 #include <string>
+#include <iostream>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -76,10 +77,16 @@ enum PatternSerializerType
 	PatternMatcherWithFeeder
 };
 
+///\brief Evaluate, if a file is a pattern serialization file
+///\param[in] filename path to file to check
+bool isPatternSerializerFile(
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+
 ///\brief Create a serializer of patterns loaded
 ///\param[in] filename path to file where to write the output to
-///\param[in] lxi pattern lexer interface to instantiate for serialization
-///\param[in] mti pattern matcher interface to instantiate for serialization
+///\param[in] serializerType type of serialization
 ///\param[in] errorhnd error buffer interface
 PatternSerializer*
 	createPatternSerializer(
@@ -87,6 +94,15 @@ PatternSerializer*
 		const PatternSerializerType& serializerType,
 		ErrorBufferInterface* errorhnd);
 
+///\brief Create a serializer of patterns loaded as text to a stream
+///\param[in] output where to print text output to
+///\param[in] serializerType type of serialization
+///\param[in] errorhnd error buffer interface
+PatternSerializer*
+	createPatternSerializerText(
+		std::ostream& output,
+		const PatternSerializerType& serializerType,
+		ErrorBufferInterface* errorhnd);
 
 ///\brief Instantiate pattern matching interfaces from serialization
 ///\param[in] filename path to file where to read the input from

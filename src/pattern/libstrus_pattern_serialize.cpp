@@ -20,7 +20,9 @@
 #include "strus/base/inputStream.hpp"
 #include "strus/base/hton.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/stdint.h"
 #include "strus/reference.hpp"
+#include "strus/versionAnalyzer.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "private/utils.hpp"
@@ -31,15 +33,60 @@
 
 using namespace strus;
 
+#define DATA_HEADER_IDSTRING "pattern_serialize\n\0"
 static bool g_intl_initialized = false;
 
 namespace strus {
+struct SerializerHeader
+{
+	char ftype[24];
+	uint32_t version_major;
+	uint32_t version_minor;
+
+	SerializerHeader()
+	{
+		std::strncpy( ftype, DATA_HEADER_IDSTRING, sizeof(ftype));
+		version_major = ByteOrder<uint32_t>::hton( STRUS_ANALYZER_VERSION_MAJOR);
+		version_minor = ByteOrder<uint32_t>::hton( STRUS_ANALYZER_VERSION_MINOR);
+	}
+
+	SerializerHeader( const char* content, std::size_t contentsize)
+	{
+		if (contentsize < sizeof(*this)) throw strus::runtime_error(_TXT("failed to parse header: too small"));
+		std::memcpy( this, content, sizeof(*this));
+		if (std::strcmp( ftype, DATA_HEADER_IDSTRING) != 0) throw strus::runtime_error(_TXT("failed to parse header: unknown header id string"));
+		version_major = ByteOrder<uint32_t>::ntoh( version_major);
+		version_minor = ByteOrder<uint32_t>::ntoh( version_minor);
+		if (version_major != STRUS_ANALYZER_VERSION_MAJOR) throw strus::runtime_error(_TXT("failed to parse header: incompatible version"));
+		if (version_minor < STRUS_ANALYZER_VERSION_MINOR) throw strus::runtime_error(_TXT("failed to parse header: version of data newer than reader"));
+	}
+
+	static bool checkType( const char* content, std::size_t contentsize)
+	{
+		if (contentsize < sizeof(SerializerHeader)) return false;
+		if (std::strcmp( content, DATA_HEADER_IDSTRING) != 0) return false;
+		return true;
+	}
+
+	std::string tostring() const
+	{
+		return std::string( (const char*)this, sizeof(SerializerHeader));
+	}
+
+	static const char* skip( const char* itr)
+	{
+		return itr + sizeof(SerializerHeader);
+	}
+};
+
 struct SerializerData
 {
+
 	explicit SerializerData( const std::string& filename_)
 		:filename(filename_),content()
 	{
-		unsigned int ec = writeFile( filename, std::string());
+		SerializerHeader hdr;
+		unsigned int ec = writeFile( filename, hdr.tostring());
 		if (ec) throw strus::runtime_error(_TXT("error writing pattern matcher serialization to file '%s': %s"), filename.c_str(), ::strerror(ec));
 	}
 
@@ -131,7 +178,12 @@ struct Deserializer
 {
 public:
 	explicit Deserializer( InputStream* inputStream_)
-		:m_inputStream(inputStream_){}
+		:m_inputStream(inputStream_)
+	{
+		char buf[ sizeof(SerializerHeader)];
+		std::size_t nn = m_inputStream->read( buf, sizeof(buf));
+		SerializerHeader hdr( buf, nn);
+	}
 
 	std::string readParam_string()
 	{
@@ -303,7 +355,6 @@ private:
 };
 
 
-/// \brief Interface for building the automaton for detecting lexems used as basic entities by pattern matching in text
 class PatternLexerInstance :public PatternLexerInstanceInterface
 {
 public:
@@ -493,6 +544,226 @@ private:
 	Reference<SerializerData> m_serializerData;
 };
 
+
+
+class PatternTermFeederInstanceText :public PatternTermFeederInstanceInterface
+{
+public:
+	PatternTermFeederInstanceText( std::ostream& output_, ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_),m_output(&output_){}
+	virtual ~PatternTermFeederInstanceText(){}
+
+	virtual void defineLexem(
+			unsigned int id,
+			const std::string& type)
+	{
+		try
+		{
+			(*m_output) << "defineLexem( " << id << ", " << type << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineLexem command: %s"), *m_errorhnd);
+	}
+
+	virtual void defineSymbol(
+			unsigned int id,
+			unsigned int lexemid,
+			const std::string& name)
+	{
+		try
+		{
+			(*m_output) << "defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineSymbol command: %s"), *m_errorhnd);
+	}
+
+	virtual unsigned int getLexem(
+			const std::string& ) const
+	{
+		m_errorhnd->report(_TXT("command PatternTermFeeder::getLexem not implemented in serializer"));
+		return 0;
+	}
+
+	virtual std::vector<std::string> lexemTypes() const
+	{
+		m_errorhnd->report(_TXT("command PatternTermFeeder::lexemTypes not implemented in serializer"));
+		return std::vector<std::string>();
+	}
+
+	virtual unsigned int getSymbol(
+			unsigned int ,
+			const std::string& ) const
+	{
+		m_errorhnd->report(_TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
+		return 0;
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::ostream* m_output;
+};
+
+class PatternLexerInstanceText :public PatternLexerInstanceInterface
+{
+public:
+	PatternLexerInstanceText( std::ostream& output_, ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_),m_output(&output_){}
+	virtual ~PatternLexerInstanceText(){}
+
+	virtual void defineLexem(
+			unsigned int id,
+			const std::string& expression,
+			unsigned int resultIndex,
+			unsigned int level,
+			analyzer::PositionBind posbind)
+	{
+		try
+		{
+			(*m_output) << "defineLexem( " << id << ", " << expression << ", " << resultIndex << ", " << level << ", " << (unsigned int)(uint8_t)posbind << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineLexem command: %s"), *m_errorhnd);
+	}
+
+	virtual void defineSymbol(
+			unsigned int id,
+			unsigned int lexemid,
+			const std::string& name)
+	{
+		try
+		{
+			(*m_output) << "defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineSymbol command: %s"), *m_errorhnd);
+	}
+
+	virtual unsigned int getSymbol(
+			unsigned int ,
+			const std::string& ) const
+	{
+		m_errorhnd->report(_TXT("command PatternLexer::getSymbol not implemented in serializer"));
+		return 0;
+	}
+
+	virtual bool compile( const analyzer::PatternLexerOptions& opt)
+	{
+		try
+		{
+			(*m_output) << "compile( ";
+			analyzer::PatternLexerOptions::const_iterator oi = opt.begin(), oe = opt.end();
+			for (int oidx=0; oi != oe; ++oi,++oidx)
+			{
+				if (oidx) (*m_output) << ", ";
+				(*m_output) << *oi;
+			}
+			(*m_output) << ");" << std::endl;
+			return true;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternMatcher::compile command: %s"), *m_errorhnd, false);
+	}
+
+	virtual PatternLexerContextInterface* createContext() const
+	{
+		m_errorhnd->report(_TXT("command PatternLexer::createContext not implemented in serializer"));
+		return 0;
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::ostream* m_output;
+};
+
+class PatternMatcherInstanceText :public PatternMatcherInstanceInterface
+{
+public:
+	PatternMatcherInstanceText( std::ostream& output_, ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_),m_output(&output_){}
+	virtual ~PatternMatcherInstanceText(){}
+
+	virtual void defineTermFrequency( unsigned int termid, double df)
+	{
+		try
+		{
+			(*m_output) << "defineTermFrequency( " << termid << "," << df << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineTermFrequency command: %s"), *m_errorhnd);
+	}
+
+	virtual void pushTerm( unsigned int termid)
+	{
+		try
+		{
+			(*m_output) << "pushTerm( " << termid << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushTerm command: %s"), *m_errorhnd);
+	}
+
+	virtual void pushExpression(
+			JoinOperation operation,
+			std::size_t argc, unsigned int range, unsigned int cardinality)
+	{
+		try
+		{
+			(*m_output) << "pushExpression( " << (unsigned int)operation << ", " << argc << ", " << range << ", " << cardinality << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushExpression command: %s"), *m_errorhnd);
+	}
+
+	virtual void pushPattern( const std::string& name)
+	{
+		try
+		{
+			(*m_output) << "pushPattern( " << name << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
+	}
+
+	virtual void attachVariable( const std::string& name, float weight)
+	{
+		try
+		{
+			(*m_output) << "attachVariable( " << name << ", " << weight << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
+	}
+
+	virtual void definePattern( const std::string& name, bool visible)
+	{
+		try
+		{
+			(*m_output) << "definePattern( " << name << ", " << (visible?"true":"false") << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
+	}
+
+	virtual bool compile( const analyzer::PatternMatcherOptions& opt)
+	{
+		try
+		{
+			(*m_output) << "compile( ";
+
+			analyzer::PatternMatcherOptions::const_iterator oi = opt.begin(), oe = opt.end();
+			for (int oidx=0; oi != oe; ++oi,++oidx)
+			{
+				if (oidx) (*m_output) << ", ";
+				(*m_output) << oi->first << "=" << oi->second;
+			}
+			(*m_output) << ");" << std::endl;
+			return true;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternMatcher::compile command: %s"), *m_errorhnd, false);
+	}
+
+	virtual PatternMatcherContextInterface* createContext() const
+	{
+		m_errorhnd->report(_TXT("command PatternMatcher::createContext not implemented in serializer"));
+		return 0;
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::ostream* m_output;
+};
+
+
 DLL_PUBLIC PatternSerializer::~PatternSerializer()
 {
 	if (m_lexer) delete m_lexer;
@@ -506,7 +777,7 @@ DLL_PUBLIC bool PatternSerializer::close()
 {
 	try
 	{
-		m_serializerData->close();
+		if (m_serializerData) m_serializerData->close();
 		return true;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot close pattern serializer (and flush contents): %s"), *m_errorhnd, false);
@@ -555,6 +826,47 @@ DLL_PUBLIC PatternSerializer*
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create pattern serializer: %s"), *errorhnd, 0);
 }
 
+PatternSerializer*
+	createPatternSerializerText(
+		std::ostream& output,
+		const PatternSerializerType& serializerType,
+		ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		switch (serializerType)
+		{
+			case PatternMatcherWithLexer:
+			{
+				Reference<PatternLexerInstanceInterface> lexer( new PatternLexerInstanceText( output, errorhnd));
+				if (!lexer.get()) throw strus::runtime_error(_TXT("failed to create pattern lexer instance for serialization"));
+				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
+				if (!matcher.get()) throw strus::runtime_error(_TXT("failed to create pattern matcher instance for serialization"));
+
+				return new PatternSerializer( 0 /*serializerData*/, lexer.release(), matcher.release(), errorhnd);
+			}
+			break;
+			case PatternMatcherWithFeeder:
+			{
+				Reference<PatternTermFeederInstanceInterface> feeder( new PatternTermFeederInstanceText( output, errorhnd));
+				if (!feeder.get()) throw strus::runtime_error(_TXT("failed to create pattern term feeder instance for serialization"));
+				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
+				if (!matcher.get()) throw strus::runtime_error(_TXT("failed to create pattern matcher instance for serialization"));
+
+				return new PatternSerializer( 0 /*serializerData*/, feeder.release(), matcher.release(), errorhnd);
+			}
+			break;
+		}
+		return 0;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create pattern serializer to text: %s"), *errorhnd, 0);
+}
+
 static void deserializeCommand(
 		Deserializer& deserializer,
 		PatternLexerInstanceInterface* lexer,
@@ -568,8 +880,10 @@ static void deserializeCommand(
 		case SerializerData::TermFeeder_defineLexem:
 		{
 			if (!feeder) throw strus::runtime_error(_TXT("loading term feeder command when no term feeder defined"));
+
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_type = deserializer.readParam_string();
+
 			deserializer.endCall();
 			feeder->defineLexem( op_id, op_type);
 			break;
@@ -577,9 +891,11 @@ static void deserializeCommand(
 		case SerializerData::TermFeeder_defineSymbol:
 		{
 			if (!feeder) throw strus::runtime_error(_TXT("loading term feeder command when no term feeder defined"));
+			
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
 			std::string op_name = deserializer.readParam_string();
+
 			deserializer.endCall();
 			feeder->defineSymbol( op_id, op_lexemid, op_name);
 			break;
@@ -587,11 +903,13 @@ static void deserializeCommand(
 		case SerializerData::PatternLexer_defineLexem:
 		{
 			if (!lexer) throw strus::runtime_error(_TXT("loading pattern lexer command when no pattern lexer defined"));
+			
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_expression = deserializer.readParam_string();
 			unsigned int op_resultIndex = deserializer.readParam_uint();
 			unsigned int op_level = deserializer.readParam_uint();
 			analyzer::PositionBind op_posbind = (analyzer::PositionBind)deserializer.readParam_uint8();
+			
 			deserializer.endCall();
 			lexer->defineLexem( op_id, op_expression, op_resultIndex, op_level, op_posbind);
 			break;
@@ -599,9 +917,11 @@ static void deserializeCommand(
 		case SerializerData::PatternLexer_defineSymbol:
 		{
 			if (!lexer) throw strus::runtime_error(_TXT("loading pattern lexer command when no pattern lexer defined"));
+
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
 			std::string op_name = deserializer.readParam_string();
+			
 			deserializer.endCall();
 			lexer->defineSymbol( op_id, op_lexemid, op_name);
 			break;
@@ -626,8 +946,10 @@ static void deserializeCommand(
 		case SerializerData::PatternMatcher_defineTermFrequency:
 		{
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
+
 			unsigned int op_termid = deserializer.readParam_uint();
 			double op_df = deserializer.readParam_double();
+
 			deserializer.endCall();
 			matcher->defineTermFrequency( op_termid, op_df);
 			break;
@@ -643,10 +965,14 @@ static void deserializeCommand(
 		case SerializerData::PatternMatcher_pushExpression:
 		{
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
-			PatternMatcherInstanceInterface::JoinOperation op_operation = (PatternMatcherInstanceInterface::JoinOperation)deserializer.readParam_uint8();
+
+			PatternMatcherInstanceInterface::JoinOperation
+				op_operation = (PatternMatcherInstanceInterface::JoinOperation)
+					deserializer.readParam_uint8();
 			unsigned int op_argc = deserializer.readParam_uint();
 			unsigned int op_range = deserializer.readParam_uint();
 			unsigned int op_cardinality = deserializer.readParam_uint();
+
 			deserializer.endCall();
 			matcher->pushExpression( op_operation, op_argc, op_range, op_cardinality);
 			break;
@@ -662,8 +988,10 @@ static void deserializeCommand(
 		case SerializerData::PatternMatcher_attachVariable:
 		{
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
+
 			std::string op_name = deserializer.readParam_string();
 			float op_weight = deserializer.readParam_float();
+
 			deserializer.endCall();
 			matcher->attachVariable( op_name, op_weight);
 			break;
@@ -671,8 +999,10 @@ static void deserializeCommand(
 		case SerializerData::PatternMatcher_definePattern:
 		{
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
+
 			std::string op_name = deserializer.readParam_string();
 			bool op_visible = deserializer.readParam_bool();
+
 			deserializer.endCall();
 			matcher->definePattern( op_name, op_visible);
 			break;
@@ -734,6 +1064,21 @@ DLL_PUBLIC bool strus::loadPatternMatcherFromSerialization(
 		return (!errorhnd->hasError());
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error loading pattern matcher from serialization: %s"), *errorhnd, false);
+}
+
+
+DLL_PUBLIC bool strus::isPatternSerializerFile(
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		InputStream input( filename);
+		char buf[ sizeof(SerializerHeader)];
+		std::size_t nn = input.read( buf, sizeof(buf));
+		return SerializerHeader::checkType( buf, nn);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("failed to check file for pattern serialization file format: %s"), *errorhnd, false);
 }
 
 
