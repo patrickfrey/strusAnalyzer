@@ -26,7 +26,7 @@ public:
 
 	/// \brief Get the list of option names you can pass to PatternMatcherInstanceInterface::compile
 	/// \return NULL terminated array of strings
-	virtual std::vector<std::string> getCompileOptions() const=0;
+	virtual std::vector<std::string> getCompileOptionNames() const=0;
 
 	/// \brief Create an instance to build the rules of a pattern matcher
 	/// \return the pattern matcher instance

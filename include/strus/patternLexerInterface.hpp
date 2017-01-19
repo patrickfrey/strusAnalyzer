@@ -26,7 +26,7 @@ public:
 
 	/// \brief Get the list of option names you can pass to PatternLexerInstanceInterface::compile
 	/// \return NULL terminated array of strings
-	virtual std::vector<std::string> getCompileOptions() const=0;
+	virtual std::vector<std::string> getCompileOptionNames() const=0;
 
 	/// \brief Create an instance to build the regular expressions for a lexem matcher
 	/// \return the lexer instance

@@ -77,10 +77,10 @@ enum PatternSerializerType
 	PatternMatcherWithFeeder
 };
 
-///\brief Evaluate, if a file is a pattern serialization file
-///\param[in] filename path to file to check
-bool isPatternSerializerFile(
-		const std::string& filename,
+///\brief Evaluate, if a content is a pattern serialization
+///\param[in] content content to check
+bool isPatternSerializerContent(
+		const std::string& m_itrcontent,
 		ErrorBufferInterface* errorhnd);
 
 
@@ -105,23 +105,23 @@ PatternSerializer*
 		ErrorBufferInterface* errorhnd);
 
 ///\brief Instantiate pattern matching interfaces from serialization
-///\param[in] filename path to file where to read the input from
+///\param[in] source source content (not a filename!) to read the input from
 ///\param[in] lexer pattern lexer instance interface to instantiate from deserialization
 ///\param[in] matcher pattern matcher instance interface to instantiate from deserialization
 ///\param[in] errorhnd error buffer interface
 bool loadPatternMatcherFromSerialization(
-		const std::string& filename,
+		const std::string& source,
 		PatternLexerInstanceInterface* lexer,
 		PatternMatcherInstanceInterface* matcher,
 		ErrorBufferInterface* errorhnd);
 
 ///\brief Instantiate pattern matching interfaces from serialization
-///\param[in] filename path to file where to read the input from
+///\param[in] source source content (not a filename!) to read the input from
 ///\param[in] feeder pattern term feeder instance interface to instantiate from deserialization
 ///\param[in] matcher pattern matcher instance interface to instantiate from deserialization
 ///\param[in] errorhnd error buffer interface
 bool loadPatternMatcherFromSerialization(
-		const std::string& filename,
+		const std::string& source,
 		PatternTermFeederInstanceInterface* feeder,
 		PatternMatcherInstanceInterface* matcher,
 		ErrorBufferInterface* errorhnd);

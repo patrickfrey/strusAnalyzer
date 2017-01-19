@@ -9,7 +9,6 @@
 /// \file "patternLexerInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/patternLexerOptions.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include <string>
 
@@ -25,6 +24,11 @@ class PatternLexerInstanceInterface
 public:
 	/// \brief Destructor
 	virtual ~PatternLexerInstanceInterface(){}
+
+	/// \brief Define an option value for the compilation
+	/// \param[in] name option name
+	/// \param[in] value option value
+	virtual void defineOption( const std::string& name, double value)=0;
 
 	/// \brief Define a pattern for detecting a basic lexem of this pattern matching lexer
 	/// \param[in] id identifier given to the lexem, 0 if the lexem is not part of the output (only used for assigning ordinal positions).
@@ -62,7 +66,7 @@ public:
 	/// \brief Compile all patterns and symbols defined
 	/// \return true on success, false on error (error reported in error buffer)
 	/// \remark This function has to be called in order to make the patterns active, resp. before calling 'createContext()'
-	virtual bool compile( const analyzer::PatternLexerOptions& opts)=0;
+	virtual bool compile()=0;
 
 	/// \brief Create the context to process a chunk of text with this text matcher
 	/// \return the lexer context

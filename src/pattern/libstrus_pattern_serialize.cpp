@@ -17,7 +17,6 @@
 #include "strus/patternMatcherInstanceInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/symbolTable.hpp"
-#include "strus/base/inputStream.hpp"
 #include "strus/base/hton.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/stdint.h"
@@ -97,9 +96,11 @@ struct SerializerData
 	{
 		TermFeeder_defineLexem,
 		TermFeeder_defineSymbol,
+		PatternLexer_defineOption,
 		PatternLexer_defineLexem,
 		PatternLexer_defineSymbol,
 		PatternLexer_compile,
+		PatternMatcher_defineOption,
 		PatternMatcher_defineTermFrequency,
 		PatternMatcher_pushTerm,
 		PatternMatcher_pushExpression,
@@ -177,44 +178,33 @@ private:
 struct Deserializer
 {
 public:
-	explicit Deserializer( InputStream* inputStream_)
-		:m_inputStream(inputStream_)
+	Deserializer( const char* src, std::size_t srcsize)
+		:m_itr(src),m_end(src+srcsize)
 	{
-		char buf[ sizeof(SerializerHeader)];
-		std::size_t nn = m_inputStream->read( buf, sizeof(buf));
-		SerializerHeader hdr( buf, nn);
+		if (srcsize < sizeof(SerializerHeader))
+		{
+			throw strus::runtime_error(_TXT("unexpected end of stream reading header of pattern deserialization from file"));
+		}
+		SerializerHeader hdr( m_itr, sizeof(SerializerHeader));
+		m_itr += sizeof(SerializerHeader);
+	}
+
+	bool eof() const
+	{
+		return m_itr == m_end;
 	}
 
 	std::string readParam_string()
 	{
 		std::string rt;
-		char buf[ 1024];
-		std::size_t nn = m_inputStream->readAhead( buf, sizeof(buf));
-		for (; nn != 0; nn = m_inputStream->readAhead( buf, sizeof(buf)))
+		char const* eos = (const char*)std::strchr( m_itr, '\0');
+		if (eos == m_end)
 		{
-			char const* eos = (const char*)std::memchr( buf, '\0', nn);
-			if (eos)
-			{
-				nn = eos - buf;
-				rt.append( buf, nn);
-				m_inputStream->read( buf, nn+1);
-				return rt;
-			}
-			else
-			{
-				rt.append( buf, nn);
-			}
-			m_inputStream->read( buf, nn);
+			throw strus::runtime_error(_TXT("unexpected end of stream reading deserialization of patterns from file"));
 		}
-		unsigned int ec = m_inputStream->error();
-		if (ec)
-		{
-			throw strus::runtime_error(_TXT("error reading deserialization of patterns from file: %s"), ::strerror(ec));
-		}
-		else
-		{
-			throw strus::runtime_error(_TXT("unexpected end of stream reading deserialization of patterns from file: %s"));
-		}
+		rt.append( m_itr, eos - m_itr);
+		m_itr = eos + 1;
+		return rt;
 	}
 
 	SerializerData::Operation startCall()
@@ -266,24 +256,18 @@ private:
 	{
 		typedef typename ByteOrder<ScalarType>::net_value_type net_value_type;
 		net_value_type val_n;
-		std::size_t nn = m_inputStream->read( (char*)&val_n, sizeof(val_n));
-		if (nn < sizeof(val_n))
+		if (m_itr + sizeof(val_n) > m_end)
 		{
-			unsigned int ec = m_inputStream->error();
-			if (ec)
-			{
-				throw strus::runtime_error(_TXT("error reading deserialization of patterns from file: %s"), ::strerror(ec));
-			}
-			else
-			{
-				throw strus::runtime_error(_TXT("unexpected end of stream reading deserialization of patterns from file: %s"));
-			}
+			throw strus::runtime_error(_TXT("unexpected end of stream reading deserialization of patterns"));
 		}
+		std::memcpy( &val_n, m_itr, sizeof(val_n));
+		m_itr += sizeof(val_n);
 		return ByteOrder<ScalarType>::ntoh( val_n);
 	}
 
 private:
-	InputStream* m_inputStream;
+	char const* m_itr;
+	const char* m_end;
 
 private:
 	Deserializer( const Deserializer&){}	//... non copyable
@@ -406,17 +390,23 @@ public:
 		return 0;
 	}
 
-	virtual bool compile( const analyzer::PatternLexerOptions& opt)
+	virtual void defineOption( const std::string& name, double value)
+	{
+		try
+		{
+			m_serializerData->startCall( SerializerData::PatternLexer_defineOption);
+			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( value);
+			m_serializerData->endCall();
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineOption command: %s"), *m_errorhnd);
+	}
+
+	virtual bool compile()
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternLexer_compile);
-			m_serializerData->pushParam( (unsigned int)opt.size());
-			analyzer::PatternLexerOptions::const_iterator oi = opt.begin(), oe = opt.end();
-			for (; oi != oe; ++oi)
-			{
-				m_serializerData->pushParam( *oi);
-			}
 			m_serializerData->endCall();
 			return true;
 		}
@@ -515,18 +505,23 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
 	}
 
-	virtual bool compile( const analyzer::PatternMatcherOptions& opt)
+	virtual void defineOption( const std::string& name, double value)
+	{
+		try
+		{
+			m_serializerData->startCall( SerializerData::PatternMatcher_defineOption);
+			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( value);
+			m_serializerData->endCall();
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineOption command: %s"), *m_errorhnd);
+	}
+
+	virtual bool compile()
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_compile);
-			m_serializerData->pushParam( (unsigned int)opt.size());
-			analyzer::PatternMatcherOptions::const_iterator oi = opt.begin(), oe = opt.end();
-			for (; oi != oe; ++oi)
-			{
-				m_serializerData->pushParam( oi->first);
-				m_serializerData->pushParam( oi->second);
-			}
 			m_serializerData->endCall();
 			return true;
 		}
@@ -643,21 +638,23 @@ public:
 		return 0;
 	}
 
-	virtual bool compile( const analyzer::PatternLexerOptions& opt)
+	virtual void defineOption( const std::string& name, double value)
 	{
 		try
 		{
-			(*m_output) << "compile( ";
-			analyzer::PatternLexerOptions::const_iterator oi = opt.begin(), oe = opt.end();
-			for (int oidx=0; oi != oe; ++oi,++oidx)
-			{
-				if (oidx) (*m_output) << ", ";
-				(*m_output) << *oi;
-			}
-			(*m_output) << ");" << std::endl;
+			(*m_output) << "defineOption( " << name << ", " << value << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineOption command: %s"), *m_errorhnd);
+	}
+
+	virtual bool compile()
+	{
+		try
+		{
+			(*m_output) << "compile();" << std::endl;
 			return true;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternMatcher::compile command: %s"), *m_errorhnd, false);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternLexer::compile command: %s"), *m_errorhnd, false);
 	}
 
 	virtual PatternLexerContextInterface* createContext() const
@@ -734,19 +731,20 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
 	}
 
-	virtual bool compile( const analyzer::PatternMatcherOptions& opt)
+	virtual void defineOption( const std::string& name, double value)
 	{
 		try
 		{
-			(*m_output) << "compile( ";
+			(*m_output) << "defineOption( " << name << ", " << value << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineOption command: %s"), *m_errorhnd);
+	}
 
-			analyzer::PatternMatcherOptions::const_iterator oi = opt.begin(), oe = opt.end();
-			for (int oidx=0; oi != oe; ++oi,++oidx)
-			{
-				if (oidx) (*m_output) << ", ";
-				(*m_output) << oi->first << "=" << oi->second;
-			}
-			(*m_output) << ");" << std::endl;
+	virtual bool compile()
+	{
+		try
+		{
+			(*m_output) << "compile();" << std::endl;
 			return true;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternMatcher::compile command: %s"), *m_errorhnd, false);
@@ -785,7 +783,7 @@ DLL_PUBLIC bool PatternSerializer::close()
 
 
 DLL_PUBLIC PatternSerializer*
-	createPatternSerializer(
+	strus::createPatternSerializer(
 		const std::string& filename,
 		const PatternSerializerType& serializerType,
 		ErrorBufferInterface* errorhnd)
@@ -826,8 +824,8 @@ DLL_PUBLIC PatternSerializer*
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create pattern serializer: %s"), *errorhnd, 0);
 }
 
-PatternSerializer*
-	createPatternSerializerText(
+DLL_PUBLIC PatternSerializer*
+	strus::createPatternSerializerText(
 		std::ostream& output,
 		const PatternSerializerType& serializerType,
 		ErrorBufferInterface* errorhnd)
@@ -926,18 +924,18 @@ static void deserializeCommand(
 			lexer->defineSymbol( op_id, op_lexemid, op_name);
 			break;
 		}
+		case SerializerData::PatternLexer_defineOption:
+		{
+			std::string name = deserializer.readParam_string();
+			double value = deserializer.readParam_double();
+			deserializer.endCall();
+			lexer->defineOption( name, value);
+		}
 		case SerializerData::PatternLexer_compile:
 		{
 			if (!lexer) throw strus::runtime_error(_TXT("loading pattern lexer command when no pattern lexer defined"));
-			unsigned int oi = 0, oe = deserializer.readParam_uint();
-			analyzer::PatternLexerOptions opt;
-			for (; oi != oe; ++oi)
-			{
-				std::string elem = deserializer.readParam_string();
-				opt( elem);
-			}
 			deserializer.endCall();
-			if (!lexer->compile( opt))
+			if (!lexer->compile())
 			{
 				throw strus::runtime_error(_TXT("error compiling deserialized pattern lexer: %s"), errorhnd->fetchError());
 			}
@@ -1007,21 +1005,20 @@ static void deserializeCommand(
 			matcher->definePattern( op_name, op_visible);
 			break;
 		}
+		case SerializerData::PatternMatcher_defineOption:
+		{
+			std::string name = deserializer.readParam_string();
+			double value = deserializer.readParam_double();
+			deserializer.endCall();
+			matcher->defineOption( name, value);
+		}
 		case SerializerData::PatternMatcher_compile:
 		{
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
-			unsigned int oi = 0, oe = deserializer.readParam_uint();
-			analyzer::PatternMatcherOptions opt;
-			for (; oi != oe; ++oi)
-			{
-				std::string elem = deserializer.readParam_string();
-				double value = deserializer.readParam_double();
-				opt( elem, value);
-			}
 			deserializer.endCall();
-			if (!matcher->compile( opt))
+			if (!matcher->compile())
 			{
-				throw strus::runtime_error(_TXT("error compiling deserialized pattern lexer: %s"), errorhnd->fetchError());
+				throw strus::runtime_error(_TXT("error compiling deserialized pattern matcher: %s"), errorhnd->fetchError());
 			}
 			break;
 		}
@@ -1029,16 +1026,15 @@ static void deserializeCommand(
 }
 
 DLL_PUBLIC bool strus::loadPatternMatcherFromSerialization(
-		const std::string& filename,
+		const std::string& content,
 		PatternLexerInstanceInterface* lexer,
 		PatternMatcherInstanceInterface* matcher,
 		ErrorBufferInterface* errorhnd)
 {
 	try
 	{
-		InputStream input( filename);
-		Deserializer deserializer( &input);
-		while (!input.eof())
+		Deserializer deserializer( content.c_str(), content.size());
+		while (!deserializer.eof())
 		{
 			deserializeCommand( deserializer, lexer, 0/*feeder*/, matcher, errorhnd);
 		}
@@ -1048,16 +1044,15 @@ DLL_PUBLIC bool strus::loadPatternMatcherFromSerialization(
 }
 
 DLL_PUBLIC bool strus::loadPatternMatcherFromSerialization(
-		const std::string& filename,
+		const std::string& content,
 		PatternTermFeederInstanceInterface* feeder,
 		PatternMatcherInstanceInterface* matcher,
 		ErrorBufferInterface* errorhnd)
 {
 	try
 	{
-		InputStream input( filename);
-		Deserializer deserializer( &input);
-		while (!input.eof())
+		Deserializer deserializer( content.c_str(), content.size());
+		while (!deserializer.eof())
 		{
 			deserializeCommand( deserializer, 0/*lexer*/, feeder, matcher, errorhnd);
 		}
@@ -1067,16 +1062,14 @@ DLL_PUBLIC bool strus::loadPatternMatcherFromSerialization(
 }
 
 
-DLL_PUBLIC bool strus::isPatternSerializerFile(
-		const std::string& filename,
+DLL_PUBLIC bool strus::isPatternSerializerContent(
+		const std::string& content,
 		ErrorBufferInterface* errorhnd)
 {
 	try
 	{
-		InputStream input( filename);
-		char buf[ sizeof(SerializerHeader)];
-		std::size_t nn = input.read( buf, sizeof(buf));
-		return SerializerHeader::checkType( buf, nn);
+		if (content.size() < sizeof(SerializerHeader)) return false;
+		return SerializerHeader::checkType( content.c_str(), sizeof(SerializerHeader));
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to check file for pattern serialization file format: %s"), *errorhnd, false);
 }

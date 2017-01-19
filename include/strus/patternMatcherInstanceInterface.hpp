@@ -9,7 +9,6 @@
 /// \file "patternMatcherInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/patternMatcherOptions.hpp"
 #include <string>
 
 namespace strus
@@ -24,6 +23,11 @@ class PatternMatcherInstanceInterface
 public:
 	/// \brief Destructor
 	virtual ~PatternMatcherInstanceInterface(){}
+
+	/// \brief Define an option value for the compilation
+	/// \param[in] name option name
+	/// \param[in] value option value
+	virtual void defineOption( const std::string& name, double value)=0;
 
 	/// \brief Define a relative document term frequency used for optimization of the automaton
 	/// \param[in] termid term identifier
@@ -75,7 +79,7 @@ public:
 	/// \brief Compile all patterns defined
 	/// \param[in] opt optimization options
 	/// \note Tries to optimize the program if possible by setting initial key events of the programs to events that are relative rare
-	virtual bool compile( const analyzer::PatternMatcherOptions& opt)=0;
+	virtual bool compile()=0;
 
 	/// \brief Create the context to process a document with the pattern matcher
 	/// \return the pattern matcher context
