@@ -112,8 +112,8 @@ struct SerializerData
 
 	void startCall( const Operation& op)
 	{
-		pushScalar( (uint8_t)op);
-		pushScalar( (uint8_t)op ^ (uint8_t)0xff);
+		pushScalar<uint8_t>( (uint8_t)op);
+		pushScalar<uint8_t>( (uint8_t)((uint8_t)op ^ (uint8_t)0xff));
 	}
 	void pushParam( const std::string& arg)
 	{
@@ -930,6 +930,7 @@ static void deserializeCommand(
 			double value = deserializer.readParam_double();
 			deserializer.endCall();
 			lexer->defineOption( name, value);
+			break;
 		}
 		case SerializerData::PatternLexer_compile:
 		{
@@ -1011,6 +1012,7 @@ static void deserializeCommand(
 			double value = deserializer.readParam_double();
 			deserializer.endCall();
 			matcher->defineOption( name, value);
+			break;
 		}
 		case SerializerData::PatternMatcher_compile:
 		{
