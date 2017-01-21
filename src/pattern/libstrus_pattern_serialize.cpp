@@ -554,7 +554,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineLexem( " << id << ", " << type << ");" << std::endl;
+			(*m_output) << "F defineLexem( " << id << ", " << type << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineLexem command: %s"), *m_errorhnd);
 	}
@@ -566,7 +566,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+			(*m_output) << "F defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineSymbol command: %s"), *m_errorhnd);
 	}
@@ -613,7 +613,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineLexem( " << id << ", " << expression << ", " << resultIndex << ", " << level << ", " << (unsigned int)(uint8_t)posbind << ");" << std::endl;
+			(*m_output) << "L defineLexem( " << id << ", " << expression << ", " << resultIndex << ", " << level << ", " << (unsigned int)(uint8_t)posbind << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineLexem command: %s"), *m_errorhnd);
 	}
@@ -625,7 +625,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+			(*m_output) << "L defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineSymbol command: %s"), *m_errorhnd);
 	}
@@ -642,7 +642,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineOption( " << name << ", " << value << ");" << std::endl;
+			(*m_output) << "L defineOption( " << name << ", " << value << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineOption command: %s"), *m_errorhnd);
 	}
@@ -651,7 +651,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "compile();" << std::endl;
+			(*m_output) << "L compile();" << std::endl;
 			return true;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternLexer::compile command: %s"), *m_errorhnd, false);
@@ -679,7 +679,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineTermFrequency( " << termid << "," << df << ");" << std::endl;
+			(*m_output) << "M defineTermFrequency( " << termid << "," << df << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineTermFrequency command: %s"), *m_errorhnd);
 	}
@@ -688,7 +688,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "pushTerm( " << termid << ");" << std::endl;
+			(*m_output) << "M pushTerm( " << termid << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushTerm command: %s"), *m_errorhnd);
 	}
@@ -699,7 +699,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "pushExpression( " << (unsigned int)operation << ", " << argc << ", " << range << ", " << cardinality << ");" << std::endl;
+			(*m_output) << "M pushExpression( " << (unsigned int)operation << ", " << argc << ", " << range << ", " << cardinality << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushExpression command: %s"), *m_errorhnd);
 	}
@@ -708,7 +708,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "pushPattern( " << name << ");" << std::endl;
+			(*m_output) << "M pushPattern( " << name << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
@@ -717,7 +717,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "attachVariable( " << name << ", " << weight << ");" << std::endl;
+			(*m_output) << "M attachVariable( " << name << ", " << weight << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
 	}
@@ -726,7 +726,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "definePattern( " << name << ", " << (visible?"true":"false") << ");" << std::endl;
+			(*m_output) << "M definePattern( " << name << ", " << (visible?"true":"false") << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
 	}
@@ -735,7 +735,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "defineOption( " << name << ", " << value << ");" << std::endl;
+			(*m_output) << "M defineOption( " << name << ", " << value << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineOption command: %s"), *m_errorhnd);
 	}
@@ -744,7 +744,7 @@ public:
 	{
 		try
 		{
-			(*m_output) << "compile();" << std::endl;
+			(*m_output) << "M compile();" << std::endl;
 			return true;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternMatcher::compile command: %s"), *m_errorhnd, false);

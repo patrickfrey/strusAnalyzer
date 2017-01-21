@@ -16,6 +16,8 @@
 
 using namespace strus;
 
+#define TOKENIZER_NAME "regex"
+
 struct RegexConfiguration
 {
 	boost::regex expression;
@@ -70,7 +72,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" tokenizer function: %s"), *m_errorhnd, std::vector<analyzer::Token>());
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
 private:
@@ -87,11 +89,11 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 	{
 		if (args.size() > 2)
 		{
-			throw strus::runtime_error(_TXT("too many arguments for \"regex\" tokenizer (maximum two arguments, the regular expression to find tokens and an opional selector index)"));
+			throw strus::runtime_error(_TXT("too many arguments for \"%s\" tokenizer (maximum two arguments, the regular expression to find tokens and an opional selector index)"), TOKENIZER_NAME);
 		}
 		else if (args.size() < 1)
 		{
-			throw strus::runtime_error(_TXT("expected argument for \"regex\" tokenizer: the regular expression to find tokens)"));
+			throw strus::runtime_error(_TXT("expected argument for \"%s\" tokenizer: the regular expression to find tokens)"), TOKENIZER_NAME);
 		}
 		unsigned int selectIndex = 0;
 		if (args.size() == 2)
@@ -100,7 +102,7 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 		}
 		return new RegexTokenizerFunctionInstance( RegexConfiguration( args[0], selectIndex), m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating \"regex\" tokenizer instance: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating \"%s\" tokenizer instance: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
 }
 
 const char* RegexTokenizerFunction::getDescription() const
@@ -109,7 +111,7 @@ const char* RegexTokenizerFunction::getDescription() const
 	{
 		return _TXT("Tokenizer selecting tokens from source that are matching a regular expression.");
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error getting \"regex\" tokenizer description: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error getting \"%s\" tokenizer description: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
 }
 
 
