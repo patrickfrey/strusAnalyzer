@@ -63,7 +63,7 @@ std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) cons
 		ci = m_normalizerlist.begin(),
 		ce = m_normalizerlist.end();
 	if (ci == ce) return std::string( tok, toksize);
-	
+
 	std::string rt;
 	std::string origstr;
 	for (; ci != ce; ++ci)
