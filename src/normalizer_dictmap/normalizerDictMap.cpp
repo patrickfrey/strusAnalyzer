@@ -147,7 +147,8 @@ public:
 		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_defaultOrig(defaultOrig_)
 	{
 		std::size_t sz;
-		unsigned int ec = readFileSize( filename, sz);
+		std::string resolvedFilename = textproc->getResourcePath( filename);
+		unsigned int ec = readFileSize( resolvedFilename, sz);
 		if (!ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
 		std::auto_ptr<KeyMap> map;
 		if (sz > 2000000)
@@ -158,7 +159,7 @@ public:
 		{
 			map.reset( new DictMap());
 		}
-		loadFile( map.get(), textproc->getResourcePath( filename));
+		loadFile( map.get(), textproc->getResourcePath( resolvedFilename));
 		m_map = map.release();
 	}
 
