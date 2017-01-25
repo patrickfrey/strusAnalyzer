@@ -148,6 +148,10 @@ public:
 	{
 		std::size_t sz;
 		std::string resolvedFilename = textproc->getResourcePath( filename);
+		if (resolvedFilename.empty() && m_errorhnd->hasError())
+		{
+			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), filename.c_str(), m_errorhnd->fetchError());
+		}
 		unsigned int ec = readFileSize( resolvedFilename, sz);
 		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
 		std::auto_ptr<KeyMap> map;
