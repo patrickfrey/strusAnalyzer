@@ -17,6 +17,7 @@ include_directories(
 
 link_directories(
 	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${strusbase_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_wordjoin SHARED ${source_files} libstrus_normalizer_wordjoin.cpp )
-target_link_libraries( strus_normalizer_wordjoin strus_private_utils )
+target_link_libraries( strus_normalizer_wordjoin strus_private_utils strus_base )
 
 set_target_properties(
     strus_normalizer_wordjoin

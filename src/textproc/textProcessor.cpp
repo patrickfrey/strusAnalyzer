@@ -34,6 +34,10 @@ using namespace strus::analyzer;
 
 #undef STRUS_LOWLEVEL_DEBUG
 
+#ifdef STRUS_LOWLEVEL_DEBUG
+#include <iostream>
+#endif
+
 TextProcessor::~TextProcessor()
 {
 	std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.begin(), te = m_tokenizer_map.end();
