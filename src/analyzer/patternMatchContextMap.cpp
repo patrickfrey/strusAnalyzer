@@ -8,6 +8,7 @@
 #include "patternMatchContextMap.hpp"
 #include "private/internationalization.hpp"
 #include "strus/analyzer/patternLexem.hpp"
+#include "strus/base/string_format.hpp"
 #include <cstring>
 #include <algorithm>
 
