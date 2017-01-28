@@ -20,18 +20,20 @@ class PatternMatcherResultItem
 {
 public:
 	/// \brief Constructor
-	PatternMatcherResultItem( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, float weight_)
-		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_weight(weight_){}
+	PatternMatcherResultItem( const char* name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, float weight_)
+		:m_name(name_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_weight(weight_){}
 	/// \brief Copy constructor
 	PatternMatcherResultItem( const PatternMatcherResultItem& o)
-		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_weight(o.m_weight){}
+		:m_name(o.m_name),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_weight(o.m_weight){}
 	/// \brief Destructor
 	~PatternMatcherResultItem(){}
 
 	/// \brief Name of the item, defined by the variable assigned to the match
 	const char* name() const			{return m_name;}
 	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
-	unsigned int ordpos() const			{return m_ordpos;}
+	uint32_t start_ordpos() const			{return m_start_ordpos;}
+	/// \brief Ordinal (counting) end position of the match
+	uint32_t end_ordpos() const			{return m_end_ordpos;}
 	/// \brief Original segment index of the start of the result item in the source
 	std::size_t start_origseg() const		{return m_start_origseg;}
 	/// \brief Original byte position start of the result item in the source segment as UTF-8 specified with start_origseg
@@ -45,7 +47,8 @@ public:
 
 private:
 	const char* m_name;
-	unsigned int m_ordpos;
+	uint32_t m_start_ordpos;
+	uint32_t m_end_ordpos;
 	uint32_t m_start_origseg;
 	uint32_t m_end_origseg;
 	uint32_t m_start_origpos;

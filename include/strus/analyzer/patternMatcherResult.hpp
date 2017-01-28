@@ -24,18 +24,20 @@ public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
 	/// \brief Constructor
-	PatternMatcherResult( const char* name_, unsigned int ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
-		:m_name(name_),m_ordpos(ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
+	PatternMatcherResult( const char* name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
+		:m_name(name_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:m_name(o.m_name),m_ordpos(o.m_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
+		:m_name(o.m_name),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
 	/// \brief Destructor
 	~PatternMatcherResult(){}
 
 	/// \brief Name of the result, defined by the name of the pattern of the match
 	const char* name() const			{return m_name;}
 	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
-	unsigned int ordpos() const			{return m_ordpos;}
+	uint32_t start_ordpos() const			{return m_start_ordpos;}
+	/// \brief Ordinal (counting) end position of the match
+	uint32_t end_ordpos() const			{return m_end_ordpos;}
 	/// \brief Original segment index of the start of the result in the source
 	std::size_t start_origseg() const		{return m_start_origseg;}
 	/// \brief Original byte position start of the result in the source segment as UTF-8 specified with start_origseg
@@ -49,7 +51,8 @@ public:
 
 private:
 	const char* m_name;
-	unsigned int m_ordpos;
+	uint32_t m_start_ordpos;
+	uint32_t m_end_ordpos;
 	uint32_t m_start_origseg;
 	uint32_t m_end_origseg;
 	uint32_t m_start_origpos;
