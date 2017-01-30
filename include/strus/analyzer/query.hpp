@@ -70,10 +70,10 @@ public:
 	public:
 		enum Type {MetaData,SearchIndexTerm};
 
-		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int fieldNo_)
-			:m_type(type_),m_idx(idx_),m_position(position_),m_fieldNo(fieldNo_){}
+		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int length_, unsigned int fieldNo_)
+			:m_type(type_),m_idx(idx_),m_position(position_),m_length(length_),m_fieldNo(fieldNo_){}
 		Element( const Element& o)
-			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_fieldNo(o.m_fieldNo){}
+			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_length(o.m_length),m_fieldNo(o.m_fieldNo){}
 
 		/// \brief Type identifier referencing the list this element belongs to
 		Type type() const				{return m_type;}
@@ -81,6 +81,8 @@ public:
 		unsigned int idx() const			{return m_idx;}
 		/// \brief Query element ordinal position
 		unsigned int position() const			{return m_position;}
+		/// \brief Query element ordinal position length
+		unsigned int length() const			{return m_length;}
 		/// \brief Query field number
 		unsigned int fieldNo() const			{return m_fieldNo;}
 
@@ -88,6 +90,7 @@ public:
 		Type m_type;
 		unsigned int m_idx;
 		unsigned int m_position;
+		unsigned int m_length;
 		unsigned int m_fieldNo;
 	};
 
@@ -103,14 +106,14 @@ public:
 	/// \brief Add a search index term to the query
 	void addSearchIndexTerm( unsigned int fieldNo, const analyzer::Term& term)
 	{
-		m_elements.push_back( Element( Element::SearchIndexTerm, m_searchIndexTerms.size(), term.pos(), fieldNo));
+		m_elements.push_back( Element( Element::SearchIndexTerm, m_searchIndexTerms.size(), term.pos(), term.len(), fieldNo));
 		m_searchIndexTerms.push_back( term);
 	}
 
 	/// \brief Add a meta data element to the query
 	void addMetaData( unsigned int fieldNo, unsigned int position, const analyzer::MetaData& elem)
 	{
-		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), position, fieldNo));
+		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), position, 1, fieldNo));
 		m_metadata.push_back( elem);
 	}
 

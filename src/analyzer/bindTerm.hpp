@@ -17,12 +17,13 @@ class BindTerm
 {
 public:
 	BindTerm( const BindTerm& o)
-		:m_seg(o.m_seg),m_ofs(o.m_ofs),m_type(o.m_type),m_value(o.m_value),m_posbind(o.m_posbind){}
-	BindTerm( unsigned int seg_, unsigned int ofs_, const std::string& type_, const std::string& value_, analyzer::PositionBind posbind_)
-		:m_seg(seg_),m_ofs(ofs_),m_type(type_),m_value(value_),m_posbind(posbind_){}
+		:m_seg(o.m_seg),m_ofs(o.m_ofs),m_len(o.m_len),m_posbind(o.m_posbind),m_type(o.m_type),m_value(o.m_value){}
+	BindTerm( unsigned int seg_, unsigned int ofs_, unsigned int len_, analyzer::PositionBind posbind_, const std::string& type_, const std::string& value_)
+		:m_seg(seg_),m_ofs(ofs_),m_len(len_),m_posbind(posbind_),m_type(type_),m_value(value_){}
 
 	unsigned int seg() const				{return m_seg;}
 	unsigned int ofs() const				{return m_ofs;}
+	unsigned int len() const				{return m_len;}
 	const std::string& type() const				{return m_type;}
 	const std::string& value() const			{return m_value;}
 	analyzer::PositionBind posbind() const			{return m_posbind;}
@@ -33,9 +34,13 @@ public:
 			? (
 				(m_ofs == o.m_ofs)
 				? (
-					(m_type == o.m_type)
-					? (m_value < o.m_value)
-					: (m_type < o.m_type)
+					(m_len == o.m_len)
+					? (
+						(m_type == o.m_type)
+						? (m_value < o.m_value)
+						: (m_type < o.m_type)
+					)
+					: (m_len < o.m_len)
 				)
 				: (m_ofs < o.m_ofs)
 			)
@@ -45,9 +50,10 @@ public:
 private:
 	unsigned int m_seg;
 	unsigned int m_ofs;
+	unsigned int m_len;
+	analyzer::PositionBind m_posbind;
 	std::string m_type;
 	std::string m_value;
-	analyzer::PositionBind m_posbind;
 };
 
 }//namespace

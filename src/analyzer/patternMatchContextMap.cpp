@@ -57,7 +57,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 		if (!m_config->allowCrossSegmentMatches() && ri->start_origseg() != ri->end_origseg()) continue;
 		if (!m_config->patternTypeName().empty())
 		{
-			rt.push_back( BindTerm( ri->start_origseg(), ri->start_origpos(), m_config->patternTypeName(), ri->name(), analyzer::BindContent));
+			rt.push_back( BindTerm( ri->start_origseg(), ri->start_origpos(), ri->end_ordpos() - ri->start_ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
 		}
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
 		for (; ti != te; ++ti)
@@ -74,7 +74,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 			{
 				const char* chunk = m_content.c_str() + segstritr + ti->start_origpos();
 				std::size_t chunksize = ti->end_origpos() - ti->start_origpos();
-				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->name(), std::string( chunk, chunksize), analyzer::BindContent));
+				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), std::string( chunk, chunksize)));
 			}
 			else
 			{
@@ -91,7 +91,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 					throw strus::runtime_error(_TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
 				}
 				value.append( m_content.c_str() + segstritr, ti->end_origpos());
-				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->name(), value, analyzer::BindContent));
+				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
 			}
 		}
 	}
@@ -182,7 +182,7 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 		if (!m_config->patternTypeName().empty())
 		{
 			const BindTerm& startelem = m_input[ ri->start_origpos()];
-			rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), m_config->patternTypeName(), ri->name(), analyzer::BindContent));
+			rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), ri->end_ordpos() - ri->start_ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
 		}
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
 		for (; ti != te; ++ti)
@@ -190,7 +190,7 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 			const BindTerm& startelem = m_input[ ti->start_origpos()];
 			if (ti->end_origpos() == ti->start_origpos() +1)
 			{
-				rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), ti->name(), startelem.value(), analyzer::BindContent));
+				rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), startelem.value()));
 			}
 			else
 			{
@@ -201,7 +201,7 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 					if (eidx) value.push_back(' ');
 					value.append( m_input[ ei].value());
 				}
-				rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), ti->name(), value, analyzer::BindContent));
+				rt.push_back( BindTerm( startelem.seg(), startelem.ofs(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
 			}
 		}
 	}

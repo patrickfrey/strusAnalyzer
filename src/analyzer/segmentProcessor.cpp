@@ -122,7 +122,7 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 			{
 				PositionMap::const_iterator
 					mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
-				res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs));
+				res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
 				break;
 			}
 			case analyzer::BindSuccessor:
@@ -131,7 +131,7 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()));
 				if (mi != posmap.end())
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs));
+					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
 				}
 				break;
 			}
@@ -141,7 +141,7 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()+1));
 				if (mi != posmap.end() && mi->second + posofs > 1)
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs - 1));
+					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs - 1, ri->len()));
 				}
 				break;
 			}
@@ -313,9 +313,9 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 			for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
 			{
 				BindTerm term(
-					segmentpos, ti->origpos() - str_position/*ofs*/,
-					feat.name()/*type*/, vi/*value*/,
-					feat.options().positionBind());
+					segmentpos, ti->origpos() - str_position/*ofs*/, 1/*len*/,
+					feat.options().positionBind(),
+					feat.name()/*type*/, vi/*value*/);
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -325,9 +325,9 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 		else
 		{
 			BindTerm term(
-				segmentpos, ti->origpos() - str_position/*ofs*/,
-				feat.name()/*type*/, termval/*value*/,
-				feat.options().positionBind());
+				segmentpos, ti->origpos() - str_position/*ofs*/, 1/*len*/,
+				feat.options().positionBind(),
+				feat.name()/*type*/, termval/*value*/);
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
 #endif
@@ -405,16 +405,16 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 		if (cfg) switch (cfg->featureClass())
 		{
 			case FeatMetaData:
-				m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatAttribute:
-				m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatSearchIndexTerm:
-				m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatForwardIndexTerm:
-				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), cfg->name(), ri->value(), cfg->options().positionBind()));
+				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatPatternLexem:
 				throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
