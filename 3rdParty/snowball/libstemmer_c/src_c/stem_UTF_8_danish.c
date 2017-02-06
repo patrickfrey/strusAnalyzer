@@ -20,8 +20,7 @@ extern "C" {
 #endif
 
 
-extern struct SN_env * danish_UTF_8_create_env(void);
-extern void danish_UTF_8_close_env(struct SN_env * z);
+extern int danish_UTF_8_init_env( struct SN_env* env);
 
 
 #ifdef __cplusplus
@@ -333,7 +332,5 @@ extern int danish_UTF_8_stem(struct SN_env * z) {
     return 1;
 }
 
-extern struct SN_env * danish_UTF_8_create_env(void) { return SN_create_env(1, 2, 0); }
-
-extern void danish_UTF_8_close_env(struct SN_env * z) { SN_close_env(z, 1); }
+extern int danish_UTF_8_init_env( struct SN_env* env) { return SN_init_env( env, 1, 2, 0); }
 

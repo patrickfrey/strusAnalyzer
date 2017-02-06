@@ -4,9 +4,17 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 set(source_files
+	featureConfig.cpp
+	featureConfigMap.cpp
+	patternFeatureConfig.cpp
+	patternFeatureConfigMap.cpp
+	patternMatchConfigMap.cpp
+	patternMatchContextMap.cpp
+	segmentProcessor.cpp
 	documentAnalyzer.cpp
-	libstrus_analyzer.cpp
+	documentAnalyzerContext.cpp
 	queryAnalyzer.cpp
+	queryAnalyzerContext.cpp
 )
 
 include_directories(  
@@ -20,13 +28,15 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
  	"${PROJECT_SOURCE_DIR}/src/textproc"
  	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
 )
 
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_library( strus_analyzer SHARED ${source_files} )
+add_library( strus_analyzer SHARED  libstrus_analyzer.cpp  ${source_files} )
 target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strus_private_utils )
 set_target_properties(
     strus_analyzer

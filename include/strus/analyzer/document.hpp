@@ -71,7 +71,14 @@ public:
 	/// \param[in] p position of the search index term in the document (token position not byte position)
 	void addSearchIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
-		m_searchIndexTerms.push_back( Term( t, v, p));
+		m_searchIndexTerms.push_back( Term( t, v, p, 1));
+	}
+
+	/// \brief Define a list of search index terms of the document
+	/// \param[in] terms list of terms to add
+	void addSearchIndexTerms( const std::vector<Term>& terms)
+	{
+		m_searchIndexTerms.insert( m_searchIndexTerms.end(), terms.begin(), terms.end());
 	}
 
 	/// \brief Define a forward index term of the document
@@ -80,7 +87,14 @@ public:
 	/// \param[in] p position of the forward index term in the document (token position not byte position)
 	void addForwardIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
-		m_forwardIndexTerms.push_back( Term( t, v, p));
+		m_forwardIndexTerms.push_back( Term( t, v, p, 1));
+	}
+
+	/// \brief Define a list of forward index terms of the document
+	/// \param[in] terms list of terms to add
+	void addForwardIndexTerms( const std::vector<Term>& terms)
+	{
+		m_forwardIndexTerms.insert( m_forwardIndexTerms.end(), terms.begin(), terms.end());
 	}
 
 	/// \brief Clear the document content

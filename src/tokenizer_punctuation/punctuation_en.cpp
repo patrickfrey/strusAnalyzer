@@ -1061,15 +1061,15 @@ PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en(
 
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerFunctionContext_en::tokenize(
-		const char* src, std::size_t srcsize)
+	PunctuationTokenizerInstance_en::tokenize(
+		const char* src, std::size_t srcsize) const
 {
 	try
 	{
 		std::vector<analyzer::Token> rt;
 	
 		textwolf::UChar ch0;
-		CharWindow scanner( src, srcsize, m_punctuation_char);
+		CharWindow scanner( src, srcsize, &m_punctuation_char);
 		unsigned int wordlen=0;
 		unsigned int pos = 0;
 
@@ -1109,7 +1109,7 @@ std::vector<analyzer::Token>
 					if (0==ch0)
 					{
 						// push punctuation for other case for previous character position (end of file)
-						rt.push_back( analyzer::Token( pos, pos, 1));
+						rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
 						break;
 					}
 					if (isDigit( ch0))
@@ -1124,7 +1124,7 @@ std::vector<analyzer::Token>
 #ifdef STRUS_LOWLEVEL_DEBUG
 					std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 #endif
-					rt.push_back( analyzer::Token( pos, pos, 1));
+					rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
 					continue;
 				}
 				else if (isLowercase( ch1))
@@ -1146,7 +1146,7 @@ std::vector<analyzer::Token>
 #ifdef STRUS_LOWLEVEL_DEBUG
 						std::cout << "check abbreviation candidate '" << (word+wi) << "'" << std::endl;
 #endif
-						if (m_abbrevDict->get( word+wi, val))
+						if (m_abbrevDict.get( word+wi, val))
 						{
 #ifdef STRUS_LOWLEVEL_DEBUG
 							std::cout << "ABBREV " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
@@ -1256,7 +1256,7 @@ std::vector<analyzer::Token>
 				std::size_t startpos = (endpos > 16)?(endpos-16):0;
 				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
 #endif
-				rt.push_back( analyzer::Token( pos, pos, 1));
+				rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
 			}
 			else if (isPunctuation(ch0))
 			{
@@ -1266,21 +1266,11 @@ std::vector<analyzer::Token>
 				std::size_t startpos = (endpos > 16)?(endpos-16):0;
 				std::cout << "TOKEN AT " << std::string( src+startpos, endpos-startpos) << std::endl;
 #endif
-				rt.push_back( analyzer::Token( pos, pos, 1));
+				rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
 			}
 		}
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
-}
-
-
-TokenizerFunctionContextInterface* PunctuationTokenizerInstance_en::createFunctionContext() const
-{
-	try
-	{
-		return new PunctuationTokenizerFunctionContext_en( &m_abbrevDict, &m_punctuation_char, m_errorhnd);
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 }
 

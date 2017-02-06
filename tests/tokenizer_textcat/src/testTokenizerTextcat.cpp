@@ -10,7 +10,6 @@
 #include "strus/lib/error.hpp"
 #include "strus/lib/textproc.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 
@@ -88,12 +87,6 @@ int main( int argc, const char* argv[])
 			throw std::runtime_error( std::string("failed to create tokenizer 'textcat' instance: ") + g_errorhnd->fetchError());
 		}	
 
-		std::auto_ptr<strus::TokenizerFunctionContextInterface> context( instance->createFunctionContext());
-		if (!context.get())
-		{
-			throw std::runtime_error( std::string("failed to create tokenizer 'textcat' context: ") + g_errorhnd->fetchError());
-		}
-		
 		std::string s;
 		s.append( workingDir);
 		s.append( "/");
@@ -102,13 +95,11 @@ int main( int argc, const char* argv[])
 		if( !f.good()) {
 			throw std::runtime_error( "failed to open text file");
 		}
-		std::string value( (std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());		
-		
+		std::string value( (std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "input: " << value << std::endl;
 #endif
-		
-		std::vector<strus::analyzer::Token> result( context->tokenize( value.c_str(), value.size()));
+		std::vector<strus::analyzer::Token> result( instance->tokenize( value.c_str(), value.size()));
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "output tokenizer textcat:";
 		std::vector<strus::analyzer::Token>::const_iterator ri = result.begin(), re = result.end();
@@ -125,12 +116,12 @@ int main( int argc, const char* argv[])
 		}
 
 		delete g_errorhnd;
-		
+
 		// we expect all tokens to be of the given language
 		if (result.size() == 0) {
 			return 1;
 		}
-		
+
 		return 0;
 	}
 	catch (const std::bad_alloc&)

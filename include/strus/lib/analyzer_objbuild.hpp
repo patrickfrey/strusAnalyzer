@@ -5,11 +5,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Library with some convenient functions to create analyzder objects
+/// \brief Library with some convenient functions to create analyzer objects
 /// \file "analyzer_objbuild.hpp"
 #ifndef _STRUS_ANALYZER_OBJBUILD_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_OBJBUILD_LIB_HPP_INCLUDED
-#include <string>
 
 /// \brief strus toplevel namespace
 namespace strus {

@@ -3,14 +3,11 @@
 #include <string.h>
 #include "../include/libstemmer.h"
 #include "../runtime/api.h"
-#include "modules.h"
+#include "modules_utf8.h"
 
 struct sb_stemmer {
-    struct SN_env * (*create)(void);
-    void (*close)(struct SN_env *);
+    int (*initenv)( struct SN_env*);
     int (*stem)(struct SN_env *);
-
-    struct SN_env * env;
 };
 
 extern const char **
@@ -48,10 +45,8 @@ static struct sb_stemmer* stemmer_new_without_state(const char * algorithm, cons
         stemmer = (struct sb_stemmer *) malloc(sizeof(struct sb_stemmer));
         if (stemmer == NULL) return NULL;
     
-        stemmer->create = module->create;
-        stemmer->close = module->close;
+        stemmer->initenv = module->initenv;
         stemmer->stem = module->stem;
-        stemmer->env = NULL;
         return stemmer;
 }
 
@@ -59,12 +54,6 @@ extern struct sb_stemmer *
 sb_stemmer_new(const char * algorithm, const char * charenc)
 {
     struct sb_stemmer *stemmer = stemmer_new_without_state( algorithm, charenc);
-    stemmer->env = stemmer->create();
-    if (stemmer->env == NULL)
-    {
-        sb_stemmer_delete(stemmer);
-        return NULL;
-    }
     return stemmer;
 }
 
@@ -75,47 +64,23 @@ sb_stemmer_new_threadsafe( const char * algorithm, const char * charenc)
     return stemmer;
 }
 
-extern struct SN_env*
-sb_stemmer_create_env( const struct sb_stemmer * stemmer)
+extern int sb_stemmer_UTF_8_init_env( const struct sb_stemmer * stemmer, sb_stemmer_env* env)
 {
-	return stemmer->create();
-}
-
-void
-sb_stemmer_delete_env( const struct sb_stemmer * stemmer, struct SN_env* env)
-{
-	if (env) stemmer->close( env);
+	return stemmer->initenv( (struct SN_env*)(void*)env);
 }
 
 void
 sb_stemmer_delete(struct sb_stemmer * stemmer)
 {
-    if (stemmer == 0) return;
-    if (stemmer->close == 0) return;
-    if (stemmer->env) stemmer->close(stemmer->env);
-    stemmer->close = 0;
-    free(stemmer);
+    if (stemmer == NULL) return;
+    free( stemmer);
 }
 
 const sb_symbol *
-sb_stemmer_stem(struct sb_stemmer * stemmer, const sb_symbol * word, int size)
+sb_stemmer_stem_threadsafe( const struct sb_stemmer * stemmer, sb_stemmer_env* env_, const sb_symbol * word, int size)
 {
     int ret;
-    if (SN_set_current(stemmer->env, size, (const symbol *)(word)))
-    {
-        stemmer->env->l = 0;
-        return NULL;
-    }
-    ret = stemmer->stem(stemmer->env);
-    if (ret < 0) return NULL;
-    stemmer->env->p[stemmer->env->l] = 0;
-    return (const sb_symbol *)(stemmer->env->p);
-}
-
-const sb_symbol *
-sb_stemmer_stem_threadsafe( const struct sb_stemmer * stemmer, struct SN_env* env, const sb_symbol * word, int size)
-{
-    int ret;
+    struct SN_env* env = (struct SN_env*)(void*)env_;
     if (SN_set_current( env, size, (const symbol *)(word)))
     {
         env->l = 0;
@@ -128,13 +93,8 @@ sb_stemmer_stem_threadsafe( const struct sb_stemmer * stemmer, struct SN_env* en
 }
 
 int
-sb_stemmer_length(struct sb_stemmer * stemmer)
+sb_stemmer_length_threadsafe( sb_stemmer_env* env_)
 {
-    return stemmer->env->l;
-}
-
-int
-sb_stemmer_length_threadsafe( struct SN_env* env)
-{
+    struct SN_env* env = (struct SN_env*)(void*)env_;
     return env->l;
 }

@@ -1,3 +1,29 @@
+strusanalyzer (0.13.0-1) unstable; urgency=low
+  * integrated pattern matching interfaces into analyzer
+  * the anayzer result terms have now a length (ordinal position count)
+  * the pattern matcher returns now the whole span of the result that defines the length of a result term
+  * implement loading patterns from a serialized form
+  * simplify definition of sub documents in analysis with the cost of giving up nested document definition (that did not work correctly anyway)
+  * define normalizer and tokenizer without context, patch snowball to cope with that
+  * rearrange code and fix many bugs
+  * many build fixes
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 6 Feb 2016 15:00:00 +0100
+
+strusanalyzer (0.12.0-1) unstable; urgency=low
+  * some interface files reorganization
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sat, 1 Oct 2016 16:00:00 +0100
+
+strusanalyzer (0.11.1-1) unstable; urgency=low
+  * moved pattern matching interfaces from strus stream here
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 30 Sep 2016 14:00:00 +0100
+
+strusanalyzer (0.11.0-1) unstable; urgency=low
+  * fixed bug in ngram normalizer: items with exactly n characters were mapped to an empty string
+  * fixed bug in regex normalizer: output format string parser
+  * added 'charselect' normalizer
+  * fixed bug in date2int normalizer: separator characters in format string not handled correctly
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 28 Sep 2016 12:00:00 +0100
+
 strusanalyzer (0.10.1-1) unstable; urgency=low
   * completely redesigned document markup interface of the segmenter
  -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 10 Jul 2016 19:00:00 +0100

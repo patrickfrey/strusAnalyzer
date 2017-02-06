@@ -43,25 +43,6 @@ private:
 	std::string m_strings;
 };
 
-class CharMapNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	CharMapNormalizerFunctionContext( const CharMap* map_, ErrorBufferInterface* errorhnd)
-		:m_map( map_),m_errorhnd(errorhnd){}
-	
-	virtual std::string normalize(
-			const char* src,
-			std::size_t srcsize)
-	{
-		return m_map->rewrite( src, srcsize, m_errorhnd);
-	}
-
-private:
-	const CharMap* m_map;
-	ErrorBufferInterface* m_errorhnd;
-};
-
 class CharMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
@@ -69,13 +50,11 @@ public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype, ErrorBufferInterface* errorhnd)
 		:m_map(maptype),m_errorhnd(errorhnd){}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize) const
 	{
-		try
-		{
-			return new CharMapNormalizerFunctionContext( &m_map, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in normalizer: %s"), *m_errorhnd, 0);
+		return m_map.rewrite( src, srcsize, m_errorhnd);
 	}
 
 private:
@@ -481,5 +460,157 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 		return 0;
 	}
 }
+
+
+class CharSet
+{
+public:
+	CharSet( const std::vector<std::string>& setnames)
+	{
+		std::vector<std::string>::const_iterator si = setnames.begin(), se = setnames.end();
+		for (; si != se; ++si)
+		{
+			std::string name = utils::tolower( *si);
+			if (name == "punct_en" || name == "punct_de")
+			{
+				addRange( 44, 47);
+				addRange( 58, 59);
+				addRange( 33, 34);
+				addRange( 39, 41);
+				addRange( 63, 63);
+			}
+			else if (name == "digits")
+			{
+				addRange( '0', '9');
+			}
+			else if (name == "alpha_latin")
+			{
+				addRange( 'a', 'z');
+				addRange( 'A', 'Z');
+				addRange( 0xC0, 0x24F);
+			}
+			else if (name == "alpha_cyrillic")
+			{
+				addRange( 0x400, 0x4FF);
+			}
+			else if (name == "alpha_greek")
+			{
+				addRange( 0x370, 0x3FF);
+				addRange( 0x500, 0x52F);
+			}
+			else if (name == "alpha_armenian")
+			{
+				addRange( 0x530, 0x58F);
+			}
+			else if (name == "alpha_hebrew")
+			{
+				addRange( 0x590, 0x5FF);
+			}
+			else if (name == "alpha_arabic")
+			{
+				addRange( 0x600, 0x6FF);
+			}
+			else if (name == "alpha_syriac")
+			{
+				addRange( 0x700, 0x74F);
+			}
+			else if (name == "alpha_ascii")
+			{
+				addRange( 'a', 'z');
+				addRange( 'A', 'Z');
+			}
+			else
+			{
+				throw strus::runtime_error(_TXT("unknown character set name '%s' specified"), name.c_str());
+			}
+		}
+	}
+
+	CharSet(){}
+	~CharSet(){}
+	bool isMember( uint32_t chr) const
+	{
+		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
+		for (; ri != re; ++ri)
+		{
+			if (chr >= ri->first && chr <= ri->second) return true;
+		}
+		return false;
+	}
+
+	void addRange( uint32_t first, uint32_t second)
+	{
+		if (first > second) throw strus::runtime_error(_TXT("illegal character range defined: %u..%u"), first, second);
+		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
+		for (; ri != re; ++ri)
+		{
+			if (first >= ri->first && second <= ri->second) return;
+		}
+		m_ranges.push_back( Range( first,second));
+	}
+
+private:
+	typedef std::pair<uint32_t,uint32_t> Range;
+	std::vector<Range> m_ranges;
+};
+
+class CharSelectNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
+{
+public:
+	CharSelectNormalizerInstance( const std::vector<std::string>& setnames, ErrorBufferInterface* errorhnd)
+		:m_set(setnames),m_errorhnd(errorhnd){}
+
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize) const
+	{
+		try
+		{
+			std::string rt;
+			textwolf::charset::UTF8 utf8;
+			char buf[16];
+			unsigned int bufpos;
+			textwolf::CStringIterator itr( src, srcsize);
+			bool selected = false;
+	
+			while (*itr)
+			{
+				bufpos = 0;
+				textwolf::UChar value = utf8.value( buf, bufpos, itr);
+				if (m_set.isMember( value))
+				{
+					rt.append( buf, bufpos);
+					selected = true;
+				}
+				else
+				{
+					if (selected)
+					{
+						rt.push_back( ' ');
+					}
+					selected = false;
+				}
+			}
+			return rt;
+		}
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
+	}
+
+private:
+	CharSet m_set;
+	ErrorBufferInterface* m_errorhnd;
+};
+
+NormalizerFunctionInstanceInterface* CharSelectNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+{
+	try
+	{
+		return new CharSelectNormalizerInstance( args, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
+}
+
+
 
 

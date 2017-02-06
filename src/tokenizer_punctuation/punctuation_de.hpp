@@ -7,7 +7,6 @@
  */
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "punctuation_utils.hpp"
 
@@ -15,29 +14,6 @@ namespace strus
 {
 /// \brief Forward declaration
 class ErrorBufferInterface;
-
-class PunctuationTokenizerFunctionContext_de
-	:public TokenizerFunctionContextInterface
-{
-public:
-	PunctuationTokenizerFunctionContext_de(
-			const CharTable* punctuation_char_,
-			ErrorBufferInterface* errorhnd)
-		:m_punctuation_char(punctuation_char_)
-		,m_errorhnd(errorhnd){}
-
-	inline bool isPunctuation( textwolf::UChar ch)
-	{
-		return (ch <= 127 && (*m_punctuation_char)[(unsigned char)ch]);
-	}
-
-	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize);
-
-private:
-	const CharTable* m_punctuation_char;
-	ErrorBufferInterface* m_errorhnd;
-};
-
 
 class PunctuationTokenizerInstance_de
 	:public TokenizerFunctionInstanceInterface
@@ -54,7 +30,12 @@ public:
 		return true;
 	}
 
-	TokenizerFunctionContextInterface* createFunctionContext() const;
+	inline bool isPunctuation( textwolf::UChar ch) const
+	{
+		return (ch <= 127 && (m_punctuation_char)[(unsigned char)ch]);
+	}
+
+	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
 
 private:
 	CharTable m_punctuation_char;

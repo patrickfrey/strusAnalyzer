@@ -7,7 +7,7 @@
  */
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -36,7 +36,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 }
 
 
-SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass& dclass) const
+SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -45,13 +45,13 @@ SegmenterContextInterface* SegmenterInstance::createContext( const DocumentClass
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const DocumentClass& dclass, const std::string& content) const
+SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	m_errorhnd->report( _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( const SegmenterOptions& opts) const
+SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try
 	{

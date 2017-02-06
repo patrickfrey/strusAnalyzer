@@ -8,8 +8,9 @@
 #include "normalizerDictMap.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/fileio.hpp"
+#include "strus/base/symbolTable.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -20,19 +21,25 @@
 
 using namespace strus;
 
-class DictMap
+#define NORMALIZER_NAME "dictmap"
+
+class KeyMap
+{
+public:
+	virtual ~KeyMap(){}
+	virtual bool set( const std::string& key, const std::string& value)=0;
+	virtual bool get( const std::string& key, std::string& value) const=0;
+};
+
+
+class DictMap :public KeyMap
 {
 public:
 	DictMap(){}
-	DictMap( const DictMap& o)
-		:m_map(o.m_map),m_value_strings(o.m_value_strings){}
-	~DictMap(){}
+	virtual ~DictMap(){}
 
-public:
-	void loadFile( const std::string& filename);
-
-	bool set( const std::string& key, const std::string& value);
-	bool get( const std::string& key, std::string& value) const;
+	virtual bool set( const std::string& key, const std::string& value);
+	virtual bool get( const std::string& key, std::string& value) const;
 
 private:
 	conotrie::CompactNodeTrie m_map;
@@ -57,99 +64,118 @@ bool DictMap::get( const std::string& key, std::string& value) const
 	return true;
 }
 
-static std::string readFile( const std::string& filename)
-{
-	std::string rt;
-	FILE* fh = ::fopen( filename.c_str(), "rb");
-	if (!fh)
-	{
-		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
-	}
-	unsigned int nn;
-	enum {bufsize=(1<<12)};
-	char buf[ bufsize];
 
-	while (!!(nn=::fread( buf, 1, bufsize, fh)))
-	{
-		try
-		{
-			rt.append( buf, nn);
-		}
-		catch (const std::bad_alloc& err)
-		{
-			::fclose( fh);
-			throw strus::runtime_error(_TXT("out of memory reading file"));
-		}
-	}
-	if (!feof( fh))
-	{
-		unsigned int ec = ::ferror( fh);
-		::fclose( fh);
-		std::ostringstream msg;
-		msg << ec;
-		throw strus::runtime_error( _TXT("error opening file '%s' (errno %u)"), filename.c_str(), errno);
-	}
-	else
-	{
-		::fclose( fh);
-	}
-	return rt;
+class HashMap :public KeyMap
+{
+public:
+	HashMap(){}
+	virtual ~HashMap(){}
+
+	virtual bool set( const std::string& key, const std::string& value);
+	virtual bool get( const std::string& key, std::string& value) const;
+
+private:
+	SymbolTable m_symtab;
+	std::vector<unsigned int> m_value_refs;
+	std::string m_value_strings;
+};
+
+
+bool HashMap::set( const std::string& key, const std::string& value)
+{
+	uint32_t id = m_symtab.getOrCreate( key);
+	if (!m_symtab.isNew()) throw strus::runtime_error(_TXT("duplicate definition of symbol '%s'"), key.c_str());
+	if (id != m_value_refs.size()+1) throw strus::runtime_error(_TXT("internal: inconsistency in data"));
+	m_value_strings.push_back('\0');
+	m_value_refs.push_back( m_value_strings.size());
+	m_value_strings.append( value);
+	return true;
 }
 
-void DictMap::loadFile( const std::string& filename)
+bool HashMap::get( const std::string& key, std::string& value) const
 {
-	std::string content = readFile( filename);
+	uint32_t id = m_symtab.get( key);
+	if (!id) return false;
+	value.append( m_value_strings.c_str() + m_value_refs[ id-1]);
+	return true;
+}
+
+static void loadFile( KeyMap* keymap, const std::string& filename)
+{
+	std::string content;
+	unsigned int ec = readFile( filename, content);
+	if (ec) throw strus::runtime_error(_TXT("failed to load file '%s': %s"), filename.c_str(), ::strerror(ec));
 	char delim = ' ';
 	char const* cc = content.c_str();
-	if (content[0] >= 32 && (content[1] == '\r' || content[1] == '\n'))
+	const char* ee = (const char*)std::strchr( cc,'\n');
+	if (!ee) ee = cc + content.size();
+	if (0!=std::memchr( cc, '\t', ee - cc))
 	{
-		delim = content[0];
-		++cc;
-		while (*cc == '\r' || *cc == '\n') ++cc;
+		delim = '\t';
 	}
 	while (*cc)
 	{
-		const char* eoln = std::strchr( cc, '\n');
-		if (eoln == 0) eoln = std::strchr( cc, '\0');
-		char const* ci = cc;
-		for (; ci != eoln && *ci == delim; ++ci){}
-		if (ci == eoln)
-		{
-			cc = (*eoln)?(eoln+1):eoln;
-			continue;
-		}
-		const char* mid = std::strchr( cc, delim);
-		if (!mid || mid >= eoln) mid = eoln;
-
-		std::string val( cc, mid - cc);
 		std::string key;
-		if (mid != eoln)
+		std::string val;
+		for (; *cc && *cc != delim && *cc != '\n'; ++cc)
 		{
-			key.append( mid+1, eoln-mid-1);
-			if (key.size() && key[ key.size()-1] == '\r')
+			key.push_back( *cc);
+		}
+		if (*cc == delim)
+		{
+			++cc;
+			for (; *cc && *cc != '\n'; ++cc)
 			{
-				key.resize( key.size()-1);
+				if (*cc == '\r') continue;
+				val.push_back( *cc);
 			}
 		}
-		if (!set( key, val))
+		if (!keymap->set( key, val))
 		{
-			throw strus::runtime_error(_TXT("too many term mappings inserted into 'CompactNodeTrie' structure of normalizer 'dictmap'"));
+			throw strus::runtime_error(_TXT("too many term mappings inserted into structure of normalizer '%s'"), NORMALIZER_NAME);
 		}
-		cc = (*eoln)?(eoln+1):eoln;
+		cc = (*cc)?(cc+1):cc;
 	}
 }
 
 
-class DictMapNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+class DictMapNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
 {
 public:
-	DictMapNormalizerFunctionContext( const DictMap* map_, ErrorBufferInterface* errorhnd)
-		:m_map( map_),m_errorhnd(errorhnd){}
-	
+	DictMapNormalizerInstance( const std::string& filename, const std::string& defaultResult_, bool defaultOrig_, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_defaultOrig(defaultOrig_)
+	{
+		std::size_t sz;
+		std::string resolvedFilename = textproc->getResourcePath( filename);
+		if (resolvedFilename.empty() && m_errorhnd->hasError())
+		{
+			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), filename.c_str(), m_errorhnd->fetchError());
+		}
+		unsigned int ec = readFileSize( resolvedFilename, sz);
+		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
+		std::auto_ptr<KeyMap> map;
+		if (sz > 2000000)
+		{
+			map.reset( new HashMap());
+		}
+		else
+		{
+			map.reset( new DictMap());
+		}
+		loadFile( map.get(), resolvedFilename);
+		m_map = map.release();
+	}
+
+	/// \brief Destructor
+	virtual ~DictMapNormalizerInstance()
+	{
+		delete m_map;
+	}
+
 	virtual std::string normalize(
 			const char* src,
-			std::size_t srcsize)
+			std::size_t srcsize) const
 	{
 		try
 		{
@@ -159,64 +185,51 @@ public:
 			{
 				return rt;
 			}
-			else
+			else if (m_defaultOrig)
 			{
 				return key;
 			}
+			else
+			{
+				return m_defaultResult;
+			}
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, std::string());
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
 private:
-	const DictMap* m_map;
 	ErrorBufferInterface* m_errorhnd;
-};
-
-class DictMapNormalizerInstance
-	:public NormalizerFunctionInstanceInterface
-{
-public:
-	/// \brief Destructor
-	virtual ~DictMapNormalizerInstance(){}
-
-	DictMapNormalizerInstance( const std::string& filename, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd)
-	{
-		m_map.loadFile( textproc->getResourcePath( filename));
-	}
-
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
-	{
-		try
-		{
-			return new DictMapNormalizerFunctionContext( &m_map, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
-	}
-
-private:
-	DictMap m_map;
-	ErrorBufferInterface* m_errorhnd;
+	KeyMap* m_map;
+	std::string m_defaultResult;
+	bool m_defaultOrig;
 };
 
 
 NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface* textproc) const
 {
-	if (args.size() == 0)
-	{
-		m_errorhnd->report( _TXT("name of file with key values expected as argument for 'DictMap' normalizer"));
-		return 0;
-	}
-	if (args.size() > 1)
-	{
-		m_errorhnd->report( _TXT("too many arguments for 'DictMap' normalizer"));
-		return 0;
-	}
 	try
 	{
-		return new DictMapNormalizerInstance( args[0], textproc, m_errorhnd);
+		if (args.size() == 0)
+		{
+			m_errorhnd->report( _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
+			return 0;
+		}
+		std::string defaultValue;
+		bool defaultOrig = true;
+		if (args.size() > 1)
+		{
+			defaultValue = args[1];
+			defaultOrig = false;
+
+			if (args.size() > 2)
+			{
+				m_errorhnd->report( _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
+				return 0;
+			}
+		}
+		return new DictMapNormalizerInstance( args[0], defaultValue, defaultOrig, textproc, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'dictmap' normalizer: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
 
 

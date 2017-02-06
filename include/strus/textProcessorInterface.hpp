@@ -9,6 +9,7 @@
 /// \file textProcessorInterface.hpp
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/documentClass.hpp"
 #include <string>
 #include <vector>
 
@@ -24,7 +25,13 @@ class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInterface;
 /// \brief Forward declaration
-class DocumentClass;
+class PatternLexerInterface;
+/// \brief Forward declaration
+class PatternMatcherInterface;
+/// \brief Forward declaration
+class PatternMatcherProgramInterface;
+/// \brief Forward declaration
+class PatternTermFeederInterface;
 
 
 /// \class TextProcessorInterface
@@ -55,11 +62,23 @@ public:
 	/// \return the statistics collector function reference
 	virtual const AggregatorFunctionInterface* getAggregator( const std::string& name) const=0;
 
+	/// \brief Get a const reference to a pattern lexer 
+	/// \return the pattern lexer
+	virtual const PatternLexerInterface* getPatternLexer( const std::string& name) const=0;
+
+	/// \brief Get a const reference to a pattern lexer 
+	/// \return the pattern lexer
+	virtual const PatternMatcherInterface* getPatternMatcher( const std::string& name) const=0;
+
+	/// \brief Get the default pattern term feeder interface for post processing pattern matching on analyzer output
+	/// \return the pattern term feeder
+	virtual const PatternTermFeederInterface* getPatternTermFeeder() const=0;
+
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class
 	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
 	/// \return true, if the document format was recognized, false else
-	virtual bool detectDocumentClass( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
 
 	/// \brief Define a content detector
 	/// \param[in] tokenizer a tokenizer object (pass ownership)
@@ -80,12 +99,24 @@ public:
 	/// \param[in] aggregator an aggregator function object (pass ownership)
 	virtual void defineAggregator( const std::string& name, AggregatorFunctionInterface* aggregator)=0;
 
+	/// \brief Define a pattern matching lexer by name
+	/// \param[in] name name of the lexer to define
+	/// \param[in] lexer a lexer object (pass ownership)
+	virtual void definePatternLexer( const std::string& name, PatternLexerInterface* lexer)=0;
+
+	/// \brief Define a pattern matcher by name
+	/// \param[in] name name of the pattern matcher to define
+	/// \param[in] matcher a pattern matcher object (pass ownership)
+	virtual void definePatternMatcher( const std::string& name, PatternMatcherInterface* matcher)=0;
+
 	/// \brief Function type for fetching descriptions of available functions
 	enum FunctionType
 	{
 		TokenizerFunction,		///< Addresses a tokenizer
 		NormalizerFunction,		///< Addresses a normalizer
-		AggregatorFunction		///< Addresses am aggregator
+		AggregatorFunction,		///< Addresses an aggregator
+		PatternLexer,			///< Addresses a pattern lexer
+		PatternMatcher			///< Addresses a pattern matcher
 	};
 
 	/// \brief Get a list of all functions of a specific type available

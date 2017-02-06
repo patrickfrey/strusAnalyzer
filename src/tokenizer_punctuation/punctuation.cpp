@@ -8,7 +8,6 @@
 #include "punctuation.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"

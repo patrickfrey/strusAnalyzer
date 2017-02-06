@@ -88,7 +88,7 @@ public:
 		}
 	}
 
-	inline bool isPunctuation( textwolf::UChar ch)
+	inline bool isPunctuation( textwolf::UChar ch) const
 	{
 		return (ch <= 127 && (*m_punctuation_char)[(unsigned char)ch]);
 	}

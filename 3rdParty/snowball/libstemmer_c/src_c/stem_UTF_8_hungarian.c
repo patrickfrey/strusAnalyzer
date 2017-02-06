@@ -29,8 +29,7 @@ extern "C" {
 #endif
 
 
-extern struct SN_env * hungarian_UTF_8_create_env(void);
-extern void hungarian_UTF_8_close_env(struct SN_env * z);
+extern int hungarian_UTF_8_init_env( struct SN_env *env);
 
 
 #ifdef __cplusplus
@@ -1228,7 +1227,6 @@ extern int hungarian_UTF_8_stem(struct SN_env * z) {
     return 1;
 }
 
-extern struct SN_env * hungarian_UTF_8_create_env(void) { return SN_create_env(0, 1, 0); }
+extern int hungarian_UTF_8_init_env( struct SN_env *env) { return SN_init_env( env, 0, 1, 0); }
 
-extern void hungarian_UTF_8_close_env(struct SN_env * z) { SN_close_env(z, 0); }
 

@@ -10,6 +10,7 @@
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/base/stdint.h"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -17,113 +18,139 @@
 #include <fstream>
 #include <map>
 #include <vector>
-#include <boost/algorithm/string.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/date_time.hpp>
-#include <boost/cstdint.hpp>
+#include <ctime>
 
 using namespace strus;
+
+#define MODULENAME "date2int"
+
+typedef struct tm TimeStruct;
 
 struct DateNumGranularity
 {
 	enum Type
 	{
-		Microsecond,
-		Millisecond,
 		Second,
 		Minute,
 		Hour,
 		Day
 	};
-	DateNumGranularity( Type type_, const boost::posix_time::ptime& start_, unsigned int factor_)
+	DateNumGranularity( Type type_, const TimeStruct& start_, unsigned int factor_)
 		:m_type(type_),m_start(start_),m_factor(factor_){}
 	DateNumGranularity( const DateNumGranularity& o)
 		:m_type(o.m_type),m_start(o.m_start),m_factor(o.m_factor){}
 
 	Type m_type;
-	boost::posix_time::ptime m_start;
+	TimeStruct m_start;
 	unsigned m_factor;
 
-	boost::int64_t getValue( const boost::posix_time::ptime& timstmp)
+	static uint64_t daynum( const TimeStruct& timstmp)
 	{
-		typedef boost::posix_time::time_duration time_duration;
-		time_duration diff = timstmp - m_start;
+		uint64_t yy = timstmp.tm_year + 1900;
+		uint64_t mm = timstmp.tm_mon + 1;
+		if (timstmp.tm_mon <= 1)
+		{
+			mm += 12;
+			yy -= 1;
+		}
+		uint64_t dd = timstmp.tm_mday;
+		if (!dd) dd=1;
+		return (146097*yy)/400 + (153*mm + 8)/5 + dd;
+	}
+	static uint64_t hournum( const TimeStruct& timstmp)
+	{
+		return (daynum(timstmp) * 24 + timstmp.tm_hour);
+	}
+	static uint64_t minnum( const TimeStruct& timstmp)
+	{
+		return (hournum(timstmp) * 60 + timstmp.tm_min);
+	}
+	static uint64_t secnum( const TimeStruct& timstmp)
+	{
+		return (minnum(timstmp) * 60 + timstmp.tm_sec);
+	}
+
+	uint64_t getValue( const TimeStruct& timstmp) const
+	{
+		uint64_t aa = 0;
+		uint64_t bb = 0;
 		switch (m_type)
 		{
-			case Microsecond:
-				return diff.ticks() / ((time_duration::ticks_per_second() / 1000000) * m_factor);
-			case Millisecond:
-				return diff.ticks() / ((time_duration::ticks_per_second() / 1000) * m_factor);
 			case Second:
-				return diff.ticks() / ((time_duration::ticks_per_second()) * m_factor);
+				aa = secnum( timstmp);
+				bb = secnum( m_start);
+				break;
 			case Minute:
-				return diff.ticks() / ((time_duration::ticks_per_second()) * (60 * m_factor));
+				aa = minnum( timstmp);
+				bb = minnum( m_start);
+				break;
 			case Hour:
-				return diff.ticks() / ((time_duration::ticks_per_second()) * (3600 * m_factor));
+				aa = hournum( timstmp);
+				bb = hournum( m_start);
+				break;
 			case Day:
-				return diff.ticks() / ((time_duration::ticks_per_second()) * (24 * 3600 * m_factor));
+				aa = daynum( timstmp);
+				bb = daynum( m_start);
+				break;
 		}
-		throw strus::runtime_error(_TXT("unexpected error in time calculation"));
+		return (aa - bb) / m_factor;
 	}
 };
 
-
-class Date2IntNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
+struct Date2IntNormalizerConfig
 {
-public:
-	Date2IntNormalizerFunctionContext( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, ErrorBufferInterface* errorhnd)
-		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd)
-	{}
+	DateNumGranularity granularity;
+	std::vector<std::string> fmtar;
 
-	virtual std::string normalize(
-			const char* src,
-			std::size_t srcsize)
-	{
-		try
-		{
-			std::string inputstr( src, srcsize);
-			boost::posix_time::ptime pt;
-			std::vector<std::locale>::const_iterator li = m_lcar.begin(), le = m_lcar.end();
-			for (; li != le; ++li)
-			{
-				std::istringstream is( inputstr);
-				is.imbue( *li);
-				is >> pt;
-				if(pt != boost::posix_time::ptime()) break;
-			}
-			std::ostringstream out;
-			out << m_granularity.getValue( pt);
-			return out.str();
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, std::string());
-	}
-
-private:
-	DateNumGranularity m_granularity;
-	std::vector<std::locale> m_lcar;
-	ErrorBufferInterface* m_errorhnd;
+	Date2IntNormalizerConfig( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_)
+		:granularity(granularity_),fmtar(fmtar_){}
+	Date2IntNormalizerConfig( const Date2IntNormalizerConfig& o)
+		:granularity(o.granularity),fmtar(o.fmtar){}
 };
+
 
 class Date2IntNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::locale>& lcar_, ErrorBufferInterface* errorhnd)
-		:m_granularity(granularity_),m_lcar(lcar_),m_errorhnd(errorhnd){}
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_, ErrorBufferInterface* errorhnd)
+		:m_config(granularity_,fmtar_),m_errorhnd(errorhnd){}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize(
+			const char* src,
+			std::size_t srcsize) const
 	{
 		try
 		{
-			return new Date2IntNormalizerFunctionContext( m_granularity, m_lcar, m_errorhnd);
+			TimeStruct result;
+
+			std::vector<std::string>::const_iterator ci = m_config.fmtar.begin(), ce = m_config.fmtar.end();
+			for (; ci != ce; ++ci)
+			{
+				std::memset( &result, 0, sizeof(result));
+				char const* pi = ::strptime( src, ci->c_str(), &result);
+				if (pi == 0) continue;
+				const char* pe = src + srcsize;
+				for (; pi < pe && std::isspace(*pi); ++pi){}
+				if (pi != pe) continue;
+				break;
+			}
+			if (ci == ce)
+			{
+				std::string inputstr( src, srcsize);
+				throw strus::runtime_error(_TXT("unknown time format: '%s'"), inputstr.c_str());
+			}
+			std::mktime( &result);
+			uint64_t rtnum = m_config.granularity.getValue( result);
+			std::ostringstream out;
+			out << rtnum;
+			return out.str();
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
 	}
 
 private:
-	DateNumGranularity m_granularity;
-	std::vector<std::locale> m_lcar;
+	Date2IntNormalizerConfig m_config;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -143,19 +170,7 @@ static bool isAlphaNum( char ch)
 
 static DateNumGranularity::Type parseGranularityType( char const*& gi)
 {
-	if (gi[0] == 'u' && gi[1] == 's')
-	{
-		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
-		gi+=2;
-		return DateNumGranularity::Microsecond;
-	}
-	else if (gi[0] == 'm' && gi[1] == 's')
-	{
-		if (isAlphaNum(gi[2])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
-		gi+=2;
-		return DateNumGranularity::Millisecond;
-	}
-	else if (*gi == 's')
+	if (*gi == 's')
 	{
 		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
@@ -208,7 +223,8 @@ static unsigned int parseNumber( char const*& gi)
 DateNumGranularity parseGranularity( char const* gi)
 {
 	DateNumGranularity::Type type = parseGranularityType( gi);
-	boost::posix_time::ptime start;
+	TimeStruct start;
+	std::memset( &start, 0, sizeof(start));
 	unsigned int factor = 1;
 
 	gi = skipSpaces( gi);
@@ -216,28 +232,23 @@ DateNumGranularity parseGranularity( char const* gi)
 	{
 		++gi;
 		factor = parseNumber( gi);
+		if (factor == 0) throw strus::runtime_error(_TXT("illegal factor"));
 	}
 	gi = skipSpaces( gi);
 	if (*gi)
 	{
-		std::string fromDate( gi);
-		if (std::strchr( gi, ' ') == 0)
-		{
-			fromDate.append( " 00:00:00");
-		}
-		try
-		{
-			start = boost::posix_time::time_from_string( fromDate);
-		}
-		catch (...)
-		{
-			throw strus::runtime_error( _TXT("error in result definition: illegal start time"));
-		}
+		char const* pi = ::strptime( gi, "%Y-%m-%d %H:%M:%S", &start);
+		if (!pi) pi = ::strptime( gi, "%Y-%m-%d %H:%M", &start);
+		if (!pi) pi = ::strptime( gi, "%Y-%m-%d %H", &start);
+		if (!pi) pi = ::strptime( gi, "%Y-%m-%d", &start);
+		if (!pi || *pi) throw strus::runtime_error(_TXT("illegal time format for start time: %s"), gi);
 	}
 	else
 	{
-		start = boost::posix_time::ptime( boost::gregorian::date( 1970, 1, 1));
+		start.tm_year = 1970;
+		start.tm_mday = 1;
 	}
+	std::mktime( &start);
 	return DateNumGranularity( type, start, factor);
 }
 
@@ -252,19 +263,11 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 			return 0;
 		}
 		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-	
 		DateNumGranularity granularity( parseGranularity( ai->c_str()));
-	
-		std::vector<std::locale> lcar;
-		for (++ai; ai != ae; ++ai)
-		{
-			lcar.push_back(
-				std::locale(std::locale::classic(),
-				new boost::posix_time::time_input_facet( ai->c_str())));
-		}
-		return new Date2IntNormalizerFunctionInstance( granularity, lcar, m_errorhnd);
+		std::vector<std::string> facets( ++ai, ae);
+		return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'date2int' normalizer: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
 }
 
 

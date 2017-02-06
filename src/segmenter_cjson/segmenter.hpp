@@ -9,7 +9,7 @@
 #define _STRUS_SEGMENTER_CJSON_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "private/xpathAutomaton.hpp"
 #include <string>
 
@@ -33,8 +33,8 @@ public:
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
 
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const;
-	virtual SegmenterMarkupContextInterface* createMarkupContext( const DocumentClass& dclass, const std::string& content) const;
+	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const;
+	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
 private:
 	void addExpression( int id, const std::string& expression);
@@ -58,7 +58,7 @@ public:
 		return "application/json";
 	}
 
-	virtual SegmenterInstanceInterface* createInstance( const SegmenterOptions& opts) const;
+	virtual SegmenterInstanceInterface* createInstance( const analyzer::SegmenterOptions& opts) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

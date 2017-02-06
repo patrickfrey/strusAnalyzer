@@ -46,6 +46,18 @@ int utils::toint( const std::string& val)
 	}
 }
 
+unsigned int utils::touint( const std::string& val)
+{
+	try
+	{
+		return boost::lexical_cast<unsigned int>( val);
+	}
+	catch (const boost::bad_lexical_cast& err)
+	{
+		throw strus::runtime_error( _TXT("failed to convert string '%s' to unsigned integer: %s"), val.c_str(), err.what());
+	}
+}
+
 std::string utils::tostring( int val)
 {
 	try

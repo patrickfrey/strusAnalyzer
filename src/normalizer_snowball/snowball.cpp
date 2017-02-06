@@ -7,7 +7,6 @@
  */
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
@@ -19,50 +18,6 @@
 #include <stdexcept>
 
 using namespace strus;
-
-class StemNormalizerFunctionContext
-	:public NormalizerFunctionContextInterface
-{
-public:
-	StemNormalizerFunctionContext( const struct sb_stemmer* stemmer_, ErrorBufferInterface* errorhnd)
-		:m_stemmer(stemmer_)
-		,m_env( sb_stemmer_create_env( stemmer_))
-		,m_errorhnd(errorhnd)
-	{}
-
-	virtual ~StemNormalizerFunctionContext()
-	{
-		sb_stemmer_delete_env( m_stemmer, m_env);
-	}
-
-	virtual std::string normalize( const char* src, std::size_t srcsize)
-	{
-		const sb_symbol* res
-			= sb_stemmer_stem_threadsafe(
-				m_stemmer, m_env, (const sb_symbol*)src, srcsize);
-		if (!res)
-		{
-			m_errorhnd->report( "memory allocation error in stemmer");
-			return std::string();
-		}
-		std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( m_env);
-		try
-		{
-			return std::string( (const char*)res, len);
-		}
-		catch (const std::bad_alloc& )
-		{
-			m_errorhnd->report( "memory allocation error in stemmer");
-			return std::string();
-		}
-	}
-
-private:
-	const struct sb_stemmer* m_stemmer;
-	struct SN_env* m_env;
-	ErrorBufferInterface* m_errorhnd;
-};
-
 
 class StemNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
@@ -84,14 +39,25 @@ public:
 		if (m_stemmer) sb_stemmer_delete( m_stemmer);
 	}
 
-	virtual NormalizerFunctionContextInterface* createFunctionContext() const
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		try
 		{
-			if (!m_stemmer) return 0;
-			return new StemNormalizerFunctionContext( m_stemmer, m_errorhnd);
+			sb_stemmer_env env;
+			sb_stemmer_UTF_8_init_env( m_stemmer, &env);
+			const sb_symbol* res = sb_stemmer_stem_threadsafe( m_stemmer, &env, (const sb_symbol*)src, srcsize);
+			if (!res)
+			{
+				return std::string( src, srcsize);
+			}
+			std::size_t len = (std::size_t)sb_stemmer_length_threadsafe( &env);
+			return std::string( (const char*)res, len);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *m_errorhnd, 0);
+		catch (const std::bad_alloc& )
+		{
+			m_errorhnd->report( "memory allocation error in stemmer");
+			return std::string();
+		}
 	}
 
 private:

@@ -15,6 +15,7 @@
 
 /// \brief strus toplevel namespace
 namespace strus {
+namespace analyzer {
 
 /// \brief Defines a description of the properties of an original document processed by the segmenter
 class DocumentClass
@@ -63,6 +64,6 @@ private:
 	std::string m_encoding;
 };
 
-}//namespace
+}}//namespace
 #endif
 

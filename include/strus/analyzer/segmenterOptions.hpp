@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
-/// \file segmenterInterface.hpp
+/// \file segmenterOptions.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_OPTIONS_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_OPTIONS_HPP_INCLUDED
 #include <vector>
@@ -14,8 +14,8 @@
 #include <utility>
 
 /// \brief strus toplevel namespace
-namespace strus
-{
+namespace strus {
+namespace analyzer {
 
 /// \class SegmenterOptions
 /// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
@@ -54,7 +54,7 @@ private:
 	std::vector<Item> m_optar;
 };
 
-}//namespace
+}}//namespace
 #endif
 
 

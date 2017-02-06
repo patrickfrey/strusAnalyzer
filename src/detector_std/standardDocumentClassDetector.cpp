@@ -66,7 +66,7 @@ const char* detectBOM( const char* str, std::size_t strsize, std::size_t& BOMsiz
 	return 0;
 }
 
-static void initDocumentClass( DocumentClass& dclass, const char* mimeType, const char* encoding, const char* BOM)
+static void initDocumentClass( analyzer::DocumentClass& dclass, const char* mimeType, const char* encoding, const char* BOM)
 {
 	dclass.setMimeType( mimeType);
 	if (encoding)
@@ -151,7 +151,7 @@ static bool isDocumentTSV( const char* ci, const char* ce)
 	return false;
 }
 
-bool StandardDocumentClassDetector::detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	try
 	{

@@ -8,10 +8,10 @@
 #ifndef _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #define _STRUS_NORMALIZER_DICTIONARY_MAP_HPP_INCLUDED
 #include "compactNodeTrie.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
+#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -33,7 +33,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument";
+		return _TXT("normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument");
 	}
 	
 private:

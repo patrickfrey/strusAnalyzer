@@ -9,7 +9,7 @@
 /// \file analyzerObjectBuilderInterface.hpp
 #ifndef _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_OBJECT_BUILDER_INTERFACE_HPP_INCLUDED
-#include "strus/segmenterOptions.hpp"
+#include "strus/analyzer/segmenterOptions.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -52,7 +52,7 @@ public:
 	/// \return the document analyzer (ownership returned)
 	virtual DocumentAnalyzerInterface* createDocumentAnalyzer(
 			const SegmenterInterface* segmenter,
-			const SegmenterOptions& opts=SegmenterOptions()) const=0;
+			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)

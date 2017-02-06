@@ -8,35 +8,20 @@
  * russian, spanish, swedish, turkish
  */
 
-#include "../src_c/stem_ISO_8859_1_danish.h"
 #include "../src_c/stem_UTF_8_danish.h"
-#include "../src_c/stem_ISO_8859_1_dutch.h"
 #include "../src_c/stem_UTF_8_dutch.h"
-#include "../src_c/stem_ISO_8859_1_english.h"
 #include "../src_c/stem_UTF_8_english.h"
-#include "../src_c/stem_ISO_8859_1_finnish.h"
 #include "../src_c/stem_UTF_8_finnish.h"
-#include "../src_c/stem_ISO_8859_1_french.h"
 #include "../src_c/stem_UTF_8_french.h"
-#include "../src_c/stem_ISO_8859_1_german.h"
 #include "../src_c/stem_UTF_8_german.h"
-#include "../src_c/stem_ISO_8859_2_hungarian.h"
 #include "../src_c/stem_UTF_8_hungarian.h"
-#include "../src_c/stem_ISO_8859_1_italian.h"
 #include "../src_c/stem_UTF_8_italian.h"
-#include "../src_c/stem_ISO_8859_1_norwegian.h"
 #include "../src_c/stem_UTF_8_norwegian.h"
-#include "../src_c/stem_ISO_8859_1_porter.h"
 #include "../src_c/stem_UTF_8_porter.h"
-#include "../src_c/stem_ISO_8859_1_portuguese.h"
 #include "../src_c/stem_UTF_8_portuguese.h"
-#include "../src_c/stem_ISO_8859_2_romanian.h"
 #include "../src_c/stem_UTF_8_romanian.h"
-#include "../src_c/stem_KOI8_R_russian.h"
 #include "../src_c/stem_UTF_8_russian.h"
-#include "../src_c/stem_ISO_8859_1_spanish.h"
 #include "../src_c/stem_UTF_8_spanish.h"
-#include "../src_c/stem_ISO_8859_1_swedish.h"
 #include "../src_c/stem_UTF_8_swedish.h"
 #include "../src_c/stem_UTF_8_turkish.h"
 
@@ -63,52 +48,23 @@ static struct stemmer_encoding encodings[] = {
 struct stemmer_modules {
   const char * name;
   stemmer_encoding_t enc; 
-  struct SN_env * (*create)(void);
-  void (*close)(struct SN_env *);
+  int (*initenv)( struct SN_env*);
   int (*stem)(struct SN_env *);
 };
 static struct stemmer_modules modules[] = {
-  {"da", ENC_ISO_8859_1, danish_ISO_8859_1_create_env, danish_ISO_8859_1_close_env, danish_ISO_8859_1_stem},
-  {"da", ENC_UTF_8, danish_UTF_8_create_env, danish_UTF_8_close_env, danish_UTF_8_stem},
-  {"dan", ENC_ISO_8859_1, danish_ISO_8859_1_create_env, danish_ISO_8859_1_close_env, danish_ISO_8859_1_stem},
-  {"dan", ENC_UTF_8, danish_UTF_8_create_env, danish_UTF_8_close_env, danish_UTF_8_stem},
-  {"danish", ENC_ISO_8859_1, danish_ISO_8859_1_create_env, danish_ISO_8859_1_close_env, danish_ISO_8859_1_stem},
+  {"dk", ENC_UTF_8, danish_UTF_8_create_env, danish_UTF_8_close_env, danish_UTF_8_stem},
   {"danish", ENC_UTF_8, danish_UTF_8_create_env, danish_UTF_8_close_env, danish_UTF_8_stem},
-  {"de", ENC_ISO_8859_1, german_ISO_8859_1_create_env, german_ISO_8859_1_close_env, german_ISO_8859_1_stem},
-  {"de", ENC_UTF_8, german_UTF_8_create_env, german_UTF_8_close_env, german_UTF_8_stem},
-  {"deu", ENC_ISO_8859_1, german_ISO_8859_1_create_env, german_ISO_8859_1_close_env, german_ISO_8859_1_stem},
-  {"deu", ENC_UTF_8, german_UTF_8_create_env, german_UTF_8_close_env, german_UTF_8_stem},
-  {"dut", ENC_ISO_8859_1, dutch_ISO_8859_1_create_env, dutch_ISO_8859_1_close_env, dutch_ISO_8859_1_stem},
-  {"dut", ENC_UTF_8, dutch_UTF_8_create_env, dutch_UTF_8_close_env, dutch_UTF_8_stem},
-  {"dutch", ENC_ISO_8859_1, dutch_ISO_8859_1_create_env, dutch_ISO_8859_1_close_env, dutch_ISO_8859_1_stem},
+  {"nl", ENC_UTF_8, dutch_UTF_8_create_env, dutch_UTF_8_close_env, dutch_UTF_8_stem},
   {"dutch", ENC_UTF_8, dutch_UTF_8_create_env, dutch_UTF_8_close_env, dutch_UTF_8_stem},
-  {"en", ENC_ISO_8859_1, english_ISO_8859_1_create_env, english_ISO_8859_1_close_env, english_ISO_8859_1_stem},
   {"en", ENC_UTF_8, english_UTF_8_create_env, english_UTF_8_close_env, english_UTF_8_stem},
-  {"eng", ENC_ISO_8859_1, english_ISO_8859_1_create_env, english_ISO_8859_1_close_env, english_ISO_8859_1_stem},
-  {"eng", ENC_UTF_8, english_UTF_8_create_env, english_UTF_8_close_env, english_UTF_8_stem},
-  {"english", ENC_ISO_8859_1, english_ISO_8859_1_create_env, english_ISO_8859_1_close_env, english_ISO_8859_1_stem},
   {"english", ENC_UTF_8, english_UTF_8_create_env, english_UTF_8_close_env, english_UTF_8_stem},
-  {"es", ENC_ISO_8859_1, spanish_ISO_8859_1_create_env, spanish_ISO_8859_1_close_env, spanish_ISO_8859_1_stem},
   {"es", ENC_UTF_8, spanish_UTF_8_create_env, spanish_UTF_8_close_env, spanish_UTF_8_stem},
-  {"esl", ENC_ISO_8859_1, spanish_ISO_8859_1_create_env, spanish_ISO_8859_1_close_env, spanish_ISO_8859_1_stem},
-  {"esl", ENC_UTF_8, spanish_UTF_8_create_env, spanish_UTF_8_close_env, spanish_UTF_8_stem},
-  {"fi", ENC_ISO_8859_1, finnish_ISO_8859_1_create_env, finnish_ISO_8859_1_close_env, finnish_ISO_8859_1_stem},
-  {"fi", ENC_UTF_8, finnish_UTF_8_create_env, finnish_UTF_8_close_env, finnish_UTF_8_stem},
-  {"fin", ENC_ISO_8859_1, finnish_ISO_8859_1_create_env, finnish_ISO_8859_1_close_env, finnish_ISO_8859_1_stem},
-  {"fin", ENC_UTF_8, finnish_UTF_8_create_env, finnish_UTF_8_close_env, finnish_UTF_8_stem},
-  {"finnish", ENC_ISO_8859_1, finnish_ISO_8859_1_create_env, finnish_ISO_8859_1_close_env, finnish_ISO_8859_1_stem},
+  {"spanish", ENC_UTF_8, spanish_UTF_8_create_env, spanish_UTF_8_close_env, spanish_UTF_8_stem},
+  {"sf", ENC_UTF_8, finnish_UTF_8_create_env, finnish_UTF_8_close_env, finnish_UTF_8_stem},
   {"finnish", ENC_UTF_8, finnish_UTF_8_create_env, finnish_UTF_8_close_env, finnish_UTF_8_stem},
-  {"fr", ENC_ISO_8859_1, french_ISO_8859_1_create_env, french_ISO_8859_1_close_env, french_ISO_8859_1_stem},
   {"fr", ENC_UTF_8, french_UTF_8_create_env, french_UTF_8_close_env, french_UTF_8_stem},
-  {"fra", ENC_ISO_8859_1, french_ISO_8859_1_create_env, french_ISO_8859_1_close_env, french_ISO_8859_1_stem},
-  {"fra", ENC_UTF_8, french_UTF_8_create_env, french_UTF_8_close_env, french_UTF_8_stem},
-  {"fre", ENC_ISO_8859_1, french_ISO_8859_1_create_env, french_ISO_8859_1_close_env, french_ISO_8859_1_stem},
-  {"fre", ENC_UTF_8, french_UTF_8_create_env, french_UTF_8_close_env, french_UTF_8_stem},
-  {"french", ENC_ISO_8859_1, french_ISO_8859_1_create_env, french_ISO_8859_1_close_env, french_ISO_8859_1_stem},
   {"french", ENC_UTF_8, french_UTF_8_create_env, french_UTF_8_close_env, french_UTF_8_stem},
-  {"ger", ENC_ISO_8859_1, german_ISO_8859_1_create_env, german_ISO_8859_1_close_env, german_ISO_8859_1_stem},
-  {"ger", ENC_UTF_8, german_UTF_8_create_env, german_UTF_8_close_env, german_UTF_8_stem},
-  {"german", ENC_ISO_8859_1, german_ISO_8859_1_create_env, german_ISO_8859_1_close_env, german_ISO_8859_1_stem},
+  {"de", ENC_UTF_8, german_UTF_8_create_env, german_UTF_8_close_env, german_UTF_8_stem},
   {"german", ENC_UTF_8, german_UTF_8_create_env, german_UTF_8_close_env, german_UTF_8_stem},
   {"hu", ENC_ISO_8859_2, hungarian_ISO_8859_2_create_env, hungarian_ISO_8859_2_close_env, hungarian_ISO_8859_2_stem},
   {"hu", ENC_UTF_8, hungarian_UTF_8_create_env, hungarian_UTF_8_close_env, hungarian_UTF_8_stem},

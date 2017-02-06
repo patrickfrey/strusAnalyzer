@@ -9,7 +9,7 @@
 /// \file segmenterInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
-#include "strus/segmenterOptions.hpp"
+#include "strus/analyzer/segmenterOptions.hpp"
 #include <vector>
 #include <string>
 #include <utility>
@@ -36,7 +36,7 @@ public:
 	/// \brief Create a parameterizable segmenter instance
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual SegmenterInstanceInterface* createInstance(
-			const SegmenterOptions& opts=SegmenterOptions()) const=0;
+			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
 };
 
 }//namespace

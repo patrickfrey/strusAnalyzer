@@ -12,6 +12,7 @@
 #include "strus/lib/normalizer_dateconv.hpp"
 #include "strus/lib/normalizer_ngram.hpp"
 #include "strus/lib/normalizer_regex.hpp"
+#include "strus/lib/normalizer_wordjoin.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/tokenizer_regex.hpp"
@@ -66,6 +67,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "convdia", nrm);
+	if (0==(nrm = createNormalizer_charselect( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "charselect", nrm);
 	if (0==(nrm = createNormalizer_date2int( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
@@ -84,6 +91,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "regex", nrm);
+	if (0==(nrm = createNormalizer_wordjoin( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "wordjoin", nrm);
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

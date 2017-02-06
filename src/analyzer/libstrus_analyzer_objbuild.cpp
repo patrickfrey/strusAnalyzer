@@ -6,7 +6,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 /// \brief Library with some convenient functions to create analyzer objects
-/// \file "analyzer_objbuild.cpp"
+/// \file "libstrus_analyzer_objbuild.cpp"
 #include "strus/lib/analyzer_objbuild.hpp"
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"
@@ -100,7 +100,7 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
 	}
 
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const SegmenterOptions& opts) const
+	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const
 	{
 		return strus::createDocumentAnalyzer( segmenter, opts, m_errorhnd);
 	}

@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "queryAnalyzer.hpp"
-#include "strus/normalizerFunctionContextInterface.hpp"
+#include "queryAnalyzerContext.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -19,181 +18,111 @@
 
 using namespace strus;
 
-QueryAnalyzer::FeatureConfig::FeatureConfig(
-		const std::string& featureType_,
-		TokenizerFunctionInstanceInterface* tokenizer_,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_)
-	:m_featureType(featureType_)
-	,m_tokenizer(tokenizer_)
-{
-	// PF:NOTE: The following order of code ensures that if this constructor fails then no tokenizer or normalizer is copied, because otherwise they will be free()d twice:
-	m_normalizerlist.reserve( normalizers_.size());
-	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers_.begin(), ce = normalizers_.end();
-	for (; ci != ce; ++ci)
-	{
-		m_normalizerlist.push_back( *ci);
-	}
-}
-
-QueryAnalyzer::FeatureContext::FeatureContext( const QueryAnalyzer::FeatureConfig& config)
-	:m_config(&config)
-	,m_tokenizerContext( config.tokenizer()->createFunctionContext())
-{
-	if (!m_tokenizerContext.get())
-	{
-		throw strus::runtime_error( _TXT("failed to create tokenizer context"));
-	}
-	std::vector<FeatureConfig::NormalizerReference>::const_iterator
-		ni = config.normalizerlist().begin(),
-		ne = config.normalizerlist().end();
-	
-	for (; ni != ne; ++ni)
-	{
-		m_normalizerContextAr.push_back( (*ni)->createFunctionContext());
-		if (!m_normalizerContextAr.back().get())
-		{
-			throw strus::runtime_error( _TXT("failed to create normalizer context"));
-		}
-	}
-}
-
-std::vector<analyzer::Token> QueryAnalyzer::FeatureContext::tokenize( char const* segment, std::size_t segmentsize)
-{
-	return m_tokenizerContext->tokenize( segment, segmentsize);
-}
-
-std::string QueryAnalyzer::FeatureContext::normalize( char const* tok, std::size_t toksize)
-{
-	NormalizerFunctionContextArray::iterator
-		ci = m_normalizerContextAr.begin(),
-		ce = m_normalizerContextAr.end();
-
-	std::string rt;
-	std::string origstr;
-	for (; ci != ce; ++ci)
-	{
-		rt = (*ci)->normalize( tok, toksize);
-		if (ci + 1 != ce)
-		{
-			origstr.swap( rt);
-			tok = origstr.c_str();
-			toksize = origstr.size();
-		}
-	}
-	return rt;
-}
-
-
-static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-{
-	std::vector<NormalizerFunctionInstanceInterface*>::const_iterator
-		ci = normalizers.begin(), ce = normalizers.end();
-	for (; ci != ce; ++ci)
-	{
-		delete *ci;
-	}
-}
-
-void QueryAnalyzer::definePhraseType(
-		const std::string& phraseType,
-		const std::string& featureType,
+void QueryAnalyzer::addSearchIndexElement(
+		const std::string& termtype,
+		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	try
 	{
-		m_featuremap[ utils::tolower( phraseType)]
-			= FeatureConfig( featureType, tokenizer, normalizers);
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
+		m_searchIndexTermTypeSet.insert( utils::tolower( termtype));
 	}
-	catch (const std::bad_alloc&)
-	{
-		freeNormalizers( normalizers);
-		delete tokenizer;
-		m_errorhnd->report(_TXT("memory allocation error defining phrase type"));
-	}
-	catch (const std::runtime_error& err)
-	{
-		freeNormalizers( normalizers);
-		delete tokenizer;
-		m_errorhnd->report(_TXT("error defining phrase type: '%s'"), err.what());
-	}
+	CATCH_ERROR_MAP( _TXT("error adding search index query feature: %s"), *m_errorhnd);
 }
 
-const QueryAnalyzer::FeatureConfig& QueryAnalyzer::featureConfig( const std::string& phraseType) const
-{
-	std::map<std::string,FeatureConfig>::const_iterator
-		fi = m_featuremap.find( utils::tolower( phraseType));
-	if (fi == m_featuremap.end())
-	{
-		throw strus::runtime_error(_TXT( "query feature constructor for phrase type '%s' is not defined"), phraseType.c_str());
-	}
-	return fi->second;
-}
-
-std::vector<analyzer::Term>
-	QueryAnalyzer::analyzePhrase(
-		const std::string& phraseType,
-		const std::string& content) const
+void QueryAnalyzer::addMetaDataElement(
+		const std::string& metaname,
+		const std::string& fieldtype,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	try
 	{
-		std::vector<analyzer::Term> rt;
-		const FeatureConfig& feat = featureConfig( phraseType);
-		FeatureContext ctx( feat);
-	
-		std::vector<analyzer::Token>
-			pos = ctx.tokenize( content.c_str(), content.size());
-		std::vector<analyzer::Token>::const_iterator
-			pi = pos.begin(), pe = pos.end();
-	
-		if (pi == pe) return rt;
-		unsigned int prevpos = pi->ordpos;
-		for (unsigned int posidx=1; pi != pe; ++pi)
-		{
-			if (pi->ordpos > prevpos)
-			{
-				posidx += 1;
-				prevpos = pi->ordpos;
-			}
-			std::string val = ctx.normalize( content.c_str() + pi->strpos, pi->strsize);
-			if (!val.empty() && val[0] == '\0')
-			{
-				char const* vi = val.c_str();
-				char const* ve = vi + val.size();
-				for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
-				{
-					rt.push_back( analyzer::Term( feat.featureType(), vi, posidx));
-				}
-			}
-			else
-			{
-				rt.push_back( analyzer::Term( feat.featureType(), val, posidx));
-			}
-		}
-		return rt;
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, tokenizer, normalizers, analyzer::FeatureOptions());
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'QueryAnalyzer::analyzePhrase': %s"), *m_errorhnd, std::vector<analyzer::Term>());
+	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
 
-std::vector<analyzer::TermVector> QueryAnalyzer::analyzePhraseBulk(
-		const std::vector<Phrase>& phraseBulk) const
+void QueryAnalyzer::addPatternLexem(
+		const std::string& termtype,
+		const std::string& fieldtype,
+		TokenizerFunctionInstanceInterface* tokenizer,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	try
 	{
-		std::vector<analyzer::TermVector> rt;
-		std::vector<Phrase>::const_iterator pi = phraseBulk.begin(), pe = phraseBulk.end();
-		for (; pi != pe; ++pi)
-		{
-			rt.push_back( analyzePhrase( pi->type(), pi->content()));
-		}
-		return rt;
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
-	catch (const std::bad_alloc& err)
+	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::definePatternMatcherPostProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternTermFeederInstanceInterface* feeder)
+{
+	try
 	{
-		m_errorhnd->report( _TXT("memory alloc error in '%s'"), "QueryAnalyzer::analyzePhraseBulk");
-		return std::vector<analyzer::TermVector>();
+		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, false);
 	}
+	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::definePatternMatcherPreProc(
+		const std::string& patternTypeName,
+		PatternMatcherInstanceInterface* matcher,
+		PatternLexerInstanceInterface* lexer,
+		const std::vector<std::string>& fieldTypeNames)
+{
+	try
+	{
+		unsigned int idx = m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, false);
+		std::vector<std::string>::const_iterator
+			si = fieldTypeNames.begin(), se = fieldTypeNames.end();
+		for (; si != se; ++si)
+		{
+			m_fieldTypePatternMap.insert( FieldTypeFeatureDef( *si, idx));
+		}
+	}
+	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::addSearchIndexElementFromPatternMatch(
+		const std::string& type,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, analyzer::FeatureOptions());
+	}
+	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
+}
+
+void QueryAnalyzer::addMetaDataElementFromPatternMatch(
+		const std::string& metaname,
+		const std::string& patternTypeName,
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+{
+	try
+	{
+		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
+	}
+	CATCH_ERROR_MAP( _TXT("error in define meta data from pattern match: %s"), *m_errorhnd);
+}
+
+QueryAnalyzerContextInterface* QueryAnalyzer::createContext() const
+{
+	try
+	{
+		return new QueryAnalyzerContext( this, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in QueryAnalyzer::createContext: %s"), *m_errorhnd, 0);
 }
 
 

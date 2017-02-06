@@ -28,6 +28,9 @@ NormalizerFunctionInterface* createNormalizer_uppercase( ErrorBufferInterface* e
 /// \brief Get the normalizer that returns the conversion of diacritical characters to ascii of the input as result
 /// \return the normalization function
 NormalizerFunctionInterface* createNormalizer_convdia( ErrorBufferInterface* errorhnd);
+/// \brief Get the normalizer that returns the selection of characters defined by named sets as result
+/// \return the normalization function
+NormalizerFunctionInterface* createNormalizer_charselect( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

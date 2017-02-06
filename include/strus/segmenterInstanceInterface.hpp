@@ -9,6 +9,7 @@
 /// \file segmenterInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/documentClass.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -16,8 +17,6 @@ namespace strus
 {
 /// \brief Forward declaration
 class SegmenterContextInterface;
-/// \brief Forward declaration
-class DocumentClass;
 /// \brief Forward declaration
 class SegmenterMarkupContextInterface;
 
@@ -42,14 +41,14 @@ public:
 	/// \brief Creates a context for segmenting one document of a specified class
 	/// \param[in] dclass description of the document type and encoding to process
 	/// \return the segmenter context object (with ownership, to be desposed with delete by the caller)
-	virtual SegmenterContextInterface* createContext( const DocumentClass& dclass) const=0;
+	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const=0;
 
 	/// \brief Creates an instance of the segmenters document markup context
 	/// \param[in] dclass description of the document type and encoding to process
 	/// \param[in] content document content to process (no chunkwise processing)
 	/// \return the segmenter markup object (with ownership, to be desposed with delete by the caller)
 	virtual SegmenterMarkupContextInterface* createMarkupContext(
-			const DocumentClass& dclass,
+			const analyzer::DocumentClass& dclass,
 			const std::string& content) const=0;
 };
 

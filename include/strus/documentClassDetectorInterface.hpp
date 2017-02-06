@@ -9,7 +9,7 @@
 /// \file documentClassDetectorInterface.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include <vector>
 #include <string>
 
@@ -30,7 +30,7 @@ public:
 	/// \param[in] contentBeginSize size of content begin chunk
 	/// \return true, if the document class was recognized
 	/// \note It is assumed that a reasonable size of the document chunk (e.g. 1K) is enough to detect the document class. This is an assumption that is wrong for many MIME types, but it should work for text content. At least it should be enough to recognize the segmenter to use.
-	virtual bool detect( DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
 };
 
 }//namespace

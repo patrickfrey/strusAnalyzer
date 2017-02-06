@@ -11,6 +11,7 @@
 #include "strus/numericVariant.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace strus {
 namespace utils {
@@ -20,6 +21,7 @@ std::string trim( const std::string& val);
 bool caseInsensitiveEquals( const std::string& val1, const std::string& val2);
 bool caseInsensitiveStartsWith( const std::string& val, const std::string& prefix);
 int toint( const std::string& val);
+unsigned int touint( const std::string& val);
 std::string tostring( int val);
 bool isFile( const std::string& path);
 
@@ -47,6 +49,16 @@ public:
 		:boost::scoped_ptr<X>(o){}
 	ScopedPtr()
 		:boost::scoped_ptr<X>(){}
+};
+
+template<typename Key, typename Elem>
+class UnorderedMap
+	:public boost::unordered_map<Key,Elem>
+{
+public:
+	UnorderedMap(){}
+	UnorderedMap( const UnorderedMap& o)
+		:boost::unordered_map<Key,Elem>(){}
 };
 
 }} //namespace

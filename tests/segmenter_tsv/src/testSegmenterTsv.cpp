@@ -12,7 +12,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/documentClass.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include "strus/base/fileio.hpp"
 #include <memory>
 #include <string>
@@ -152,7 +152,7 @@ int main( int argc, const char* argv[])
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
 		std::auto_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
 		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
-		strus::DocumentClass dclass( segmenter->mimeType(), "UTF-8");
+		strus::analyzer::DocumentClass dclass( segmenter->mimeType(), "UTF-8");
 
 		std::string rulesrc;
 		unsigned int ec = strus::readFile( rulefile, rulesrc);

@@ -1,4 +1,4 @@
-
+#include "api.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,29 +8,6 @@
 #define unless(C) if(!(C))
 
 #define CREATE_SIZE 1
-
-extern symbol * create_s(void) {
-    symbol * p;
-    void * mem = malloc(HEAD + (CREATE_SIZE + 1) * sizeof(symbol));
-    if (mem == NULL) return NULL;
-    p = (symbol *) (HEAD + (char *) mem);
-    CAPACITY(p) = CREATE_SIZE;
-    SET_SIZE(p, CREATE_SIZE);
-    return p;
-}
-
-extern void lose_s(symbol * p) {
-    if (p == NULL) return;
-    free((char *) p - HEAD);
-}
-
-/*
-   new_p = skip_utf8(p, c, lb, l, n); skips n characters forwards from p + c
-   if n +ve, or n characters backwards from p + c - 1 if n -ve. new_p is the new
-   position, or 0 on failure.
-
-   -- used to implement hop and next in the utf8 case.
-*/
 
 extern int skip_utf8(const symbol * p, int c, int lb, int l, int n) {
     int b;
@@ -327,17 +304,10 @@ extern int find_among_b(struct SN_env * z, const struct among * v, int v_size) {
  * If insufficient memory, returns NULL and frees the old buffer.
  */
 static symbol * increase_size(symbol * p, int n) {
-    symbol * q;
     int new_size = n + 20;
-    void * mem = realloc((char *) p - HEAD,
-                         HEAD + (new_size + 1) * sizeof(symbol));
-    if (mem == NULL) {
-        lose_s(p);
-        return NULL;
-    }
-    q = (symbol *) (HEAD + (char *)mem);
-    CAPACITY(q) = new_size;
-    return q;
+    if (new_size >= SymbolBufSize) return 0;
+    CAPACITY(p) = new_size;
+    return p;
 }
 
 /* to replace symbols between c_bra and c_ket in z->p by the
@@ -350,8 +320,7 @@ extern int replace_s(struct SN_env * z, int c_bra, int c_ket, int s_size, const 
     int adjustment;
     int len;
     if (z->p == NULL) {
-        z->p = create_s();
-        if (z->p == NULL) return -1;
+        return -1;
     }
     adjustment = s_size - (c_ket - c_bra);
     len = SIZE(z->p);
@@ -427,7 +396,6 @@ extern int insert_v(struct SN_env * z, int bra, int ket, const symbol * p) {
 
 extern symbol * slice_to(struct SN_env * z, symbol * p) {
     if (slice_check(z)) {
-        lose_s(p);
         return NULL;
     }
     {

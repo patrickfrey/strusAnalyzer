@@ -1,5 +1,16 @@
+#ifndef _SNOWBALL_API
+#define _SNOWBALL_API
 
 typedef unsigned char symbol;
+
+#define SymbolBufSize 248
+
+typedef struct
+{
+	int capacity;
+	int size;
+	symbol buf[ SymbolBufSize];
+} symbol_struct;
 
 /* Or replace 'char' above with 'short' for 16 bit characters.
 
@@ -11,16 +22,26 @@ typedef unsigned char symbol;
 
 */
 
+#define max_S_size 4
+#define max_I_size 4
+#define max_B_size 4
+
+/// [ASSERT] The size of this structure must not be greater than the size of sb_stemmer_env in libstemmer.h
 struct SN_env {
     symbol * p;
     int c; int l; int lb; int bra; int ket;
     symbol * * S;
     int * I;
     unsigned char * B;
+
+    symbol* buf_S[ max_S_size];
+    int buf_I[ max_I_size];
+    unsigned char buf_B[ max_B_size];
+    symbol_struct symbuf_S[ max_S_size];
 };
 
-extern struct SN_env * SN_create_env(int S_size, int I_size, int B_size);
-extern void SN_close_env(struct SN_env * z, int S_size);
+extern int SN_init_env( struct SN_env* env, int S_size, int I_size, int B_size);
 
 extern int SN_set_current(struct SN_env * z, int size, const symbol * s);
 
+#endif

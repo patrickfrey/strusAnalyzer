@@ -8,6 +8,7 @@
 #ifndef _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
 #define _STRUS_ANALYZER_SNOWBALL_STEMMERS_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
+#include "private/internationalization.hpp"
 
 namespace strus
 {
@@ -25,7 +26,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return "Normalizer doing stemming based on snowball. The language is passed as parameter";
+		return _TXT("Normalizer doing stemming based on snowball. The language is passed as parameter");
 	}
 
 private:

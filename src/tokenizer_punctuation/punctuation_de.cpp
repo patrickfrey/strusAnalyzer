@@ -16,15 +16,15 @@ using namespace strus;
 #undef STRUS_LOWLEVEL_DEBUG
 
 std::vector<analyzer::Token>
-	PunctuationTokenizerFunctionContext_de::tokenize(
-		const char* src, std::size_t srcsize)
+	PunctuationTokenizerInstance_de::tokenize(
+		const char* src, std::size_t srcsize) const
 {
 	try
 	{
 		std::vector<analyzer::Token> rt;
 	
 		textwolf::UChar ch0;
-		CharWindow scanner( src, srcsize, m_punctuation_char);
+		CharWindow scanner( src, srcsize, &m_punctuation_char);
 		unsigned int wordlen=0;
 		unsigned int pos = 0;
 	
@@ -151,7 +151,7 @@ std::vector<analyzer::Token>
 						continue;
 					}
 				}
-				rt.push_back( analyzer::Token( pos, pos, 1));
+				rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 				std::size_t endpos = pos;
@@ -161,7 +161,8 @@ std::vector<analyzer::Token>
 			}
 			else if (isPunctuation(ch0))
 			{
-				rt.push_back( analyzer::Token( pos, pos, 1));
+				pos = scanner.itrpos();
+				rt.push_back( analyzer::Token( pos/*ordpos*/, 0, pos, 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::size_t endpos = pos;
 				std::size_t startpos = (endpos > 16)?(endpos-16):0;
@@ -172,15 +173,5 @@ std::vector<analyzer::Token>
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
-}
-
-
-TokenizerFunctionContextInterface* PunctuationTokenizerInstance_de::createFunctionContext() const
-{
-	try
-	{
-		return new PunctuationTokenizerFunctionContext_de( &m_punctuation_char, m_errorhnd);
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 }
 

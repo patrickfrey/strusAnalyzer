@@ -11,11 +11,14 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
-#include "private/utils.hpp"
+#include "featureConfigMap.hpp"
+#include "patternFeatureConfigMap.hpp"
+#include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
 #include <utility>
 #include <map>
+#include <set>
 
 namespace strus
 {
@@ -28,79 +31,75 @@ class QueryAnalyzer
 {
 public:
 	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
+		:m_featureConfigMap()
+		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
+		,m_fieldTypeFeatureMap()
+		,m_searchIndexTermTypeSet()
+		,m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
-	virtual void definePhraseType(
-			const std::string& phraseType,
-			const std::string& featureType,
+	virtual void addSearchIndexElement(
+			const std::string& termtype,
+			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual std::vector<analyzer::Term> analyzePhrase(
-			const std::string& phraseType,
-			const std::string& content) const;
+	virtual void addMetaDataElement(
+			const std::string& metaname,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual std::vector<analyzer::TermVector> analyzePhraseBulk(
-			const std::vector<Phrase>& phraseBulk) const;
+	virtual void addPatternLexem(
+			const std::string& termtype,
+			const std::string& fieldtype,
+			TokenizerFunctionInstanceInterface* tokenizer,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-private:
-	class FeatureConfig
-	{
-	public:
-		typedef utils::SharedPtr<TokenizerFunctionInstanceInterface> TokenizerReference;
-		typedef utils::SharedPtr<NormalizerFunctionInstanceInterface> NormalizerReference;
+	virtual void definePatternMatcherPostProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternTermFeederInstanceInterface* feeder);
 
-		FeatureConfig()
-			:m_tokenizer(0){}
+	virtual void definePatternMatcherPreProc(
+			const std::string& patternTypeName,
+			PatternMatcherInstanceInterface* matcher,
+			PatternLexerInstanceInterface* lexer,
+			const std::vector<std::string>& fieldTypeNames);
 
-		FeatureConfig( const std::string& featureType_,
-				TokenizerFunctionInstanceInterface* tokenizer_,
-				const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_);
+	virtual void addSearchIndexElementFromPatternMatch(
+			const std::string& type,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-		FeatureConfig( const FeatureConfig& o)
-			:m_featureType(o.m_featureType)
-			,m_tokenizer(o.m_tokenizer)
-			,m_normalizerlist(o.m_normalizerlist){}
+	virtual void addMetaDataElementFromPatternMatch(
+			const std::string& metaname,
+			const std::string& patternTypeName,
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-		/// \brief Get the type of the features in the storage
-		const std::string& featureType() const				{return m_featureType;}
-		/// \brief Get the tokenizer function for tokenization of the phrase
-		const TokenizerReference& tokenizer() const			{return m_tokenizer;}
-		/// \brief Get the normalizer of the tokens for create the feature values
-		const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
+	virtual QueryAnalyzerContextInterface* createContext() const;
 
-	private:
-		std::string m_featureType;
-		TokenizerReference m_tokenizer;
-		std::vector<NormalizerReference> m_normalizerlist;
-	};
+public:/*QueryAnalyzerContext*/
+	typedef std::pair<std::string,int> FieldTypeFeatureDef;
+	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
+	typedef std::multimap<std::string,int> FieldTypePatternMap;
+	typedef std::set<std::string> TermTypeSet;
 
-	struct FeatureContext
-	{
-		typedef utils::SharedPtr<NormalizerFunctionContextInterface> NormalizerFunctionContextReference;
-		typedef std::vector<NormalizerFunctionContextReference> NormalizerFunctionContextArray;
-		typedef utils::SharedPtr<TokenizerFunctionContextInterface> TokenizerFunctionContextReference;
-
-		FeatureContext( const FeatureConfig& config);
-		FeatureContext( const FeatureContext& o)
-			:m_config(o.m_config)
-			,m_normalizerContextAr(o.m_normalizerContextAr)
-			,m_tokenizerContext(o.m_tokenizerContext){}
-
-		std::vector<analyzer::Token> tokenize( char const* segment, std::size_t segmentsize);
-		std::string normalize( const char* tok, std::size_t toksize);
-
-		const FeatureConfig* m_config;
-		NormalizerFunctionContextArray m_normalizerContextAr;
-		TokenizerFunctionContextReference m_tokenizerContext;
-	};
-
-	/// \brief Get the feature configuration for a named phrase type
-	const FeatureConfig& featureConfig( const std::string& phraseType) const;
+	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
+	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
+	const FieldTypePatternMap& fieldTypePatternMap() const				{return m_fieldTypePatternMap;}
+	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
+	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
+	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
 
 private:
-	std::map<std::string,FeatureConfig> m_featuremap;
+	FeatureConfigMap m_featureConfigMap;
+	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
+	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
+	PatternFeatureConfigMap m_patternFeatureConfigMap;
+	FieldTypeFeatureMap m_fieldTypeFeatureMap;
+	FieldTypePatternMap m_fieldTypePatternMap;
+	TermTypeSet m_searchIndexTermTypeSet;
 	ErrorBufferInterface* m_errorhnd;
 };
 

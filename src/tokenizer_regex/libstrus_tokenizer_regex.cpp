@@ -9,7 +9,6 @@
 #include "tokenizerRegex.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/base/dll_tags.hpp"
