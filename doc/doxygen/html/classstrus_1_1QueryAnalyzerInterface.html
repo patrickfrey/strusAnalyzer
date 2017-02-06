@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -48,6 +48,7 @@
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -58,7 +59,6 @@
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classstrus_1_1QueryAnalyzerInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -71,28 +71,36 @@
 
 <p><code>#include &lt;<a class="el" href="queryAnalyzerInterface_8hpp_source.html">queryAnalyzerInterface.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Definition of a phrase to analyze.  <a href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8970fb0702519b73bf1ac15fe57b4ad1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a> ()</td></tr>
 <tr class="memdesc:a8970fb0702519b73bf1ac15fe57b4ad1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a8970fb0702519b73bf1ac15fe57b4ad1">More...</a><br/></td></tr>
 <tr class="separator:a8970fb0702519b73bf1ac15fe57b4ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5e654e1e8d51ee148bdc9a5fa8670dc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#af5e654e1e8d51ee148bdc9a5fa8670dc">definePhraseType</a> (const std::string &amp;phraseType, const std::string &amp;featureType, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
-<tr class="memdesc:af5e654e1e8d51ee148bdc9a5fa8670dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare how a set of query features is produced out from a phrase of a certain type.  <a href="#af5e654e1e8d51ee148bdc9a5fa8670dc">More...</a><br/></td></tr>
-<tr class="separator:af5e654e1e8d51ee148bdc9a5fa8670dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7432bf4754e5f339ec2671a439a2170f"><td class="memItemLeft" align="right" valign="top">virtual std::vector<br class="typebreak"/>
-&lt; <a class="el" href="classstrus_1_1analyzer_1_1Term.html">analyzer::Term</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">analyzePhrase</a> (const std::string &amp;phraseType, const std::string &amp;content) const =0</td></tr>
-<tr class="memdesc:a7432bf4754e5f339ec2671a439a2170f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze a single phrase of query.  <a href="#a7432bf4754e5f339ec2671a439a2170f">More...</a><br/></td></tr>
-<tr class="separator:a7432bf4754e5f339ec2671a439a2170f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="memItemLeft" align="right" valign="top">virtual std::vector<br class="typebreak"/>
-&lt; <a class="el" href="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0">analyzer::TermVector</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">analyzePhraseBulk</a> (const std::vector&lt; <a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a> &gt; &amp;phraseBulk) const =0</td></tr>
-<tr class="memdesc:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze a bulk of phrases.  <a href="#a14e58bfc43096a09d4cd0f3d54af3ed8">More...</a><br/></td></tr>
-<tr class="separator:a14e58bfc43096a09d4cd0f3d54af3ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a943633b98106e525660170157e7232ba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a943633b98106e525660170157e7232ba">addSearchIndexElement</a> (const std::string &amp;termtype, const std::string &amp;fieldtype, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
+<tr class="memdesc:a943633b98106e525660170157e7232ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare an element to be retrieved from the search index.  <a href="#a943633b98106e525660170157e7232ba">More...</a><br/></td></tr>
+<tr class="separator:a943633b98106e525660170157e7232ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71d03e8ff4eed374b5b582d89031ad03"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a71d03e8ff4eed374b5b582d89031ad03">addMetaDataElement</a> (const std::string &amp;metaname, const std::string &amp;fieldtype, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
+<tr class="memdesc:a71d03e8ff4eed374b5b582d89031ad03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a feature to be searched in the meta data table.  <a href="#a71d03e8ff4eed374b5b582d89031ad03">More...</a><br/></td></tr>
+<tr class="separator:a71d03e8ff4eed374b5b582d89031ad03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a526ed6c32574d0ce5a38991450c7f237"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a526ed6c32574d0ce5a38991450c7f237">addPatternLexem</a> (const std::string &amp;termtype, const std::string &amp;fieldtype, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
+<tr class="memdesc:a526ed6c32574d0ce5a38991450c7f237"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare an element to be used as lexem by post processing pattern matching but not put into the result of query analysis.  <a href="#a526ed6c32574d0ce5a38991450c7f237">More...</a><br/></td></tr>
+<tr class="separator:a526ed6c32574d0ce5a38991450c7f237"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eb4d8a3e0756e5851c592a54f09d9b8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">definePatternMatcherPostProc</a> (const std::string &amp;patternTypeName, <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a> *matcher, <a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html">PatternTermFeederInstanceInterface</a> *feeder)=0</td></tr>
+<tr class="memdesc:a0eb4d8a3e0756e5851c592a54f09d9b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a pattern matcher on the query features after other query analysis.  <a href="#a0eb4d8a3e0756e5851c592a54f09d9b8">More...</a><br/></td></tr>
+<tr class="separator:a0eb4d8a3e0756e5851c592a54f09d9b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a280669662ba72a6cf2a7a94952970117"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">definePatternMatcherPreProc</a> (const std::string &amp;patternTypeName, <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a> *matcher, <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a> *lexer, const std::vector&lt; std::string &gt; &amp;selectexpr)=0</td></tr>
+<tr class="memdesc:a280669662ba72a6cf2a7a94952970117"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a pattern matcher on the query features after other query analysis.  <a href="#a280669662ba72a6cf2a7a94952970117">More...</a><br/></td></tr>
+<tr class="separator:a280669662ba72a6cf2a7a94952970117"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8603560d243f3ad92ca50468658365d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#ae8603560d243f3ad92ca50468658365d">addSearchIndexElementFromPatternMatch</a> (const std::string &amp;type, const std::string &amp;patternTypeName, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
+<tr class="memdesc:ae8603560d243f3ad92ca50468658365d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a feature to be searched for derived from a pattern matcher result item.  <a href="#ae8603560d243f3ad92ca50468658365d">More...</a><br/></td></tr>
+<tr class="separator:ae8603560d243f3ad92ca50468658365d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99d62041b7c732d2d94e270afc6cbdf0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a99d62041b7c732d2d94e270afc6cbdf0">addMetaDataElementFromPatternMatch</a> (const std::string &amp;metaname, const std::string &amp;patternTypeName, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
+<tr class="memdesc:a99d62041b7c732d2d94e270afc6cbdf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a feature of the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item.  <a href="#a99d62041b7c732d2d94e270afc6cbdf0">More...</a><br/></td></tr>
+<tr class="separator:a99d62041b7c732d2d94e270afc6cbdf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5309268fcb340c2c4cc759c8d78fdcf3"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html">QueryAnalyzerContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a5309268fcb340c2c4cc759c8d78fdcf3">createContext</a> () const =0</td></tr>
+<tr class="memdesc:a5309268fcb340c2c4cc759c8d78fdcf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the context used for analyzing a query.  <a href="#a5309268fcb340c2c4cc759c8d78fdcf3">More...</a><br/></td></tr>
+<tr class="separator:a5309268fcb340c2c4cc759c8d78fdcf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a program for analyzing chunks of a query. </p>
@@ -123,7 +131,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a7432bf4754e5f339ec2671a439a2170f"></a>
+<a class="anchor" id="a71d03e8ff4eed374b5b582d89031ad03"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -131,93 +139,16 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt;<a class="el" href="classstrus_1_1analyzer_1_1Term.html">analyzer::Term</a>&gt; strus::QueryAnalyzerInterface::analyzePhrase </td>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::addMetaDataElement </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>phraseType</em>, </td>
+          <td class="paramname"><em>metaname</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>content</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Analyze a single phrase of query. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">phraseType</td><td>selects the feature configuration that determines how the phrase is tokenized and normalized, what types the resulting terms get and what set (as referred to in the query evaluation) the created query features are assigned to. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">content</td><td>string of the phrase to analyze </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd>The query language determines the segmentation of the query parts. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a14e58bfc43096a09d4cd0f3d54af3ed8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::vector&lt;<a class="el" href="namespacestrus_1_1analyzer.html#a70922e6d8d7e8a33d4fb918a2656dfa0">analyzer::TermVector</a>&gt; strus::QueryAnalyzerInterface::analyzePhraseBulk </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1QueryAnalyzerInterface_1_1Phrase.html">Phrase</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>phraseBulk</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Analyze a bulk of phrases. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">phraseBulk</td><td>vector of phrase defoinitions to analyze </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a vector of analyzed phrases, parallel to the passed phrase bulk </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="af5e654e1e8d51ee148bdc9a5fa8670dc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void strus::QueryAnalyzerInterface::definePhraseType </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>phraseType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>featureType</em>, </td>
+          <td class="paramname"><em>fieldtype</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -244,17 +175,366 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Declare how a set of query features is produced out from a phrase of a certain type. </p>
+<p>Declare a feature to be searched in the meta data table. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">phraseType</td><td>label of the phrase type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">featureType</td><td>type name (in the storage) of the generated features </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">metaname</td><td>name of the column in the meta data table this feature is searched in </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fieldtype</td><td>type of the field of this element in the query </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>tokenizer (ownership passed to this) to use for this feature </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">normalizers</td><td>list of normalizers (ownership of elements passed to this) to use for this feature </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section note"><dt>Note</dt><dd>It is recommended to name the phraseType as the featureType to avoid to many different namings. The phrase type is used to address the method, as the expressions in the segmenter of the document do. But in most cases there will be only one of a kind, so it does not make sense to have disinct names for it. </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>The field in the meta data table must exist before this function is called </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a99d62041b7c732d2d94e270afc6cbdf0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::addMetaDataElementFromPatternMatch </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>metaname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>patternTypeName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normalizers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare a feature of the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">metaname</td><td>name of the column in the meta data table this feature is written to </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">patternTypeName</td><td>type name of the pattern match result or result item </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normalizers</td><td>list of normalizers (element ownership passed to this) to use for this feature </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section remark"><dt>Remarks</dt><dd>The field in the meta data table must exist before this function is called </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a526ed6c32574d0ce5a38991450c7f237"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::addPatternLexem </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>termtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>fieldtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>tokenizer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normalizers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare an element to be used as lexem by post processing pattern matching but not put into the result of query analysis. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">termtype</td><td>term type name of the lexem to be feed to the pattern matching </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fieldtype</td><td>type of the field of this element in the query </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>tokenizer (ownership passed to this) to use for this feature </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normalizers</td><td>list of normalizers (element ownership passed to this) to use for this feature </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a943633b98106e525660170157e7232ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::addSearchIndexElement </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>termtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>fieldtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>tokenizer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normalizers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare an element to be retrieved from the search index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">termtype</td><td>term type name of the feature </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fieldtype</td><td>type of the field of this element in the query </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>tokenizer (ownership passed to this) to use for this feature </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normalizers</td><td>list of normalizers (element ownership passed to this) to use for this feature </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae8603560d243f3ad92ca50468658365d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::addSearchIndexElementFromPatternMatch </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>patternTypeName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;&#160;</td>
+          <td class="paramname"><em>normalizers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare a feature to be searched for derived from a pattern matcher result item. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>type name of the feature </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">patternTypeName</td><td>type name of the pattern match result or result item </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">normalizers</td><td>list of normalizers (element ownership passed to this) to use for this feature </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">options</td><td>(only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a5309268fcb340c2c4cc759c8d78fdcf3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html">QueryAnalyzerContextInterface</a>* strus::QueryAnalyzerInterface::createContext </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create the context used for analyzing a query. </p>
+<dl class="section return"><dt>Returns</dt><dd>the query analyzer context (with ownership) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0eb4d8a3e0756e5851c592a54f09d9b8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::definePatternMatcherPostProc </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>patternTypeName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>matcher</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html">PatternTermFeederInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>feeder</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare a pattern matcher on the query features after other query analysis. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">patternTypeName</td><td>name of the type to assign to the pattern matching results </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">matcher</td><td>pattern matcher compiled (ownership passed to this) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">feeder</td><td>feeder that maps document analysis term to pattern lexems as input of the matcher (ownership passed to this) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a280669662ba72a6cf2a7a94952970117"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::QueryAnalyzerInterface::definePatternMatcherPreProc </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>patternTypeName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>matcher</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>lexer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>selectexpr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare a pattern matcher on the query features after other query analysis. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">patternTypeName</td><td>name of the type to assign to the pattern matching results </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">matcher</td><td>pattern matcher compiled (ownership passed to this) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">lexer</td><td>lexer that tokenizes a document segment as input of pattern matching (ownership passed to this) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">selectexpr</td><td>list of selection expressions as input of the pattern matching </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -265,7 +545,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

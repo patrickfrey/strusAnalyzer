@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -48,6 +48,7 @@
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -59,7 +60,6 @@
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structstrus_1_1analyzer_1_1Token-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">strus::analyzer::Token Struct Reference</div>  </div>
@@ -70,32 +70,77 @@
  <a href="structstrus_1_1analyzer_1_1Token.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="token_8hpp_source.html">token.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for strus::analyzer::Token:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="structstrus_1_1analyzer_1_1Token.png" usemap="#strus::analyzer::Token_map" alt=""/>
+  <map id="strus::analyzer::Token_map" name="strus::analyzer::Token_map">
+<area href="classstrus_1_1analyzer_1_1PatternLexem.html" title="Structure describing a token with an id used for pattern matching. " alt="strus::analyzer::PatternLexem" shape="rect" coords="0,56,176,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1d7b33ff3e12993111a68996df8b356c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c">Token</a> (unsigned int ordpos_, unsigned int strpos_, unsigned int strsize_)</td></tr>
-<tr class="memdesc:a1d7b33ff3e12993111a68996df8b356c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1d7b33ff3e12993111a68996df8b356c">More...</a><br/></td></tr>
-<tr class="separator:a1d7b33ff3e12993111a68996df8b356c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94c9dc79ba5eafa696661dc8f947b634"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a94c9dc79ba5eafa696661dc8f947b634">Token</a> ()</td></tr>
+<tr class="memdesc:a94c9dc79ba5eafa696661dc8f947b634"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a94c9dc79ba5eafa696661dc8f947b634">More...</a><br/></td></tr>
+<tr class="separator:a94c9dc79ba5eafa696661dc8f947b634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a376e31f095b4d2eda1db5c69a31594f1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a376e31f095b4d2eda1db5c69a31594f1">Token</a> (unsigned int ordpos_, unsigned int origseg_, unsigned int origpos_, unsigned int origsize_)</td></tr>
+<tr class="memdesc:a376e31f095b4d2eda1db5c69a31594f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a376e31f095b4d2eda1db5c69a31594f1">More...</a><br/></td></tr>
+<tr class="separator:a376e31f095b4d2eda1db5c69a31594f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab825d7f94373e786be6e6267668d9655"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655">Token</a> (const <a class="el" href="structstrus_1_1analyzer_1_1Token.html">Token</a> &amp;o)</td></tr>
 <tr class="memdesc:ab825d7f94373e786be6e6267668d9655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#ab825d7f94373e786be6e6267668d9655">More...</a><br/></td></tr>
 <tr class="separator:ab825d7f94373e786be6e6267668d9655"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a8b2a66a7f7903fa23496718279d0bba1"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1">ordpos</a></td></tr>
-<tr class="memdesc:a8b2a66a7f7903fa23496718279d0bba1"><td class="mdescLeft">&#160;</td><td class="mdescRight">ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions  <a href="#a8b2a66a7f7903fa23496718279d0bba1">More...</a><br/></td></tr>
-<tr class="separator:a8b2a66a7f7903fa23496718279d0bba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5205dbb5b181e9b4c3bcced58ffc324c"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c">strpos</a></td></tr>
-<tr class="memdesc:a5205dbb5b181e9b4c3bcced58ffc324c"><td class="mdescLeft">&#160;</td><td class="mdescRight">start byte position of the token string in the original document segment  <a href="#a5205dbb5b181e9b4c3bcced58ffc324c">More...</a><br/></td></tr>
-<tr class="separator:a5205dbb5b181e9b4c3bcced58ffc324c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73dae6196956c28de78e9eba5cd920ac"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a73dae6196956c28de78e9eba5cd920ac">strsize</a></td></tr>
-<tr class="memdesc:a73dae6196956c28de78e9eba5cd920ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">byte size of the token string in the original document segment  <a href="#a73dae6196956c28de78e9eba5cd920ac">More...</a><br/></td></tr>
-<tr class="separator:a73dae6196956c28de78e9eba5cd920ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cf0523794230e193a9ef7744eee8b34"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a3cf0523794230e193a9ef7744eee8b34">ordpos</a> () const </td></tr>
+<tr class="memdesc:a3cf0523794230e193a9ef7744eee8b34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions.  <a href="#a3cf0523794230e193a9ef7744eee8b34">More...</a><br/></td></tr>
+<tr class="separator:a3cf0523794230e193a9ef7744eee8b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f3ebb8eca9fb0c99c2ff1dd3bea8e14"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a> () const </td></tr>
+<tr class="memdesc:a8f3ebb8eca9fb0c99c2ff1dd3bea8e14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the start byte position of the document segment of this token.  <a href="#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">More...</a><br/></td></tr>
+<tr class="separator:a8f3ebb8eca9fb0c99c2ff1dd3bea8e14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9643bea0f8acaabcbe01aea74fffd4a1"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a> () const </td></tr>
+<tr class="memdesc:a9643bea0f8acaabcbe01aea74fffd4a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the start byte position of the token string in the translated document segment (UTF-8)  <a href="#a9643bea0f8acaabcbe01aea74fffd4a1">More...</a><br/></td></tr>
+<tr class="separator:a9643bea0f8acaabcbe01aea74fffd4a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a3f814384688bc85a8b1e41baf9812a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a> () const </td></tr>
+<tr class="memdesc:a0a3f814384688bc85a8b1e41baf9812a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the byte size of the translated token string (UTF-8) in the original document segment.  <a href="#a0a3f814384688bc85a8b1e41baf9812a">More...</a><br/></td></tr>
+<tr class="separator:a0a3f814384688bc85a8b1e41baf9812a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b6cf8874de6fa86d9a1a594071aac62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9b6cf8874de6fa86d9a1a594071aac62">setOrigseg</a> (std::size_t origseg_)</td></tr>
+<tr class="memdesc:a9b6cf8874de6fa86d9a1a594071aac62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the original segment index of the token in the source.  <a href="#a9b6cf8874de6fa86d9a1a594071aac62">More...</a><br/></td></tr>
+<tr class="separator:a9b6cf8874de6fa86d9a1a594071aac62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9721bab0a3939c715f96410d5e9248dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9721bab0a3939c715f96410d5e9248dc">setOrdpos</a> (unsigned int ordpos_)</td></tr>
+<tr class="memdesc:a9721bab0a3939c715f96410d5e9248dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the ordinal position of the token in the source (adjusted in case of multiple segments)  <a href="#a9721bab0a3939c715f96410d5e9248dc">More...</a><br/></td></tr>
+<tr class="separator:a9721bab0a3939c715f96410d5e9248dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f100100148f56cc064d31629b1a49c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">operator&lt;</a> (const <a class="el" href="structstrus_1_1analyzer_1_1Token.html">Token</a> &amp;o) const </td></tr>
+<tr class="separator:a9f100100148f56cc064d31629b1a49c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structure describing a token in the document by its start and end position. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a1d7b33ff3e12993111a68996df8b356c"></a>
+<a class="anchor" id="a94c9dc79ba5eafa696661dc8f947b634"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">strus::analyzer::Token::Token </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+
+</div>
+</div>
+<a class="anchor" id="a376e31f095b4d2eda1db5c69a31594f1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -112,13 +157,19 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>strpos_</em>, </td>
+          <td class="paramname"><em>origseg_</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>strsize_</em>&#160;</td>
+          <td class="paramname"><em>origpos_</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>origsize_</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -136,9 +187,10 @@ Public Attributes</h2></td></tr>
 <p>Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ordpos_</td><td>word position of the token starred </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">strpos_</td><td>byte position of the token start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">strsize_</td><td>size of the token in bytes </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ordpos_</td><td>oridinal term position assigned to the the token </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">origseg_</td><td>start byte position of the document segment </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">origpos_</td><td>byte position of the token start in the translated document segment (UTF-8) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">origsize_</td><td>size of the token in bytes in the translated document segment (UTF-8) </td></tr>
   </table>
   </dd>
 </dl>
@@ -171,46 +223,180 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a8b2a66a7f7903fa23496718279d0bba1"></a>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a9f100100148f56cc064d31629b1a49c1"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int strus::analyzer::Token::ordpos</td>
+          <td class="memname">bool strus::analyzer::Token::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structstrus_1_1analyzer_1_1Token.html">Token</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions </p>
-
 </div>
 </div>
-<a class="anchor" id="a5205dbb5b181e9b4c3bcced58ffc324c"></a>
+<a class="anchor" id="a3cf0523794230e193a9ef7744eee8b34"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int strus::analyzer::Token::strpos</td>
+          <td class="memname">unsigned int strus::analyzer::Token::ordpos </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>start byte position of the token string in the original document segment </p>
+<p>Get the ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions. </p>
 
 </div>
 </div>
-<a class="anchor" id="a73dae6196956c28de78e9eba5cd920ac"></a>
+<a class="anchor" id="a9643bea0f8acaabcbe01aea74fffd4a1"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int strus::analyzer::Token::strsize</td>
+          <td class="memname">unsigned int strus::analyzer::Token::origpos </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>byte size of the token string in the original document segment </p>
+<p>Get the start byte position of the token string in the translated document segment (UTF-8) </p>
+
+</div>
+</div>
+<a class="anchor" id="a8f3ebb8eca9fb0c99c2ff1dd3bea8e14"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int strus::analyzer::Token::origseg </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the start byte position of the document segment of this token. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0a3f814384688bc85a8b1e41baf9812a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int strus::analyzer::Token::origsize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the byte size of the translated token string (UTF-8) in the original document segment. </p>
+
+</div>
+</div>
+<a class="anchor" id="a9721bab0a3939c715f96410d5e9248dc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void strus::analyzer::Token::setOrdpos </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>ordpos_</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the ordinal position of the token in the source (adjusted in case of multiple segments) </p>
+
+</div>
+</div>
+<a class="anchor" id="a9b6cf8874de6fa86d9a1a594071aac62"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void strus::analyzer::Token::setOrigseg </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>origseg_</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the original segment index of the token in the source. </p>
 
 </div>
 </div>
@@ -221,7 +407,7 @@ Public Attributes</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

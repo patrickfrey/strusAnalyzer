@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -48,6 +48,7 @@
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -64,16 +65,21 @@
 
 <p>This is the complete list of members for <a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8b2a66a7f7903fa23496718279d0bba1">ordpos</a></td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a5205dbb5b181e9b4c3bcced58ffc324c">strpos</a></td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a73dae6196956c28de78e9eba5cd920ac">strsize</a></td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a1d7b33ff3e12993111a68996df8b356c">Token</a>(unsigned int ordpos_, unsigned int strpos_, unsigned int strsize_)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655">Token</a>(const Token &amp;o)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">operator&lt;</a>(const Token &amp;o) const </td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a3cf0523794230e193a9ef7744eee8b34">ordpos</a>() const </td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a>() const </td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a>() const </td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a>() const </td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9721bab0a3939c715f96410d5e9248dc">setOrdpos</a>(unsigned int ordpos_)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9b6cf8874de6fa86d9a1a594071aac62">setOrigseg</a>(std::size_t origseg_)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a94c9dc79ba5eafa696661dc8f947b634">Token</a>()</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#a376e31f095b4d2eda1db5c69a31594f1">Token</a>(unsigned int ordpos_, unsigned int origseg_, unsigned int origpos_, unsigned int origsize_)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655">Token</a>(const Token &amp;o)</td><td class="entry"><a class="el" href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

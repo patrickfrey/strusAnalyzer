@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="documentClass_8hpp.html">strus/documentClass.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="documentClass_8hpp.html">strus/analyzer/documentClass.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
@@ -81,22 +81,22 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1DocumentClassDetectorInterface.html#a930fc3b5cb30ac322eca0cfd8907c501">   25</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1DocumentClassDetectorInterface.html#a930fc3b5cb30ac322eca0cfd8907c501">~DocumentClassDetectorInterface</a>(){}</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1DocumentClassDetectorInterface.html#aedfbb80d4c8aa7d444a5b04e1545855f">detect</a>( <a class="code" href="classstrus_1_1DocumentClass.html">DocumentClass</a>&amp; dclass, <span class="keyword">const</span> <span class="keywordtype">char</span>* contentBegin, std::size_t contentBeginSize) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1DocumentClassDetectorInterface.html#a69db3adec6809af0ca8ebaa706904da0">detect</a>( <a class="code" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a>&amp; dclass, <span class="keyword">const</span> <span class="keywordtype">char</span>* contentBegin, std::size_t contentBeginSize) <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}<span class="comment">//namespace</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentClass_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentClass.html">strus::analyzer::DocumentClass</a></div><div class="ttdoc">Defines a description of the properties of an original document processed by the segmenter. </div><div class="ttdef"><b>Definition:</b> documentClass.hpp:21</div></div>
 <div class="ttc" id="documentClass_8hpp_html"><div class="ttname"><a href="documentClass_8hpp.html">documentClass.hpp</a></div><div class="ttdoc">Structure describing the MIME type plus some attributes that could be relevant for analysis of a docu...</div></div>
 <div class="ttc" id="classstrus_1_1DocumentClassDetectorInterface_html"><div class="ttname"><a href="classstrus_1_1DocumentClassDetectorInterface.html">strus::DocumentClassDetectorInterface</a></div><div class="ttdoc">Defines a detector that returns a content description for a document content it recognizes. </div><div class="ttdef"><b>Definition:</b> documentClassDetectorInterface.hpp:21</div></div>
-<div class="ttc" id="classstrus_1_1DocumentClass_html"><div class="ttname"><a href="classstrus_1_1DocumentClass.html">strus::DocumentClass</a></div><div class="ttdoc">Defines a description of the properties of an original document processed by the segmenter. </div><div class="ttdef"><b>Definition:</b> documentClass.hpp:20</div></div>
+<div class="ttc" id="classstrus_1_1DocumentClassDetectorInterface_html_a69db3adec6809af0ca8ebaa706904da0"><div class="ttname"><a href="classstrus_1_1DocumentClassDetectorInterface.html#a69db3adec6809af0ca8ebaa706904da0">strus::DocumentClassDetectorInterface::detect</a></div><div class="ttdeci">virtual bool detect(analyzer::DocumentClass &amp;dclass, const char *contentBegin, std::size_t contentBeginSize) const =0</div><div class="ttdoc">Scans the start of a document to detect its classification attributes (mime type, etc...</div></div>
 <div class="ttc" id="classstrus_1_1DocumentClassDetectorInterface_html_a930fc3b5cb30ac322eca0cfd8907c501"><div class="ttname"><a href="classstrus_1_1DocumentClassDetectorInterface.html#a930fc3b5cb30ac322eca0cfd8907c501">strus::DocumentClassDetectorInterface::~DocumentClassDetectorInterface</a></div><div class="ttdeci">virtual ~DocumentClassDetectorInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> documentClassDetectorInterface.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1DocumentClassDetectorInterface_html_aedfbb80d4c8aa7d444a5b04e1545855f"><div class="ttname"><a href="classstrus_1_1DocumentClassDetectorInterface.html#aedfbb80d4c8aa7d444a5b04e1545855f">strus::DocumentClassDetectorInterface::detect</a></div><div class="ttdeci">virtual bool detect(DocumentClass &amp;dclass, const char *contentBegin, std::size_t contentBeginSize) const =0</div><div class="ttdoc">Scans the start of a document to detect its classification attributes (mime type, etc...</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

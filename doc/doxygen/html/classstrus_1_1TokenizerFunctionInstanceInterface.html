@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -48,6 +48,7 @@
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -78,10 +79,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a116485a96d2ca1d13dc9f19098027aa4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#a116485a96d2ca1d13dc9f19098027aa4">concatBeforeTokenize</a> () const =0</td></tr>
 <tr class="memdesc:a116485a96d2ca1d13dc9f19098027aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag defined by tokenizer indicating that different segments defined by the tag hierarchy should be concatenated before tokenization.  <a href="#a116485a96d2ca1d13dc9f19098027aa4">More...</a><br/></td></tr>
 <tr class="separator:a116485a96d2ca1d13dc9f19098027aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3c344b0fad44fbfb78002fd85351da7"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
-<a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html">TokenizerFunctionContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#af3c344b0fad44fbfb78002fd85351da7">createFunctionContext</a> () const =0</td></tr>
-<tr class="memdesc:af3c344b0fad44fbfb78002fd85351da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an instance (context for one document) for tokenization.  <a href="#af3c344b0fad44fbfb78002fd85351da7">More...</a><br/></td></tr>
-<tr class="separator:af3c344b0fad44fbfb78002fd85351da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48777e8c8334eb1d57d814ef5f57c008"><td class="memItemLeft" align="right" valign="top">virtual std::vector<br class="typebreak"/>
+&lt; <a class="el" href="structstrus_1_1analyzer_1_1Token.html">analyzer::Token</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html#a48777e8c8334eb1d57d814ef5f57c008">tokenize</a> (const char *src, std::size_t srcsize) const =0</td></tr>
+<tr class="memdesc:a48777e8c8334eb1d57d814ef5f57c008"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tokenize a segment into a list of tokens.  <a href="#a48777e8c8334eb1d57d814ef5f57c008">More...</a><br/></td></tr>
+<tr class="separator:a48777e8c8334eb1d57d814ef5f57c008"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for tokenization. </p>
@@ -139,7 +140,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af3c344b0fad44fbfb78002fd85351da7"></a>
+<a class="anchor" id="a48777e8c8334eb1d57d814ef5f57c008"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -147,10 +148,21 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1TokenizerFunctionContextInterface.html">TokenizerFunctionContextInterface</a>* strus::TokenizerFunctionInstanceInterface::createFunctionContext </td>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="structstrus_1_1analyzer_1_1Token.html">analyzer::Token</a>&gt; strus::TokenizerFunctionInstanceInterface::tokenize </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>srcsize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -160,8 +172,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Create an instance (context for one document) for tokenization. </p>
-<dl class="section return"><dt>Returns</dt><dd>the created tokenizer instance (with ownership) </dd></dl>
+<p>Tokenize a segment into a list of tokens. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>pointer to segment to tokenize </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">srcsize</td><td>size of the segment to tokenize in bytes </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -172,7 +190,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

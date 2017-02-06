@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -48,6 +48,7 @@
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -64,15 +65,20 @@
 
 <p>This is the complete list of members for <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a7432bf4754e5f339ec2671a439a2170f">analyzePhrase</a>(const std::string &amp;phraseType, const std::string &amp;content) const =0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a14e58bfc43096a09d4cd0f3d54af3ed8">analyzePhraseBulk</a>(const std::vector&lt; Phrase &gt; &amp;phraseBulk) const =0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#af5e654e1e8d51ee148bdc9a5fa8670dc">definePhraseType</a>(const std::string &amp;phraseType, const std::string &amp;featureType, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a>()</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a71d03e8ff4eed374b5b582d89031ad03">addMetaDataElement</a>(const std::string &amp;metaname, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a99d62041b7c732d2d94e270afc6cbdf0">addMetaDataElementFromPatternMatch</a>(const std::string &amp;metaname, const std::string &amp;patternTypeName, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a526ed6c32574d0ce5a38991450c7f237">addPatternLexem</a>(const std::string &amp;termtype, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a943633b98106e525660170157e7232ba">addSearchIndexElement</a>(const std::string &amp;termtype, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#ae8603560d243f3ad92ca50468658365d">addSearchIndexElementFromPatternMatch</a>(const std::string &amp;type, const std::string &amp;patternTypeName, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a5309268fcb340c2c4cc759c8d78fdcf3">createContext</a>() const =0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">definePatternMatcherPostProc</a>(const std::string &amp;patternTypeName, PatternMatcherInstanceInterface *matcher, PatternTermFeederInstanceInterface *feeder)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">definePatternMatcherPreProc</a>(const std::string &amp;patternTypeName, PatternMatcherInstanceInterface *matcher, PatternLexerInstanceInterface *lexer, const std::vector&lt; std::string &gt; &amp;selectexpr)=0</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a>()</td><td class="entry"><a class="el" href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

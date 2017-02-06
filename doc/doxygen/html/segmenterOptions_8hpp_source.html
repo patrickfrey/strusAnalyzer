@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/segmenterOptions.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/segmenterOptions.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.10</span>
+   &#160;<span id="projectnumber">0.13</span>
    </div>
   </td>
  </tr>
@@ -52,7 +52,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,26 +73,26 @@
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>strus {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>analyzer {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">SegmenterOptions</a></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0">   27</a></span>&#160;        <a class="code" href="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0">SegmenterOptions</a>()</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a080b357fb915e9518f05d5c44d35df14">   27</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a080b357fb915e9518f05d5c44d35df14">SegmenterOptions</a>()</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                :m_optar(0){}</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html#ae667cf3920cf3e875ffdcb7cfa60fc0a">   30</a></span>&#160;        <a class="code" href="classstrus_1_1SegmenterOptions.html#ae667cf3920cf3e875ffdcb7cfa60fc0a">SegmenterOptions</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a>&amp; o)</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a61c84e5ce13c2eb2b88a7fb9be689e04">   30</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a61c84e5ce13c2eb2b88a7fb9be689e04">SegmenterOptions</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">SegmenterOptions</a>&amp; o)</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                :m_optar(o.m_optar){}</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af">   34</a></span>&#160;        <span class="keyword">typedef</span> std::pair&lt;std::string,std::string&gt; <a class="code" href="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af">Item</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a59c8c397a25f14513a36ffc69c525858">   34</a></span>&#160;        <span class="keyword">typedef</span> std::pair&lt;std::string,std::string&gt; <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a59c8c397a25f14513a36ffc69c525858">Item</a>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034">   40</a></span>&#160;        <a class="code" href="classstrus_1_1SegmenterOptions.html">SegmenterOptions</a>&amp; <a class="code" href="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034">operator()</a>( <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; value)</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#abb9dda46ad128512d5e2bb47bb166a27">   40</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">SegmenterOptions</a>&amp; <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#abb9dda46ad128512d5e2bb47bb166a27">operator()</a>( <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; value)</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                m_optar.push_back( <a class="code" href="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af">Item</a>( name, value));</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                m_optar.push_back( <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a59c8c397a25f14513a36ffc69c525858">Item</a>( name, value));</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8">   48</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;Item&gt;&amp; <a class="code" href="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8">items</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a25e1027f4f8dc4715baed3f79cc56ad6">   48</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;Item&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a25e1027f4f8dc4715baed3f79cc56ad6">items</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">        </span>{</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">return</span> m_optar;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
@@ -101,21 +101,21 @@
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        std::vector&lt;Item&gt; m_optar;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}}<span class="comment">//namespace</span></div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html">strus::SegmenterOptions</a></div><div class="ttdoc">Options to stear the segmenter behaviour or the structure of input if not self defined in the documen...</div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:23</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html_a88a07a9a13c4cdc83143c704e41e5bd8"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html#a88a07a9a13c4cdc83143c704e41e5bd8">strus::SegmenterOptions::items</a></div><div class="ttdeci">const std::vector&lt; Item &gt; &amp; items() const </div><div class="ttdoc">Get the list of all declared option items. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:48</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html_a9e6c6722a825688a0ef8da410a89ffe0"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html#a9e6c6722a825688a0ef8da410a89ffe0">strus::SegmenterOptions::SegmenterOptions</a></div><div class="ttdeci">SegmenterOptions()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:27</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html_ae667cf3920cf3e875ffdcb7cfa60fc0a"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html#ae667cf3920cf3e875ffdcb7cfa60fc0a">strus::SegmenterOptions::SegmenterOptions</a></div><div class="ttdeci">SegmenterOptions(const SegmenterOptions &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:30</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html_aeef533752eab1dd664d48b797c3cf6af"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html#aeef533752eab1dd664d48b797c3cf6af">strus::SegmenterOptions::Item</a></div><div class="ttdeci">std::pair&lt; std::string, std::string &gt; Item</div><div class="ttdoc">One option item. Interpretation depends on the segmenter implementation. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:34</div></div>
-<div class="ttc" id="classstrus_1_1SegmenterOptions_html_af2353fa3880f9b53a7febc9306e09034"><div class="ttname"><a href="classstrus_1_1SegmenterOptions.html#af2353fa3880f9b53a7febc9306e09034">strus::SegmenterOptions::operator()</a></div><div class="ttdeci">SegmenterOptions &amp; operator()(const std::string &amp;name, const std::string &amp;value)</div><div class="ttdoc">Define a new option. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:40</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html_a080b357fb915e9518f05d5c44d35df14"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a080b357fb915e9518f05d5c44d35df14">strus::analyzer::SegmenterOptions::SegmenterOptions</a></div><div class="ttdeci">SegmenterOptions()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:27</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html">strus::analyzer::SegmenterOptions</a></div><div class="ttdoc">Options to stear the segmenter behaviour or the structure of input if not self defined in the documen...</div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:23</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html_a59c8c397a25f14513a36ffc69c525858"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a59c8c397a25f14513a36ffc69c525858">strus::analyzer::SegmenterOptions::Item</a></div><div class="ttdeci">std::pair&lt; std::string, std::string &gt; Item</div><div class="ttdoc">One option item. Interpretation depends on the segmenter implementation. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:34</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html_abb9dda46ad128512d5e2bb47bb166a27"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html#abb9dda46ad128512d5e2bb47bb166a27">strus::analyzer::SegmenterOptions::operator()</a></div><div class="ttdeci">SegmenterOptions &amp; operator()(const std::string &amp;name, const std::string &amp;value)</div><div class="ttdoc">Define a new option. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:40</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html_a61c84e5ce13c2eb2b88a7fb9be689e04"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a61c84e5ce13c2eb2b88a7fb9be689e04">strus::analyzer::SegmenterOptions::SegmenterOptions</a></div><div class="ttdeci">SegmenterOptions(const SegmenterOptions &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:30</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1SegmenterOptions_html_a25e1027f4f8dc4715baed3f79cc56ad6"><div class="ttname"><a href="classstrus_1_1analyzer_1_1SegmenterOptions.html#a25e1027f4f8dc4715baed3f79cc56ad6">strus::analyzer::SegmenterOptions::items</a></div><div class="ttdeci">const std::vector&lt; Item &gt; &amp; items() const </div><div class="ttdoc">Get the list of all declared option items. </div><div class="ttdef"><b>Definition:</b> segmenterOptions.hpp:48</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Jul 10 2016 19:42:02 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 6 2017 17:53:15 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
