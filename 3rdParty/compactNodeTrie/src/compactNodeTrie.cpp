@@ -6,7 +6,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "compactNodeTrie.hpp"
-#include "private/internationalization.hpp"
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -183,7 +182,7 @@ bool CompactNodeTrie::get( const char* key, NodeData& val) const
 
 		if (nodeClassId(addr) != NodeClass::NodeData)
 		{
-			throw strus::runtime_error( _TXT("currupt data (non UTF-8 string inserted)"));
+			throw std::runtime_error( "currupt data (non UTF-8 string inserted)");
 		}
 		val = m_datablock[ nodeIndex( addr)];
 		return true;
@@ -531,7 +530,7 @@ bool CompactNodeTrie::addTail( const NodeAddress& parentaddr, unsigned char pare
 			NodeIndex idx = nodeIndex( next);
 			if (nodeClassId( next) != NodeClass::NodeData)
 			{
-				throw strus::runtime_error( _TXT("data node expected as successor of 0xFF"));
+				throw std::runtime_error( "data node expected as successor of 0xFF");
 			}
 			m_datablock[ idx] = data;
 		}
