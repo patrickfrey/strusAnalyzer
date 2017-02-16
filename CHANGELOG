@@ -1,3 +1,7 @@
+strusAnalyzer (0.14.0)
+  * increment version synchronously to strus core
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 15 Feb 2016 14:00:00 +0100
+
 strusAnalyzer (0.13.0)
   * integrated pattern matching interfaces into analyzer
   * the anayzer result terms have now a length (ordinal position count)

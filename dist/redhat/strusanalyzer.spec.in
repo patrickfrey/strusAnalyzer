@@ -316,7 +316,10 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
-* Mon Feb 6 2016 Patrick Frey <patrickpfrey@yahoo.com> 0.13.0-0.1
+* Wed Feb 15 2017 Patrick Frey <patrickpfrey@yahoo.com> 0.14.0-0.1
+- increment version synchronously to strus core
+
+* Mon Feb 6 2017 Patrick Frey <patrickpfrey@yahoo.com> 0.13.0-0.1
 - integrated pattern matching interfaces into analyzer
 - the anayzer result terms have now a length (ordinal position count)
 - the pattern matcher returns now the whole span of the result that defines the length of a result term
