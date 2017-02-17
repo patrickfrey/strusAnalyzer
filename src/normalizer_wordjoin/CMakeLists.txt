@@ -25,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_wordjoin SHARED ${source_files} libstrus_normalizer_wordjoin.cpp )
-target_link_libraries( strus_normalizer_wordjoin strus_private_utils strus_base )
+target_link_libraries( strus_normalizer_wordjoin strusanalyzer_private_utils strus_base )
 
 set_target_properties(
     strus_normalizer_wordjoin

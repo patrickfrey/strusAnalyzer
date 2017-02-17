@@ -24,6 +24,6 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_utils STATIC ${source_files} )
-target_link_libraries( strus_segmenter_utils strus_private_utils )
+target_link_libraries( strus_segmenter_utils strusanalyzer_private_utils )
 
 

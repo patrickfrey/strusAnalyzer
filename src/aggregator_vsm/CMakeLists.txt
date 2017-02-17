@@ -23,7 +23,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_aggregator_vsm SHARED ${source_files} )
-target_link_libraries( strus_aggregator_vsm strus_private_utils )
+target_link_libraries( strus_aggregator_vsm strusanalyzer_private_utils )
 set_target_properties(
     strus_aggregator_vsm
     PROPERTIES

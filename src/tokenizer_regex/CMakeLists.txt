@@ -24,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_regex SHARED libstrus_tokenizer_regex.cpp ${source_files} )
-target_link_libraries( strus_tokenizer_regex strus_private_utils )
+target_link_libraries( strus_tokenizer_regex strusanalyzer_private_utils )
 
 set_target_properties(
     strus_tokenizer_regex

@@ -24,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_regex SHARED ${source_files} libstrus_normalizer_regex.cpp )
-target_link_libraries( strus_normalizer_regex strus_private_utils )
+target_link_libraries( strus_normalizer_regex strusanalyzer_private_utils )
 
 set_target_properties(
     strus_normalizer_regex

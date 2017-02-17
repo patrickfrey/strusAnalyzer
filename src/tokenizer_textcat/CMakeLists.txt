@@ -25,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_textcat SHARED ${source_files} )
-target_link_libraries( strus_tokenizer_textcat strus_private_utils strus_textcat )
+target_link_libraries( strus_tokenizer_textcat strusanalyzer_private_utils strus_textcat )
 
 set_target_properties(
     strus_tokenizer_textcat

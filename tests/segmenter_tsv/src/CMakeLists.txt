@@ -14,4 +14,4 @@ link_directories(
 )
 
 add_executable( testSegmenterTsv testSegmenterTsv.cpp)
-target_link_libraries( testSegmenterTsv strus_segmenter_tsv strus_segmenter_utils strus_detector_std  strus_base  strus_error strus_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testSegmenterTsv strus_segmenter_tsv strus_segmenter_utils strus_detector_std  strus_base  strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )

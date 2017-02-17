@@ -24,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_charconv SHARED ${source_files} libstrus_normalizer_charconv.cpp )
-target_link_libraries( strus_normalizer_charconv strus_private_utils )
+target_link_libraries( strus_normalizer_charconv strusanalyzer_private_utils )
 
 set_target_properties(
     strus_normalizer_charconv
