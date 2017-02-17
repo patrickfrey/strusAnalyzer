@@ -17,7 +17,7 @@ include_directories(
 # -------------------------------------------
 # COMPACT NODE TRIE LIBRARY
 # -------------------------------------------
-add_library( compactnodetrie_static STATIC ${source_files})
+add_library( compactnodetrie_analyzer_static STATIC ${source_files})
 
 
 
