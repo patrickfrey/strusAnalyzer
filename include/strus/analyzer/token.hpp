@@ -49,6 +49,11 @@ public:
 	{
 		m_origseg = origseg_;
 	}
+	/// \brief Set the ordinal position of the token in the source (adjusted in case of multiple segments)
+	void setOrdpos( unsigned int ordpos_)
+	{
+		m_ordpos = ordpos_;
+	}
 
 	bool operator < (const Token& o) const
 	{
