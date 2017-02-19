@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 include_directories(
 	"${Boost_INCLUDE_DIRS}"
@@ -18,6 +18,6 @@ link_directories(
 )
 
 add_executable( testTokenizerTextcat testTokenizerTextcat.cpp)
-target_link_libraries( testTokenizerTextcat strus_error strus_tokenizer_textcat strus_textproc strus_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testTokenizerTextcat strus_error strus_tokenizer_textcat strus_textproc strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

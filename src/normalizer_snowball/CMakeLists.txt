@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -27,7 +27,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_snowball SHARED ${source_files} )
-target_link_libraries( strus_normalizer_snowball  strus_stemmer strus_private_utils )
+target_link_libraries( strus_normalizer_snowball  strus_stemmer strusanalyzer_private_utils )
 set_target_properties(
     strus_normalizer_snowball
     PROPERTIES

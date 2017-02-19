@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -56,7 +56,7 @@ target_link_libraries(
 	strus_tokenizer_textcat
 	strus_aggregator_vsm
 	strus_pattern_termfeeder
-	strus_private_utils )
+	strusanalyzer_private_utils )
 
 set_target_properties(
     strus_textproc

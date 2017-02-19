@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -26,7 +26,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_dictmap SHARED ${source_files} libstrus_normalizer_dictmap.cpp )
-target_link_libraries( strus_normalizer_dictmap compactnodetrie_static strus_private_utils strus_base )
+target_link_libraries( strus_normalizer_dictmap compactnodetrie_analyzer_static strusanalyzer_private_utils strus_base )
 
 set_target_properties(
     strus_normalizer_dictmap

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 include_directories(
 	"${Boost_INCLUDE_DIRS}"
@@ -17,6 +17,6 @@ link_directories(
 )
 
 add_executable( testDocumentClassDetect testDocumentClassDetect.cpp)
-target_link_libraries( testDocumentClassDetect strus_error strus_textproc strus_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testDocumentClassDetect strus_error strus_textproc strusanalyzer_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

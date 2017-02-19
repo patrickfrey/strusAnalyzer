@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -17,8 +17,8 @@ link_directories(
 # UTILS LIBRARY
 # Library with some helper functions used by strus libraries and programs but not part of the public interface
 # -------------------------------------------
-add_library( strus_private_utils STATIC utils.cpp internationalization.cpp tokenizeHelpers.cpp )
-target_link_libraries( strus_private_utils  "${Boost_LIBRARIES}" "${Intl_LIBRARIES}" )
+add_library( strusanalyzer_private_utils STATIC utils.cpp internationalization.cpp tokenizeHelpers.cpp )
+target_link_libraries( strusanalyzer_private_utils  "${Boost_LIBRARIES}" "${Intl_LIBRARIES}" )
 
 
 
