@@ -19,6 +19,8 @@ namespace strus
 /// \brief Forward declaration
 class DocumentClassDetectorInterface;
 /// \brief Forward declaration
+class SegmenterInterface;
+/// \brief Forward declaration
 class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
@@ -49,6 +51,16 @@ public:
 	/// \brief Get the absolute path of a resource file
 	/// \param[in] filename name of the resource file
 	virtual std::string getResourcePath( const std::string& filename) const=0;
+
+	/// \brief Get a document segmenter object reference
+	/// \param[in] segmenterName name of the segmenter used (if empty, find the first one loaded or the default one)
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* getSegmenterByName( const std::string& segmenterName) const=0;
+
+	/// \brief Get a document segmenter object reference that is able to process the specified MIME type
+	/// \param[in] mimetype MIME type of the document type to process
+	/// \return a read only document segmenter reference
+	virtual const SegmenterInterface* getSegmenterByMimeType( const std::string& mimetype) const=0;
 
 	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens
 	/// \return the tokenizer reference
@@ -84,8 +96,13 @@ public:
 	/// \param[in] tokenizer a tokenizer object (pass ownership)
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector)=0;
 
+	/// \brief Define a document segmenter by name
+	/// \param[in] name name of the document segmenter to define
+	/// \param[in] segmenter a document segmenter object (pass ownership)
+	virtual void defineSegmenter( const std::string& name, SegmenterInterface* segmenter)=0;
+
 	/// \brief Define a tokenizer by name
-	/// \param[in] name name of the normalizer to define
+	/// \param[in] name name of the tokenizer to define
 	/// \param[in] tokenizer a tokenizer object (pass ownership)
 	virtual void defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer)=0;
 

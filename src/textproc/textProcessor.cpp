@@ -6,8 +6,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "textProcessor.hpp"
+#include "strus/lib/segmenter_textwolf.hpp"
+#include "strus/lib/segmenter_cjson.hpp"
+#include "strus/lib/segmenter_tsv.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
+#include "strus/segmenterInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
@@ -38,8 +42,15 @@ using namespace strus::analyzer;
 #include <iostream>
 #endif
 
+#define DEFAULT_SEGMENTER "textwolf"
+
 TextProcessor::~TextProcessor()
 {
+	std::map<std::string,SegmenterInterface*>::iterator si = m_segmenterMap.begin(), se = m_segmenterMap.end();
+	for (; si != se; ++si)
+	{
+		delete si->second;
+	}
 	std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.begin(), te = m_tokenizer_map.end();
 	for (; ti != te; ++ti)
 	{
@@ -55,12 +66,22 @@ TextProcessor::~TextProcessor()
 	{
 		delete ai->second;
 	}
+	std::map<std::string,PatternLexerInterface*>::iterator li = m_patternlexer_map.begin(), le = m_patternlexer_map.end();
+	for (; li != le; ++li)
+	{
+		delete li->second;
+	}
+	std::map<std::string,PatternMatcherInterface*>::iterator mi = m_patternmatcher_map.begin(), me = m_patternmatcher_map.end();
+	for (; mi != me; ++mi)
+	{
+		delete mi->second;
+	}
+	delete m_patterntermfeeder;
 	std::vector<DocumentClassDetectorInterface*>::iterator di = m_detectors.begin(), de = m_detectors.end();
 	for (; di != de; ++di)
 	{
 		delete *di;
 	}
-	delete m_patterntermfeeder;
 }
 
 
@@ -556,6 +577,13 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error(_TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
 
+	SegmenterInterface* segref = strus::createSegmenter_textwolf( m_errorhnd);
+	if (segref) defineSegmenter( "textwolf", segref);
+	segref = strus::createSegmenter_cjson( m_errorhnd);
+	if (segref) defineSegmenter( "cjson", segref);
+	segref = strus::createSegmenter_tsv( m_errorhnd);
+	if (segref) defineSegmenter( "tsv", segref);
+
 	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
 	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
 	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
@@ -567,64 +595,151 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,errorhnd));
 }
 
-const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
+const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& name) const
 {
-	std::map<std::string,TokenizerFunctionInterface*>::const_iterator
-		ti = m_tokenizer_map.find( utils::tolower( name));
-	if (ti == m_tokenizer_map.end())
+	try
 	{
-		m_errorhnd->report( _TXT("no tokenizer defined with name '%s'"), name.c_str());
+		std::map<std::string,SegmenterInterface*>::const_iterator ti;
+		if (name.empty())
+		{
+			ti = m_segmenterMap.find( DEFAULT_SEGMENTER);
+		}
+		else
+		{
+			ti = m_segmenterMap.find( utils::tolower( name));
+		}
+		if (ti == m_segmenterMap.end())
+		{
+			m_errorhnd->report( _TXT("no segmenter defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ti->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting segmenter by name '%s'"), name.c_str());
 		return 0;
 	}
-	return ti->second;
+}
+
+const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::string& mimetype) const
+{
+	try
+	{
+		std::map<std::string,SegmenterInterface*>::const_iterator
+			ti = m_mimeSegmenterMap.find( utils::tolower( mimetype));
+		if (ti == m_mimeSegmenterMap.end())
+		{
+			m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
+			return 0;
+		}
+		return ti->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting segmenter by MIME type '%s'"), mimetype.c_str());
+		return 0;
+	}
+}
+
+const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
+{
+	try
+	{
+		std::map<std::string,TokenizerFunctionInterface*>::const_iterator
+			ti = m_tokenizer_map.find( utils::tolower( name));
+		if (ti == m_tokenizer_map.end())
+		{
+			m_errorhnd->report( _TXT("no tokenizer defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ti->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting tokenizer '%s'"), name.c_str());
+		return 0;
+	}
 }
 
 const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::string& name) const
 {
-	std::map<std::string,NormalizerFunctionInterface*>::const_iterator
-		ni = m_normalizer_map.find( utils::tolower( name));
-	if (ni == m_normalizer_map.end())
+	try
 	{
-		m_errorhnd->report( _TXT("no normalizer defined with name '%s'"), name.c_str());
+		std::map<std::string,NormalizerFunctionInterface*>::const_iterator
+			ni = m_normalizer_map.find( utils::tolower( name));
+		if (ni == m_normalizer_map.end())
+		{
+			m_errorhnd->report( _TXT("no normalizer defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ni->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting normalizer '%s'"), name.c_str());
 		return 0;
 	}
-	return ni->second;
 }
 
 const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::string& name) const
 {
-	std::map<std::string,AggregatorFunctionInterface*>::const_iterator
-		ni = m_aggregator_map.find( utils::tolower( name));
-	if (ni == m_aggregator_map.end())
+	try
 	{
-		m_errorhnd->report( _TXT("no aggregator function defined with name '%s'"), name.c_str());
+		std::map<std::string,AggregatorFunctionInterface*>::const_iterator
+			ni = m_aggregator_map.find( utils::tolower( name));
+		if (ni == m_aggregator_map.end())
+		{
+			m_errorhnd->report( _TXT("no aggregator function defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ni->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting aggregator '%s'"), name.c_str());
 		return 0;
 	}
-	return ni->second;
 }
 
 const PatternLexerInterface* TextProcessor::getPatternLexer( const std::string& name) const
 {
-	std::map<std::string,PatternLexerInterface*>::const_iterator
-		ni = m_patternlexer_map.find( utils::tolower( name));
-	if (ni == m_patternlexer_map.end())
+	try
 	{
-		m_errorhnd->report( _TXT("no pattern lexer defined with name '%s'"), name.c_str());
+		std::map<std::string,PatternLexerInterface*>::const_iterator
+			ni = m_patternlexer_map.find( utils::tolower( name));
+		if (ni == m_patternlexer_map.end())
+		{
+			m_errorhnd->report( _TXT("no pattern lexer defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ni->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting pattern lexer '%s'"), name.c_str());
 		return 0;
 	}
-	return ni->second;
 }
 
 const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::string& name) const
 {
-	std::map<std::string,PatternMatcherInterface*>::const_iterator
-		ni = m_patternmatcher_map.find( utils::tolower( name));
-	if (ni == m_patternmatcher_map.end())
+	try
 	{
-		m_errorhnd->report( _TXT("no pattern matcher defined with name '%s'"), name.c_str());
+		std::map<std::string,PatternMatcherInterface*>::const_iterator
+			ni = m_patternmatcher_map.find( utils::tolower( name));
+		if (ni == m_patternmatcher_map.end())
+		{
+			m_errorhnd->report( _TXT("no pattern matcher defined with name '%s'"), name.c_str());
+			return 0;
+		}
+		return ni->second;
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory getting pattern matcher '%s'"), name.c_str());
 		return 0;
 	}
-	return ni->second;
 }
 
 const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
@@ -664,6 +779,20 @@ void TextProcessor::defineDocumentClassDetector( DocumentClassDetectorInterface*
 	catch (const std::bad_alloc&)
 	{
 		delete detector;
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+}
+
+void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface* segmenter)
+{
+	try
+	{
+		m_mimeSegmenterMap[ utils::tolower(segmenter->mimeType())] = segmenter;
+		m_segmenterMap[ utils::tolower(name)] = segmenter;
+	}
+	catch (const std::bad_alloc&)
+	{
+		delete segmenter;
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }

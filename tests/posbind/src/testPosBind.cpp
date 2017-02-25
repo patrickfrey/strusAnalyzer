@@ -200,9 +200,10 @@ int main( int argc, const char* argv[])
 		}
 		std::auto_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
 			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
-		const strus::SegmenterInterface* segmenter = objbuild->getSegmenter( "textwolf");
+		const strus::TextProcessorInterface* textproc = objbuild->getTextProcessor();
+		const strus::SegmenterInterface* segmenter = textproc->getSegmenterByName( "textwolf");
 		std::auto_ptr<strus::DocumentAnalyzerInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
-		loadAnalyzerConfig( analyzer.get(), objbuild->getTextProcessor());
+		loadAnalyzerConfig( analyzer.get(), textproc);
 
 		std::string inputsrc;
 		unsigned int ec;

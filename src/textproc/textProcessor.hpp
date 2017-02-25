@@ -26,6 +26,10 @@ public:
 	virtual void addResourcePath( const std::string& path);
 	virtual std::string getResourcePath( const std::string& filename) const;
 
+	virtual const SegmenterInterface* getSegmenterByName( const std::string& segmenterName) const;
+
+	virtual const SegmenterInterface* getSegmenterByMimeType( const std::string& mimetype) const;
+
 	virtual const TokenizerFunctionInterface* getTokenizer( const std::string& name) const;
 
 	virtual const NormalizerFunctionInterface* getNormalizer( const std::string& name) const;
@@ -42,6 +46,8 @@ public:
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
 
+	virtual void defineSegmenter( const std::string& name, SegmenterInterface* segmenter);
+
 	virtual void defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer);
 
 	virtual void defineNormalizer( const std::string& name, NormalizerFunctionInterface* normalizer);
@@ -55,6 +61,8 @@ public:
 	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
+	std::map<std::string,SegmenterInterface*> m_segmenterMap;		///< map of defined document segmenters (key is segmenter name)
+	std::map<std::string,SegmenterInterface*> m_mimeSegmenterMap;		///< map of defined document segmenters (key is MIME type)
 	std::map<std::string,TokenizerFunctionInterface*> m_tokenizer_map;
 	std::map<std::string,NormalizerFunctionInterface*> m_normalizer_map;
 	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;

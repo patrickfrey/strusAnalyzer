@@ -43,6 +43,9 @@ add_library( strus_textproc SHARED ${source_files} )
 target_link_libraries(
 	strus_textproc
 	strus_detector_std
+	strus_segmenter_textwolf
+	strus_segmenter_cjson
+	strus_segmenter_tsv
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
