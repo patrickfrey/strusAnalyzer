@@ -206,6 +206,10 @@ void DocumentAnalyzer::defineSubContent(
 	try
 	{
 		const SegmenterInterface* segmenter = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
+		if (!segmenter)
+		{
+			throw strus::runtime_error(_TXT("no document segmenter defined for encoding=%s; mimetype=%s; scheme=%s"), documentClass.encoding().c_str(), documentClass.mimeType().c_str(), documentClass.scheme().c_str());
+		}
 		analyzer::SegmenterOptions opts;
 		if (!documentClass.scheme().empty())
 		{
