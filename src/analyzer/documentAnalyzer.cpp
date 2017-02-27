@@ -11,6 +11,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
@@ -27,9 +28,14 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
-	:m_segmenter(segmenter_->createInstance( opts))
-	,m_featureConfigMap(),m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
+DocumentAnalyzer::DocumentAnalyzer( const TextProcessorInterface* textproc_, const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
+	:m_textproc(textproc_)
+	,m_segmenter(segmenter_->createInstance( opts))
+	,m_subsegmenterList()
+	,m_featureConfigMap()
+	,m_preProcPatternMatchConfigMap()
+	,m_postProcPatternMatchConfigMap()
+	,m_patternFeatureConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
 	,m_forwardIndexTermTypeSet()
@@ -45,6 +51,62 @@ DocumentAnalyzer::DocumentAnalyzer( const SegmenterInterface* segmenter_, const 
 DocumentAnalyzer::~DocumentAnalyzer()
 {
 	delete m_segmenter;
+	std::vector<SubSegmenterDef>::iterator si = m_subsegmenterList.begin(), se = m_subsegmenterList.end();
+	for (; si != se; ++si)
+	{
+		delete si->segmenterInstance;
+	}
+}
+
+const DocumentAnalyzer::SubSegmenterDef& DocumentAnalyzer::subsegmenter( unsigned int idx) const
+{
+	if (idx>=m_subsegmenterList.size()) throw strus::runtime_error("internal: array bound read (subsegmenter)");
+	return m_subsegmenterList[idx];
+}
+
+static int getSubSegmenterIndex( const std::vector<DocumentAnalyzer::SubSegmenterDef>& segmenterList, const std::string& selectexpr)
+{
+	int rt = -1;
+	std::size_t maxlen = 0;
+
+	std::vector<DocumentAnalyzer::SubSegmenterDef>::const_iterator si = segmenterList.begin(), se = segmenterList.end();
+	for (int sidx=0; si != se; ++si,++sidx)
+	{
+		if (si->selectorPrefix.size() <= selectexpr.size()
+			&& si->selectorPrefix.size() > maxlen
+			&& 0==std::memcmp( selectexpr.c_str(), si->selectorPrefix.c_str(), si->selectorPrefix.size()))
+		{
+			maxlen = si->selectorPrefix.size();
+			rt = sidx;
+		}
+	}
+	return rt;
+}
+
+void DocumentAnalyzer::defineSelectorExpression( unsigned int featidx, const std::string& selectexpr)
+{
+	int sidx = getSubSegmenterIndex( m_subsegmenterList, selectexpr);
+	if (sidx >= 0)
+	{
+		m_subsegmenterList[ sidx].segmenterInstance->defineSelectorExpression( featidx, selectexpr.c_str() + m_subsegmenterList[sidx].selectorPrefix.size());
+	}
+	else
+	{
+		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+	}
+}
+
+void DocumentAnalyzer::defineSubSection( int startId, int endId, const std::string& selectexpr)
+{
+	int sidx = getSubSegmenterIndex( m_subsegmenterList, selectexpr);
+	if (sidx >= 0)
+	{
+		m_subsegmenterList[ sidx].segmenterInstance->defineSubSection( startId, endId, selectexpr.c_str() + m_subsegmenterList[sidx].selectorPrefix.size());
+	}
+	else
+	{
+		m_segmenter->defineSubSection( startId, endId, selectexpr);
+	}
 }
 
 void DocumentAnalyzer::addSearchIndexFeature(
@@ -57,7 +119,7 @@ void DocumentAnalyzer::addSearchIndexFeature(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, tokenizer, normalizers, options);
-		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		defineSelectorExpression( featidx, selectexpr);
 		m_searchIndexTermTypeSet.insert( utils::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding search index feature: %s"), *m_errorhnd);
@@ -73,7 +135,7 @@ void DocumentAnalyzer::addForwardIndexFeature(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, tokenizer, normalizers, options);
-		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		defineSelectorExpression( featidx, selectexpr);
 		m_forwardIndexTermTypeSet.insert( utils::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding forward index feature: %s"), *m_errorhnd);
@@ -88,7 +150,7 @@ void DocumentAnalyzer::defineMetaData(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, tokenizer, normalizers, analyzer::FeatureOptions());
-		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining metadata: %s"), *m_errorhnd);
 }
@@ -102,7 +164,7 @@ void DocumentAnalyzer::defineAttribute(
 	try
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatAttribute, attribname, tokenizer, normalizers, analyzer::FeatureOptions());
-		m_segmenter->defineSelectorExpression( featidx, selectexpr);
+		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining attribute: %s"), *m_errorhnd);
 }
@@ -132,9 +194,30 @@ void DocumentAnalyzer::defineSubDocument(
 		{
 			throw strus::runtime_error( _TXT("too many sub documents defined"));
 		}
-		m_segmenter->defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
+		defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzer::defineSubContent(
+		const std::string& selectexpr,
+		const analyzer::DocumentClass& documentClass)
+{
+	try
+	{
+		const SegmenterInterface* segmenter = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
+		analyzer::SegmenterOptions opts;
+		if (!documentClass.scheme().empty())
+		{
+			opts = m_textproc->getSegmenterOptions( documentClass.scheme());
+		}
+		Reference<SegmenterInstanceInterface> segmenterinst( segmenter->createInstance( opts));
+		if (!segmenterinst.get()) throw strus::runtime_error(_TXT("failed to create segmenter instance"));
+		m_subsegmenterList.push_back( SubSegmenterDef( documentClass, segmenterinst.get(), selectexpr));
+		segmenterinst.release();
+		defineSelectorExpression( m_subsegmenterList.size()+OfsSubContent-1, selectexpr);
+	}
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubContentSegmenter: %s"), *m_errorhnd);
 }
 
 void DocumentAnalyzer::addPatternLexem(
@@ -144,7 +227,7 @@ void DocumentAnalyzer::addPatternLexem(
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
 	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
-	m_segmenter->defineSelectorExpression( featidx, selectexpr);
+	defineSelectorExpression( featidx, selectexpr);
 }
 
 void DocumentAnalyzer::definePatternMatcherPostProc(
@@ -173,7 +256,7 @@ void DocumentAnalyzer::definePatternMatcherPreProc(
 			si = selectexpr.begin(), se = selectexpr.end();
 		for (; si != se; ++si)
 		{
-			m_segmenter->defineSelectorExpression( idx, *si);
+			defineSelectorExpression( idx, *si);
 		}
 	}
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);

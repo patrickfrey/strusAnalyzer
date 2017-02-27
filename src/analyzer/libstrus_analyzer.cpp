@@ -23,7 +23,7 @@ using namespace strus;
 
 
 DLL_PUBLIC DocumentAnalyzerInterface*
-	strus::createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
+	strus::createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -32,7 +32,7 @@ DLL_PUBLIC DocumentAnalyzerInterface*
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new DocumentAnalyzer( segmenter, opts, errorhnd);
+		return new DocumentAnalyzer( textproc, segmenter, opts, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer: %s"), *errorhnd, 0);
 }

@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TEXT_PROCESSOR_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/segmenterOptions.hpp"
 #include <string>
 #include <vector>
 
@@ -62,6 +63,10 @@ public:
 	/// \return a read only document segmenter reference
 	virtual const SegmenterInterface* getSegmenterByMimeType( const std::string& mimetype) const=0;
 
+	/// \brief Get the options for a document segmenter for a specific document type
+	/// \param[in] scheme document scheme identifier identifying the type of document and its external structure definition
+	virtual analyzer::SegmenterOptions getSegmenterOptions( const std::string& scheme) const=0;
+
 	/// \brief Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens
 	/// \return the tokenizer reference
 	virtual const TokenizerFunctionInterface* getTokenizer( const std::string& name) const=0;
@@ -100,6 +105,11 @@ public:
 	/// \param[in] name name of the document segmenter to define
 	/// \param[in] segmenter a document segmenter object (pass ownership)
 	virtual void defineSegmenter( const std::string& name, SegmenterInterface* segmenter)=0;
+
+	/// \brief Define segmenter optione by document scheme identifier
+	/// \param[in] scheme identifier of the document type
+	/// \param[in] options attached to this scheme
+	virtual void defineSegmenterOptions( const std::string& scheme, const analyzer::SegmenterOptions& options)=0;
 
 	/// \brief Define a tokenizer by name
 	/// \param[in] name name of the tokenizer to define

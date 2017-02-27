@@ -22,12 +22,14 @@ class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
+class TextProcessorInterface;
+/// \brief Forward declaration
 class ErrorBufferInterface;
 
 /// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter segmenter type to be used by the created analyzer.
 /// \return the analyzer program (with ownership)
-DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
+DocumentAnalyzerInterface* createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
 
 /// \brief Creates a parameterizable analyzer instance for analyzing queries
 /// \return the analyzer program (with ownership)

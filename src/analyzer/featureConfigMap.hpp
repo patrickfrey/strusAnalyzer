@@ -16,9 +16,12 @@ namespace strus
 
 enum {
 	MaxSegmenterId=(1<<30),
+	OfsSubContent=(1<<28),
+	MaxNofSubContents=(MaxSegmenterId - OfsSubContent - 1),
+
 	SubDocumentEnd=(1<<24),
 	OfsSubDocument=SubDocumentEnd+1,
-	MaxNofSubDocuments=(MaxSegmenterId - OfsSubDocument - 1),
+	MaxNofSubDocuments=(OfsSubContent - OfsSubDocument - 1),
 
 	OfsPatternMatchSegment=(1<<20),
 	MaxNofPatternMatchSegments=(SubDocumentEnd-OfsPatternMatchSegment-1),

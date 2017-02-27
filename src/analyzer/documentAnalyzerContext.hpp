@@ -46,6 +46,7 @@ private:
 	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const DocumentAnalyzer* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
+	std::vector<SegmenterContextInterface*> m_segmenterstack;
 	bool m_eof;
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;

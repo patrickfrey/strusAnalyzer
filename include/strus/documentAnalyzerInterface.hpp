@@ -16,6 +16,7 @@
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/featureOptions.hpp"
+#include "strus/analyzer/segmenterOptions.hpp"
 #include <vector>
 #include <string>
 
@@ -31,6 +32,8 @@ class NormalizerFunctionInstanceInterface;
 class TokenizerFunctionInstanceInterface;
 /// \brief Forward declaration
 class AggregatorFunctionInstanceInterface;
+/// \brief Forward declaration
+class SegmenterInterface;
 /// \brief Forward declaration
 class PatternTermFeederInstanceInterface;
 /// \brief Forward declaration
@@ -110,6 +113,14 @@ public:
 	virtual void defineSubDocument(
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr)=0;
+
+	/// \brief Declare a sub content of the document that has to be processed with a different segmenter
+	/// \param[in] selectexpr an expression that addresses the sub content declared
+	/// \param[in] documentClass defines the content type of the sub content
+	/// \remark Sub contents have to be defined before (!) any item with a selection expression referring to it.
+	virtual void defineSubContent(
+			const std::string& selectexpr,
+			const analyzer::DocumentClass& documentClass)=0;
 
 	/// \brief Declare an element to be used as lexem by post processing pattern matching but not put into the result of document analysis
 	/// \param[in] termtype term type name of the lexem to be feed to the pattern matching

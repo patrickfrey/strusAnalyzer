@@ -642,6 +642,28 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	}
 }
 
+analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string& scheme) const
+{
+	try
+	{
+		std::map<std::string,analyzer::SegmenterOptions>::const_iterator
+			oi = m_schemeSegmenterOptions_map.find(utils::tolower(scheme));
+		if (oi == m_schemeSegmenterOptions_map.end())
+		{
+			return analyzer::SegmenterOptions();
+		}
+		else
+		{
+			return oi->second;
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory"));
+		return analyzer::SegmenterOptions();
+	}
+}
+
 const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string& name) const
 {
 	try
@@ -793,6 +815,18 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 	catch (const std::bad_alloc&)
 	{
 		delete segmenter;
+		m_errorhnd->report( _TXT("out of memory"));
+	}
+}
+
+void TextProcessor::defineSegmenterOptions( const std::string& scheme, const analyzer::SegmenterOptions& options)
+{
+	try
+	{
+		m_schemeSegmenterOptions_map[ utils::tolower(scheme)] = options;
+	}
+	catch (const std::bad_alloc&)
+	{
 		m_errorhnd->report( _TXT("out of memory"));
 	}
 }
