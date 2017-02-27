@@ -58,12 +58,6 @@ DocumentAnalyzer::~DocumentAnalyzer()
 	}
 }
 
-const DocumentAnalyzer::SubSegmenterDef& DocumentAnalyzer::subsegmenter( unsigned int idx) const
-{
-	if (idx>=m_subsegmenterList.size()) throw strus::runtime_error("internal: array bound read (subsegmenter)");
-	return m_subsegmenterList[idx];
-}
-
 static int getSubSegmenterIndex( const std::vector<DocumentAnalyzer::SubSegmenterDef>& segmenterList, const std::string& selectexpr)
 {
 	int rt = -1;
@@ -205,6 +199,7 @@ void DocumentAnalyzer::defineSubContent(
 {
 	try
 	{
+		defineSelectorExpression( m_subsegmenterList.size()+OfsSubContent, selectexpr);
 		const SegmenterInterface* segmenter = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
 		if (!segmenter)
 		{
@@ -219,7 +214,6 @@ void DocumentAnalyzer::defineSubContent(
 		if (!segmenterinst.get()) throw strus::runtime_error(_TXT("failed to create segmenter instance"));
 		m_subsegmenterList.push_back( SubSegmenterDef( documentClass, segmenterinst.get(), selectexpr));
 		segmenterinst.release();
-		defineSelectorExpression( m_subsegmenterList.size()+OfsSubContent-1, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubContentSegmenter: %s"), *m_errorhnd);
 }

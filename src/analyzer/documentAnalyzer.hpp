@@ -169,7 +169,7 @@ public:/*DocumentAnalyzerContext*/
 	};
 
 	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
-	const SubSegmenterDef& subsegmenter( unsigned int idx) const;
+	const SubSegmenterDef* subsegmenter( unsigned int idx) const			{return (idx<m_subsegmenterList.size()) ? &m_subsegmenterList[idx]:(const SubSegmenterDef*)0;}
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}

@@ -34,6 +34,7 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
 	,m_segmenterstack()
 	,m_eof(false)
+	,m_curr_position_ofs(0)
 	,m_curr_position(0)
 	,m_start_position(0)
 	,m_nof_segments(0)
@@ -49,10 +50,10 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 DocumentAnalyzerContext::~DocumentAnalyzerContext()
 {
 	delete m_segmenter;
-	std::vector<SegmenterContextInterface*>::const_iterator si = m_segmenterstack.begin(), se = m_segmenterstack.begin();
+	std::vector<SegmenterStackElement>::const_iterator si = m_segmenterstack.begin(), se = m_segmenterstack.begin();
 	for (; si != se; ++si)
 	{
-		delete *si;
+		delete si->segmenter;
 	}
 }
 
@@ -150,6 +151,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			// [1] Scan the document and push the normalized tokenization of the elements to the result:
 			while (m_segmenter->getNext( featidx, m_curr_position, segsrc, segsrcsize))
 			{
+				m_curr_position += m_curr_position_ofs;
 				try
 				{
 #ifdef STRUS_LOWLEVEL_DEBUG
@@ -159,12 +161,16 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					{
 						if (featidx >= OfsSubContent)
 						{
-							const DocumentAnalyzer::SubSegmenterDef& subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
-							SegmenterContextInterface* ns = subsegmenterdef.segmenterInstance->createContext( subsegmenterdef.documentClass);
-							if (!ns) throw strus::runtime_error(_TXT("failed to create sub segmenter context"));
-							m_segmenterstack.push_back( m_segmenter);
-							m_segmenter = ns;
-							m_segmenter->putInput( segsrc, segsrcsize, true);
+							const DocumentAnalyzer::SubSegmenterDef* subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
+							if (subsegmenterdef)
+							{
+								SegmenterContextInterface* ns = subsegmenterdef->segmenterInstance->createContext( subsegmenterdef->documentClass);
+								if (!ns) throw strus::runtime_error(_TXT("failed to create sub segmenter context"));
+								m_segmenterstack.push_back( SegmenterStackElement( m_curr_position_ofs, m_segmenter));
+								m_segmenter = ns;
+								m_curr_position_ofs = m_curr_position;
+								m_segmenter->putInput( segsrc, segsrcsize, true);
+							}
 						}
 						//... start or end of document marker
 						else if (featidx == SubDocumentEnd)
@@ -232,7 +238,8 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			else
 			{
 				delete m_segmenter;
-				m_segmenter = m_segmenterstack.back();
+				m_segmenter = m_segmenterstack.back().segmenter;
+				m_curr_position_ofs = m_segmenterstack.back().curr_position_ofs;
 				m_segmenterstack.pop_back();
 			}
 		}
