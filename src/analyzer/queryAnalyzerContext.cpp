@@ -87,18 +87,23 @@ static void buildQueryTreeLeaf( std::vector<QueryTreeNode>& nodear, unsigned int
 
 /// \brief Build up array of element ranges of the fields
 typedef std::pair<unsigned int,unsigned int> ElementRange;
-static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Query& qry)
+static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Query& qry, std::size_t maxFieldNo)
 {
 	std::vector<ElementRange> rt;
 	rt.push_back( ElementRange( 0,0));
 	std::vector<analyzer::Query::Element>::const_iterator ei = qry.elements().begin(), ee = qry.elements().end();
-	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
+	unsigned int eidx = 0;
+	for (; ei != ee; ++ei,++eidx)
 	{
 		while (rt.size() <= ei->fieldNo())
 		{
 			rt.push_back( ElementRange( eidx, eidx));
 		}
 		rt.back().second = eidx+1;
+	}
+	while (rt.size() <= maxFieldNo)
+	{
+		rt.push_back( ElementRange( eidx, eidx));
 	}
 	return rt;
 }
@@ -125,7 +130,7 @@ static QueryTree buildQueryTree(
 	const analyzer::Query& qry)
 {
 	QueryTree rt;
-	std::vector<ElementRange> fieldElementRanges = getQueryFieldElementRanges( qry);
+	std::vector<ElementRange> fieldElementRanges = getQueryFieldElementRanges( qry, fields.size());
 
 	typedef std::map<unsigned int,unsigned int> ElementRootMap;
 	typedef std::pair<unsigned int,unsigned int> ElementRootAssignment;
