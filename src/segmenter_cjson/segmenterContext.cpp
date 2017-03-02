@@ -193,6 +193,8 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 	{
 		tree = tree->child;
 	}
+	if (!tree) return;
+
 	XPathAutomatonContext xpathselect( automaton->createContext());
 	std::vector<TextwolfItem> itemar;
 	getTextwolfItems( itemar, tree);
