@@ -172,7 +172,7 @@ static std::pair<std::size_t,std::size_t> lineInfo( const char* begin, const cha
 	return std::pair<std::size_t,std::size_t>(line,col);
 }
 
-static cJSON* parseJsonTree( const  std::string& content)
+static cJSON* parseJsonTree( const std::string& content)
 {
 	cJSON_Context ctx;
 	cJSON* tree = cJSON_Parse( &ctx, content.c_str());
@@ -189,10 +189,6 @@ static cJSON* parseJsonTree( const  std::string& content)
 
 static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<SegmenterContext::Item>& resar, const cJSON* tree)
 {
-	if (!tree->string && !tree->valuestring && !tree->next && tree->type == cJSON_Object)
-	{
-		tree = tree->child;
-	}
 	if (!tree) return;
 
 	XPathAutomatonContext xpathselect( automaton->createContext());
