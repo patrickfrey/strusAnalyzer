@@ -122,6 +122,8 @@ public:
 	{
 		try
 		{
+			if (srcsize == 0) return std::string();
+
 			TimeStruct result;
 
 			std::vector<std::string>::const_iterator ci = m_config.fmtar.begin(), ce = m_config.fmtar.end();
@@ -257,15 +259,22 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 {
 	try
 	{
-		if (args.size() < 2)
+		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("too few arguments (%u)"), (unsigned int)args.size());
-			return 0;
+			DateNumGranularity granularity( parseGranularity( "d"));
+			std::vector<std::string> defaultFacets;
+			defaultFacets.push_back( "%Y/%m/%d");
+			defaultFacets.push_back( "%Y-%m-%d");
+			defaultFacets.push_back( "%d.%m.%Y");
+			return new Date2IntNormalizerFunctionInstance( granularity, defaultFacets, m_errorhnd);
 		}
-		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-		DateNumGranularity granularity( parseGranularity( ai->c_str()));
-		std::vector<std::string> facets( ++ai, ae);
-		return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
+		else
+		{
+			std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
+			DateNumGranularity granularity( parseGranularity( ai->c_str()));
+			std::vector<std::string> facets( ++ai, ae);
+			return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
+		}
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
 }
