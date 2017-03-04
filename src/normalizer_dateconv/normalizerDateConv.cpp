@@ -46,7 +46,7 @@ struct DateNumGranularity
 
 	static uint64_t daynum( const TimeStruct& timstmp)
 	{
-		uint64_t yy = timstmp.tm_year + 1900;
+		uint64_t yy = timstmp.tm_year;
 		uint64_t mm = timstmp.tm_mon + 1;
 		if (timstmp.tm_mon <= 1)
 		{
@@ -70,10 +70,10 @@ struct DateNumGranularity
 		return (minnum(timstmp) * 60 + timstmp.tm_sec);
 	}
 
-	uint64_t getValue( const TimeStruct& timstmp) const
+	int64_t getValue( const TimeStruct& timstmp) const
 	{
-		uint64_t aa = 0;
-		uint64_t bb = 0;
+		int64_t aa = 0;
+		int64_t bb = 0;
 		switch (m_type)
 		{
 			case Second:
@@ -143,7 +143,7 @@ public:
 				throw strus::runtime_error(_TXT("unknown time format: '%s'"), inputstr.c_str());
 			}
 			std::mktime( &result);
-			uint64_t rtnum = m_config.granularity.getValue( result);
+			int64_t rtnum = m_config.granularity.getValue( result);
 			std::ostringstream out;
 			out << rtnum;
 			return out.str();
@@ -247,7 +247,7 @@ DateNumGranularity parseGranularity( char const* gi)
 	}
 	else
 	{
-		start.tm_year = 1970;
+		start.tm_year = 70;
 		start.tm_mday = 1;
 	}
 	std::mktime( &start);
