@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_METADATA_HPP_INCLUDED
 #define _STRUS_ANALYZER_METADATA_HPP_INCLUDED
 #include "strus/numericVariant.hpp"
+#include <string>
 
 /// \brief strus toplevel namespace
 namespace strus {
