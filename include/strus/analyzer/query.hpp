@@ -33,6 +33,10 @@ public:
 		,m_elements(o.m_elements)
 		,m_instructions(o.m_instructions){}
 
+	/// \brief Get all metadata elements
+	const std::vector<MetaData>& metadata() const		{return m_metadata;}
+	/// \brief Get all search index terms
+	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
 	/// \brief Get a metadata element by index
 	const MetaData& metadata( std::size_t idx) const	{return m_metadata[ idx];}
 	/// \brief Get a search index term by index
