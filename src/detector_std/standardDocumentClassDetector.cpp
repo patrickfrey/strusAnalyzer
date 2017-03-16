@@ -86,7 +86,7 @@ static void initDocumentClass( analyzer::DocumentClass& dclass, const char* mime
 
 static bool isDocumentJson( char const* ci, const char* ce)
 {
-	static const char* tokchr = "[]{}E-+0123456789.";
+	static const char* tokchr = "[]{}E-+0123456789.\'\"";
 	if (ci != ce && *ci == '{')
 	{
 		for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
