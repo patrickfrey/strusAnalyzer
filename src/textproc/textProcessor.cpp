@@ -1007,6 +1007,8 @@ std::vector<std::string> TextProcessor::getFunctionList( const FunctionType& typ
 	{
 		switch (type)
 		{
+			case Segmenter:
+				return getKeys( m_segmenterMap);
 			case TokenizerFunction:
 				return getKeys( m_tokenizer_map);
 			case NormalizerFunction:
