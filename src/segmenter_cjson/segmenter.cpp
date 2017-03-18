@@ -69,6 +69,6 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 
 const char* Segmenter::getDescription() const
 {
-	return _TXT("JSON segmenter based on the cjson library for parsing json and textwolf for the xpath automaton");
+	return _TXT("segmenter for JSON (application/json) based on the cjson library for parsing json and textwolf for the xpath automaton");
 }
 

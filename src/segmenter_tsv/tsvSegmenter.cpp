@@ -399,7 +399,7 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 
 const char* TSVSegmenter::getDescription() const
 {
-	return _TXT("TSV segmenter accepting UTF-8 as encoding");
+	return _TXT("segmenter for TSV (text/tab-separated-values)");
 }
 
 
