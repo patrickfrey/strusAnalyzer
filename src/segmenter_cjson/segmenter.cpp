@@ -9,6 +9,7 @@
 #include "segmenterContext.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "private/utils.hpp"
+#include "private/textEncoder.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 
@@ -40,7 +41,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 {
 	try
 	{
-		return new SegmenterContext( m_errorhnd, &m_automaton);
+		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		if (dclass.defined() && !utils::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+		{
+			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+		}
+		return new SegmenterContext( m_errorhnd, &m_automaton, encoder);
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -61,4 +67,8 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
+const char* Segmenter::getDescription() const
+{
+	return _TXT("JSON segmenter based on the cjson library for parsing json and textwolf for the xpath automaton");
+}
 

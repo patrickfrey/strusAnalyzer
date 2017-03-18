@@ -9,6 +9,7 @@
 #include "tsvSegmenter.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "private/utils.hpp"
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -110,18 +111,18 @@ bool TSVParserDefinition::moreOftheSame( )
 
 // TSVSegmenterContext
 
-TSVSegmenterContext::TSVSegmenterContext( TSVParserDefinition *parserDefinition, strus::ErrorBufferInterface *errbuf, bool errorReporting )
+TSVSegmenterContext::TSVSegmenterContext( TSVParserDefinition *parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
 	: m_errbuf( errbuf ), m_errorReporting( errorReporting), m_buf( ),
 	m_eof( false ), m_is( m_buf ), m_currentLine( ),
 	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -3 ), m_linepos( 0 ),
-	m_parseState( TSV_PARSE_STATE_HEADER ), m_headers( )
+	m_parseState( TSV_PARSE_STATE_HEADER ), m_headers( ), m_encoder(encoder_)
 {
 }
-	
+
 TSVSegmenterContext::~TSVSegmenterContext( )
 {
 }
-			
+
 void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bool eof )
 {
 	try
@@ -131,11 +132,17 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 #endif
 	
 	if( m_eof ) {
-		m_errbuf->report( "fed chunk after declared end of input" );
+		m_errbuf->report( _TXT("fed chunk after declared end of input" ));
 		return;
 	}
-	
-	m_buf.append( chunk, chunksize );
+	if (m_encoder.get())
+	{
+		m_buf.append( m_encoder->convert( chunk, chunksize, eof ));
+	}
+	else
+	{
+		m_buf.append( chunk, chunksize );
+	}
 	m_eof |= eof;
 	
 	m_is.str( m_buf );
@@ -187,7 +194,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		// no subsection definition, continue
 		m_pos++;
 	}
-	
+
 	// hard-coded field line number (not present in the TSV file itself)
 	if( m_pos == -1 ) {
 		id = m_parserDefinition->getNextId( "lineno" );
@@ -347,7 +354,12 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 {
 	try
 	{
-	return new TSVSegmenterContext( m_parserDefinition.get( ), m_errbuf, m_errorReporting );
+	strus::Reference<strus::utils::TextEncoderBase> encoder;
+	if (dclass.defined() && !strus::utils::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+	{
+		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
+	}
+	return new TSVSegmenterContext( m_parserDefinition.get( ), encoder, m_errbuf, m_errorReporting );
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
@@ -384,4 +396,10 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
+
+const char* TSVSegmenter::getDescription() const
+{
+	return _TXT("TSV segmenter accepting UTF-8 as encoding");
+}
+
 

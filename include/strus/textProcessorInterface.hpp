@@ -139,6 +139,7 @@ public:
 	/// \brief Function type for fetching descriptions of available functions
 	enum FunctionType
 	{
+		Segmenter,			///< Addresses a document segmenter
 		TokenizerFunction,		///< Addresses a tokenizer
 		NormalizerFunction,		///< Addresses a normalizer
 		AggregatorFunction,		///< Addresses an aggregator

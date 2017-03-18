@@ -55,6 +55,7 @@ public:
 	}
 
 	virtual SegmenterInstanceInterface* createInstance( const analyzer::SegmenterOptions& opts) const;
+	virtual const char* getDescription() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

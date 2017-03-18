@@ -7,6 +7,7 @@ include_directories(
 	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${strusbase_INCLUDE_DIRS}"
+	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
 )
 link_directories(
 	"${Boost_LIBRARY_DIRS}"
@@ -17,7 +18,7 @@ link_directories(
 # UTILS LIBRARY
 # Library with some helper functions used by strus libraries and programs but not part of the public interface
 # -------------------------------------------
-add_library( strusanalyzer_private_utils STATIC utils.cpp internationalization.cpp tokenizeHelpers.cpp )
+add_library( strusanalyzer_private_utils STATIC utils.cpp internationalization.cpp tokenizeHelpers.cpp textEncoder.cpp )
 target_link_libraries( strusanalyzer_private_utils  "${Boost_LIBRARIES}" "${Intl_LIBRARIES}" )
 
 

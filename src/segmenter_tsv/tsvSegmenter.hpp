@@ -17,6 +17,8 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/segmenterMarkupContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/reference.hpp"
+#include "private/textEncoder.hpp"
 
 #include <string> 
 #include <vector> 
@@ -60,8 +62,8 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 {		
 	public:
 	
-		TSVSegmenterContext( TSVParserDefinition *parserDefinition, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
-		
+		TSVSegmenterContext( TSVParserDefinition *parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
+
 		virtual ~TSVSegmenterContext( );
 		
 		virtual void putInput( const char *chunk, std::size_t chunksize, bool eof );
@@ -89,7 +91,8 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		char m_lineposStr[12];
 		enum TSVParseState m_parseState;
 		std::vector<std::string> m_headers;
-		
+		strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+
 		bool parseHeader( );
 		bool parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize );
 };
@@ -124,6 +127,8 @@ class TSVSegmenter : public strus::SegmenterInterface
 		virtual const char* mimeType( ) const;
 
 		virtual strus::SegmenterInstanceInterface* createInstance( const strus::analyzer::SegmenterOptions& opts) const;
+
+		virtual const char* getDescription() const;
 
 	private:
 

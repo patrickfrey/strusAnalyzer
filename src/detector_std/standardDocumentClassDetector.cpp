@@ -10,6 +10,7 @@
 #include "standardDocumentClassDetector.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "private/textEncoder.hpp"
 #include <cstring>
 #include <stdexcept>
 
@@ -23,63 +24,12 @@ enum State
 	ParseXMLTag
 };
 
-static const unsigned char BOM_UTF8[] = {3,0xEF,0xBB,0xBF};
-static const unsigned char BOM_UTF16BE[] = {2,0xFE,0xFF};
-static const unsigned char BOM_UTF16LE[] = {2,0xFF,0xFE};
-static const unsigned char BOM_UTF32BE[] = {4,0,0,0xFE,0xFF};
-static const unsigned char BOM_UTF32LE[] = {4,0xFF,0xFE,0,0};
-
-const char* detectBOM( const char* str, std::size_t strsize, std::size_t& BOMsize)
-{
-	
-	if (strsize < 4)
-	{
-		BOMsize = 0;
-		return 0;
-	}
-	if (std::memcmp( BOM_UTF8+1, str, BOM_UTF8[0]) == 0)
-	{
-		BOMsize = BOM_UTF8[0];
-		return "UTF-8";
-	}
-	if (std::memcmp( BOM_UTF16BE+1, str, BOM_UTF16BE[0]) == 0)
-	{
-		BOMsize = BOM_UTF8[0];
-		return "UTF-16BE";
-	}
-	if (std::memcmp( BOM_UTF16LE+1, str, BOM_UTF16LE[0]) == 0)
-	{
-		BOMsize = BOM_UTF8[0];
-		return "UTF-16LE";
-	}
-	if (std::memcmp( BOM_UTF32BE+1, str, BOM_UTF32BE[0]) == 0)
-	{
-		BOMsize = BOM_UTF8[0];
-		return "UTF-32BE";
-	}
-	if (std::memcmp( BOM_UTF32LE+1, str, BOM_UTF32LE[0]) == 0)
-	{
-		BOMsize = BOM_UTF8[0];
-		return "UTF-32LE";
-	}
-	BOMsize = 0;
-	return 0;
-}
-
-static void initDocumentClass( analyzer::DocumentClass& dclass, const char* mimeType, const char* encoding, const char* BOM)
+static void initDocumentClass( analyzer::DocumentClass& dclass, const char* mimeType, const char* encoding)
 {
 	dclass.setMimeType( mimeType);
 	if (encoding)
 	{
 		dclass.setEncoding( encoding);
-	}
-	else if (BOM)
-	{
-		dclass.setEncoding( BOM);
-	}
-	else
-	{
-		dclass.setEncoding( "UTF-8"); //default
 	}
 }
 
@@ -158,76 +108,47 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 		char const* ci = contentBegin;
 		char const* ce = contentBegin + contentBeginSize;
 		std::string hdr;
-		unsigned int nullCnt = 0;
-		unsigned int maxNullCnt = 0;
 		State state = ParseStart;
 		std::size_t BOMsize = 0;
-		const char* BOM = detectBOM( contentBegin, contentBeginSize, BOMsize);
-		ci += BOMsize;
 		std::string encoding_buf;
-		const char* encoding = 0;
-	
-		for (;ci != ce; ++ci)
+		const char* encoding = utils::detectBOM( contentBegin, contentBeginSize, BOMsize);
+
+		for (ci+=BOMsize; ci != ce; ++ci)
 		{
-			if (*ci == 0)
-			{
-				++nullCnt;
-				if (nullCnt > 3) return false;
-				continue;
-			}
-			if (nullCnt > maxNullCnt)
-			{
-				maxNullCnt = nullCnt;
-			}
-			nullCnt = 0;
+			if (*ci == 0) continue;
+
 			switch (state)
 			{
 				case ParseStart:
 					if (*ci == '<')
 					{
-						if (!BOM)
-						{
-							if (maxNullCnt == 3) BOM = "UTF-32BE";
-							if (maxNullCnt == 1) BOM = "UTF-16BE";
-						}
 						state = ParseXMLHeader0;
 					}
 					else
 					{
+						if (!encoding)
+						{
+							encoding = strus::utils::detectCharsetEncoding( ci+BOMsize, contentBeginSize-BOMsize);
+						}
 						// Try to find out if its JSON:
 						for (; ci != ce && (unsigned char)*ci < 32; ++ci){}
 						if (ci != ce && *ci == '{' && isDocumentJson(ci,ce))
 						{
-							initDocumentClass( dclass, "application/json", "UTF-8", 0);
+							initDocumentClass( dclass, "application/json", encoding);
 							return true;
 						}
-						
 						ci = contentBegin + BOMsize;
 						if (isDocumentTSV(ci,ce))
 						{
-							if (BOM)
-							{
-								initDocumentClass( dclass, "text/tab-separated-values", BOM, 0);
-								return true;
-							}
-							else
-							{
-								initDocumentClass( dclass, "text/tab-separated-values", "UTF-8", 0);
-								return true;
-							}
+							initDocumentClass( dclass, "text/tab-separated-values", encoding);
+							return true;
 						}
-
 						// Give up:
 						return false;
 					}
 					break;
 	
 				case ParseXMLHeader0:
-					if (!BOM)
-					{
-						if (maxNullCnt == 3) BOM = "UTF-32LE";
-						if (maxNullCnt == 1) BOM = "UTF-16LE";
-					}
 					if (*ci == '?')
 					{
 						state = ParseXMLHeader;
@@ -257,7 +178,7 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 								}
 							}
 						}
-						initDocumentClass( dclass, "application/xml", encoding, BOM);
+						initDocumentClass( dclass, "application/xml", encoding);
 						return true;
 					}
 					else if ((unsigned char)*ci > 32)
@@ -270,7 +191,7 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 					if (*ci == '<') return false;
 					if (*ci == '>')
 					{
-						initDocumentClass( dclass, "application/xml", 0, BOM);
+						initDocumentClass( dclass, "application/xml", encoding);
 						return true;
 					}
 					break;

@@ -210,4 +210,9 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
+const char* Segmenter::getDescription() const
+{
+	return _TXT("XML segmenter based on the textwolf library");
+}
+
 

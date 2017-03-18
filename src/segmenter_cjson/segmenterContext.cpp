@@ -12,7 +12,6 @@
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "textwolf/xmlscanner.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <setjmp.h>
@@ -28,7 +27,14 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 	try
 	{
 		m_content.append( chunk, chunksize);
-		m_eof |= eof;
+		if (eof)
+		{
+			m_eof = true;
+			if (m_encoder.get())
+			{
+				m_content = m_encoder->convert( m_content.c_str(), m_content.size(), true);
+			}
+		}
 	}
 	CATCH_ERROR_MAP( _TXT("error in put input of JSON segmenter: %s"), *m_errorhnd);
 }
@@ -217,6 +223,7 @@ bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& se
 {
 	try
 	{
+		if (!m_eof) return false;
 	AGAIN:
 		if (m_itemidx < m_itemar.size())
 		{

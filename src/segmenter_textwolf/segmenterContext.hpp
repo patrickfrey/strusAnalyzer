@@ -13,6 +13,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
 #include "private/xpathAutomaton.hpp"
+#include "private/textEncoder.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include <cstdlib>
