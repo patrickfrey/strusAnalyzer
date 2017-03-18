@@ -399,7 +399,7 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 
 const char* TSVSegmenter::getDescription() const
 {
-	return _TXT("segmenter for TSV (text/tab-separated-values)");
+	return _TXT("Segmenter for TSV (text/tab-separated-values)");
 }
 
 

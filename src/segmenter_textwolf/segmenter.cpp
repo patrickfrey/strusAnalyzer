@@ -212,7 +212,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 
 const char* Segmenter::getDescription() const
 {
-	return _TXT("segmenter for XML (application/xml) based on the textwolf library");
+	return _TXT("Segmenter for XML (application/xml) based on the textwolf library");
 }
 
 
