@@ -42,13 +42,14 @@ private:
 
 	struct SegmenterStackElement
 	{
+		SegmenterPosition start_position;
 		SegmenterPosition curr_position_ofs;
 		SegmenterContextInterface* segmenter;
 
-		SegmenterStackElement( SegmenterPosition curr_position_ofs_, SegmenterContextInterface* segmenter_)
-			:curr_position_ofs(curr_position_ofs_),segmenter(segmenter_){}
+		SegmenterStackElement( SegmenterPosition start_position_, SegmenterPosition curr_position_ofs_, SegmenterContextInterface* segmenter_)
+			:start_position(start_position_),curr_position_ofs(curr_position_ofs_),segmenter(segmenter_){}
 		SegmenterStackElement( const SegmenterStackElement& o)
-			:curr_position_ofs(o.curr_position_ofs),segmenter(o.segmenter){}
+			:start_position(o.start_position),curr_position_ofs(o.curr_position_ofs),segmenter(o.segmenter){}
 	};
 
 private:

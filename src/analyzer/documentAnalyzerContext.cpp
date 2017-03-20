@@ -155,7 +155,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				try
 				{
 #ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "fetch document segment '" << featidx << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
+					std::cout << "fetch document segment (pos " << m_curr_position << ", fidx= " << featidx << "): " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
 					if (featidx >= SubDocumentEnd)
 					{
@@ -166,7 +166,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 							{
 								SegmenterContextInterface* ns = subsegmenterdef->segmenterInstance->createContext( subsegmenterdef->documentClass);
 								if (!ns) throw strus::runtime_error(_TXT("failed to create sub segmenter context"));
-								m_segmenterstack.push_back( SegmenterStackElement( m_curr_position_ofs, m_segmenter));
+								m_segmenterstack.push_back( SegmenterStackElement( m_start_position, m_curr_position_ofs, m_segmenter));
 								m_segmenter = ns;
 								m_curr_position_ofs = m_curr_position;
 								m_segmenter->putInput( segsrc, segsrcsize, true);
@@ -240,6 +240,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				delete m_segmenter;
 				m_segmenter = m_segmenterstack.back().segmenter;
 				m_curr_position_ofs = m_segmenterstack.back().curr_position_ofs;
+				m_start_position = m_segmenterstack.back().start_position;
 				m_segmenterstack.pop_back();
 			}
 		}

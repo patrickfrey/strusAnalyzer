@@ -215,7 +215,14 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 		{
 			resar.push_back( SegmenterContext::Item( segid, pos, ti->value, valuesize));
 		}
-		pos += valuesize+1;
+		if (ti->type != textwolf::XMLScannerBase::CloseTag)
+		{
+			pos += valuesize+1;
+		}
+		else
+		{
+			pos += 1;
+		}
 	}
 }
 
