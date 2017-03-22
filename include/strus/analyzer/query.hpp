@@ -49,6 +49,11 @@ public:
 	{
 	public:
 		enum OpCode {PushMetaData,PushSearchIndexTerm,Operator};
+		static const char* opCodeName( OpCode i)
+		{
+			static const char* ar[] = {"meta","term","op"};
+			return ar[i];
+		}
 
 		Instruction( OpCode opCode_, std::size_t idx_, std::size_t nofOperands_=0)
 			:m_opCode(opCode_),m_idx(idx_),m_nofOperands(nofOperands_){}
