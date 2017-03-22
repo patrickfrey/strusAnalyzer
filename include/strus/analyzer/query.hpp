@@ -78,6 +78,11 @@ public:
 	{
 	public:
 		enum Type {MetaData,SearchIndexTerm};
+		static const char* typeName( Type i)
+		{
+			static const char* ar[] = {"meta","term"};
+			return ar[i];
+		}
 
 		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int length_, unsigned int fieldNo_)
 			:m_type(type_),m_idx(idx_),m_position(position_),m_length(length_),m_fieldNo(fieldNo_){}
