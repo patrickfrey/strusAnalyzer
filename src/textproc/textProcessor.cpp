@@ -620,7 +620,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 					if (sidx) segmenterlist.append( ", ");
 					segmenterlist.append( si->first);
 				}
-				m_errorhnd->report( _TXT("no segmenter defined with name '%s' {%s}"), name.c_str(), segmenterlist.c_str());
+				m_errorhnd->report( _TXT("no segmenter defined with name '%s' (is none of {%s})"), name.c_str(), segmenterlist.c_str());
 			}
 			else
 			{
