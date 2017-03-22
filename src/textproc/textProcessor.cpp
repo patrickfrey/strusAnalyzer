@@ -610,7 +610,22 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 		}
 		if (ti == m_segmenterMap.end())
 		{
-			m_errorhnd->report( _TXT("no segmenter defined with name '%s'"), name.c_str());
+			if (m_segmenterMap.size() < 8)
+			{
+				std::string segmenterlist;
+				std::map<std::string,SegmenterInterface*>::const_iterator
+					si = m_segmenterMap.begin(), se = m_segmenterMap.end();
+				for (int sidx=0; si != se; ++si,++sidx)
+				{
+					if (sidx) segmenterlist.append( ", ");
+					segmenterlist.append( si->first);
+				}
+				m_errorhnd->report( _TXT("no segmenter defined with name '%s' {%s}"), name.c_str(), segmenterlist.c_str());
+			}
+			else
+			{
+				m_errorhnd->report( _TXT("no segmenter defined with name '%s'"), name.c_str());
+			}
 			return 0;
 		}
 		return ti->second;
@@ -630,7 +645,22 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 			ti = m_mimeSegmenterMap.find( utils::tolower( mimetype));
 		if (ti == m_mimeSegmenterMap.end())
 		{
-			m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
+			if (m_mimeSegmenterMap.size() < 8)
+			{
+				std::string segmenterlist;
+				std::map<std::string,SegmenterInterface*>::const_iterator
+					si = m_mimeSegmenterMap.begin(), se = m_mimeSegmenterMap.end();
+				for (int sidx=0; si != se; ++si,++sidx)
+				{
+					if (sidx) segmenterlist.append( ", ");
+					segmenterlist.append( si->second->mimeType());
+				}
+				m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s' (is none of {%s})"), mimetype.c_str(), segmenterlist.c_str());
+			}
+			else
+			{
+				m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
+			}
 			return 0;
 		}
 		return ti->second;
