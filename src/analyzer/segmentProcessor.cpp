@@ -60,13 +60,17 @@ struct Position
 	{
 		return seg == o.seg ? ofs < o.ofs : seg < o.seg;
 	}
+	bool operator <= (const Position& o) const
+	{
+		return seg == o.seg ? ofs <= o.ofs : seg <= o.seg;
+	}
 	bool operator == (const Position& o) const
 	{
 		return seg == o.seg && ofs == o.ofs;
 	}
 };
 
-static void fillPositionSet( std::set<Position>& pset, const std::vector<BindTerm>& terms)
+static void fillPositionSet( std::set<Position>& pset, std::set<Position>& pset_unique, const std::vector<BindTerm>& terms)
 {
 	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
 	for (; ri != re; ++ri)
@@ -74,6 +78,34 @@ static void fillPositionSet( std::set<Position>& pset, const std::vector<BindTer
 		if (ri->posbind() == analyzer::BindContent)
 		{
 			pset.insert( Position( ri->seg(), ri->ofs()+1));
+		}
+		else if (ri->posbind() == analyzer::BindUnique)
+		{
+			pset_unique.insert( Position( ri->seg(), ri->ofs()+1));
+		}
+	}
+}
+
+static void mergeUniquePositionSet( std::set<Position>& pset, const std::set<Position>& pset_unique)
+{
+	std::set<Position>::const_iterator si = pset.begin(), se = pset.end();
+	std::set<Position>::const_iterator ui = pset_unique.begin(), ue = pset_unique.end();
+	while (si != se && ui != ue)
+	{
+		while (*si < *ui && si != se) ++si;
+		if (si != se)
+		{
+			for (++ui; ui != ue && *ui <= *si; ++ui){}
+			// ... take only the last of a unique sequence
+			std::set<Position>::const_iterator lastinseq = ui;
+			--lastinseq;
+			pset.insert( *lastinseq);
+		}
+		else if (ui != ue)
+		{
+			std::set<Position>::const_iterator lastinseq = ue;
+			--lastinseq;
+			pset.insert( *lastinseq);
 		}
 	}
 }
@@ -125,6 +157,7 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 				res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
 				break;
 			}
+			case analyzer::BindUnique:
 			case analyzer::BindSuccessor:
 			{
 				PositionMap::const_iterator
@@ -154,8 +187,10 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	analyzer::Document rt;
 
 	std::set<Position> pset;
-	fillPositionSet( pset, m_searchTerms);
-	fillPositionSet( pset, m_forwardTerms);
+	std::set<Position> pset_unique;
+	fillPositionSet( pset, pset_unique, m_searchTerms);
+	fillPositionSet( pset, pset_unique, m_forwardTerms);
+	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
 	std::size_t posofs = 0;
@@ -200,8 +235,10 @@ analyzer::Query SegmentProcessor::fetchQuery()
 {
 	analyzer::Query rt;
 	std::set<Position> pset;
-	fillPositionSet( pset, m_searchTerms);
-	fillPositionSet( pset, m_metadataTerms);
+	std::set<Position> pset_unique;
+	fillPositionSet( pset, pset_unique, m_searchTerms);
+	fillPositionSet( pset, pset_unique, m_metadataTerms);
+	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
 	std::vector<analyzer::Term> seterms;
