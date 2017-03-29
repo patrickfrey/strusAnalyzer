@@ -101,12 +101,12 @@ static void mergeUniquePositionSet( std::set<Position>& pset, const std::set<Pos
 			--lastinseq;
 			pset.insert( *lastinseq);
 		}
-		else if (ui != ue)
-		{
-			std::set<Position>::const_iterator lastinseq = ue;
-			--lastinseq;
-			pset.insert( *lastinseq);
-		}
+	}
+	if (ui != ue)
+	{
+		std::set<Position>::const_iterator lastinseq = ue;
+		--lastinseq;
+		pset.insert( *lastinseq);
 	}
 }
 
