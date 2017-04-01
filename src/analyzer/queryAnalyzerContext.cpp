@@ -95,7 +95,7 @@ static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Que
 	unsigned int eidx = 0;
 	for (; ei != ee; ++ei,++eidx)
 	{
-		while (rt.size() <= ei->fieldNo())
+		while (rt.size() <= ei->field())
 		{
 			rt.push_back( ElementRange( eidx, eidx));
 		}

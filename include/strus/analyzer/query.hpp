@@ -98,7 +98,7 @@ public:
 		/// \brief Query element ordinal position length
 		unsigned int len() const			{return m_len;}
 		/// \brief Query field number
-		unsigned int fieldNo() const			{return m_fieldNo;}
+		unsigned int field() const			{return m_fieldNo;}
 
 	private:
 		Type m_type;
