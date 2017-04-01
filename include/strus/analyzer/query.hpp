@@ -84,27 +84,27 @@ public:
 			return ar[i];
 		}
 
-		Element( Type type_, unsigned int idx_, unsigned int position_, unsigned int length_, unsigned int fieldNo_)
-			:m_type(type_),m_idx(idx_),m_position(position_),m_length(length_),m_fieldNo(fieldNo_){}
+		Element( Type type_, unsigned int idx_, unsigned int pos_, unsigned int len_, unsigned int fieldNo_)
+			:m_type(type_),m_idx(idx_),m_pos(pos_),m_len(len_),m_fieldNo(fieldNo_){}
 		Element( const Element& o)
-			:m_type(o.m_type),m_idx(o.m_idx),m_position(o.m_position),m_length(o.m_length),m_fieldNo(o.m_fieldNo){}
+			:m_type(o.m_type),m_idx(o.m_idx),m_pos(o.m_pos),m_len(o.m_len),m_fieldNo(o.m_fieldNo){}
 
 		/// \brief Type identifier referencing the list this element belongs to
 		Type type() const				{return m_type;}
 		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t) or metadata(std::size_t)
 		unsigned int idx() const			{return m_idx;}
 		/// \brief Query element ordinal position
-		unsigned int position() const			{return m_position;}
+		unsigned int pos() const			{return m_pos;}
 		/// \brief Query element ordinal position length
-		unsigned int length() const			{return m_length;}
+		unsigned int len() const			{return m_len;}
 		/// \brief Query field number
 		unsigned int fieldNo() const			{return m_fieldNo;}
 
 	private:
 		Type m_type;
 		unsigned int m_idx;
-		unsigned int m_position;
-		unsigned int m_length;
+		unsigned int m_pos;
+		unsigned int m_len;
 		unsigned int m_fieldNo;
 	};
 
@@ -125,9 +125,9 @@ public:
 	}
 
 	/// \brief Add a meta data element to the query
-	void addMetaData( unsigned int fieldNo, unsigned int position, const analyzer::MetaData& elem)
+	void addMetaData( unsigned int fieldNo, unsigned int pos, const analyzer::MetaData& elem)
 	{
-		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), position, 1, fieldNo));
+		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), pos, 1, fieldNo));
 		m_metadata.push_back( elem);
 	}
 

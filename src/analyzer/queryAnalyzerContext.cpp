@@ -160,7 +160,7 @@ static QueryTree buildQueryTree(
 					unsigned int newNodeIdx = rt.nodear.size();
 					args.push_back( newNodeIdx);
 					elementRootMap[ ei] = newNodeIdx;
-					buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].position());
+					buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].pos());
 
 					elemAssignments.push_back( ElementRootAssignment( ei, newNodeIdx));
 				}
@@ -256,7 +256,7 @@ static QueryTree buildQueryTree(
 		{
 			unsigned int newNodeIdx = rt.nodear.size();
 			args.push_back( newNodeIdx);
-			buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].position());
+			buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].pos());
 		}
 		else
 		{
