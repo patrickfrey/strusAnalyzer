@@ -20,6 +20,4 @@ link_directories(
 # -------------------------------------------
 add_library( strusanalyzer_private_utils STATIC utils.cpp internationalization.cpp tokenizeHelpers.cpp textEncoder.cpp )
 target_link_libraries( strusanalyzer_private_utils  "${Boost_LIBRARIES}" "${Intl_LIBRARIES}" )
-
-
-
+set_property( TARGET strusanalyzer_private_utils PROPERTY POSITION_INDEPENDENT_CODE TRUE )

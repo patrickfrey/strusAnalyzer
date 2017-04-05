@@ -25,5 +25,6 @@ link_directories(
 # -------------------------------------------
 add_library( strus_segmenter_utils STATIC ${source_files} )
 target_link_libraries( strus_segmenter_utils strusanalyzer_private_utils )
+set_property( TARGET strus_segmenter_utils PROPERTY POSITION_INDEPENDENT_CODE TRUE )
 
 
