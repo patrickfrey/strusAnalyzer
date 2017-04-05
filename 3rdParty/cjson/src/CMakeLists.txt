@@ -13,4 +13,5 @@ include_directories( "${PROJECT_SOURCE_DIR}/3rdParty/cjson/include/cjson" )
 # SNOWBALL STEMMER LIBRARY
 # -------------------------------------------
 add_library( cjson STATIC ${source_files})
+set_property( TARGET cjson PROPERTY POSITION_INDEPENDENT_CODE TRUE )
 
