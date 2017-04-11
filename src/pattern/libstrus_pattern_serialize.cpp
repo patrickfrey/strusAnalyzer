@@ -481,13 +481,12 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name, float weight)
+	virtual void attachVariable( const std::string& name)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_attachVariable);
 			m_serializerData->pushParam( name);
-			m_serializerData->pushParam( weight);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
@@ -713,11 +712,11 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name, float weight)
+	virtual void attachVariable( const std::string& name)
 	{
 		try
 		{
-			(*m_output) << "M attachVariable( " << name << ", " << weight << ");" << std::endl;
+			(*m_output) << "M attachVariable( " << name << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
 	}
@@ -989,10 +988,8 @@ static void deserializeCommand(
 			if (!matcher) throw strus::runtime_error(_TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			std::string op_name = deserializer.readParam_string();
-			float op_weight = deserializer.readParam_float();
-
 			deserializer.endCall();
-			matcher->attachVariable( op_name, op_weight);
+			matcher->attachVariable( op_name);
 			break;
 		}
 		case SerializerData::PatternMatcher_definePattern:
