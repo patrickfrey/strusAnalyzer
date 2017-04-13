@@ -18,6 +18,7 @@ include_directories(
 # COMPACT NODE TRIE LIBRARY
 # -------------------------------------------
 add_library( compactnodetrie_analyzer_static STATIC ${source_files})
+set_property( TARGET compactnodetrie_analyzer_static PROPERTY POSITION_INDEPENDENT_CODE TRUE )
 
 
 
