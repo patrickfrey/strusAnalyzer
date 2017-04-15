@@ -62,9 +62,28 @@ public:
 	/// \brief Fetch the currently processed document
 	analyzer::Document fetchDocument();
 
+	class QueryElement
+		:public analyzer::Term
+	{
+	public:
+		enum TermType {MetaData,Term};
+
+		QueryElement( const QueryElement& o)
+			:analyzer::Term(o),m_termtype(o.m_termtype),m_fieldno(o.m_fieldno){}
+		QueryElement( TermType termtype_, unsigned int fieldno_, const analyzer::Term& term_)
+			:analyzer::Term(term_),m_termtype(termtype_),m_fieldno(fieldno_){}
+
+		TermType termtype() const	{return m_termtype;}
+		unsigned int fieldno() const	{return m_fieldno;}
+
+	private:
+		TermType m_termtype;
+		unsigned int m_fieldno;
+	};
+
 	/// \brief Fetch the currently processed query
 	/// \return the query object without grouping
-	analyzer::Query fetchQuery();
+	std::vector<QueryElement> fetchQuery() const;
 
 	const std::vector<BindTerm>& searchTerms() const	{return m_searchTerms;}
 	const std::vector<BindTerm>& forwardTerms() const	{return m_forwardTerms;}

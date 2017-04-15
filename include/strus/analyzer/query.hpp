@@ -29,26 +29,14 @@ public:
 	/// \brief Copy constructor
 	Query( const Query& o)
 		:m_metadata(o.m_metadata)
-		,m_searchIndexTerms(o.m_searchIndexTerms)
-		,m_elements(o.m_elements)
+		,m_terms(o.m_terms)
 		,m_instructions(o.m_instructions){}
-
-	/// \brief Get all metadata elements
-	const std::vector<MetaData>& metadata() const		{return m_metadata;}
-	/// \brief Get all search index terms
-	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
-	/// \brief Get a metadata element by index
-	const MetaData& metadata( std::size_t idx) const	{return m_metadata[ idx];}
-	/// \brief Get a search index term by index
-	const Term& searchIndexTerm( std::size_t idx) const	{return m_searchIndexTerms[ idx];}
-	/// \brief Test if query is empty
-	bool empty() const					{return m_elements.empty();}
 
 	/// \brief Query instruction
 	class Instruction
 	{
 	public:
-		enum OpCode {PushMetaData,PushSearchIndexTerm,Operator};
+		enum OpCode {MetaData,Term,Operator};
 		static const char* opCodeName( OpCode i)
 		{
 			static const char* ar[] = {"meta","term","op"};
@@ -73,87 +61,47 @@ public:
 		unsigned int m_nofOperands;
 	};
 
-	/// \brief Query element
-	class Element
-	{
-	public:
-		enum Type {MetaData,SearchIndexTerm};
-		static const char* typeName( Type i)
-		{
-			static const char* ar[] = {"meta","term"};
-			return ar[i];
-		}
-
-		Element( Type type_, unsigned int idx_, unsigned int pos_, unsigned int len_, unsigned int fieldNo_)
-			:m_type(type_),m_idx(idx_),m_pos(pos_),m_len(len_),m_fieldNo(fieldNo_){}
-		Element( const Element& o)
-			:m_type(o.m_type),m_idx(o.m_idx),m_pos(o.m_pos),m_len(o.m_len),m_fieldNo(o.m_fieldNo){}
-
-		/// \brief Type identifier referencing the list this element belongs to
-		Type type() const				{return m_type;}
-		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t) or metadata(std::size_t)
-		unsigned int idx() const			{return m_idx;}
-		/// \brief Query element ordinal position
-		unsigned int pos() const			{return m_pos;}
-		/// \brief Query element ordinal position length
-		unsigned int len() const			{return m_len;}
-		/// \brief Query field number
-		unsigned int field() const			{return m_fieldNo;}
-
-	private:
-		Type m_type;
-		unsigned int m_idx;
-		unsigned int m_pos;
-		unsigned int m_len;
-		unsigned int m_fieldNo;
-	};
-
-	/// \brief Get the list of query elements
-	/// \return the list
-	const std::vector<Element>& elements() const		{return m_elements;}
-
 	/// \brief Get the list of query instructions
 	/// \return the list
 	const std::vector<Instruction>& instructions() const	{return m_instructions;}
 
-	/* Add query elements (tokenized and normalized items) */
-	/// \brief Add a search index term to the query
-	void addSearchIndexTerm( unsigned int fieldNo, const analyzer::Term& term)
+	/// \brief Get the argument of a metadata instruction
+	/// \param[in] idx index of instruction refering to a metadata element (Instruction::idx)
+	const analyzer::MetaData& metadata( unsigned int idx) const
 	{
-		m_elements.push_back( Element( Element::SearchIndexTerm, m_searchIndexTerms.size(), term.pos(), term.len(), fieldNo));
-		m_searchIndexTerms.push_back( term);
+		return m_metadata[ idx];
+	}
+
+	/// \brief Get the argument of a term instruction
+	/// \param[in] idx index of instruction refering to a term (Instruction::idx)
+	const analyzer::Term& term( unsigned int idx) const
+	{
+		return m_terms[ idx];
+	}
+
+	/// \brief Add a search index term to the query
+	void pushTerm( const analyzer::Term& term)
+	{
+		m_instructions.push_back( Instruction( Instruction::Term, m_terms.size()));
+		m_terms.push_back( term);
 	}
 
 	/// \brief Add a meta data element to the query
-	void addMetaData( unsigned int fieldNo, unsigned int pos, const analyzer::MetaData& elem)
+	void pushMetaData( const analyzer::MetaData& elem)
 	{
-		m_elements.push_back( Element( Element::MetaData, m_metadata.size(), pos, 1, fieldNo));
+		m_instructions.push_back( Instruction( Instruction::MetaData, m_metadata.size()));
 		m_metadata.push_back( elem);
 	}
 
-	/* Build query structure (list of instructions) */
 	/// \brief Add an instruction
 	void pushOperator( unsigned int operatorId, unsigned int nofOperands)
 	{
 		m_instructions.push_back( Instruction( Instruction::Operator, operatorId, nofOperands));
 	}
 
-	/// \brief Add a meta data operand
-	void pushMetaDataOperand( unsigned int idx)
-	{
-		m_instructions.push_back( Instruction( Instruction::PushMetaData, idx));
-	}
-
-	/// \brief Add a meta data operand
-	void pushSearchIndexTermOperand( unsigned int idx)
-	{
-		m_instructions.push_back( Instruction( Instruction::PushSearchIndexTerm, idx));
-	}
-
 private:
 	std::vector<analyzer::MetaData> m_metadata;
-	std::vector<analyzer::Term> m_searchIndexTerms;
-	std::vector<Element> m_elements;
+	std::vector<analyzer::Term> m_terms;
 	std::vector<Instruction> m_instructions;
 };
 

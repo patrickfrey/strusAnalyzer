@@ -69,7 +69,10 @@ struct QueryTree
 	std::vector<QueryTreeNode> nodear;
 };
 
-static void buildQueryTreeNode( std::vector<QueryTreeNode>& nodear, unsigned int groupId, unsigned int position, const std::vector<unsigned int>& children)
+static void buildQueryTreeNode(
+		std::vector<QueryTreeNode>& nodear,
+		unsigned int groupId, unsigned int position,
+		const std::vector<unsigned int>& children)
 {
 	nodear.push_back( QueryTreeNode( groupId, std::numeric_limits<unsigned int>::max(), position, children.size(), children.empty()?0:children[0], 0));
 	std::vector<unsigned int>::const_iterator ci = children.begin(), ce = children.end();
@@ -80,32 +83,11 @@ static void buildQueryTreeNode( std::vector<QueryTreeNode>& nodear, unsigned int
 	}
 }
 
-static void buildQueryTreeLeaf( std::vector<QueryTreeNode>& nodear, unsigned int elementidx, unsigned int position)
+static void buildQueryTreeLeaf(
+		std::vector<QueryTreeNode>& nodear,
+		unsigned int elementidx, unsigned int position)
 {
 	nodear.push_back( QueryTreeNode( 0, elementidx, position, 0, 0, 0));
-}
-
-/// \brief Build up array of element ranges of the fields
-typedef std::pair<unsigned int,unsigned int> ElementRange;
-static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Query& qry, std::size_t maxFieldNo)
-{
-	std::vector<ElementRange> rt;
-	rt.push_back( ElementRange( 0,0));
-	std::vector<analyzer::Query::Element>::const_iterator ei = qry.elements().begin(), ee = qry.elements().end();
-	unsigned int eidx = 0;
-	for (; ei != ee; ++ei,++eidx)
-	{
-		while (rt.size() <= ei->field())
-		{
-			rt.push_back( ElementRange( eidx, eidx));
-		}
-		rt.back().second = eidx+1;
-	}
-	while (rt.size() <= maxFieldNo)
-	{
-		rt.push_back( ElementRange( eidx, eidx));
-	}
-	return rt;
 }
 
 static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned int>& args)
@@ -127,16 +109,27 @@ static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned 
 static QueryTree buildQueryTree(
 	const std::vector<QueryAnalyzerContext::Group>& groups,
 	const std::vector<QueryAnalyzerContext::Field>& fields,
-	const analyzer::Query& qry)
+	const std::vector<SegmentProcessor::QueryElement>& elems)
 {
 	QueryTree rt;
-	std::vector<ElementRange> fieldElementRanges = getQueryFieldElementRanges( qry, fields.size());
+	typedef std::multimap<unsigned int,unsigned int> FieldElementRangeMap;
+	typedef FieldElementRangeMap::const_iterator FieldElementRangeItr;
+	typedef std::pair<unsigned int,unsigned int> FieldElementRangeElem;
+	typedef std::pair<FieldElementRangeItr,FieldElementRangeItr> FieldElementRange;
+
+	FieldElementRangeMap fieldElementRangeMap;	//< map fieldno to its elements (index in elems)
+	std::vector<SegmentProcessor::QueryElement>::const_iterator
+		ei = elems.begin(), ee = elems.end();
+	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
+	{
+		fieldElementRangeMap.insert( FieldElementRangeElem( ei->fieldno(), eidx));
+	}
 
 	typedef std::map<unsigned int,unsigned int> ElementRootMap;
 	typedef std::pair<unsigned int,unsigned int> ElementRootAssignment;
 
-	ElementRootMap elementRootMap;	//< assigns each leaf element to its build up root node
-	ElementRootMap nodeRootMap;	//< assigns each tree node to its build up root node
+	ElementRootMap elementRootMap;		//< assigns each leaf element to its build up root node
+	ElementRootMap nodeRootMap;		//< assigns each tree node to its build up root node
 
 	// Execute all element groupings bottom up creating the query tree nodes:
 	std::vector<QueryAnalyzerContext::Group>::const_iterator gi = groups.begin(), ge = groups.end();
@@ -150,19 +143,21 @@ static QueryTree buildQueryTree(
 			fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
-			ElementRange range = fieldElementRanges[ *fi];
-			unsigned int ei = range.first, ee = range.second;
-			for (; ei != ee; ++ei)
+			FieldElementRange range = fieldElementRangeMap.equal_range( *fi);
+			FieldElementRangeItr ri = range.first, re = range.second;
+			for (; ri != re; ++ri)
 			{
-				ElementRootMap::const_iterator ni = elementRootMap.find( ei);
+				unsigned int elemidx = ri->second;
+				ElementRootMap::const_iterator ni = elementRootMap.find( elemidx);
 				if (ni == elementRootMap.end())
 				{
+					//... element was not grouped yet, create a new element node in the query tree
 					unsigned int newNodeIdx = rt.nodear.size();
 					args.push_back( newNodeIdx);
-					elementRootMap[ ei] = newNodeIdx;
-					buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].pos());
+					elementRootMap[ elemidx] = newNodeIdx;
+					buildQueryTreeLeaf( rt.nodear, elemidx, elems[elemidx].pos());
 
-					elemAssignments.push_back( ElementRootAssignment( ei, newNodeIdx));
+					elemAssignments.push_back( ElementRootAssignment( elemidx, newNodeIdx));
 				}
 				else
 				{
@@ -170,7 +165,7 @@ static QueryTree buildQueryTree(
 					{
 						args.push_back( ni->second);
 					}
-					elemAssignments.push_back( ElementRootAssignment( ni->first, ni->second));
+					elemAssignments.push_back( ElementRootAssignment( elemidx, ni->second));
 				}
 			}
 		}
@@ -248,15 +243,15 @@ static QueryTree buildQueryTree(
 	}
 	// Evaluate the root elements:
 	std::vector<unsigned int> args;
-	unsigned int ei = 0, ee = qry.elements().size();
-	for (; ei != ee; ++ei)
+	ei = elems.begin(), ee = elems.end();
+	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
-		ElementRootMap::const_iterator ni = elementRootMap.find( ei);
+		ElementRootMap::const_iterator ni = elementRootMap.find( eidx);
 		if (ni == elementRootMap.end())
 		{
 			unsigned int newNodeIdx = rt.nodear.size();
 			args.push_back( newNodeIdx);
-			buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].pos());
+			buildQueryTreeLeaf( rt.nodear, eidx, ei->pos());
 		}
 		else
 		{
@@ -271,7 +266,7 @@ static QueryTree buildQueryTree(
 }
 
 
-analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
+std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFields() const
 {
 	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
 	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap());
@@ -324,11 +319,20 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 		pi->process( segmentProcessor.patternLexemTerms());
 		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
-	analyzer::Query rt = segmentProcessor.fetchQuery();
-	return rt;
+	return segmentProcessor.fetchQuery();
 }
 
-static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& queryTree, unsigned int nodeidx)
+static void query_addMetaData( analyzer::Query& qry, const analyzer::Term& term)
+{
+	NumericVariant value;
+	if (!value.initFromString( term.value().c_str()))
+	{
+		throw strus::runtime_error(_TXT("cannot convert normalized item to number (metadata element): %s"), term.value().c_str());
+	}
+	qry.pushMetaData( analyzer::MetaData( term.type(), value));
+}
+
+static void buildQueryInstructions( analyzer::Query& qry, const std::vector<SegmentProcessor::QueryElement>& elems, const QueryTree& queryTree, unsigned int nodeidx)
 {
 	const QueryTreeNode& node = queryTree.nodear[ nodeidx];
 	if (node.nofChild)
@@ -336,21 +340,21 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 		unsigned int chld = node.child;
 		do
 		{
-			buildQueryInstructions( qry, queryTree, chld);
+			buildQueryInstructions( qry, elems, queryTree, chld);
 			chld = queryTree.nodear[ chld].next;
 		} while (chld);
 		qry.pushOperator( node.groupId, node.nofChild);
 	}
 	else
 	{
-		analyzer::Query::Element elem = qry.elements()[node.queryElement];
-		switch (elem.type())
+		const SegmentProcessor::QueryElement& elem = elems[ node.queryElement];
+		switch (elem.termtype())
 		{
-			case analyzer::Query::Element::MetaData:
-				qry.pushMetaDataOperand( elem.idx());
+			case SegmentProcessor::QueryElement::MetaData:
+				query_addMetaData( qry, elem);
 				break;
-			case analyzer::Query::Element::SearchIndexTerm:
-				qry.pushSearchIndexTermOperand( elem.idx());
+			case SegmentProcessor::QueryElement::Term:
+				qry.pushTerm( elem);
 				break;
 			default:
 				throw strus::runtime_error(_TXT("internal: illegal leaf element in query tree"));
@@ -362,33 +366,34 @@ analyzer::Query QueryAnalyzerContext::analyze()
 {
 	try
 	{
-		analyzer::Query rt = analyzeQueryFields();
+		analyzer::Query rt;
+		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
 		if (m_groups.empty())
 		{
 			// Groups are empty, so we just copy the elements into the instructions
 			// and avoid building the query tree for the same result:
-			std::vector<analyzer::Query::Element>::const_iterator
-				ei = rt.elements().begin(), ee = rt.elements().end();
+			std::vector<SegmentProcessor::QueryElement>::const_iterator
+				ei = elems.begin(), ee = elems.end();
 			for ( ;ei!=ee; ++ei)
 			{
-				switch (ei->type())
+				switch (ei->termtype())
 				{
-					case analyzer::Query::Element::MetaData:
-						rt.pushMetaDataOperand( ei->idx());
+					case SegmentProcessor::QueryElement::MetaData:
+						query_addMetaData( rt, *ei);
 						break;
-					case analyzer::Query::Element::SearchIndexTerm:
-						rt.pushSearchIndexTermOperand( ei->idx());
+					case SegmentProcessor::QueryElement::Term:
+						rt.pushTerm( *ei);
 						break;
 				}
 			}
 		}
 		else
 		{
-			QueryTree queryTree = buildQueryTree( m_groups, m_fields, rt);
+			QueryTree queryTree = buildQueryTree( m_groups, m_fields, elems);
 			std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
 			for (; ri != re; ++ri)
 			{
-				buildQueryInstructions( rt, queryTree, *ri);
+				buildQueryInstructions( rt, elems, queryTree, *ri);
 			}
 		}
 		return rt;

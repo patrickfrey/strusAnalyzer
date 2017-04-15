@@ -124,26 +124,10 @@ static PositionMap getPositionMap( const std::set<Position>& pset)
 	return posmap;
 }
 
-static std::vector<std::size_t> getQueryFieldEndPositions( const PositionMap& posmap)
-{
-	std::vector<std::size_t> fields;
-	unsigned int curseg = 0;
-	PositionMap::const_iterator pi = posmap.begin(), pe = posmap.end();
-	for (; pi != pe; ++pi)
-	{
-		if (curseg != pi->first.seg)
-		{
-			while (curseg < pi->first.seg)
-			{
-				fields.push_back( pi->second);
-				++curseg;
-			}
-		}
-	}
-	return fields;
-}
-
-static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindTerm>& terms, const PositionMap& posmap, std::size_t posofs)
+static void fillTermsDocument(
+		std::vector<analyzer::Term>& res,
+		const std::vector<BindTerm>& terms,
+		const PositionMap& posmap, std::size_t posofs)
 {
 	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
 	for (; ri != re; ++ri)
@@ -182,6 +166,25 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 	}
 }
 
+static void fillTermsQuery( 
+		std::vector<SegmentProcessor::QueryElement>& res,
+		SegmentProcessor::QueryElement::TermType termtype,
+		const std::vector<BindTerm>& terms,
+		const PositionMap& posmap, std::size_t posofs)
+{
+	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
+	for (; ri != re; ++ri)
+	{
+		if (ri->posbind() != analyzer::BindContent)
+		{
+			throw strus::runtime_error(_TXT("only position bind content expected in query"));
+		}
+		PositionMap::const_iterator
+			mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
+		res.push_back( SegmentProcessor::QueryElement( termtype, ri->seg(), analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len())));
+	}
+}
+
 analyzer::Document SegmentProcessor::fetchDocument()
 {
 	analyzer::Document rt;
@@ -195,9 +198,9 @@ analyzer::Document SegmentProcessor::fetchDocument()
 
 	std::size_t posofs = 0;
 	std::vector<analyzer::Term> seterms;
-	fillTerms( seterms, m_searchTerms, posmap, posofs);
+	fillTermsDocument( seterms, m_searchTerms, posmap, posofs);
 	std::vector<analyzer::Term> fwterms;
-	fillTerms( fwterms, m_forwardTerms, posmap, posofs);
+	fillTermsDocument( fwterms, m_forwardTerms, posmap, posofs);
 
 	rt.addSearchIndexTerms( seterms);
 	rt.addForwardIndexTerms( fwterms);
@@ -221,19 +224,9 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	return rt;
 }
 
-static void query_addMetaData( unsigned int fieldno, analyzer::Query& qry, const analyzer::Term& term)
+std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 {
-	NumericVariant value;
-	if (!value.initFromString( term.value().c_str()))
-	{
-		throw strus::runtime_error(_TXT("cannot convert normalized item to number (metadata element): %s"), term.value().c_str());
-	}
-	qry.addMetaData( fieldno, term.pos(), analyzer::MetaData( term.type(), value));
-}
-
-analyzer::Query SegmentProcessor::fetchQuery()
-{
-	analyzer::Query rt;
+	std::vector<QueryElement> rt;
 	std::set<Position> pset;
 	std::set<Position> pset_unique;
 	fillPositionSet( pset, pset_unique, m_searchTerms);
@@ -241,66 +234,32 @@ analyzer::Query SegmentProcessor::fetchQuery()
 	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
-	std::vector<analyzer::Term> seterms;
-	fillTerms( seterms, m_searchTerms, posmap, 0/*position offset*/);
-	std::vector<analyzer::Term> mtterms;
-	fillTerms( mtterms, m_metadataTerms, posmap, 0/*position offset*/);
+	std::vector<QueryElement> seterms;
+	fillTermsQuery( seterms, SegmentProcessor::QueryElement::Term, m_searchTerms, posmap, 0/*position offset*/);
+	std::vector<QueryElement> mtterms;
+	fillTermsQuery( mtterms, SegmentProcessor::QueryElement::MetaData, m_metadataTerms, posmap, 0/*position offset*/);
 
-	std::vector<std::size_t> fieldmap = getQueryFieldEndPositions( posmap);
-
-	unsigned int fieldno = 0;
-	std::vector<std::size_t>::const_iterator pi = fieldmap.begin(), pe = fieldmap.end();
-	std::vector<analyzer::Term>::const_iterator si = seterms.begin(), se = seterms.end();
-	std::vector<analyzer::Term>::const_iterator mi = mtterms.begin(), me = mtterms.end();
+	std::vector<QueryElement>::const_iterator si = seterms.begin(), se = seterms.end();
+	std::vector<QueryElement>::const_iterator mi = mtterms.begin(), me = mtterms.end();
 	while (mi != me && si != se)
 	{
 		if (mi->pos() < si->pos())
 		{
-			while (pi < pe && *pi <= mi->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			query_addMetaData( fieldno, rt, *mi++);
+			rt.push_back( *mi++);
 		}
 		else if (mi->pos() > si->pos())
 		{
-			while (pi < pe && *pi <= si->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			rt.addSearchIndexTerm( fieldno, *si++);
+			rt.push_back( *si++);
 		}
 		else/* if (mi->pos() == si->pos())*/
 		{
-			while (pi < pe && *pi <= si->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			query_addMetaData( fieldno, rt, *mi++);
-			rt.addSearchIndexTerm( fieldno, *si++);
+			rt.push_back( *mi++);
+			rt.push_back( *si++);
 		}
 	}
-	while (mi != me)
-	{
-		while (pi < pe && *pi <= mi->pos())
-		{
-			++fieldno;
-			++pi;
-		}
-		query_addMetaData( fieldno, rt, *mi++);
-	}
-	while (si != se)
-	{
-		while (pi < pe && *pi <= si->pos())
-		{
-			++fieldno;
-			++pi;
-		}
-		rt.addSearchIndexTerm( fieldno, *si++);
-	}
+	while (mi != me) rt.push_back( *mi++);
+	while (si != se) rt.push_back( *si++);
+
 	return rt;
 }
 
