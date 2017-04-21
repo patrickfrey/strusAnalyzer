@@ -45,7 +45,7 @@ class VsmAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(0){}
+		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -65,7 +65,7 @@ public:
 					if (ti == termmap.end())
 					{
 						termmap[ si->value()] = tfar.size();
-						tfar.push_back( 0.0);
+						tfar.push_back( 1.0);
 					}
 					else
 					{
