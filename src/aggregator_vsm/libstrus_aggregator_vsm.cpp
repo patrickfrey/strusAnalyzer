@@ -75,7 +75,7 @@ public:
 			}
 			return m_call( tfar);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
 private:

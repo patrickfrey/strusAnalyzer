@@ -82,9 +82,9 @@ public:
 					}
 				}
 			}
-			return NumericVariant( rt);
+			return NumericVariant( (NumericVariant::IntType)rt);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
 private:

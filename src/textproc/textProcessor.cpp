@@ -400,7 +400,7 @@ public:
 		{
 			if (si->type() == m_featuretype) ++rt;
 		}
-		return rt;
+		return (NumericVariant::IntType)rt;
 	}
 
 private:
@@ -462,7 +462,7 @@ public:
 		{
 			if (si->type() == m_featuretype && rt < si->pos()) rt = si->pos();
 		}
-		return rt + m_incr;
+		return (NumericVariant::IntType)(rt + m_incr);
 	}
 
 private:
@@ -526,7 +526,7 @@ public:
 		{
 			if (si->type() == m_featuretype && (!rt || rt > si->pos())) rt = si->pos();
 		}
-		return rt;
+		return (NumericVariant::IntType)rt;
 	}
 
 private:
