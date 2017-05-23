@@ -839,7 +839,13 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 {
 	try
 	{
-		m_mimeSegmenterMap[ utils::tolower(segmenter->mimeType())] = segmenter;
+		std::string mimeid( utils::tolower(segmenter->mimeType()));
+		m_mimeSegmenterMap[ mimeid] = segmenter;
+		const char* mimeid2 = std::strchr( mimeid.c_str(), '/');
+		if (mimeid2 && m_mimeSegmenterMap.find( mimeid2+1) == m_mimeSegmenterMap.end())
+		{
+			m_mimeSegmenterMap[ mimeid2+1] = segmenter;
+		}
 		m_segmenterMap[ utils::tolower(name)] = segmenter;
 	}
 	catch (const std::bad_alloc&)
