@@ -92,19 +92,124 @@ static void buildQueryTreeLeaf(
 
 static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned int>& args)
 {
-	std::vector<unsigned int> rt;
 	std::set<unsigned int> uniq;
 	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
 	for (; ai != ae; ++ai)
 	{
-		if (uniq.find( *ai) == uniq.end())
+		uniq.insert( *ai);
+	}
+	return std::vector<unsigned int>( uniq.begin(), uniq.end());
+}
+
+class GroupMemberRelationMap
+{
+public:
+	GroupMemberRelationMap(){}
+
+	void insertMember(
+		unsigned int elemidx,
+		unsigned int nodeidx);
+
+	void updateElementRoot(
+		std::map<unsigned int,unsigned int>& elemRootMap,
+		const std::vector<unsigned int>& args,
+		unsigned int rootNodeIdx);
+
+private:
+	typedef std::multimap<unsigned int,unsigned int> NodeMemberMap;
+	typedef NodeMemberMap::const_iterator NodeMemberMapItr;
+	typedef std::pair<unsigned int,unsigned int> NodeMemberRelation;
+	typedef std::pair<NodeMemberMapItr,NodeMemberMapItr> NodeMemberRange;
+
+	NodeMemberMap m_map;
+};
+
+void GroupMemberRelationMap::insertMember( unsigned int elemidx, unsigned int nodeidx)
+{
+	m_map.insert( NodeMemberRelation( nodeidx, elemidx));
+}
+
+void GroupMemberRelationMap::updateElementRoot( std::map<unsigned int,unsigned int>& elemRootMap, const std::vector<unsigned int>& args, unsigned int rootNodeIdx)
+{
+	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
+	for (; ai != ae; ++ai)
+	{
+		NodeMemberRange nodeMemberRange = m_map.equal_range( *ai);
+		NodeMemberMapItr ni = nodeMemberRange.first, ne = nodeMemberRange.second;
+		if (ni == ne) throw strus::runtime_error(_TXT("internal: badly linked tree structure"));
+		for (; ni != ne; ++ni)
 		{
-			uniq.insert( *ai);
-			rt.push_back( *ai);
+			elemRootMap[ ni->second] = rootNodeIdx;
 		}
 	}
-	return rt;
 }
+
+class ElementNodeMap
+{
+public:
+	void createElementRoot( unsigned int elemidx, unsigned int nodeidx)
+	{
+		m_elementRootMap[ elemidx] = nodeidx;
+		m_rootElementMap.insert( std::pair<unsigned int,unsigned int>( nodeidx, elemidx));
+	}
+
+	unsigned int elementRoot( unsigned int elemidx) const
+	{
+		std::map<unsigned int,unsigned int>::const_iterator ni = m_elementRootMap.find( elemidx);
+		if (ni == m_elementRootMap.end())
+		{
+			throw strus::runtime_error(_TXT("internal: query tree root element not found"));
+		}
+		else
+		{
+			return ni->second;
+		}
+	}
+
+	void setNewRoot( unsigned int nodeidx, unsigned int newroot)
+	{
+		if (nodeidx == newroot) return;
+		typedef std::multimap<unsigned int,unsigned int>::iterator Itr;
+		std::pair<Itr,Itr> range = m_rootElementMap.equal_range( nodeidx);
+		for (Itr itr=range.first; itr != range.second; ++itr)
+		{
+			m_elementRootMap[ itr->second] = newroot;
+			m_rootElementMap.insert( std::pair<unsigned int, unsigned int>( newroot, itr->second));
+		}
+		m_rootElementMap.erase( range.first, range.second);
+	}
+
+	void setNewRoot( const std::vector<unsigned int>& nodear, unsigned int newroot)
+	{
+		std::vector<unsigned int>::const_iterator ni = nodear.begin(), ne = nodear.end();
+		for (; ni != ne; ++ni)
+		{
+			setNewRoot( *ni, newroot);
+		}
+	}
+
+	std::vector<unsigned int> getRootNodes() const
+	{
+		std::vector<unsigned int> rt;
+		std::multimap<unsigned int,unsigned int>::const_iterator
+			ri = m_rootElementMap.begin(), re = m_rootElementMap.end();
+		if (ri == re) return rt;
+		unsigned int prev = ri->first;
+		rt.push_back( prev);
+		for (++ri; ri != re; ++ri)
+		{
+			if (ri->first != prev)
+			{
+				rt.push_back( prev = ri->first);
+			}
+		}
+		return rt;
+	}
+
+private:
+	std::map<unsigned int,unsigned int> m_elementRootMap;		//< assigns each leaf element to its build up root node
+	std::multimap<unsigned int,unsigned int> m_rootElementMap;	//< assigns each root element to its leaves
+};
 
 static QueryTree buildQueryTree(
 	const std::vector<QueryAnalyzerContext::Group>& groups,
@@ -112,60 +217,45 @@ static QueryTree buildQueryTree(
 	const std::vector<SegmentProcessor::QueryElement>& elems)
 {
 	QueryTree rt;
-	typedef std::multimap<unsigned int,unsigned int> FieldElementRangeMap;
-	typedef FieldElementRangeMap::const_iterator FieldElementRangeItr;
-	typedef std::pair<unsigned int,unsigned int> FieldElementRangeElem;
-	typedef std::pair<FieldElementRangeItr,FieldElementRangeItr> FieldElementRange;
+	typedef std::multimap<unsigned int,unsigned int> FieldElementMap;
+	typedef FieldElementMap::const_iterator FieldElementMapItr;
+	typedef std::pair<unsigned int,unsigned int> FieldElementRelation;
+	typedef std::pair<FieldElementMapItr,FieldElementMapItr> FieldElementRange;
 
-	FieldElementRangeMap fieldElementRangeMap;	//< map fieldno to its elements (index in elems)
+	FieldElementMap fieldElementMap;	//< map fieldno to its elements (index in elems)
+	ElementNodeMap elementNodeMap;		//< map elements to nodes and nodes to elements
+
 	std::vector<SegmentProcessor::QueryElement>::const_iterator
 		ei = elems.begin(), ee = elems.end();
 	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
-		fieldElementRangeMap.insert( FieldElementRangeElem( ei->fieldno(), eidx));
+		fieldElementMap.insert( FieldElementRelation( ei->fieldno(), eidx));
+		elementNodeMap.createElementRoot( eidx, rt.nodear.size());
+		buildQueryTreeLeaf( rt.nodear, eidx, elems[eidx].pos());
 	}
-
-	typedef std::map<unsigned int,unsigned int> ElementRootMap;
-	typedef std::pair<unsigned int,unsigned int> ElementRootAssignment;
-
-	ElementRootMap elementRootMap;		//< assigns each leaf element to its build up root node
-	ElementRootMap nodeRootMap;		//< assigns each tree node to its build up root node
 
 	// Execute all element groupings bottom up creating the query tree nodes:
 	std::vector<QueryAnalyzerContext::Group>::const_iterator gi = groups.begin(), ge = groups.end();
 	for (; gi != ge; ++gi)
 	{
-		// Build up the argument list of the grouping operation.
-		// For all elements selected take the current build up root nodes without duplicates as arguments:
-		std::vector<unsigned int> args;
-		std::vector<ElementRootAssignment> elemAssignments;
+		// Build up the argument list (set of root nodes of the selected arguments) for the grouping operation
+		std::vector<unsigned int> args;			// set of arguments (node indices)
 		std::vector<unsigned int>::const_iterator
 			fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
-			FieldElementRange range = fieldElementRangeMap.equal_range( *fi);
-			FieldElementRangeItr ri = range.first, re = range.second;
+			FieldElementRange range = fieldElementMap.equal_range( *fi);
+			FieldElementMapItr ri = range.first, re = range.second;
+			// For each element of a selected field:
 			for (; ri != re; ++ri)
 			{
 				unsigned int elemidx = ri->second;
-				ElementRootMap::const_iterator ni = elementRootMap.find( elemidx);
-				if (ni == elementRootMap.end())
-				{
-					//... element was not grouped yet, create a new element node in the query tree
-					unsigned int newNodeIdx = rt.nodear.size();
-					args.push_back( newNodeIdx);
-					elementRootMap[ elemidx] = newNodeIdx;
-					buildQueryTreeLeaf( rt.nodear, elemidx, elems[elemidx].pos());
+				// Get the assigned node index (current root node the leaf is assigned to):
+				unsigned int nodeidx = elementNodeMap.elementRoot( elemidx);
 
-					elemAssignments.push_back( ElementRootAssignment( elemidx, newNodeIdx));
-				}
-				else
+				if (args.empty() || args.back() != nodeidx)
 				{
-					if (args.empty() || args.back() != ni->second)
-					{
-						args.push_back( ni->second);
-					}
-					elemAssignments.push_back( ElementRootAssignment( elemidx, ni->second));
+					args.push_back( nodeidx);
 				}
 			}
 		}
@@ -180,18 +270,14 @@ static QueryTree buildQueryTree(
 				{
 					argmap[ rt.nodear[ *ai].position].push_back( *ai);
 				}
+				// For each selected set with elements sharing the same position:
 				std::map<unsigned int,std::vector<unsigned int> >::const_iterator mi = argmap.begin(), me = argmap.end();
 				for (; mi != me; ++mi)
 				{
 					std::vector<unsigned int> uargs = reduceUnifiedNodes( mi->second);
-					if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
+					if (uargs.size() > 1 || (gi->groupSingle && !uargs.empty()))
 					{
-						std::vector<unsigned int>::const_iterator
-							ui = uargs.begin(), ue = uargs.end();
-						for (; ui != ue; ++ui)
-						{
-							nodeRootMap[ *ui] = rt.nodear.size();
-						}
+						elementNodeMap.setNewRoot( uargs, rt.nodear.size());
 						unsigned int position = mi->first;
 						buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 					}
@@ -202,14 +288,9 @@ static QueryTree buildQueryTree(
 			{
 				// Group all selected nodes into the same group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
-				if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
+				if (uargs.size() > 1 || (gi->groupSingle && !uargs.empty()))
 				{
-					std::vector<unsigned int>::const_iterator
-						ui = uargs.begin(), ue = uargs.end();
-					for (; ui != ue; ++ui)
-					{
-						nodeRootMap[ *ui] = rt.nodear.size();
-					}
+					elementNodeMap.setNewRoot( uargs, rt.nodear.size());
 					unsigned int position = rt.nodear[ uargs[0]].position;
 					buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 				}
@@ -223,45 +304,17 @@ static QueryTree buildQueryTree(
 					ui = uargs.begin(), ue = uargs.end();
 				for (; ui != ue; ++ui)
 				{
-					nodeRootMap[ *ui] = rt.nodear.size();
-					unsigned int position = rt.nodear[ *ui].position;
 					std::vector<unsigned int> sargs;
 					sargs.push_back( *ui);
+					elementNodeMap.setNewRoot( sargs, rt.nodear.size());
+					unsigned int position = rt.nodear[ *ui].position;
 					buildQueryTreeNode( rt.nodear, gi->groupId, position, sargs);
 				}
 			}
 		}
-		// Update map that assigns every element to its tree root node:
-		std::vector<ElementRootAssignment>::const_iterator mi = elemAssignments.begin(), me = elemAssignments.end();
-		for (; mi != me; ++mi)
-		{
-			if (nodeRootMap.find( mi->second) != nodeRootMap.end())
-			{
-				elementRootMap[ mi->first] = nodeRootMap[ mi->second];
-			}
-		}
 	}
-	// Evaluate the root elements:
-	std::vector<unsigned int> args;
-	ei = elems.begin(), ee = elems.end();
-	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
-	{
-		ElementRootMap::const_iterator ni = elementRootMap.find( eidx);
-		if (ni == elementRootMap.end())
-		{
-			unsigned int newNodeIdx = rt.nodear.size();
-			args.push_back( newNodeIdx);
-			buildQueryTreeLeaf( rt.nodear, eidx, ei->pos());
-		}
-		else
-		{
-			if (args.empty() || args.back() != ni->second)
-			{
-				args.push_back( ni->second);
-			}
-		}
-	}
-	rt.root = reduceUnifiedNodes( args);
+	// Evaluate the set of root elements:
+	rt.root = elementNodeMap.getRootNodes();
 	return rt;
 }
 
@@ -283,7 +336,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		for (;ti != te; ++ti)
 		{
 			segmentProcessor.processDocumentSegment(
-				ti->second/*feature type index*/, fidx/*segment pos = field index*/, 
+				ti->second/*feature type index*/, fi->fieldNo/*segment pos = fieldNo*/, 
 				fi->content.c_str(), fi->content.size());
 		}
 	}
@@ -297,7 +350,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		{
 			PreProcPatternMatchContext& ppctx
 				= preProcPatternMatchContextMap.context( ti->second);
-			ppctx.process( fidx/*segment pos = field index*/, fi->content.c_str(), fi->content.size());
+			ppctx.process( fi->fieldNo/*segment pos = fieldNo*/, fi->content.c_str(), fi->content.size());
 		}
 	}
 	// fetch pre processing pattern outputs:
