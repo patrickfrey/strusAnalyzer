@@ -5,13 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/// \brief Structure of a query as result of query analysis
+/// \brief Expression of a query terms as result of a query analysis
 /// \file query.hpp
-#ifndef _STRUS_ANALYZER_QUERY_HPP_INCLUDED
-#define _STRUS_ANALYZER_QUERY_HPP_INCLUDED
-#include "strus/analyzer/term.hpp"
-#include "strus/analyzer/attribute.hpp"
-#include "strus/analyzer/metaData.hpp"
+#ifndef _STRUS_ANALYZER_QUERY_TERM_EXPRESSION_HPP_INCLUDED
+#define _STRUS_ANALYZER_QUERY_TERM_EXPRESSION_HPP_INCLUDED
+#include "strus/analyzer/queryTerm.hpp"
 #include <string>
 #include <vector>
 
@@ -20,26 +18,25 @@ namespace strus {
 /// \brief analyzer parameter and return value objects namespace
 namespace analyzer {
 
-/// \brief Structure of a query created as result of a query analysis
-class Query
+/// \brief Expression of a query terms as result of a query analysis
+class QueryTermExpression
 {
 public:
 	/// \brief Default constructor
-	Query(){}
+	QueryTermExpression(){}
 	/// \brief Copy constructor
-	Query( const Query& o)
-		:m_metadata(o.m_metadata)
-		,m_terms(o.m_terms)
+	QueryTermExpression( const QueryTermExpression& o)
+		:m_terms(o.m_terms)
 		,m_instructions(o.m_instructions){}
 
 	/// \brief Query instruction
 	class Instruction
 	{
 	public:
-		enum OpCode {MetaData,Term,Operator};
+		enum OpCode {Term,Operator};
 		static const char* opCodeName( OpCode i)
 		{
-			static const char* ar[] = {"meta","term","op"};
+			static const char* ar[] = {"term","op"};
 			return ar[i];
 		}
 
@@ -56,6 +53,7 @@ public:
 		unsigned int nofOperands() const		{return m_nofOperands;}
 
 	private:
+		friend class QueryTermExpression;
 		OpCode m_opCode;
 		unsigned int m_idx;
 		unsigned int m_nofOperands;
@@ -65,43 +63,31 @@ public:
 	/// \return the list
 	const std::vector<Instruction>& instructions() const	{return m_instructions;}
 
-	/// \brief Get the argument of a metadata instruction
-	/// \param[in] idx index of instruction refering to a metadata element (Instruction::idx)
-	const analyzer::MetaData& metadata( unsigned int idx) const
-	{
-		return m_metadata[ idx];
-	}
-
 	/// \brief Get the argument of a term instruction
 	/// \param[in] idx index of instruction refering to a term (Instruction::idx)
-	const analyzer::Term& term( unsigned int idx) const
+	const analyzer::QueryTerm& term( unsigned int idx) const
 	{
 		return m_terms[ idx];
 	}
 
 	/// \brief Add a search index term to the query
-	void pushTerm( const analyzer::Term& term)
+	/// \param[in] term term to add
+	void pushTerm( const analyzer::QueryTerm& term)
 	{
 		m_instructions.push_back( Instruction( Instruction::Term, m_terms.size()));
 		m_terms.push_back( term);
 	}
 
-	/// \brief Add a meta data element to the query
-	void pushMetaData( const analyzer::MetaData& elem)
-	{
-		m_instructions.push_back( Instruction( Instruction::MetaData, m_metadata.size()));
-		m_metadata.push_back( elem);
-	}
-
 	/// \brief Add an instruction
+	/// \param[in] operatorId id of the operator
+	/// \param[in] nofOperands number of operands
 	void pushOperator( unsigned int operatorId, unsigned int nofOperands)
 	{
 		m_instructions.push_back( Instruction( Instruction::Operator, operatorId, nofOperands));
 	}
 
 private:
-	std::vector<analyzer::MetaData> m_metadata;
-	std::vector<analyzer::Term> m_terms;
+	std::vector<analyzer::QueryTerm> m_terms;
 	std::vector<Instruction> m_instructions;
 };
 

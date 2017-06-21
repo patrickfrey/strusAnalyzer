@@ -36,7 +36,7 @@ public:
 
 	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
-	virtual analyzer::Query analyze();
+	virtual analyzer::QueryTermExpression analyze();
 
 private:
 	std::vector<SegmentProcessor::QueryElement> analyzeQueryFields() const;

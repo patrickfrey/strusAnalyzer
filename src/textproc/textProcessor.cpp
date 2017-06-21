@@ -392,7 +392,7 @@ public:
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		unsigned int rt = 0.0;
-		std::vector<Term>::const_iterator
+		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
 
@@ -454,7 +454,7 @@ public:
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		unsigned int rt = 0;
-		std::vector<Term>::const_iterator
+		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
 
@@ -518,7 +518,7 @@ public:
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
 		unsigned int rt = 0;
-		std::vector<Term>::const_iterator
+		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
 

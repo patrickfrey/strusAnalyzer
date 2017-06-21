@@ -11,7 +11,7 @@
 #include "patternFeatureConfigMap.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
-#include "strus/analyzer/query.hpp"
+#include "strus/analyzer/queryTermExpression.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/token.hpp"
 #include <vector>
@@ -63,22 +63,20 @@ public:
 	analyzer::Document fetchDocument();
 
 	class QueryElement
-		:public analyzer::Term
+		:public analyzer::QueryTerm
 	{
 	public:
-		enum TermType {MetaData,Term};
-
 		QueryElement( const QueryElement& o)
-			:analyzer::Term(o),m_termtype(o.m_termtype),m_fieldno(o.m_fieldno){}
-		QueryElement( TermType termtype_, unsigned int fieldno_, const analyzer::Term& term_)
-			:analyzer::Term(term_),m_termtype(termtype_),m_fieldno(fieldno_){}
+			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_pos(o.m_pos){}
+		QueryElement( unsigned int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
+			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_pos(pos_){}
 
-		TermType termtype() const	{return m_termtype;}
 		unsigned int fieldno() const	{return m_fieldno;}
+		unsigned int pos() const	{return m_pos;}
 
 	private:
-		TermType m_termtype;
 		unsigned int m_fieldno;
+		unsigned int m_pos;
 	};
 
 	/// \brief Fetch the currently processed query

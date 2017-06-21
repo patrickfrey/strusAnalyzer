@@ -150,14 +150,6 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 	}
 }
 
-static bool cmpTerm( const strus::analyzer::Term& a, const strus::analyzer::Term& b)
-{
-	if (a.pos() != b.pos()) return a.pos() < b.pos();
-	if (a.type() != b.type()) return a.type() < b.type();
-	if (a.value() != b.value()) return a.value() < b.value();
-	return false;
-}
-
 int main( int argc, const char* argv[])
 {
 	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
@@ -221,28 +213,28 @@ int main( int argc, const char* argv[])
 		while (analyzerctx->analyzeNext( doc))
 		{
 			output << "DOC " << doc.subDocumentTypeName() << std::endl;
-			std::vector<strus::analyzer::Attribute>::const_iterator
+			std::vector<strus::analyzer::DocumentAttribute>::const_iterator
 				ai = doc.attributes().begin(), ae = doc.attributes().end();
 			for (; ai != ae; ++ai)
 			{
 				output << "Attribute " << ai->name() << " = '" << ai->value() << "'" << std::endl;
 			}
-			std::vector<strus::analyzer::MetaData>::const_iterator
+			std::vector<strus::analyzer::DocumentMetaData>::const_iterator
 				mi = doc.metadata().begin(), me = doc.metadata().end();
 			for (; mi != me; ++mi)
 			{
 				output << "MetaData " << mi->name() << " = '" << mi->value().tostring().c_str() << "'" << std::endl;
 			}
-			std::vector<strus::analyzer::Term> searchIndexTerms = doc.searchIndexTerms();
-			std::sort( searchIndexTerms.begin(), searchIndexTerms.end(), cmpTerm);
-			std::vector<strus::analyzer::Term>::const_iterator
+			std::vector<strus::analyzer::DocumentTerm> searchIndexTerms = doc.searchIndexTerms();
+			std::sort( searchIndexTerms.begin(), searchIndexTerms.end());
+			std::vector<strus::analyzer::DocumentTerm>::const_iterator
 				ti = searchIndexTerms.begin(), te = searchIndexTerms.end();
 			for (; ti != te; ++ti)
 			{
 				output << "SearchTerm term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
-			std::vector<strus::analyzer::Term> forwardIndexTerms = doc.forwardIndexTerms();
-			std::sort( forwardIndexTerms.begin(), forwardIndexTerms.end(), cmpTerm);
+			std::vector<strus::analyzer::DocumentTerm> forwardIndexTerms = doc.forwardIndexTerms();
+			std::sort( forwardIndexTerms.begin(), forwardIndexTerms.end());
 			ti = forwardIndexTerms.begin(), te = forwardIndexTerms.end();
 			for (; ti != te; ++ti)
 			{

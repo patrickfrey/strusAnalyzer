@@ -9,9 +9,6 @@
 /// \file documentAnalyzerInterface.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/term.hpp"
-#include "strus/analyzer/attribute.hpp"
-#include "strus/analyzer/metaData.hpp"
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/documentClass.hpp"

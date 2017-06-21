@@ -9,7 +9,7 @@
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/analyzer/term.hpp"
+#include "strus/analyzer/documentTerm.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -53,7 +53,7 @@ public:
 		{
 			std::map<std::string,std::size_t> termmap;
 			std::vector<double> tfar;
-			std::vector<Term>::const_iterator
+			std::vector<DocumentTerm>::const_iterator
 				si = document.searchIndexTerms().begin(),
 				se = document.searchIndexTerms().end();
 	

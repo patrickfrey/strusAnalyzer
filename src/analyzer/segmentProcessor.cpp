@@ -125,7 +125,7 @@ static PositionMap getPositionMap( const std::set<Position>& pset)
 }
 
 static void fillTermsDocument(
-		std::vector<analyzer::Term>& res,
+		std::vector<analyzer::DocumentTerm>& res,
 		const std::vector<BindTerm>& terms,
 		const PositionMap& posmap, std::size_t posofs)
 {
@@ -138,7 +138,7 @@ static void fillTermsDocument(
 			{
 				PositionMap::const_iterator
 					mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
-				res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
+				res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
 				break;
 			}
 			case analyzer::BindUnique:
@@ -148,7 +148,7 @@ static void fillTermsDocument(
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()));
 				if (mi != posmap.end())
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
+					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
 				}
 				break;
 			}
@@ -158,7 +158,7 @@ static void fillTermsDocument(
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()+1));
 				if (mi != posmap.end() && mi->second + posofs > 1)
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs - 1, ri->len()));
+					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs - 1));
 				}
 				break;
 			}
@@ -168,7 +168,6 @@ static void fillTermsDocument(
 
 static void fillTermsQuery( 
 		std::vector<SegmentProcessor::QueryElement>& res,
-		SegmentProcessor::QueryElement::TermType termtype,
 		const std::vector<BindTerm>& terms,
 		const PositionMap& posmap, std::size_t posofs)
 {
@@ -181,7 +180,7 @@ static void fillTermsQuery(
 		}
 		PositionMap::const_iterator
 			mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
-		res.push_back( SegmentProcessor::QueryElement( termtype, ri->seg(), analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len())));
+		res.push_back( SegmentProcessor::QueryElement( ri->seg(), mi->second + posofs, analyzer::QueryTerm( ri->type(), ri->value(), ri->len())));
 	}
 }
 
@@ -197,9 +196,9 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	PositionMap posmap = getPositionMap( pset);
 
 	std::size_t posofs = 0;
-	std::vector<analyzer::Term> seterms;
+	std::vector<analyzer::DocumentTerm> seterms;
 	fillTermsDocument( seterms, m_searchTerms, posmap, posofs);
-	std::vector<analyzer::Term> fwterms;
+	std::vector<analyzer::DocumentTerm> fwterms;
 	fillTermsDocument( fwterms, m_forwardTerms, posmap, posofs);
 
 	rt.addSearchIndexTerms( seterms);
@@ -226,7 +225,6 @@ analyzer::Document SegmentProcessor::fetchDocument()
 
 std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 {
-	std::vector<QueryElement> rt;
 	std::set<Position> pset;
 	std::set<Position> pset_unique;
 	fillPositionSet( pset, pset_unique, m_searchTerms);
@@ -234,32 +232,8 @@ std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
-	std::vector<QueryElement> seterms;
-	fillTermsQuery( seterms, SegmentProcessor::QueryElement::Term, m_searchTerms, posmap, 0/*position offset*/);
-	std::vector<QueryElement> mtterms;
-	fillTermsQuery( mtterms, SegmentProcessor::QueryElement::MetaData, m_metadataTerms, posmap, 0/*position offset*/);
-
-	std::vector<QueryElement>::const_iterator si = seterms.begin(), se = seterms.end();
-	std::vector<QueryElement>::const_iterator mi = mtterms.begin(), me = mtterms.end();
-	while (mi != me && si != se)
-	{
-		if (mi->pos() < si->pos())
-		{
-			rt.push_back( *mi++);
-		}
-		else if (mi->pos() > si->pos())
-		{
-			rt.push_back( *si++);
-		}
-		else/* if (mi->pos() == si->pos())*/
-		{
-			rt.push_back( *mi++);
-			rt.push_back( *si++);
-		}
-	}
-	while (mi != me) rt.push_back( *mi++);
-	while (si != se) rt.push_back( *si++);
-
+	std::vector<QueryElement> rt;
+	fillTermsQuery( rt, m_searchTerms, posmap, 0/*position offset*/);
 	return rt;
 }
 

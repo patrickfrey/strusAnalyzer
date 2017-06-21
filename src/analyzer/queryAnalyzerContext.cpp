@@ -284,6 +284,22 @@ static QueryTree buildQueryTree(
 				}
 				break;
 			}
+			case QueryAnalyzerContextInterface::GroupUnique:
+			{
+				// Group all selected nodes into the same group:
+				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
+				if (uargs.size() == 1)
+				{
+					elementNodeMap.setNewRoot( uargs, rt.nodear.size());
+					unsigned int position = rt.nodear[ uargs[0]].position;
+					buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
+				}
+				else
+				{
+					throw strus::runtime_error(_TXT("analyze query fields did not create the unique element required"));
+				}
+				break;
+			}
 			case QueryAnalyzerContextInterface::GroupAll:
 			{
 				// Group all selected nodes into the same group:
@@ -375,17 +391,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 	return segmentProcessor.fetchQuery();
 }
 
-static void query_addMetaData( analyzer::Query& qry, const analyzer::Term& term)
-{
-	NumericVariant value;
-	if (!value.initFromString( term.value().c_str()))
-	{
-		throw strus::runtime_error(_TXT("cannot convert normalized item to number (metadata element): %s"), term.value().c_str());
-	}
-	qry.pushMetaData( analyzer::MetaData( term.type(), value));
-}
-
-static void buildQueryInstructions( analyzer::Query& qry, const std::vector<SegmentProcessor::QueryElement>& elems, const QueryTree& queryTree, unsigned int nodeidx)
+static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const std::vector<SegmentProcessor::QueryElement>& elems, const QueryTree& queryTree, unsigned int nodeidx)
 {
 	const QueryTreeNode& node = queryTree.nodear[ nodeidx];
 	if (node.nofChild)
@@ -400,26 +406,15 @@ static void buildQueryInstructions( analyzer::Query& qry, const std::vector<Segm
 	}
 	else
 	{
-		const SegmentProcessor::QueryElement& elem = elems[ node.queryElement];
-		switch (elem.termtype())
-		{
-			case SegmentProcessor::QueryElement::MetaData:
-				query_addMetaData( qry, elem);
-				break;
-			case SegmentProcessor::QueryElement::Term:
-				qry.pushTerm( elem);
-				break;
-			default:
-				throw strus::runtime_error(_TXT("internal: illegal leaf element in query tree"));
-		}
+		qry.pushTerm( elems[ node.queryElement]);
 	}
 }
 
-analyzer::Query QueryAnalyzerContext::analyze()
+analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 {
 	try
 	{
-		analyzer::Query rt;
+		analyzer::QueryTermExpression rt;
 		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
 		if (m_groups.empty())
 		{
@@ -429,15 +424,7 @@ analyzer::Query QueryAnalyzerContext::analyze()
 				ei = elems.begin(), ee = elems.end();
 			for ( ;ei!=ee; ++ei)
 			{
-				switch (ei->termtype())
-				{
-					case SegmentProcessor::QueryElement::MetaData:
-						query_addMetaData( rt, *ei);
-						break;
-					case SegmentProcessor::QueryElement::Term:
-						rt.pushTerm( *ei);
-						break;
-				}
+				rt.pushTerm( *ei);
 			}
 		}
 		else
@@ -451,7 +438,7 @@ analyzer::Query QueryAnalyzerContext::analyze()
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::Query());
+	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::QueryTermExpression());
 }
 
 

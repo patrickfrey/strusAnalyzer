@@ -9,7 +9,7 @@
 /// \file queryAnalyzerContextInterface.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/query.hpp"
+#include "strus/analyzer/queryTermExpression.hpp"
 #include <vector>
 #include <string>
 
@@ -35,7 +35,8 @@ public:
 	{
 		GroupByPosition,	///< Elements with same position are grouped together
 		GroupEvery,		///< Every element gets its own group
-		GroupAll		///< All elements are grouped together
+		GroupAll,		///< All elements are grouped together
+		GroupUnique		///< Single element grouped and the element must exist
 	};
 
 	/// \brief Group elements of the query together
@@ -46,9 +47,9 @@ public:
 	/// \note This method influences how a query is iterated on
 	virtual void groupElements( unsigned int groupid, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
 
-	/// \brief Analyze the query feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
-	/// \return the query structure
-	virtual analyzer::Query analyze()=0;
+	/// \brief Analyze the term expression feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
+	/// \return the term expression structure
+	virtual analyzer::QueryTermExpression analyze()=0;
 };
 
 }//namespace

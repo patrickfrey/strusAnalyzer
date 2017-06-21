@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Structure describing a document attribute
-/// \file attribute.hpp
-#ifndef _STRUS_ANALYZER_ATTRIBUTE_HPP_INCLUDED
-#define _STRUS_ANALYZER_ATTRIBUTE_HPP_INCLUDED
+/// \file documentAttribute.hpp
+#ifndef _STRUS_ANALYZER_DOCUMENT_ATTRIBUTE_HPP_INCLUDED
+#define _STRUS_ANALYZER_DOCUMENT_ATTRIBUTE_HPP_INCLUDED
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -17,18 +17,18 @@ namespace strus {
 namespace analyzer {
 
 /// \brief Structure describing a document attribute
-class Attribute
+class DocumentAttribute
 {
 public:
 	/// \brief Default constructor
-	Attribute(){}
+	DocumentAttribute(){}
 	/// \brief Copy constructor
-	Attribute( const Attribute& o)
+	DocumentAttribute( const DocumentAttribute& o)
 		:m_name(o.m_name),m_value(o.m_value){}
 	/// \brief Constructor
 	/// \param[in] n name of the attribute
 	/// \param[in] v value of the attribute
-	Attribute( const std::string& n, const std::string& v)
+	DocumentAttribute( const std::string& n, const std::string& v)
 		:m_name(n),m_value(v){}
 
 	/// \brief Get the name of the attribute
