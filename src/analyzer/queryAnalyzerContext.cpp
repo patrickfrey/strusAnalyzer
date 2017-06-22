@@ -288,6 +288,8 @@ static QueryTree buildQueryTree(
 			}
 			case QueryAnalyzerContextInterface::GroupUnique:
 			{
+				if (!gi->groupSingle) throw strus::runtime_error(_TXT("contradicting grouping operation: using group unique with no single child groups allowed"));
+
 				// Group all selected nodes into the same group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
 				if (uargs.size() == 1)
@@ -316,6 +318,8 @@ static QueryTree buildQueryTree(
 			}
 			case QueryAnalyzerContextInterface::GroupEvery:
 			{
+				if (!gi->groupSingle) throw strus::runtime_error(_TXT("contradicting grouping operation: using group every with no single child groups allowed"));
+
 				// Group every selected node into its own group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
 				std::vector<unsigned int>::const_iterator
