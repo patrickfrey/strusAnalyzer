@@ -171,12 +171,14 @@ public:
 		if (nodeidx == newroot) return;
 		typedef std::multimap<unsigned int,unsigned int>::iterator Itr;
 		std::pair<Itr,Itr> range = m_rootElementMap.equal_range( nodeidx);
+		std::vector<std::pair<unsigned int, unsigned int> > newRelations;
 		for (Itr itr=range.first; itr != range.second; ++itr)
 		{
 			m_elementRootMap[ itr->second] = newroot;
-			m_rootElementMap.insert( std::pair<unsigned int, unsigned int>( newroot, itr->second));
+			newRelations.push_back( std::pair<unsigned int, unsigned int>( newroot, itr->second));
 		}
 		m_rootElementMap.erase( range.first, range.second);
+		m_rootElementMap.insert( newRelations.begin(), newRelations.end());
 	}
 
 	void setNewRoot( const std::vector<unsigned int>& nodear, unsigned int newroot)
