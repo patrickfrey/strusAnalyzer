@@ -16,8 +16,11 @@
 #include <string>
 #include <set>
 #include <map>
+#include <iostream>
+#include <sstream>
 
 using namespace strus;
+#undef STRUS_LOWLEVEL_DEBUG
 
 QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
 	:m_analyzer(analyzer_)
@@ -146,11 +149,51 @@ void GroupMemberRelationMap::updateElementRoot( std::map<unsigned int,unsigned i
 
 class ElementNodeMap
 {
+#ifdef STRUS_LOWLEVEL_DEBUG
+private:
+	std::string tostring() const
+	{
+		std::ostringstream out;
+		std::multimap<unsigned int,unsigned int>::const_iterator ri = m_rootElementMap.begin(), re = m_rootElementMap.end();
+		if (m_rootElementMap.size() != m_elementRootMap.size())
+		{
+			throw strus::runtime_error("internal: element node map size mismatch");
+		}
+		for (; ri != re; ++ri)
+		{
+			std::map<unsigned int,unsigned int>::const_iterator inv = m_elementRootMap.find( ri->second);
+			if (inv == m_elementRootMap.end() || inv->second != ri->first)
+			{
+				throw strus::runtime_error("internal: element node map content mismatch");
+			}
+		}
+		out << "{";
+		ri = m_rootElementMap.begin();
+		enum {NullPrevKey = -1};
+		unsigned int prevkey = (unsigned int)NullPrevKey;
+		while (ri != re)
+		{
+			if (prevkey != (unsigned int)NullPrevKey) out << ", ";
+			prevkey = ri->first;
+			out << prevkey << ": ";
+			for (int ridx=0; ri != re && ri->first == prevkey; ++ri,++ridx)
+			{
+				if (ridx) out << ",";
+				out << ri->second;
+			}
+		}
+		out << "}";
+		return out.str();
+	}
+#endif
 public:
 	void createElementRoot( unsigned int elemidx, unsigned int nodeidx)
 	{
 		m_elementRootMap[ elemidx] = nodeidx;
 		m_rootElementMap.insert( std::pair<unsigned int,unsigned int>( nodeidx, elemidx));
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "CREATE ROOT " << nodeidx << " ELEM " << elemidx << " " << tostring() << std::endl;
+#endif
 	}
 
 	unsigned int elementRoot( unsigned int elemidx) const
@@ -179,11 +222,25 @@ public:
 		}
 		m_rootElementMap.erase( range.first, range.second);
 		m_rootElementMap.insert( newRelations.begin(), newRelations.end());
+
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "NEW ROOT " << nodeidx << " -> " << newroot << " " << tostring() << std::endl;
+#endif
 	}
 
 	void setNewRoot( const std::vector<unsigned int>& nodear, unsigned int newroot)
 	{
 		std::vector<unsigned int>::const_iterator ni = nodear.begin(), ne = nodear.end();
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "SET NEW ROOT {";
+		for (int nidx=0; ni != ne; ++ni,++nidx)
+		{
+			if (nidx) std::cerr << ", ";
+			std::cerr << *ni;
+		}
+		std::cerr << "} -> " << newroot << " " << tostring() << std::endl;
+		ni = nodear.begin();
+#endif
 		for (; ni != ne; ++ni)
 		{
 			setNewRoot( *ni, newroot);
@@ -231,6 +288,9 @@ static QueryTree buildQueryTree(
 		ei = elems.begin(), ee = elems.end();
 	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "FIELD " << ei->fieldno() << " ELEMENT " << eidx << " TYPE " << ei->type() << " VALUE " << ei->value() << std::endl;
+#endif
 		fieldElementMap.insert( FieldElementRelation( ei->fieldno(), eidx));
 		elementNodeMap.createElementRoot( eidx, rt.nodear.size());
 		buildQueryTreeLeaf( rt.nodear, eidx, elems[eidx].pos());
@@ -442,6 +502,27 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 				buildQueryInstructions( rt, elems, queryTree, *ri);
 			}
 		}
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "QUERY INSTRUCTIONS:" << std::endl;
+		std::vector<analyzer::QueryTermExpression::Instruction>::const_iterator
+			pi = rt.instructions().begin(), pe = rt.instructions().end();
+		for (; pi != pe; ++pi)
+		{
+			std::cerr << analyzer::QueryTermExpression::Instruction::opCodeName( pi->opCode()) << " " << pi->idx() << " " << pi->nofOperands();
+			switch (pi->opCode())
+			{
+				case analyzer::QueryTermExpression::Instruction::Term:
+				{
+					const analyzer::QueryTerm& term = rt.term( pi->idx());
+					std::cerr << " type " << term.type() << " value " << term.value();
+					break;
+				}
+				case analyzer::QueryTermExpression::Instruction::Operator:
+					break;
+			}
+			std::cerr << std::endl;
+		}
+#endif
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::QueryTermExpression());
