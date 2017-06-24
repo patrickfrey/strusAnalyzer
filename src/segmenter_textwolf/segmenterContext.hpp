@@ -9,6 +9,7 @@
 #define _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
 #include "private/utils.hpp"
+#include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
@@ -35,71 +36,55 @@ public:
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_chunk(0)
 		,m_chunksize(0)
-		,m_chunkbufsize(0)
 		,m_eof(false)
-		,m_got_eom(true)
-		,m_chunkbufitr(0)
-		,m_chunkbufeof(false)
+		,m_got_exit(false)
+		,m_chunkbuf()
 		,m_errorhnd(errorhnd)
 	{
 	}
 
 	virtual ~SegmenterContext()
+	{}
+
+	bool feedNextInputChunk()
 	{
-		if (m_chunk) std::free( m_chunk);
+		if (m_chunkbuf.empty()) return false;
+		m_chunk = m_chunkbuf.front().c_str();
+		m_chunksize = m_chunkbuf.front().size();
+		m_srciter.putInput( m_chunk, m_chunksize, &m_eom);
+		m_scanner.setSource( m_srciter);
+		m_itr = m_scanner.begin(false);
+		m_end = m_scanner.end();
+		return true;
 	}
 
 	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof)
 	{
 		try
 		{
+			if (m_got_exit)
+			{
+				m_errorhnd->report( _TXT( "feeded chunk after parsing completed"));
+				return;
+			}
 			if (m_eof)
 			{
-				m_errorhnd->report( "feeded chunk after declared end of input");
+				m_errorhnd->report( _TXT( "feeded chunk after declared end of input"));
 				return;
 			}
-			if (!m_got_eom)
+			try
 			{
-				try
-				{
-					m_chunkbuf.push_back( std::string( chunk, chunksize));
-					m_chunkbufeof = eof;
-				}
-				catch (const std::bad_alloc&)
-				{
-					m_errorhnd->report( "out of memory when buffering chunks for 'textwolf' segmenter");
-				}
-				return;
+				m_chunkbuf.push_back( std::string( chunk, chunksize));
+				m_eof = eof;
 			}
-			std::size_t chunkallocsize = chunksize + 4;
-			if (chunkallocsize > m_chunkbufsize)
+			catch (const std::bad_alloc&)
 			{
-				void* chunkmem = std::realloc( m_chunk, chunkallocsize);
-				if (!chunkmem)
-				{
-					m_errorhnd->report( "out of memory in 'textwolf' segmenter");
-					return;
-				}
-				m_chunk = (char*)chunkmem;
-				m_chunkbufsize = chunkallocsize;
+				m_errorhnd->report( _TXT("out of memory when buffering chunks for '%s' segmenter"), SEGMENTER_NAME);
 			}
-			m_eof = eof;
-			if (eof)
+			if (!m_chunk)
 			{
-				m_chunksize = chunkallocsize;
-				std::memcpy( m_chunk, chunk, chunksize);
-				std::memset( m_chunk + chunksize, 0, 4);
+				feedNextInputChunk();
 			}
-			else
-			{
-				m_chunksize = chunksize;
-				std::memcpy( m_chunk, chunk, chunksize);
-			}
-			m_srciter.putInput( m_chunk, m_chunksize, &m_eom);
-			m_scanner.setSource( m_srciter);
-			m_itr = m_scanner.begin(false);
-			m_end = m_scanner.end();
-			m_got_eom = (m_chunksize == 0);
 		}
 		CATCH_ERROR_MAP_ARG1( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 	}
@@ -108,29 +93,25 @@ public:
 	{
 		try
 		{
+			if (m_got_exit) return false;
+
 		AGAIN:
-			if (setjmp(m_eom) != 0)
+			if (setjmp(m_eom) != 0 || m_itr == m_end)
 			{
-				if (m_eof)
+				m_chunk = 0;
+				m_chunksize = 0;
+				if (m_chunkbuf.empty())
 				{
-					m_errorhnd->report( "unexpected end of input");
+					if (!m_eof) m_errorhnd->report( _TXT( "unexpected end of input in '%s' segmenter"), SEGMENTER_NAME);
 					return false;
-				}
-				else if (m_chunkbufitr < m_chunkbuf.size())
-				{
-					m_got_eom = true;
-					bool ceof = m_chunkbufeof && (m_chunkbufitr+1) == m_chunkbuf.size();
-					putInput( m_chunkbuf[ m_chunkbufitr].c_str(), m_chunkbuf[ m_chunkbufitr].size(), ceof);
-					++m_chunkbufitr;
-					goto AGAIN;
 				}
 				else
 				{
-					m_got_eom = true;
-					return false; //... do call the function with the next chunk or exit (eof)
+					m_chunkbuf.pop_front();
+					feedNextInputChunk();
+					goto AGAIN; //... to set setjmp context again
 				}
 			}
-			if (m_itr == m_end) return false;
 			while (!m_xpathselect.getNext( id))
 			{
 				++m_itr;
@@ -141,11 +122,12 @@ public:
 				{
 					const char* errstr = "";
 					m_scanner.getError( &errstr);
-					m_errorhnd->report( "error in XML document at position %u: %s", (unsigned int)m_scanner.getTokenPosition(), errstr);
+					m_errorhnd->report( _TXT("error in document at position %u: %s"), (unsigned int)m_scanner.getTokenPosition(), errstr);
 					return false;
 				}
 				else if (et == XMLScanner::Exit)
 				{
+					m_got_exit = true;
 					return false;
 				}
 				m_xpathselect.putElement( m_itr->type(), m_itr->content(), m_itr->size());
@@ -172,15 +154,12 @@ private:
 	XMLScanner m_scanner;
 	typename XMLScanner::iterator m_itr;
 	typename XMLScanner::iterator m_end;
-	char* m_chunk;
+	char const* m_chunk;
 	std::size_t m_chunksize;
-	std::size_t m_chunkbufsize;
 	bool m_eof;
-	bool m_got_eom;
+	bool m_got_exit;
 	jmp_buf m_eom;
-	std::vector<std::string> m_chunkbuf;
-	std::size_t m_chunkbufitr;
-	bool m_chunkbufeof;
+	std::list<std::string> m_chunkbuf;
 	ErrorBufferInterface* m_errorhnd;
 };
 
