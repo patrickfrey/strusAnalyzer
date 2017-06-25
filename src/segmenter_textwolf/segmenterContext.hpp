@@ -46,16 +46,27 @@ public:
 	virtual ~SegmenterContext()
 	{}
 
-	bool feedNextInputChunk()
+	void initScanner( char const* src, std::size_t srcsize)
 	{
-		if (m_chunkbuf.empty()) return false;
-		m_chunk = m_chunkbuf.front().c_str();
-		m_chunksize = m_chunkbuf.front().size();
+		m_chunk = src;
+		m_chunksize = srcsize;
 		m_srciter.putInput( m_chunk, m_chunksize, &m_eom);
 		m_scanner.setSource( m_srciter);
 		m_itr = m_scanner.begin(false);
 		m_end = m_scanner.end();
-		return true;
+	}
+	bool feedNextInputChunk()
+	{
+		if (m_chunkbuf.empty())
+		{
+			initScanner( "", 0);
+			return false;
+		}
+		else
+		{
+			initScanner( m_chunkbuf.front().c_str(), m_chunkbuf.front().size());
+			return true;
+		}
 	}
 
 	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof)
@@ -96,10 +107,8 @@ public:
 			if (m_got_exit) return false;
 
 		AGAIN:
-			if (setjmp(m_eom) != 0 || m_itr == m_end)
+			if (setjmp(m_eom) != 0)
 			{
-				m_chunk = 0;
-				m_chunksize = 0;
 				if (m_chunkbuf.empty())
 				{
 					if (!m_eof) m_errorhnd->report( _TXT( "unexpected end of input in '%s' segmenter"), SEGMENTER_NAME);
@@ -108,15 +117,14 @@ public:
 				else
 				{
 					m_chunkbuf.pop_front();
-					feedNextInputChunk();
+					if (!feedNextInputChunk()) return false;
 					goto AGAIN; //... to set setjmp context again
 				}
 			}
 			while (!m_xpathselect.getNext( id))
 			{
 				++m_itr;
-				if (m_itr == m_end) return false;
-	
+
 				typename XMLScanner::ElementType et = m_itr->type();
 				if (et == XMLScanner::ErrorOccurred)
 				{
