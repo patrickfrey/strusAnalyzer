@@ -169,11 +169,13 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 {
 	try
 	{
-		// PF:NOTE: The following order of code ensures that if this constructor fails statfunc is not copied and can be freed by this function:
-		m_statistics.reserve( m_statistics.size()+1);
 		m_statistics.push_back( StatisticsConfig( metaname, statfunc));
 	}
-	CATCH_ERROR_MAP( _TXT("error defining aggregated metadata: %s"), *m_errorhnd);
+	catch (const std::bad_alloc&)
+	{
+		m_errorhnd->report( _TXT("out of memory defining aggregated metadata '%s'"), metaname.c_str());
+		delete statfunc;
+	}
 }
 
 void DocumentAnalyzer::defineSubDocument(
