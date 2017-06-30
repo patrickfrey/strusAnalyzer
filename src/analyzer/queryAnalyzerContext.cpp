@@ -95,13 +95,19 @@ static void buildQueryTreeLeaf(
 
 static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned int>& args)
 {
+	std::vector<unsigned int> rt;
 	std::set<unsigned int> uniq;
 	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
 	for (; ai != ae; ++ai)
 	{
-		uniq.insert( *ai);
+		std::set<unsigned int>::const_iterator ui = uniq.find( *ai);
+		if (ui == uniq.end())
+		{
+			uniq.insert( *ai);
+			rt.push_back( *ai);
+		}
 	}
-	return std::vector<unsigned int>( uniq.begin(), uniq.end());
+	return rt;
 }
 
 class GroupMemberRelationMap
