@@ -34,10 +34,8 @@ public:
 		:m_automaton(automaton_)
 		,m_xpathselect(automaton_->createContext())
 		,m_scanner(charset_,textwolf::SrcIterator())
-		,m_chunk(0)
-		,m_chunksize(0)
 		,m_eof(false)
-		,m_got_exit(false)
+		,m_initialized(false)
 		,m_chunkbuf()
 		,m_errorhnd(errorhnd)
 	{
@@ -48,9 +46,7 @@ public:
 
 	void initScanner( char const* src, std::size_t srcsize)
 	{
-		m_chunk = src;
-		m_chunksize = srcsize;
-		m_srciter.putInput( m_chunk, m_chunksize, &m_eom);
+		m_srciter.putInput( src, srcsize, &m_eom);
 		m_scanner.setSource( m_srciter);
 		m_itr = m_scanner.begin(false);
 		m_end = m_scanner.end();
@@ -59,12 +55,14 @@ public:
 	{
 		if (m_chunkbuf.empty())
 		{
+			m_initialized = false;
 			initScanner( "", 0);
 			return false;
 		}
 		else
 		{
 			initScanner( m_chunkbuf.front().c_str(), m_chunkbuf.front().size());
+			m_initialized = true;
 			return true;
 		}
 	}
@@ -73,11 +71,6 @@ public:
 	{
 		try
 		{
-			if (m_got_exit)
-			{
-				m_errorhnd->report( _TXT( "feeded chunk after parsing completed"));
-				return;
-			}
 			if (m_eof)
 			{
 				m_errorhnd->report( _TXT( "feeded chunk after declared end of input"));
@@ -92,7 +85,7 @@ public:
 			{
 				m_errorhnd->report( _TXT("out of memory when buffering chunks for '%s' segmenter"), SEGMENTER_NAME);
 			}
-			if (!m_chunk)
+			if (!m_initialized)
 			{
 				feedNextInputChunk();
 			}
@@ -104,8 +97,6 @@ public:
 	{
 		try
 		{
-			if (m_got_exit) return false;
-
 		AGAIN:
 			if (setjmp(m_eom) != 0)
 			{
@@ -116,8 +107,15 @@ public:
 				}
 				else
 				{
-					m_chunkbuf.pop_front();
-					if (!feedNextInputChunk()) return false;
+					if (m_initialized)
+					{
+						m_chunkbuf.pop_front();
+						m_initialized = false;
+					}
+					if (!feedNextInputChunk())
+					{
+						return false;
+					}
 					goto AGAIN; //... to set setjmp context again
 				}
 			}
@@ -135,7 +133,7 @@ public:
 				}
 				else if (et == XMLScanner::Exit)
 				{
-					m_got_exit = true;
+					if (!m_eof) m_errorhnd->report( _TXT( "unexpected exit in '%s' segmenter without eof"), SEGMENTER_NAME);
 					return false;
 				}
 				m_xpathselect.putElement( m_itr->type(), m_itr->content(), m_itr->size());
@@ -162,10 +160,8 @@ private:
 	XMLScanner m_scanner;
 	typename XMLScanner::iterator m_itr;
 	typename XMLScanner::iterator m_end;
-	char const* m_chunk;
-	std::size_t m_chunksize;
 	bool m_eof;
-	bool m_got_exit;
+	bool m_initialized;
 	jmp_buf m_eom;
 	std::list<std::string> m_chunkbuf;
 	ErrorBufferInterface* m_errorhnd;
