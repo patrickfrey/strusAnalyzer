@@ -30,6 +30,12 @@ public:
 	/// \param[in] value option value
 	virtual void defineOption( const std::string& name, double value)=0;
 
+	/// \brief Assign a name to a lexem or symbol identifier
+	/// \param[in] id identifier given to the lexem or symbol
+	/// \param[in] name name assigned to the lexem or symbol
+	/// \note Has no meaning but for retrieval with getLexemName(unsigned int)const
+	virtual void defineLexemName( unsigned int id, const std::string& name)=0;
+
 	/// \brief Define a pattern for detecting a basic lexem of this pattern matching lexer
 	/// \param[in] id identifier given to the lexem, 0 if the lexem is not part of the output (only used for assigning ordinal positions).
 	/// \param[in] expression expression string defining the lexem
@@ -62,6 +68,11 @@ public:
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const=0;
+
+	/// \brief Retrieve the name given to a lexem or symbol
+	/// \param[in] id identifier of the lexem or symbol
+	/// \return the name of the lexem or symbol or 0, if not defined
+	virtual const char* getLexemName( unsigned int id) const=0;
 
 	/// \brief Compile all patterns and symbols defined
 	/// \return true on success, false on error (error reported in error buffer)

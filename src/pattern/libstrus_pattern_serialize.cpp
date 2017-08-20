@@ -97,6 +97,7 @@ struct SerializerData
 		TermFeeder_defineLexem,
 		TermFeeder_defineSymbol,
 		PatternLexer_defineOption,
+		PatternLexer_defineLexemName,
 		PatternLexer_defineLexem,
 		PatternLexer_defineSymbol,
 		PatternLexer_compile,
@@ -281,7 +282,7 @@ public:
 	PatternTermFeederInstance( const Reference<SerializerData>& serializerData_, ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_),m_serializerData(serializerData_){}
 	virtual ~PatternTermFeederInstance(){}
-
+	
 	virtual void defineLexem(
 			unsigned int id,
 			const std::string& type)
@@ -346,6 +347,18 @@ public:
 		:m_errorhnd(errorhnd_),m_serializerData(serializerData_){}
 	virtual ~PatternLexerInstance(){}
 
+	virtual void defineLexemName( unsigned int id, const std::string& name)
+	{
+		try
+		{
+			m_serializerData->startCall( SerializerData::PatternLexer_defineLexemName);
+			m_serializerData->pushParam( id);
+			m_serializerData->pushParam( name);
+			m_serializerData->endCall();
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineLexemName command: %s"), *m_errorhnd);
+	}
+
 	virtual void defineLexem(
 			unsigned int id,
 			const std::string& expression,
@@ -387,6 +400,12 @@ public:
 			const std::string& ) const
 	{
 		m_errorhnd->report(_TXT("command PatternLexer::getSymbol not implemented in serializer"));
+		return 0;
+	}
+
+	virtual const char* getLexemName( unsigned int) const
+	{
+		m_errorhnd->report(_TXT("command PatternLexer::getLexemName not implemented in serializer"));
 		return 0;
 	}
 
@@ -603,6 +622,15 @@ public:
 		:m_errorhnd(errorhnd_),m_output(&output_){}
 	virtual ~PatternLexerInstanceText(){}
 
+	virtual void defineLexemName( unsigned int id, const std::string& name)
+	{
+		try
+		{
+			(*m_output) << "L defineLexemName( " << id << ", " << name << ");" << std::endl;
+		}
+		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineLexemName command: %s"), *m_errorhnd);
+	}
+
 	virtual void defineLexem(
 			unsigned int id,
 			const std::string& expression,
@@ -634,6 +662,12 @@ public:
 			const std::string& ) const
 	{
 		m_errorhnd->report(_TXT("command PatternLexer::getSymbol not implemented in serializer"));
+		return 0;
+	}
+
+	virtual const char* getLexemName( unsigned int) const
+	{
+		m_errorhnd->report(_TXT("command PatternLexer::getLexemName not implemented in serializer"));
 		return 0;
 	}
 
@@ -888,7 +922,7 @@ static void deserializeCommand(
 		case SerializerData::TermFeeder_defineSymbol:
 		{
 			if (!feeder) throw strus::runtime_error(_TXT("loading term feeder command when no term feeder defined"));
-			
+
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
 			std::string op_name = deserializer.readParam_string();
@@ -897,10 +931,20 @@ static void deserializeCommand(
 			feeder->defineSymbol( op_id, op_lexemid, op_name);
 			break;
 		}
+		case SerializerData::PatternLexer_defineLexemName:
+		{
+			if (!lexer) throw strus::runtime_error(_TXT("loading pattern lexer command when no pattern lexer defined"));
+
+			unsigned int op_id = deserializer.readParam_uint();
+			std::string op_name = deserializer.readParam_string();
+			deserializer.endCall();
+			lexer->defineLexemName( op_id, op_name);
+			break;
+		}
 		case SerializerData::PatternLexer_defineLexem:
 		{
 			if (!lexer) throw strus::runtime_error(_TXT("loading pattern lexer command when no pattern lexer defined"));
-			
+
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_expression = deserializer.readParam_string();
 			unsigned int op_resultIndex = deserializer.readParam_uint();
