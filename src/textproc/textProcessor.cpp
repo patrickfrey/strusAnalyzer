@@ -9,6 +9,7 @@
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/segmenter_cjson.hpp"
 #include "strus/lib/segmenter_tsv.hpp"
+#include "strus/lib/segmenter_plain.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "strus/segmenterInterface.hpp"
@@ -583,6 +584,8 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	if (segref) defineSegmenter( "cjson", segref);
 	segref = strus::createSegmenter_tsv( m_errorhnd);
 	if (segref) defineSegmenter( "tsv", segref);
+	segref = strus::createSegmenter_plain( m_errorhnd);
+	if (segref) defineSegmenter( "plain", segref);
 
 	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
 	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));

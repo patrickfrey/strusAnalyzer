@@ -30,6 +30,10 @@ link_directories(
  	"${PROJECT_SOURCE_DIR}/src/tokenizer_textcat"
  	"${PROJECT_SOURCE_DIR}/src/aggregator_vsm"
  	"${PROJECT_SOURCE_DIR}/src/aggregator_set"
+ 	"${PROJECT_SOURCE_DIR}/src/segmenter_textwolf"
+ 	"${PROJECT_SOURCE_DIR}/src/segmenter_cjson"
+ 	"${PROJECT_SOURCE_DIR}/src/segmenter_tsv"
+ 	"${PROJECT_SOURCE_DIR}/src/segmenter_plain"
  	"${PROJECT_SOURCE_DIR}/src/pattern"
  	"${PROJECT_SOURCE_DIR}/src/utils"
 	"${Boost_LIBRARY_DIRS}"
@@ -47,6 +51,7 @@ target_link_libraries(
 	strus_segmenter_textwolf
 	strus_segmenter_cjson
 	strus_segmenter_tsv
+	strus_segmenter_plain
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
