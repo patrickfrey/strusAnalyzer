@@ -23,7 +23,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	{
 		if (!expression.empty())
 		{
-			m_errorhnd->report( _TXT("only empty expressions allowed for '%s' segmenter"), SEGMENTER_NAME);
+			m_errorhnd->report( _TXT("only empty expressions allowed for '%s' segmenter, got '%s' for %d"), SEGMENTER_NAME, expression.c_str(), id);
 		}
 		m_segids.insert( id);
 	}
