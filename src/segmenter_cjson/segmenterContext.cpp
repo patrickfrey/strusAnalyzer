@@ -188,7 +188,7 @@ static cJSON* parseJsonTree( const std::string& content)
 		std::pair<std::size_t,std::size_t> li = lineInfo( content.c_str(), ctx.errorptr);
 
 		std::string err( ctx.errorptr);
-		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), li.first, li.second, err.c_str());
+		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), (unsigned int)li.first, (unsigned int)li.second, err.c_str());
 	}
 	return tree;
 }
