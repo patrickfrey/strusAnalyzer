@@ -246,6 +246,8 @@ make test
 %{_libdir}/strus/libstrus_segmenter_cjson.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_segmenter_tsv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_segmenter_tsv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_segmenter_plain.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_segmenter_plain.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -268,6 +270,8 @@ make test
 %{_libdir}/strus/libstrus_normalizer_wordjoin.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_aggregator_vsm.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_aggregator_set.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_aggregator_set.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer_objbuild.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_markup_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -293,6 +297,7 @@ make test
 %{_libdir}/strus/libstrus_segmenter_textwolf.so
 %{_libdir}/strus/libstrus_segmenter_cjson.so
 %{_libdir}/strus/libstrus_segmenter_tsv.so
+%{_libdir}/strus/libstrus_segmenter_plain.so
 %{_libdir}/strus/libstrus_analyzer.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
@@ -304,6 +309,7 @@ make test
 %{_libdir}/strus/libstrus_normalizer_dateconv.so
 %{_libdir}/strus/libstrus_normalizer_wordjoin.so
 %{_libdir}/strus/libstrus_aggregator_vsm.so
+%{_libdir}/strus/libstrus_aggregator_set.so
 %{_libdir}/strus/libstrus_analyzer_objbuild.so
 %{_libdir}/strus/libstrus_markup_std.so
 %{_libdir}/strus/libstrus_pattern_termfeeder.so
@@ -316,6 +322,18 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Sun Sep 3 2017 Patrick Frey <patrickpfrey@yahoo.com> 0.15.0-0.1
+- added segmenter 'plain' for MIME type text/plain
+- remove hardcoded setting of C++98 in CMake files
+- rewrote some parts of textwolf segmenter (make things clearer)
+- fix bugs in query analysis: building query tree (bad iterator on modified map) and group elements
+- rewrite some parts of query analysis
+- added aggregator 'exist' that calculates a bitfield for representing features to exist or not
+- many CMake build fixes
+- fixed wrongly calculated json segmenter position assignments
+- implement processing of TSV and JSON documents with a different encoding than 'UTF-8'
+- fixed bug in segmenter for JSON: allowed only one root element
+
 * Wed Feb 15 2017 Patrick Frey <patrickpfrey@yahoo.com> 0.14.0-0.1
 - increment version synchronously to strus core
 

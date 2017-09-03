@@ -1,4 +1,18 @@
 strusAnalyzer (0.14.0)
+  * strenghten rules for printf style functions in the interface: issue warnings on wrong format string parameter lists for gcc
+  * added segmenter 'plain' for MIME type text/plain
+  * remove hardcoded setting of C++98 in CMake files
+  * rewrote some parts of textwolf segmenter (make things clearer)
+  * fix bugs in query analysis: building query tree (bad iterator on modified map) and group elements
+  * rewrite some parts of query analysis
+  * added aggregator 'exist' that calculates a bitfield for representing features to exist or not
+  * many CMake build fixes
+  * fixed wrongly calculated json segmenter position assignments
+  * implement processing of TSV and JSON documents with a different encoding than 'UTF-8'
+  * fixed bug in segmenter for JSON: allowed only one root element
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Sun, 3 Sep 2017 15:00:00 +0100
+
+strusAnalyzer (0.14.0)
   * increment version synchronously to strus core
  -- Patrick Frey <patrickpfrey@yahoo.com>  Wed, 15 Feb 2016 14:00:00 +0100
 
