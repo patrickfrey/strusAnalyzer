@@ -1,4 +1,8 @@
-strusAnalyzer (0.14.0)
+strusAnalyzer (0.15.1)
+  * release to cleanup mess with missing CHANGELOG in 0.15.0
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Mon, 4 Sep 2017 15:30:00 +0100
+
+strusAnalyzer (0.15.0)
   * strenghten rules for printf style functions in the interface: issue warnings on wrong format string parameter lists for gcc
   * added segmenter 'plain' for MIME type text/plain
   * remove hardcoded setting of C++98 in CMake files
