@@ -13,6 +13,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/local_ptr.hpp"
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -319,7 +320,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 	try
 	{
 		analyzer::Document rt;
-		std::auto_ptr<DocumentAnalyzerContext>
+		strus::local_ptr<DocumentAnalyzerContext>
 			analyzerInstance( new DocumentAnalyzerContext( this, dclass, m_errorhnd));
 		analyzerInstance->putInput( content.c_str(), content.size(), true);
 		if (!analyzerInstance->analyzeNext( rt))

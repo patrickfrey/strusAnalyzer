@@ -11,6 +11,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/symbolTable.hpp"
+#include "strus/base/local_ptr.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -154,7 +155,7 @@ public:
 		}
 		unsigned int ec = readFileSize( resolvedFilename, sz);
 		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
-		std::auto_ptr<KeyMap> map;
+		strus::local_ptr<KeyMap> map;
 		if (sz > 2000000)
 		{
 			map.reset( new HashMap());

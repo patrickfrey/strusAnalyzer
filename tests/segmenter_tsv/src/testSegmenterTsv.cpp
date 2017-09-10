@@ -14,6 +14,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/local_ptr.hpp"
 #include <memory>
 #include <string>
 #include <cstring>
@@ -148,9 +149,9 @@ int main( int argc, const char* argv[])
 		char outputfile[ 256];
 		snprintf( outputfile, sizeof(outputfile), "%s%c%s", argv[1], strus::dirSeparator(), "output.txt");
 
-		std::auto_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_tsv( g_errorhnd));
+		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_tsv( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
-		std::auto_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
+		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
 		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
 		strus::analyzer::DocumentClass dclass( segmenter->mimeType(), "UTF-8");
 
@@ -176,7 +177,7 @@ int main( int argc, const char* argv[])
 #endif
 			}
 		}
-		std::auto_ptr<strus::SegmenterContextInterface> segmenterContext( segmenterInstance->createContext( dclass));
+		strus::local_ptr<strus::SegmenterContextInterface> segmenterContext( segmenterInstance->createContext( dclass));
 		if (!segmenterContext.get()) throw std::runtime_error("failed to create segmenter context");
 
 		std::string inputsrc;

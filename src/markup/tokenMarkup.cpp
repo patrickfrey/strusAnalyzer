@@ -13,6 +13,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/segmenterMarkupContextInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
+#include "strus/base/local_ptr.hpp"
 #include <algorithm>
 #include <memory>
 
@@ -62,7 +63,7 @@ std::string TokenMarkupContext::markupDocument(
 {
 	try
 	{
-		std::auto_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
+		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
 		if (!markupdoc.get()) throw strus::runtime_error(_TXT("failed to create markup document context"));
 
 		std::vector<MarkupElement> markupar = m_markupar;

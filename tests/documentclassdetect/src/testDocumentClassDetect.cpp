@@ -13,6 +13,7 @@
 #include "private/internationalization.hpp"
 #include "private/utils.hpp"
 #include "strus/base/inputStream.hpp"
+#include "strus/base/local_ptr.hpp"
 #include "strus/analyzer/documentClass.hpp"
 
 #include <iostream>
@@ -68,7 +69,7 @@ int main( int argc, const char* argv[])
 		const char* expectedCharset = argv[3];
 		const char* testFile = argv[4];
 
-		std::auto_ptr<strus::TextProcessorInterface>
+		strus::local_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
 		textproc->addResourcePath( workingDir);
 				
