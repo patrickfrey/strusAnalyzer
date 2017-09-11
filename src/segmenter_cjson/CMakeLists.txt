@@ -18,7 +18,7 @@ include_directories(
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
-	"${PROJECT_SOURCE_DIR}/3rdParty/cjson/src"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../3rdParty/cjson/src"
 	"${Boost_LIBRARY_DIRS}"
 )
 

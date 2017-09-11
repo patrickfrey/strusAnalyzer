@@ -18,8 +18,8 @@ include_directories(
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c"
-	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../3rdParty/snowball/libstemmer_c"
+	"${CMAKE_CURRENT_BINARY_DIR}/../src/utils"
 	"${Boost_LIBRARY_DIRS}"
 )
 

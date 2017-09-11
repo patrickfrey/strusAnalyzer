@@ -16,7 +16,7 @@ include_directories(
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
-	"${PROJECT_SOURCE_DIR}/src/segmenter_utils" 
+	"${CMAKE_CURRENT_BINARY_DIR}/../segmenter_utils" 
 	"${Boost_LIBRARY_DIRS}"
 )
 
