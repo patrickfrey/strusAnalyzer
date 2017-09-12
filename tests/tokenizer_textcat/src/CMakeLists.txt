@@ -8,11 +8,11 @@ include_directories(
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/src/analyzer"
-	"${PROJECT_SOURCE_DIR}/src/textproc"
-	"${PROJECT_SOURCE_DIR}/src/utils"
-	"${PROJECT_SOURCE_DIR}/src/detector_std"
-	"${PROJECT_SOURCE_DIR}/src/tokenizer_textcat"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/analyzer"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/textproc"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/utils"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/detector_std"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/tokenizer_textcat"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )
