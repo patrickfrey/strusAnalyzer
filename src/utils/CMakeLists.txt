@@ -7,7 +7,7 @@ include_directories(
 	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${strusbase_INCLUDE_DIRS}"
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${TEXTWOLF_INCLUDE_DIRS}"
 )
 link_directories(
 	"${Boost_LIBRARY_DIRS}"

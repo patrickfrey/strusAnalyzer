@@ -25,9 +25,9 @@ include_directories(
 )
 
 link_directories(
- 	"${CMAKE_CURRENT_BINARY_DIR}/../segmenter_textwolf"
- 	"${CMAKE_CURRENT_BINARY_DIR}/../textproc"
- 	"${CMAKE_CURRENT_BINARY_DIR}/../utils"
+ 	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
+ 	"${MAIN_SOURCE_DIR}/textproc"
+ 	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )

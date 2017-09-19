@@ -13,12 +13,12 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/cjson/include"
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${CJSON_INCLUDE_DIRS}"
+	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../3rdParty/cjson/src"
+	"${CJSON_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 

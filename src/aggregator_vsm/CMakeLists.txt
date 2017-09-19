@@ -15,7 +15,7 @@ include_directories(
 )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../utils"
+	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 

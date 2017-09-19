@@ -42,6 +42,19 @@ configure_file( "${PROJECT_SOURCE_DIR}/src/textproc/resourceDirectory.hpp.in"  "
 
 enable_testing()
 
+# Path declarations:
+set( TEXTCAT_INCLUDE_DIRS           "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textcat/src" "${PROJECT_SOURCE_DIR}/3rdParty/textcat/src" )
+set( TEXTCAT_LIBRARY_DIRS           "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textcat" )
+set( TEXTWOLF_INCLUDE_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textwolf/include"  "${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include" )
+set( CJSON_INCLUDE_DIRS              "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/cjson/include"  "${PROJECT_SOURCE_DIR}/3rdParty/cjson/include" )
+set( CJSON_LIBRARY_DIRS               "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/cjson" )
+set( SNOWBALL_INCLUDE_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/snowball/libstemmer_c/include"   "${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c/include" )
+set( SNOWBALL_LIBRARY_DIRS        "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/snowball/libstemmer_c" )
+set( CNODETRIE_INCLUDE_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactNodeTrie/include"  "${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/include" )
+set( CNODETRIE_LIBRARY_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactNodeTrie/src" )
+set( UTILS_LIBRARY_DIRS                 "${CMAKE_CURRENT_BINARY_DIR}/src/utils" )
+set( MAIN_SOURCE_DIR                    "${PROJECT_SOURCE_DIR}/src" )
+
 # Subdirectories:
 add_subdirectory( 3rdParty )
 add_subdirectory( src )
