@@ -8,7 +8,7 @@ include_directories(
 )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/segmenter_cjson"
+	"${MAIN_SOURCE_DIR}/segmenter_cjson"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )

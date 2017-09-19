@@ -8,7 +8,7 @@ include_directories(
 )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/segmenter_tsv"
+	"${MAIN_SOURCE_DIR}/segmenter_tsv"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )

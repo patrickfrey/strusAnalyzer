@@ -8,17 +8,17 @@ include_directories(
 )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/analyzer"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/textproc"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/utils"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/detector_std"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/normalizer_charconv"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/normalizer_dateconv"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/normalizer_dictmap"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/normalizer_snowball"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/segmenter_textwolf"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/tokenizer_punctuation"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../src/tokenizer_word"
+	"${MAIN_SOURCE_DIR}/analyzer"
+	"${MAIN_SOURCE_DIR}/textproc"
+	"${MAIN_SOURCE_DIR}/utils"
+	"${MAIN_SOURCE_DIR}/detector_std"
+	"${MAIN_SOURCE_DIR}/normalizer_charconv"
+	"${MAIN_SOURCE_DIR}/normalizer_dateconv"
+	"${MAIN_SOURCE_DIR}/normalizer_dictmap"
+	"${MAIN_SOURCE_DIR}/normalizer_snowball"
+	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
+	"${MAIN_SOURCE_DIR}/tokenizer_punctuation"
+	"${MAIN_SOURCE_DIR}/tokenizer_word"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )
