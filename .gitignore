@@ -78,8 +78,5 @@ tests/segmenter_cjson/output.txt
 tests/segmenter_tsv/output.txt
 tests/posbind/data/doc.out
 
-# Travis
-.travis.yml
-
 # autoconf-like generated configuration file (textcat)
 3rdParty/textcat/src/config.h
