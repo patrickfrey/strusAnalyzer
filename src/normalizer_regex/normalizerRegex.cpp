@@ -135,7 +135,7 @@ public:
 				std::string( src, srcsize), m_config.expression, m_config.output,
 				boost::match_posix);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"%s\" normalizer function: %s"), MODULE_NAME, *m_errorhnd, std::string());
+		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error executing \"%s\" normalizer function: %s"), MODULE_NAME, *m_errorhnd, std::string());
 	}
 
 private:
@@ -160,7 +160,7 @@ NormalizerFunctionInstanceInterface* RegexNormalizerFunction::createInstance(
 		}
 		return new RegexNormalizerFunctionInstance( RegexConfiguration( args[0], args[1]), m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 const char* RegexNormalizerFunction::getDescription() const
@@ -169,7 +169,7 @@ const char* RegexNormalizerFunction::getDescription() const
 	{
 		return _TXT( "Normalizer that does a regular expression match with the first argument and a replace with the format string defined in the second argument.");
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 
