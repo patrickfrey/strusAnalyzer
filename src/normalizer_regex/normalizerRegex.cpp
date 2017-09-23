@@ -21,6 +21,8 @@
 
 using namespace strus;
 
+#define MODULE_NAME "regex"
+
 class RegexOutputFormatter
 {
 public:
@@ -43,7 +45,7 @@ public:
 					int stridx = m_strings.size()+1;
 					m_strings.push_back( '\0');
 					m_strings.append( pre, fi - pre);
-					if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "output formatter string size out of range");
+					if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "%s", _TXT("output formatter string size out of range"));
 					m_items.push_back( stridx);
 				}
 				++fi;
@@ -51,7 +53,7 @@ public:
 				while (*fi >= '0' && *fi <= '9')
 				{
 					idx = idx * 10 + (*fi - '0');
-					if (idx > std::numeric_limits<short>::max()) throw std::runtime_error( "output formatter element reference index out of range");
+					if (idx > std::numeric_limits<short>::max()) throw std::runtime_error( "%s", _TXT("output formatter element reference index out of range"));
 					++fi;
 				}
 				m_items.push_back( -idx);
@@ -67,7 +69,7 @@ public:
 			int stridx = m_strings.size()+1;
 			m_strings.push_back( '\0');
 			m_strings.append( pre, fi - pre);
-			if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "output formatter string size out of range");
+			if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "%s", _TXT("output formatter string size out of range"));
 			m_items.push_back( stridx);
 		}
 	}
@@ -133,7 +135,7 @@ public:
 				std::string( src, srcsize), m_config.expression, m_config.output,
 				boost::match_posix);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"regex\" normalizer function: %s"), *m_errorhnd, std::string());
+		CATCH_ERROR_MAP_RETURN( _TXT("error executing \"%s\" normalizer function: %s"), MODULE_NAME, *m_errorhnd, std::string());
 	}
 
 private:
@@ -150,15 +152,15 @@ NormalizerFunctionInstanceInterface* RegexNormalizerFunction::createInstance(
 	{
 		if (args.size() > 2)
 		{
-			throw strus::runtime_error(_TXT("too many arguments for \"regex\" normalizer (two arguments, 1st the regular expression to find tokens and 2nd the format string for the output)"));
+			throw strus::runtime_error( _TXT("too many arguments for \"%s\" normalizer (two arguments, 1st the regular expression to find tokens and 2nd the format string for the output)"), MODULE_NAME);
 		}
 		else if (args.size() < 2)
 		{
-			throw strus::runtime_error(_TXT("expected two arguments for \"regex\" normalizer: 1st the regular expression to find tokens and 2nd the format string for the output)"));
+			throw strus::runtime_error( _TXT("expected two arguments for \"%s\" normalizer: 1st the regular expression to find tokens and 2nd the format string for the output)"), MODULE_NAME);
 		}
 		return new RegexNormalizerFunctionInstance( RegexConfiguration( args[0], args[1]), m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating \"regex\" normalizer instance: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 const char* RegexNormalizerFunction::getDescription() const
@@ -167,7 +169,7 @@ const char* RegexNormalizerFunction::getDescription() const
 	{
 		return _TXT( "Normalizer that does a regular expression match with the first argument and a replace with the format string defined in the second argument.");
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error getting \"regex\" normalizer description: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 

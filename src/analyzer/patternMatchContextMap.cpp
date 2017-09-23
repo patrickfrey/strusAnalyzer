@@ -22,11 +22,11 @@ PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatc
 {
 	if (!m_matcher.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern matcher context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher context"));
 	}
 	if (!m_lexer.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern lexer context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern lexer context"));
 	}
 }
 
@@ -65,10 +65,10 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 		{
 			SegPosContentPosMap::const_iterator segi;
 			segi = m_segPosContentPosMap.find( ti->start_origseg());
-			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error(_TXT("internal: inconsistency in data, segment position unknown"));
+			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstritr = segi->second;
 			segi = m_segPosContentPosMap.find( ti->end_origseg());
-			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error(_TXT("internal: inconsistency in data, segment position unknown"));
+			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstrend = segi->second;
 
 			if (segstritr == segstrend)
@@ -89,7 +89,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 				}
 				if (segstritr != segstrend)
 				{
-					throw strus::runtime_error(_TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
+					throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
 				}
 				value.append( m_content.c_str() + segstritr, ti->end_origpos());
 				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
@@ -114,7 +114,7 @@ PostProcPatternMatchContext::PostProcPatternMatchContext( const PostProcPatternM
 {
 	if (!m_matcher.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern matcher context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher context"));
 	}
 }
 

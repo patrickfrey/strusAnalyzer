@@ -176,7 +176,7 @@ static void fillTermsQuery(
 	{
 		if (ri->posbind() != analyzer::BindContent)
 		{
-			throw strus::runtime_error(_TXT("only position bind content expected in query"));
+			throw strus::runtime_error( "%s", _TXT("only position bind content expected in query"));
 		}
 		PositionMap::const_iterator
 			mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
@@ -387,7 +387,7 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatPatternLexem:
-				throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
+				throw strus::runtime_error( "%s", _TXT("internal: illegal feature class for pattern match result"));
 		}
 	}
 }

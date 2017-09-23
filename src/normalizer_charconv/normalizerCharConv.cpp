@@ -4370,7 +4370,7 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, CharMap::Exc
 			{
 				if (value == textwolf::charset::UTF8::MaxChar)
 				{
-					throw strus::runtime_error(_TXT( "illegal UTF-8 character in input"));
+					throw strus::runtime_error( "%s", _TXT( "illegal UTF-8 character in input"));
 				}
 				rt.append( buf, bufpos);
 			}

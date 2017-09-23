@@ -64,7 +64,7 @@ std::string TokenMarkupContext::markupDocument(
 	try
 	{
 		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
-		if (!markupdoc.get()) throw strus::runtime_error(_TXT("failed to create markup document context"));
+		if (!markupdoc.get()) throw strus::runtime_error( "%s", _TXT("failed to create markup document context"));
 
 		std::vector<MarkupElement> markupar = m_markupar;
 		std::sort( markupar.begin(), markupar.end());
@@ -114,7 +114,7 @@ std::string TokenMarkupContext::markupDocument(
 					const char* segment;
 					if (!markupdoc->getNext( itr_segpos, segment, itr_size))
 					{
-						throw strus::runtime_error( _TXT("cannot find path to end of markup"));
+						throw strus::runtime_error( "%s",  _TXT("cannot find path to end of markup"));
 					}
 					writeOpenMarkup( markupdoc.get(), itr_segpos, 0, mi->markup);
 				}

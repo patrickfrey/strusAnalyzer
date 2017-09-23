@@ -81,7 +81,7 @@ static void buildQueryTreeNode(
 	std::vector<unsigned int>::const_iterator ci = children.begin(), ce = children.end();
 	for (; ci != ce; ++ci)
 	{
-		if (nodear[*ci].next) throw strus::runtime_error(_TXT("internal: query tree node linked twice"));
+		if (nodear[*ci].next) throw strus::runtime_error( "%s", _TXT("internal: query tree node linked twice"));
 		if (ci+1 != ce) nodear[*ci].next = *(ci+1);
 	}
 }
@@ -145,7 +145,7 @@ void GroupMemberRelationMap::updateElementRoot( std::map<unsigned int,unsigned i
 	{
 		NodeMemberRange nodeMemberRange = m_map.equal_range( *ai);
 		NodeMemberMapItr ni = nodeMemberRange.first, ne = nodeMemberRange.second;
-		if (ni == ne) throw strus::runtime_error(_TXT("internal: badly linked tree structure"));
+		if (ni == ne) throw strus::runtime_error( "%s", _TXT("internal: badly linked tree structure"));
 		for (; ni != ne; ++ni)
 		{
 			elemRootMap[ ni->second] = rootNodeIdx;
@@ -207,7 +207,7 @@ public:
 		std::map<unsigned int,unsigned int>::const_iterator ni = m_elementRootMap.find( elemidx);
 		if (ni == m_elementRootMap.end())
 		{
-			throw strus::runtime_error(_TXT("internal: query tree root element not found"));
+			throw strus::runtime_error( "%s", _TXT("internal: query tree root element not found"));
 		}
 		else
 		{
@@ -354,7 +354,7 @@ static QueryTree buildQueryTree(
 			}
 			case QueryAnalyzerContextInterface::GroupUnique:
 			{
-				if (!gi->groupSingle) throw strus::runtime_error(_TXT("contradicting grouping operation: using group unique with no single child groups allowed"));
+				if (!gi->groupSingle) throw strus::runtime_error( "%s", _TXT("contradicting grouping operation: using group unique with no single child groups allowed"));
 
 				// Group all selected nodes into the same group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
@@ -366,7 +366,7 @@ static QueryTree buildQueryTree(
 				}
 				else
 				{
-					throw strus::runtime_error(_TXT("analyze query fields did not create the unique element required"));
+					throw strus::runtime_error( "%s", _TXT("analyze query fields did not create the unique element required"));
 				}
 				break;
 			}
@@ -384,7 +384,7 @@ static QueryTree buildQueryTree(
 			}
 			case QueryAnalyzerContextInterface::GroupEvery:
 			{
-				if (!gi->groupSingle) throw strus::runtime_error(_TXT("contradicting grouping operation: using group every with no single child groups allowed"));
+				if (!gi->groupSingle) throw strus::runtime_error( "%s", _TXT("contradicting grouping operation: using group every with no single child groups allowed"));
 
 				// Group every selected node into its own group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);

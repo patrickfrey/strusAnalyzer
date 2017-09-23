@@ -174,35 +174,35 @@ static DateNumGranularity::Type parseGranularityType( char const*& gi)
 {
 	if (*gi == 's')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Second;
 	}
 	else if (*gi == 'm')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Minute;
 	}
 	else if (*gi == 'h')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Hour;
 	}
 	else if (*gi == 'd')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
 	else if (*gi == 'y')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
-	throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+	throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 }
 
 static unsigned int parseNumber( char const*& gi)
@@ -213,11 +213,11 @@ static unsigned int parseNumber( char const*& gi)
 	{
 		unsigned int fo = rt;
 		rt = rt * 10 + (*gi - '0');
-		if (fo < rt) throw strus::runtime_error( _TXT("error in result definition: number out of range"));
+		if (fo < rt) throw strus::runtime_error( "%s", _TXT("error in result definition: number out of range"));
 	}
 	if (!rt)
 	{
-		throw strus::runtime_error( _TXT("error in result definition: number expected"));
+		throw strus::runtime_error( "%s", _TXT("error in result definition: number expected"));
 	}
 	return rt;
 }
@@ -234,7 +234,7 @@ DateNumGranularity parseGranularity( char const* gi)
 	{
 		++gi;
 		factor = parseNumber( gi);
-		if (factor == 0) throw strus::runtime_error(_TXT("illegal factor"));
+		if (factor == 0) throw strus::runtime_error( "%s", _TXT("illegal factor"));
 	}
 	gi = skipSpaces( gi);
 	if (*gi)

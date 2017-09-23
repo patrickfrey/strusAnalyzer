@@ -573,9 +573,9 @@ private:
 TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	:m_patterntermfeeder(createPatternTermFeeder_default(errorhnd)),m_errorhnd(errorhnd)
 {
-	if (!m_patterntermfeeder) throw strus::runtime_error(_TXT("error creating default pattern term feeder interface for text processor"));
+	if (!m_patterntermfeeder) throw strus::runtime_error( "%s", _TXT("error creating default pattern term feeder interface for text processor"));
 	DocumentClassDetectorInterface* dtc;
-	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error(_TXT("error creating text processor"));
+	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error( "%s", _TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
 
 	SegmenterInterface* segref = strus::createSegmenter_textwolf( m_errorhnd);

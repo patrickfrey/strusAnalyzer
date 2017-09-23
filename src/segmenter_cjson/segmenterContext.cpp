@@ -103,7 +103,7 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 		case cJSON_Number:
 			if (!nd->valuestring)
 			{
-				throw strus::runtime_error( _TXT("value node without string value found in JSON structure"));
+				throw strus::runtime_error( "%s",  _TXT("value node without string value found in JSON structure"));
 			}
 			getTextwolfValue( itemar, nd, nd->valuestring);
 			break;

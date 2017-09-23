@@ -43,7 +43,7 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 {
 	if (!m_segmenter)
 	{
-		throw strus::runtime_error( _TXT("failed to create document analyzer context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create document analyzer context"));
 	}
 }
 
@@ -165,7 +165,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 							if (subsegmenterdef)
 							{
 								SegmenterContextInterface* ns = subsegmenterdef->segmenterInstance->createContext( subsegmenterdef->documentClass);
-								if (!ns) throw strus::runtime_error(_TXT("failed to create sub segmenter context"));
+								if (!ns) throw strus::runtime_error( "%s", _TXT("failed to create sub segmenter context"));
 								m_segmenterstack.push_back( SegmenterStackElement( m_start_position, m_curr_position_ofs, m_segmenter));
 								m_segmenter = ns;
 								m_curr_position_ofs = m_curr_position;
@@ -189,7 +189,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						{
 							if (m_nof_segments > 0)
 							{
-								throw strus::runtime_error(_TXT("addressing segments outside of a sub document or overlapping sub documents found"));
+								throw strus::runtime_error( "%s", _TXT("addressing segments outside of a sub document or overlapping sub documents found"));
 							}
 							// create new sub document:
 							m_subdocTypeName = m_analyzer->subdoctypes()[ featidx-OfsSubDocument];
