@@ -155,7 +155,7 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 			break;
 		}
 		default:
-			throw std::runtime_error( "internal: memory corruption found in JSON structure");
+			throw strus::runtime_error( _TXT("internal: memory corruption found in JSON structure"));
 	}
 }
 

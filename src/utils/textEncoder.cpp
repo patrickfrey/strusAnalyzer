@@ -94,7 +94,7 @@ TextEncoderBase* utils::createTextEncoder( const char* encoding)
 			const char* codepage = enc.c_str() + 8;
 			if (std::strlen( codepage) > 1 || codepage[0] < '0' || codepage[0] > '9')
 			{
-				throw std::runtime_error( "unknown iso-latin code page index");
+				throw strus::runtime_error( _TXT("unknown iso-latin code page index"));
 			}
 			if (codepage[0] == '1')
 			{
@@ -110,7 +110,7 @@ TextEncoderBase* utils::createTextEncoder( const char* encoding)
 			const char* codepage = enc.c_str() + 7;
 			if (std::strlen( codepage) > 1 || codepage[0] < '0' || codepage[0] > '9')
 			{
-				throw std::runtime_error( "unknown iso-latin code page index");
+				throw strus::runtime_error( _TXT("unknown iso-latin code page index"));
 			}
 			if (codepage[0] == '1')
 			{
@@ -151,7 +151,7 @@ TextEncoderBase* utils::createTextEncoder( const char* encoding)
 		}
 		else
 		{
-			throw std::runtime_error( "unknown character set encoding");
+			throw strus::runtime_error( _TXT("unknown character set encoding"));
 		}
 	}
 }

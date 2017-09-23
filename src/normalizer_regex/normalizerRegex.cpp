@@ -45,7 +45,7 @@ public:
 					int stridx = m_strings.size()+1;
 					m_strings.push_back( '\0');
 					m_strings.append( pre, fi - pre);
-					if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "%s", _TXT("output formatter string size out of range"));
+					if (stridx > std::numeric_limits<int>::max()) throw strus::runtime_error( "%s", _TXT("output formatter string size out of range"));
 					m_items.push_back( stridx);
 				}
 				++fi;
@@ -53,7 +53,7 @@ public:
 				while (*fi >= '0' && *fi <= '9')
 				{
 					idx = idx * 10 + (*fi - '0');
-					if (idx > std::numeric_limits<short>::max()) throw std::runtime_error( "%s", _TXT("output formatter element reference index out of range"));
+					if (idx > std::numeric_limits<short>::max()) throw strus::runtime_error( "%s", _TXT("output formatter element reference index out of range"));
 					++fi;
 				}
 				m_items.push_back( -idx);
@@ -69,7 +69,7 @@ public:
 			int stridx = m_strings.size()+1;
 			m_strings.push_back( '\0');
 			m_strings.append( pre, fi - pre);
-			if (stridx > std::numeric_limits<int>::max()) throw std::runtime_error( "%s", _TXT("output formatter string size out of range"));
+			if (stridx > std::numeric_limits<int>::max()) throw strus::runtime_error( "%s", _TXT("output formatter string size out of range"));
 			m_items.push_back( stridx);
 		}
 	}
