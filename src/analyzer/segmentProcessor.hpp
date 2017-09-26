@@ -11,7 +11,7 @@
 #include "patternFeatureConfigMap.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
-#include "strus/analyzer/query.hpp"
+#include "strus/analyzer/queryTermExpression.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/token.hpp"
 #include <vector>
@@ -62,9 +62,26 @@ public:
 	/// \brief Fetch the currently processed document
 	analyzer::Document fetchDocument();
 
+	class QueryElement
+		:public analyzer::QueryTerm
+	{
+	public:
+		QueryElement( const QueryElement& o)
+			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_pos(o.m_pos){}
+		QueryElement( unsigned int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
+			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_pos(pos_){}
+
+		unsigned int fieldno() const	{return m_fieldno;}
+		unsigned int pos() const	{return m_pos;}
+
+	private:
+		unsigned int m_fieldno;
+		unsigned int m_pos;
+	};
+
 	/// \brief Fetch the currently processed query
 	/// \return the query object without grouping
-	analyzer::Query fetchQuery();
+	std::vector<QueryElement> fetchQuery() const;
 
 	const std::vector<BindTerm>& searchTerms() const	{return m_searchTerms;}
 	const std::vector<BindTerm>& forwardTerms() const	{return m_forwardTerms;}

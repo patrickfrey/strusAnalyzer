@@ -9,7 +9,6 @@
 /// \file "patternTermFeederInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/term.hpp"
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/patternMatcherResult.hpp"
 #include <string>

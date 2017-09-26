@@ -112,7 +112,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 			}
 			else
 			{
-				throw strus::runtime_error( _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
+				throw strus::runtime_error( "%s",  _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
 			}
 		}
 	}
@@ -193,7 +193,7 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 			}
 			else
 			{
-				throw strus::runtime_error( _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
+				throw strus::runtime_error( "%s",  _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
 			}
 		}
 	}
@@ -208,6 +208,11 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 		return new SegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+}
+
+const char* Segmenter::getDescription() const
+{
+	return _TXT("Segmenter for XML (application/xml) based on the textwolf library");
 }
 
 

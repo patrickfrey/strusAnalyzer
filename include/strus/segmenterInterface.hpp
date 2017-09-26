@@ -37,6 +37,10 @@ public:
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual SegmenterInstanceInterface* createInstance(
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
+
+	/// \brief Get a description of the function for user help
+	/// \return the description string
+	virtual const char* getDescription() const=0;
 };
 
 }//namespace

@@ -71,29 +71,29 @@ private:
 		char* oldDir = new char[PATH_MAX];
 		if( getcwd( oldDir, PATH_MAX ) == NULL) {
 			delete[] oldDir;
-			throw std::runtime_error( "Cannot get current working directory");
+			throw strus::runtime_error( _TXT("cannot get current working directory"));
 		}
 		char* configCopy = strdup( config.c_str());
 		if( configCopy == NULL) {
 			delete[] oldDir;
-			throw std::runtime_error( "Failed to allocate memory for name of textcat configuration file");
+			throw strus::runtime_error( _TXT("failed to allocate memory for name of textcat configuration file"));
 		}
 		char* dir = dirname( configCopy);
 		if( chdir( dir) < 0) {
 			free( configCopy);
 			delete[] oldDir;
-			throw std::runtime_error( "Cannot change to directory of textcat configuration file");
+			throw strus::runtime_error( _TXT("cannot change to directory of textcat configuration file"));
 		}
 		free( configCopy);
 
 		m_textcat = textcat_Init( config.c_str());
 		if( chdir( oldDir) < 0) {
 			delete[] oldDir;
-			throw std::runtime_error( "Cannot change to original directory");
+			throw strus::runtime_error( _TXT("cannot change to original directory"));
 		}
 		delete[] oldDir;
 		if( !m_textcat) {
-			throw std::runtime_error( "Cannot open textcat configuration");
+			throw strus::runtime_error( _TXT("cannot open textcat configuration"));
 		}
 	}
 };

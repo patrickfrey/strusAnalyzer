@@ -38,14 +38,8 @@ public:
 		,m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
 
-	virtual void addSearchIndexElement(
+	virtual void addElement(
 			const std::string& termtype,
-			const std::string& fieldtype,
-			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
-
-	virtual void addMetaDataElement(
-			const std::string& metaname,
 			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
@@ -67,13 +61,8 @@ public:
 			PatternLexerInstanceInterface* lexer,
 			const std::vector<std::string>& fieldTypeNames);
 
-	virtual void addSearchIndexElementFromPatternMatch(
+	virtual void addElementFromPatternMatch(
 			const std::string& type,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
-
-	virtual void addMetaDataElementFromPatternMatch(
-			const std::string& metaname,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 

@@ -18,7 +18,7 @@
 
 using namespace strus;
 
-void QueryAnalyzer::addSearchIndexElement(
+void QueryAnalyzer::addElement(
 		const std::string& termtype,
 		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -30,21 +30,7 @@ void QueryAnalyzer::addSearchIndexElement(
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 		m_searchIndexTermTypeSet.insert( utils::tolower( termtype));
 	}
-	CATCH_ERROR_MAP( _TXT("error adding search index query feature: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzer::addMetaDataElement(
-		const std::string& metaname,
-		const std::string& fieldtype,
-		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-{
-	try
-	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, tokenizer, normalizers, analyzer::FeatureOptions());
-		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
-	}
-	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error adding feature: %s"), *m_errorhnd);
 }
 
 void QueryAnalyzer::addPatternLexem(
@@ -92,7 +78,7 @@ void QueryAnalyzer::definePatternMatcherPreProc(
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::addSearchIndexElementFromPatternMatch(
+void QueryAnalyzer::addElementFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
@@ -102,18 +88,6 @@ void QueryAnalyzer::addSearchIndexElementFromPatternMatch(
 		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzer::addMetaDataElementFromPatternMatch(
-		const std::string& metaname,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
-	}
-	CATCH_ERROR_MAP( _TXT("error in define meta data from pattern match: %s"), *m_errorhnd);
 }
 
 QueryAnalyzerContextInterface* QueryAnalyzer::createContext() const

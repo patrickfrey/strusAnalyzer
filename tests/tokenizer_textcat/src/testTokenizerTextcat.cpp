@@ -12,7 +12,7 @@
 #include "strus/textProcessorInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
-
+#include "strus/base/local_ptr.hpp"
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -68,7 +68,7 @@ int main( int argc, const char* argv[])
 		const char* language = argv[4];
 		const char* textFile = argv[5];
 
-		std::auto_ptr<strus::TextProcessorInterface>
+		strus::local_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
 		textproc->addResourcePath( resourcePath);
 		
@@ -81,7 +81,7 @@ int main( int argc, const char* argv[])
 		std::vector<std::string> args;
 		args.push_back( textcatConfig);
 		args.push_back( language);
-		std::auto_ptr<strus::TokenizerFunctionInstanceInterface> instance( tokenizer->createInstance( args, textproc.get()));
+		strus::local_ptr<strus::TokenizerFunctionInstanceInterface> instance( tokenizer->createInstance( args, textproc.get()));
 		if (!instance.get())
 		{
 			throw std::runtime_error( std::string("failed to create tokenizer 'textcat' instance: ") + g_errorhnd->fetchError());

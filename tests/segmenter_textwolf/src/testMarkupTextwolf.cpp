@@ -17,6 +17,7 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/local_ptr.hpp"
 #include <memory>
 #include <string>
 #include <cstring>
@@ -177,9 +178,9 @@ int main( int argc, const char* argv[])
 		std::string outfile( argv[3]);
 		std::string expfile( argv[4]);
 
-		std::auto_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
+		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
-		std::auto_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
+		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
 		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
 
 		std::string tagsrc;
@@ -191,13 +192,13 @@ int main( int argc, const char* argv[])
 		std::string inpsrc;
 		ec = strus::readFile( inpfile, inpsrc);
 		if (ec) throw std::runtime_error( std::string("error reading markup file ") + inpfile + ": " + ::strerror(ec));
-		std::auto_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( g_errorhnd));
+		strus::local_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( g_errorhnd));
 		if (!detector.get()) throw std::runtime_error("failed to create document class detector");
 		strus::analyzer::DocumentClass dclass;
 		if (!detector->detect( dclass, inpsrc.c_str(), inpsrc.size())) throw std::runtime_error("failed to detect document class of input source");
 
 		std::ostringstream outstr;
-		std::auto_ptr<strus::SegmenterMarkupContextInterface> segmenterMarkupContext( segmenterInstance->createMarkupContext( dclass, inpsrc));
+		strus::local_ptr<strus::SegmenterMarkupContextInterface> segmenterMarkupContext( segmenterInstance->createMarkupContext( dclass, inpsrc));
 		if (!segmenterMarkupContext.get()) throw std::runtime_error("failed to create markup segmenter context");
 		strus::SegmenterPosition segpos = 0;
 		const char* segment;

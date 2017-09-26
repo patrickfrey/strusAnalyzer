@@ -10,9 +10,9 @@
 #ifndef _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_HPP_INCLUDED
 #include "strus/numericVariant.hpp"
-#include "strus/analyzer/term.hpp"
-#include "strus/analyzer/attribute.hpp"
-#include "strus/analyzer/metaData.hpp"
+#include "strus/analyzer/documentTerm.hpp"
+#include "strus/analyzer/documentAttribute.hpp"
+#include "strus/analyzer/documentMetaData.hpp"
 #include <string>
 #include <vector>
 
@@ -36,15 +36,15 @@ public:
 		,m_forwardIndexTerms(o.m_forwardIndexTerms){}
 
 	/// \brief Get the sub document type name
-	const std::string& subDocumentTypeName() const		{return m_subdoctypename;}
+	const std::string& subDocumentTypeName() const			{return m_subdoctypename;}
 	/// \brief Get the list of the attributes defined in this document
-	const std::vector<Attribute>& attributes() const	{return m_attributes;}
+	const std::vector<DocumentAttribute>& attributes() const	{return m_attributes;}
 	/// \brief Get the list of the metadata defined in this document
-	const std::vector<MetaData>& metadata() const		{return m_metadata;}
+	const std::vector<DocumentMetaData>& metadata() const		{return m_metadata;}
 	/// \brief Get the list of the search index terms defined in this document
-	const std::vector<Term>& searchIndexTerms() const	{return m_searchIndexTerms;}
+	const std::vector<DocumentTerm>& searchIndexTerms() const	{return m_searchIndexTerms;}
 	/// \brief Get the list of the forward index terms defined in this document
-	const std::vector<Term>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
+	const std::vector<DocumentTerm>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
 
 	/// \brief Set the name of the sub document type as declared in the document analyzer (empty for the main document)
 	void setSubDocumentTypeName( const std::string& n)
@@ -54,7 +54,7 @@ public:
 	/// \brief Define an attribute of the document
 	void setAttribute( const std::string& t, const std::string& v)
 	{
-		m_attributes.push_back( Attribute( t,v));
+		m_attributes.push_back( DocumentAttribute( t,v));
 	}
 
 	/// \brief Define a meta data element of the document
@@ -62,7 +62,7 @@ public:
 	/// \param[in] v value of the meta data element
 	void setMetaData( const std::string& t, const NumericVariant& v)
 	{
-		m_metadata.push_back( MetaData( t,v));
+		m_metadata.push_back( DocumentMetaData( t,v));
 	}
 
 	/// \brief Define a search index term of the document
@@ -71,12 +71,12 @@ public:
 	/// \param[in] p position of the search index term in the document (token position not byte position)
 	void addSearchIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
-		m_searchIndexTerms.push_back( Term( t, v, p, 1));
+		m_searchIndexTerms.push_back( DocumentTerm( t, v, p));
 	}
 
 	/// \brief Define a list of search index terms of the document
 	/// \param[in] terms list of terms to add
-	void addSearchIndexTerms( const std::vector<Term>& terms)
+	void addSearchIndexTerms( const std::vector<DocumentTerm>& terms)
 	{
 		m_searchIndexTerms.insert( m_searchIndexTerms.end(), terms.begin(), terms.end());
 	}
@@ -87,12 +87,12 @@ public:
 	/// \param[in] p position of the forward index term in the document (token position not byte position)
 	void addForwardIndexTerm( const std::string& t, const std::string& v, unsigned int p)
 	{
-		m_forwardIndexTerms.push_back( Term( t, v, p, 1));
+		m_forwardIndexTerms.push_back( DocumentTerm( t, v, p));
 	}
 
 	/// \brief Define a list of forward index terms of the document
 	/// \param[in] terms list of terms to add
-	void addForwardIndexTerms( const std::vector<Term>& terms)
+	void addForwardIndexTerms( const std::vector<DocumentTerm>& terms)
 	{
 		m_forwardIndexTerms.insert( m_forwardIndexTerms.end(), terms.begin(), terms.end());
 	}
@@ -119,10 +119,10 @@ public:
 
 private:
 	std::string m_subdoctypename;
-	std::vector<MetaData> m_metadata;
-	std::vector<Attribute> m_attributes;
-	std::vector<Term> m_searchIndexTerms;
-	std::vector<Term> m_forwardIndexTerms;
+	std::vector<DocumentMetaData> m_metadata;
+	std::vector<DocumentAttribute> m_attributes;
+	std::vector<DocumentTerm> m_searchIndexTerms;
+	std::vector<DocumentTerm> m_forwardIndexTerms;
 };
 
 }}//namespace

@@ -11,6 +11,7 @@
 #include "strus/base/string_format.hpp"
 #include <cstring>
 #include <algorithm>
+#include <limits>
 
 using namespace strus;
 
@@ -21,11 +22,11 @@ PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatc
 {
 	if (!m_matcher.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern matcher context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher context"));
 	}
 	if (!m_lexer.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern lexer context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern lexer context"));
 	}
 }
 
@@ -64,10 +65,10 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 		{
 			SegPosContentPosMap::const_iterator segi;
 			segi = m_segPosContentPosMap.find( ti->start_origseg());
-			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error(_TXT("internal: inconsistency in data, segment position unknown"));
+			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstritr = segi->second;
 			segi = m_segPosContentPosMap.find( ti->end_origseg());
-			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error(_TXT("internal: inconsistency in data, segment position unknown"));
+			if (segi == m_segPosContentPosMap.end()) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstrend = segi->second;
 
 			if (segstritr == segstrend)
@@ -88,7 +89,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 				}
 				if (segstritr != segstrend)
 				{
-					throw strus::runtime_error(_TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
+					throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
 				}
 				value.append( m_content.c_str() + segstritr, ti->end_origpos());
 				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
@@ -113,7 +114,7 @@ PostProcPatternMatchContext::PostProcPatternMatchContext( const PostProcPatternM
 {
 	if (!m_matcher.get())
 	{
-		throw strus::runtime_error( _TXT("failed to create pattern matcher context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher context"));
 	}
 }
 
@@ -133,42 +134,38 @@ void PostProcPatternMatchContext::process( const std::vector<BindTerm>& input)
 std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 {
 	std::sort( m_input.begin(), m_input.end());
+	unsigned int prev_seg = std::numeric_limits<unsigned int>::max();
+	unsigned int prev_ofs = std::numeric_limits<unsigned int>::max();
+	unsigned int ordpos = 0;
 
 	// Convert input elements:
 	std::vector<analyzer::PatternLexem> pinput;
 	std::vector<BindTerm>::const_iterator bi = m_input.begin(), be = m_input.end();
 	for (std::size_t bidx=0; bi != be; ++bi,++bidx)
 	{
-		unsigned int lexemid = m_feeder->getLexem( bi->type());
-		unsigned int symbolid = m_feeder->getSymbol( lexemid, bi->value());
-		if (symbolid)
+		unsigned int id = m_feeder->getLexem( bi->type());
+		if (!bi->value().empty())
 		{
-			pinput.push_back( analyzer::PatternLexem( symbolid, 0, 0/*seg*/, bidx/*ofs*/, 1));
+			id = m_feeder->getSymbol( id, bi->value());
 		}
-		else
+		if (bi->seg() != prev_seg || bi->ofs() != prev_ofs)
 		{
-			pinput.push_back( analyzer::PatternLexem( lexemid, 0, 0/*seg*/, bidx/*ofs*/, 1));
+			// Increment ordinal position:
+			++ordpos;
+			prev_seg = bi->seg();
+			prev_ofs = bi->ofs();
 		}
-	}
-
-	// Assign ordinal position:
-	std::vector<analyzer::PatternLexem>::iterator pi = pinput.begin(), pe = pinput.end();
-	std::size_t ordpos = 0;
-	while (pi != pe)
-	{
-		std::vector<analyzer::PatternLexem>::iterator pa = pi;
-		++ordpos;
-		for (; pi != pe && pi->origpos() == pa->origpos() && pi->origseg() == pa->origseg(); ++pi)
-		{
-			pi->setOrdpos( ordpos);
-		}
+		pinput.push_back( analyzer::PatternLexem( id, ordpos, 0/*seg*/, bidx/*ofs*/, 1));
 	}
 
 	// Feed input to matcher:
-	pi = pinput.begin(), pe = pinput.end();
+	std::vector<analyzer::PatternLexem>::const_iterator pi = pinput.begin(), pe = pinput.end();
 	for (; pi != pe; ++pi)
 	{
-		m_matcher->putInput( *pi);
+		if (pi->id())
+		{
+			m_matcher->putInput( *pi);
+		}
 	}
 
 	// Build result:

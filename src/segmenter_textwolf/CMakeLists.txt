@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -12,11 +12,11 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
-	"${PROJECT_SOURCE_DIR}/src/segmenter_utils" 
+	"${MAIN_SOURCE_DIR}/segmenter_utils" 
 	"${Boost_LIBRARY_DIRS}"
 )
 
@@ -24,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strus_private_utils )
+target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strusanalyzer_private_utils )
 set_target_properties(
     strus_segmenter_textwolf
     PROPERTIES

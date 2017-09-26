@@ -15,7 +15,7 @@ const FeatureConfig& FeatureConfigMap::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_ar.size())
 	{
-		throw strus::runtime_error( _TXT("internal: unknown index of feature"));
+		throw strus::runtime_error( "%s", _TXT("internal: unknown index of feature"));
 	}
 	return m_ar[ featidx-1];
 }
@@ -41,7 +41,7 @@ unsigned int FeatureConfigMap::defineFeature(
 	{
 		if (m_ar.size()+1 >= MaxNofFeatures)
 		{
-			throw strus::runtime_error( _TXT("number of features defined exceeds maximum limit"));
+			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
 		m_ar.push_back( FeatureConfig( utils::tolower( featType), tokenizer, normalizers, featureClass, options));
@@ -51,7 +51,7 @@ unsigned int FeatureConfigMap::defineFeature(
 	{
 		freeNormalizers( normalizers);
 		delete tokenizer;
-		throw strus::runtime_error( _TXT("memory allocation error defining feature"));
+		throw strus::runtime_error( "%s", _TXT("memory allocation error defining feature"));
 	}
 	catch (const std::runtime_error& err)
 	{

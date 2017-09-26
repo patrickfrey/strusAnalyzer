@@ -12,7 +12,6 @@
 #include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "textwolf/xmlscanner.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <setjmp.h>
@@ -28,7 +27,14 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 	try
 	{
 		m_content.append( chunk, chunksize);
-		m_eof |= eof;
+		if (eof)
+		{
+			m_eof = true;
+			if (m_encoder.get())
+			{
+				m_content = m_encoder->convert( m_content.c_str(), m_content.size(), true);
+			}
+		}
 	}
 	CATCH_ERROR_MAP( _TXT("error in put input of JSON segmenter: %s"), *m_errorhnd);
 }
@@ -97,7 +103,7 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 		case cJSON_Number:
 			if (!nd->valuestring)
 			{
-				throw strus::runtime_error( _TXT("value node without string value found in JSON structure"));
+				throw strus::runtime_error( "%s",  _TXT("value node without string value found in JSON structure"));
 			}
 			getTextwolfValue( itemar, nd, nd->valuestring);
 			break;
@@ -149,7 +155,7 @@ static void getTextwolfItems( std::vector<TextwolfItem>& itemar, cJSON const* nd
 			break;
 		}
 		default:
-			throw std::runtime_error( "internal: memory corruption found in JSON structure");
+			throw strus::runtime_error( _TXT("internal: memory corruption found in JSON structure"));
 	}
 }
 
@@ -172,7 +178,7 @@ static std::pair<std::size_t,std::size_t> lineInfo( const char* begin, const cha
 	return std::pair<std::size_t,std::size_t>(line,col);
 }
 
-static cJSON* parseJsonTree( const  std::string& content)
+static cJSON* parseJsonTree( const std::string& content)
 {
 	cJSON_Context ctx;
 	cJSON* tree = cJSON_Parse( &ctx, content.c_str());
@@ -182,17 +188,15 @@ static cJSON* parseJsonTree( const  std::string& content)
 		std::pair<std::size_t,std::size_t> li = lineInfo( content.c_str(), ctx.errorptr);
 
 		std::string err( ctx.errorptr);
-		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), li.first, li.second, err.c_str());
+		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), (unsigned int)li.first, (unsigned int)li.second, err.c_str());
 	}
 	return tree;
 }
 
 static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<SegmenterContext::Item>& resar, const cJSON* tree)
 {
-	if (!tree->string && !tree->valuestring && !tree->next && tree->type == cJSON_Object)
-	{
-		tree = tree->child;
-	}
+	if (!tree) return;
+
 	XPathAutomatonContext xpathselect( automaton->createContext());
 	std::vector<TextwolfItem> itemar;
 	getTextwolfItems( itemar, tree);
@@ -211,7 +215,14 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 		{
 			resar.push_back( SegmenterContext::Item( segid, pos, ti->value, valuesize));
 		}
-		pos += valuesize+1;
+		if (ti->type != textwolf::XMLScannerBase::CloseTag)
+		{
+			pos += valuesize+1;
+		}
+		else
+		{
+			pos += 1;
+		}
 	}
 }
 
@@ -219,6 +230,7 @@ bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& se
 {
 	try
 	{
+		if (!m_eof) return false;
 	AGAIN:
 		if (m_itemidx < m_itemar.size())
 		{

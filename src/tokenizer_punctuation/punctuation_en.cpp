@@ -1046,7 +1046,7 @@ static const char g_abbrevList[] =
 PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en(
 		const char* punctuationCharList,
 		ErrorBufferInterface* errorhnd)
-	:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
+	:m_punctuation_char(punctuationCharList?(punctuationCharList[0]?punctuationCharList:"."):":.;,!?()-")
 	,m_errorhnd(errorhnd)
 {
 	char const* cc = g_abbrevList;
@@ -1260,6 +1260,7 @@ std::vector<analyzer::Token>
 			}
 			else if (isPunctuation(ch0))
 			{
+				pos = scanner.itrpos();
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 				std::size_t endpos = pos;

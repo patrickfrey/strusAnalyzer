@@ -16,8 +16,11 @@
 #include <string>
 #include <set>
 #include <map>
+#include <iostream>
+#include <sstream>
 
 using namespace strus;
+#undef STRUS_LOWLEVEL_DEBUG
 
 QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
 	:m_analyzer(analyzer_)
@@ -69,38 +72,25 @@ struct QueryTree
 	std::vector<QueryTreeNode> nodear;
 };
 
-static void buildQueryTreeNode( std::vector<QueryTreeNode>& nodear, unsigned int groupId, unsigned int position, const std::vector<unsigned int>& children)
+static void buildQueryTreeNode(
+		std::vector<QueryTreeNode>& nodear,
+		unsigned int groupId, unsigned int position,
+		const std::vector<unsigned int>& children)
 {
 	nodear.push_back( QueryTreeNode( groupId, std::numeric_limits<unsigned int>::max(), position, children.size(), children.empty()?0:children[0], 0));
 	std::vector<unsigned int>::const_iterator ci = children.begin(), ce = children.end();
 	for (; ci != ce; ++ci)
 	{
-		if (nodear[*ci].next) throw strus::runtime_error(_TXT("internal: query tree node linked twice"));
+		if (nodear[*ci].next) throw strus::runtime_error( "%s", _TXT("internal: query tree node linked twice"));
 		if (ci+1 != ce) nodear[*ci].next = *(ci+1);
 	}
 }
 
-static void buildQueryTreeLeaf( std::vector<QueryTreeNode>& nodear, unsigned int elementidx, unsigned int position)
+static void buildQueryTreeLeaf(
+		std::vector<QueryTreeNode>& nodear,
+		unsigned int elementidx, unsigned int position)
 {
 	nodear.push_back( QueryTreeNode( 0, elementidx, position, 0, 0, 0));
-}
-
-/// \brief Build up array of element ranges of the fields
-typedef std::pair<unsigned int,unsigned int> ElementRange;
-static std::vector<ElementRange> getQueryFieldElementRanges( const analyzer::Query& qry)
-{
-	std::vector<ElementRange> rt;
-	rt.push_back( ElementRange( 0,0));
-	std::vector<analyzer::Query::Element>::const_iterator ei = qry.elements().begin(), ee = qry.elements().end();
-	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
-	{
-		while (rt.size() <= ei->fieldNo())
-		{
-			rt.push_back( ElementRange( eidx, eidx));
-		}
-		rt.back().second = eidx+1;
-	}
-	return rt;
 }
 
 static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned int>& args)
@@ -110,7 +100,8 @@ static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned 
 	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
 	for (; ai != ae; ++ai)
 	{
-		if (uniq.find( *ai) == uniq.end())
+		std::set<unsigned int>::const_iterator ui = uniq.find( *ai);
+		if (ui == uniq.end())
 		{
 			uniq.insert( *ai);
 			rt.push_back( *ai);
@@ -119,53 +110,220 @@ static std::vector<unsigned int> reduceUnifiedNodes( const std::vector<unsigned 
 	return rt;
 }
 
+class GroupMemberRelationMap
+{
+public:
+	GroupMemberRelationMap(){}
+
+	void insertMember(
+		unsigned int elemidx,
+		unsigned int nodeidx);
+
+	void updateElementRoot(
+		std::map<unsigned int,unsigned int>& elemRootMap,
+		const std::vector<unsigned int>& args,
+		unsigned int rootNodeIdx);
+
+private:
+	typedef std::multimap<unsigned int,unsigned int> NodeMemberMap;
+	typedef NodeMemberMap::const_iterator NodeMemberMapItr;
+	typedef std::pair<unsigned int,unsigned int> NodeMemberRelation;
+	typedef std::pair<NodeMemberMapItr,NodeMemberMapItr> NodeMemberRange;
+
+	NodeMemberMap m_map;
+};
+
+void GroupMemberRelationMap::insertMember( unsigned int elemidx, unsigned int nodeidx)
+{
+	m_map.insert( NodeMemberRelation( nodeidx, elemidx));
+}
+
+void GroupMemberRelationMap::updateElementRoot( std::map<unsigned int,unsigned int>& elemRootMap, const std::vector<unsigned int>& args, unsigned int rootNodeIdx)
+{
+	std::vector<unsigned int>::const_iterator ai = args.begin(), ae = args.end();
+	for (; ai != ae; ++ai)
+	{
+		NodeMemberRange nodeMemberRange = m_map.equal_range( *ai);
+		NodeMemberMapItr ni = nodeMemberRange.first, ne = nodeMemberRange.second;
+		if (ni == ne) throw strus::runtime_error( "%s", _TXT("internal: badly linked tree structure"));
+		for (; ni != ne; ++ni)
+		{
+			elemRootMap[ ni->second] = rootNodeIdx;
+		}
+	}
+}
+
+class ElementNodeMap
+{
+#ifdef STRUS_LOWLEVEL_DEBUG
+private:
+	std::string tostring() const
+	{
+		std::ostringstream out;
+		std::multimap<unsigned int,unsigned int>::const_iterator ri = m_rootElementMap.begin(), re = m_rootElementMap.end();
+		if (m_rootElementMap.size() != m_elementRootMap.size())
+		{
+			throw strus::runtime_error("internal: element node map size mismatch");
+		}
+		for (; ri != re; ++ri)
+		{
+			std::map<unsigned int,unsigned int>::const_iterator inv = m_elementRootMap.find( ri->second);
+			if (inv == m_elementRootMap.end() || inv->second != ri->first)
+			{
+				throw strus::runtime_error("internal: element node map content mismatch");
+			}
+		}
+		out << "{";
+		ri = m_rootElementMap.begin();
+		enum {NullPrevKey = -1};
+		unsigned int prevkey = (unsigned int)NullPrevKey;
+		while (ri != re)
+		{
+			if (prevkey != (unsigned int)NullPrevKey) out << ", ";
+			prevkey = ri->first;
+			out << prevkey << ": ";
+			for (int ridx=0; ri != re && ri->first == prevkey; ++ri,++ridx)
+			{
+				if (ridx) out << ",";
+				out << ri->second;
+			}
+		}
+		out << "}";
+		return out.str();
+	}
+#endif
+public:
+	void createElementRoot( unsigned int elemidx, unsigned int nodeidx)
+	{
+		m_elementRootMap[ elemidx] = nodeidx;
+		m_rootElementMap.insert( std::pair<unsigned int,unsigned int>( nodeidx, elemidx));
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "CREATE ROOT " << nodeidx << " ELEM " << elemidx << " " << tostring() << std::endl;
+#endif
+	}
+
+	unsigned int elementRoot( unsigned int elemidx) const
+	{
+		std::map<unsigned int,unsigned int>::const_iterator ni = m_elementRootMap.find( elemidx);
+		if (ni == m_elementRootMap.end())
+		{
+			throw strus::runtime_error( "%s", _TXT("internal: query tree root element not found"));
+		}
+		else
+		{
+			return ni->second;
+		}
+	}
+
+	void setNewRoot( unsigned int nodeidx, unsigned int newroot)
+	{
+		if (nodeidx == newroot) return;
+		typedef std::multimap<unsigned int,unsigned int>::iterator Itr;
+		std::pair<Itr,Itr> range = m_rootElementMap.equal_range( nodeidx);
+		std::vector<std::pair<unsigned int, unsigned int> > newRelations;
+		for (Itr itr=range.first; itr != range.second; ++itr)
+		{
+			m_elementRootMap[ itr->second] = newroot;
+			newRelations.push_back( std::pair<unsigned int, unsigned int>( newroot, itr->second));
+		}
+		m_rootElementMap.erase( range.first, range.second);
+		m_rootElementMap.insert( newRelations.begin(), newRelations.end());
+
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "NEW ROOT " << nodeidx << " -> " << newroot << " " << tostring() << std::endl;
+#endif
+	}
+
+	void setNewRoot( const std::vector<unsigned int>& nodear, unsigned int newroot)
+	{
+		std::vector<unsigned int>::const_iterator ni = nodear.begin(), ne = nodear.end();
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "SET NEW ROOT {";
+		for (int nidx=0; ni != ne; ++ni,++nidx)
+		{
+			if (nidx) std::cerr << ", ";
+			std::cerr << *ni;
+		}
+		std::cerr << "} -> " << newroot << " " << tostring() << std::endl;
+		ni = nodear.begin();
+#endif
+		for (; ni != ne; ++ni)
+		{
+			setNewRoot( *ni, newroot);
+		}
+	}
+
+	std::vector<unsigned int> getRootNodes() const
+	{
+		std::vector<unsigned int> rt;
+		std::multimap<unsigned int,unsigned int>::const_iterator
+			ri = m_rootElementMap.begin(), re = m_rootElementMap.end();
+		if (ri == re) return rt;
+		unsigned int prev = ri->first;
+		rt.push_back( prev);
+		for (++ri; ri != re; ++ri)
+		{
+			if (ri->first != prev)
+			{
+				rt.push_back( prev = ri->first);
+			}
+		}
+		return rt;
+	}
+
+private:
+	std::map<unsigned int,unsigned int> m_elementRootMap;		//< assigns each leaf element to its build up root node
+	std::multimap<unsigned int,unsigned int> m_rootElementMap;	//< assigns each root element to its leaves
+};
+
 static QueryTree buildQueryTree(
 	const std::vector<QueryAnalyzerContext::Group>& groups,
 	const std::vector<QueryAnalyzerContext::Field>& fields,
-	const analyzer::Query& qry)
+	const std::vector<SegmentProcessor::QueryElement>& elems)
 {
 	QueryTree rt;
-	std::vector<ElementRange> fieldElementRanges = getQueryFieldElementRanges( qry);
+	typedef std::multimap<unsigned int,unsigned int> FieldElementMap;
+	typedef FieldElementMap::const_iterator FieldElementMapItr;
+	typedef std::pair<unsigned int,unsigned int> FieldElementRelation;
+	typedef std::pair<FieldElementMapItr,FieldElementMapItr> FieldElementRange;
 
-	typedef std::map<unsigned int,unsigned int> ElementRootMap;
-	typedef std::pair<unsigned int,unsigned int> ElementRootAssignment;
+	FieldElementMap fieldElementMap;	//< map fieldno to its elements (index in elems)
+	ElementNodeMap elementNodeMap;		//< map elements to nodes and nodes to elements
 
-	ElementRootMap elementRootMap;	//< assigns each leaf element to its build up root node
-	ElementRootMap nodeRootMap;	//< assigns each tree node to its build up root node
+	std::vector<SegmentProcessor::QueryElement>::const_iterator
+		ei = elems.begin(), ee = elems.end();
+	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
+	{
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "FIELD " << ei->fieldno() << " ELEMENT " << eidx << " TYPE " << ei->type() << " VALUE " << ei->value() << std::endl;
+#endif
+		fieldElementMap.insert( FieldElementRelation( ei->fieldno(), eidx));
+		elementNodeMap.createElementRoot( eidx, rt.nodear.size());
+		buildQueryTreeLeaf( rt.nodear, eidx, elems[eidx].pos());
+	}
 
 	// Execute all element groupings bottom up creating the query tree nodes:
 	std::vector<QueryAnalyzerContext::Group>::const_iterator gi = groups.begin(), ge = groups.end();
 	for (; gi != ge; ++gi)
 	{
-		// Build up the argument list of the grouping operation.
-		// For all elements selected take the current build up root nodes without duplicates as arguments:
-		std::vector<unsigned int> args;
-		std::vector<ElementRootAssignment> elemAssignments;
+		// Build up the argument list (set of root nodes of the selected arguments) for the grouping operation
+		std::vector<unsigned int> args;			// set of arguments (node indices)
 		std::vector<unsigned int>::const_iterator
 			fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
-			ElementRange range = fieldElementRanges[ *fi];
-			unsigned int ei = range.first, ee = range.second;
-			for (; ei != ee; ++ei)
+			FieldElementRange range = fieldElementMap.equal_range( *fi);
+			FieldElementMapItr ri = range.first, re = range.second;
+			// For each element of a selected field:
+			for (; ri != re; ++ri)
 			{
-				ElementRootMap::const_iterator ni = elementRootMap.find( ei);
-				if (ni == elementRootMap.end())
-				{
-					unsigned int newNodeIdx = rt.nodear.size();
-					args.push_back( newNodeIdx);
-					elementRootMap[ ei] = newNodeIdx;
-					buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].position());
+				unsigned int elemidx = ri->second;
+				// Get the assigned node index (current root node the leaf is assigned to):
+				unsigned int nodeidx = elementNodeMap.elementRoot( elemidx);
 
-					elemAssignments.push_back( ElementRootAssignment( ei, newNodeIdx));
-				}
-				else
+				if (args.empty() || args.back() != nodeidx)
 				{
-					if (args.empty() || args.back() != ni->second)
-					{
-						args.push_back( ni->second);
-					}
-					elemAssignments.push_back( ElementRootAssignment( ni->first, ni->second));
+					args.push_back( nodeidx);
 				}
 			}
 		}
@@ -180,21 +338,35 @@ static QueryTree buildQueryTree(
 				{
 					argmap[ rt.nodear[ *ai].position].push_back( *ai);
 				}
+				// For each selected set with elements sharing the same position:
 				std::map<unsigned int,std::vector<unsigned int> >::const_iterator mi = argmap.begin(), me = argmap.end();
 				for (; mi != me; ++mi)
 				{
 					std::vector<unsigned int> uargs = reduceUnifiedNodes( mi->second);
-					if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
+					if (uargs.size() > 1 || (gi->groupSingle && !uargs.empty()))
 					{
-						std::vector<unsigned int>::const_iterator
-							ui = uargs.begin(), ue = uargs.end();
-						for (; ui != ue; ++ui)
-						{
-							nodeRootMap[ *ui] = rt.nodear.size();
-						}
+						elementNodeMap.setNewRoot( uargs, rt.nodear.size());
 						unsigned int position = mi->first;
 						buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 					}
+				}
+				break;
+			}
+			case QueryAnalyzerContextInterface::GroupUnique:
+			{
+				if (!gi->groupSingle) throw strus::runtime_error( "%s", _TXT("contradicting grouping operation: using group unique with no single child groups allowed"));
+
+				// Group all selected nodes into the same group:
+				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
+				if (uargs.size() == 1)
+				{
+					elementNodeMap.setNewRoot( uargs, rt.nodear.size());
+					unsigned int position = rt.nodear[ uargs[0]].position;
+					buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
+				}
+				else
+				{
+					throw strus::runtime_error( "%s", _TXT("analyze query fields did not create the unique element required"));
 				}
 				break;
 			}
@@ -202,14 +374,9 @@ static QueryTree buildQueryTree(
 			{
 				// Group all selected nodes into the same group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
-				if (uargs.size() > 1 || (gi->groupSingle && uargs.size() >= 1))
+				if (uargs.size() > 1 || (gi->groupSingle && !uargs.empty()))
 				{
-					std::vector<unsigned int>::const_iterator
-						ui = uargs.begin(), ue = uargs.end();
-					for (; ui != ue; ++ui)
-					{
-						nodeRootMap[ *ui] = rt.nodear.size();
-					}
+					elementNodeMap.setNewRoot( uargs, rt.nodear.size());
 					unsigned int position = rt.nodear[ uargs[0]].position;
 					buildQueryTreeNode( rt.nodear, gi->groupId, position, uargs);
 				}
@@ -217,56 +384,30 @@ static QueryTree buildQueryTree(
 			}
 			case QueryAnalyzerContextInterface::GroupEvery:
 			{
+				if (!gi->groupSingle) throw strus::runtime_error( "%s", _TXT("contradicting grouping operation: using group every with no single child groups allowed"));
+
 				// Group every selected node into its own group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
 				std::vector<unsigned int>::const_iterator
 					ui = uargs.begin(), ue = uargs.end();
 				for (; ui != ue; ++ui)
 				{
-					nodeRootMap[ *ui] = rt.nodear.size();
-					unsigned int position = rt.nodear[ *ui].position;
 					std::vector<unsigned int> sargs;
 					sargs.push_back( *ui);
+					elementNodeMap.setNewRoot( sargs, rt.nodear.size());
+					unsigned int position = rt.nodear[ *ui].position;
 					buildQueryTreeNode( rt.nodear, gi->groupId, position, sargs);
 				}
 			}
 		}
-		// Update map that assigns every element to its tree root node:
-		std::vector<ElementRootAssignment>::const_iterator mi = elemAssignments.begin(), me = elemAssignments.end();
-		for (; mi != me; ++mi)
-		{
-			if (nodeRootMap.find( mi->second) != nodeRootMap.end())
-			{
-				elementRootMap[ mi->first] = nodeRootMap[ mi->second];
-			}
-		}
 	}
-	// Evaluate the root elements:
-	std::vector<unsigned int> args;
-	unsigned int ei = 0, ee = qry.elements().size();
-	for (; ei != ee; ++ei)
-	{
-		ElementRootMap::const_iterator ni = elementRootMap.find( ei);
-		if (ni == elementRootMap.end())
-		{
-			unsigned int newNodeIdx = rt.nodear.size();
-			args.push_back( newNodeIdx);
-			buildQueryTreeLeaf( rt.nodear, ei, qry.elements()[ei].position());
-		}
-		else
-		{
-			if (args.empty() || args.back() != ni->second)
-			{
-				args.push_back( ni->second);
-			}
-		}
-	}
-	rt.root = reduceUnifiedNodes( args);
+	// Evaluate the set of root elements:
+	rt.root = elementNodeMap.getRootNodes();
 	return rt;
 }
 
 
-analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
+std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFields() const
 {
 	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
 	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap());
@@ -283,7 +424,7 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 		for (;ti != te; ++ti)
 		{
 			segmentProcessor.processDocumentSegment(
-				ti->second/*feature type index*/, fidx/*segment pos = field index*/, 
+				ti->second/*feature type index*/, fi->fieldNo/*segment pos = fieldNo*/, 
 				fi->content.c_str(), fi->content.size());
 		}
 	}
@@ -297,7 +438,7 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 		{
 			PreProcPatternMatchContext& ppctx
 				= preProcPatternMatchContextMap.context( ti->second);
-			ppctx.process( fidx/*segment pos = field index*/, fi->content.c_str(), fi->content.size());
+			ppctx.process( fi->fieldNo/*segment pos = fieldNo*/, fi->content.c_str(), fi->content.size());
 		}
 	}
 	// fetch pre processing pattern outputs:
@@ -319,11 +460,10 @@ analyzer::Query QueryAnalyzerContext::analyzeQueryFields()
 		pi->process( segmentProcessor.patternLexemTerms());
 		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
-	analyzer::Query rt = segmentProcessor.fetchQuery();
-	return rt;
+	return segmentProcessor.fetchQuery();
 }
 
-static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& queryTree, unsigned int nodeidx)
+static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const std::vector<SegmentProcessor::QueryElement>& elems, const QueryTree& queryTree, unsigned int nodeidx)
 {
 	const QueryTreeNode& node = queryTree.nodear[ nodeidx];
 	if (node.nofChild)
@@ -331,64 +471,67 @@ static void buildQueryInstructions( analyzer::Query& qry, const QueryTree& query
 		unsigned int chld = node.child;
 		do
 		{
-			buildQueryInstructions( qry, queryTree, chld);
+			buildQueryInstructions( qry, elems, queryTree, chld);
 			chld = queryTree.nodear[ chld].next;
 		} while (chld);
 		qry.pushOperator( node.groupId, node.nofChild);
 	}
 	else
 	{
-		analyzer::Query::Element elem = qry.elements()[node.queryElement];
-		switch (elem.type())
-		{
-			case analyzer::Query::Element::MetaData:
-				qry.pushMetaDataOperand( elem.idx());
-				break;
-			case analyzer::Query::Element::SearchIndexTerm:
-				qry.pushSearchIndexTermOperand( elem.idx());
-				break;
-			default:
-				throw strus::runtime_error(_TXT("internal: illegal leaf element in query tree"));
-		}
+		qry.pushTerm( elems[ node.queryElement]);
 	}
 }
 
-analyzer::Query QueryAnalyzerContext::analyze()
+analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 {
 	try
 	{
-		analyzer::Query rt = analyzeQueryFields();
+		analyzer::QueryTermExpression rt;
+		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
 		if (m_groups.empty())
 		{
 			// Groups are empty, so we just copy the elements into the instructions
 			// and avoid building the query tree for the same result:
-			std::vector<analyzer::Query::Element>::const_iterator
-				ei = rt.elements().begin(), ee = rt.elements().end();
+			std::vector<SegmentProcessor::QueryElement>::const_iterator
+				ei = elems.begin(), ee = elems.end();
 			for ( ;ei!=ee; ++ei)
 			{
-				switch (ei->type())
-				{
-					case analyzer::Query::Element::MetaData:
-						rt.pushMetaDataOperand( ei->idx());
-						break;
-					case analyzer::Query::Element::SearchIndexTerm:
-						rt.pushSearchIndexTermOperand( ei->idx());
-						break;
-				}
+				rt.pushTerm( *ei);
 			}
 		}
 		else
 		{
-			QueryTree queryTree = buildQueryTree( m_groups, m_fields, rt);
+			QueryTree queryTree = buildQueryTree( m_groups, m_fields, elems);
 			std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
 			for (; ri != re; ++ri)
 			{
-				buildQueryInstructions( rt, queryTree, *ri);
+				buildQueryInstructions( rt, elems, queryTree, *ri);
 			}
 		}
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << "QUERY INSTRUCTIONS:" << std::endl;
+		std::vector<analyzer::QueryTermExpression::Instruction>::const_iterator
+			pi = rt.instructions().begin(), pe = rt.instructions().end();
+		for (; pi != pe; ++pi)
+		{
+			std::cerr << analyzer::QueryTermExpression::Instruction::opCodeName( pi->opCode()) << " " << pi->idx() << " " << pi->nofOperands();
+			switch (pi->opCode())
+			{
+				case analyzer::QueryTermExpression::Instruction::Term:
+				{
+					const analyzer::QueryTerm& term = rt.term( pi->idx());
+					std::cerr << " type " << term.type() << " value " << term.value();
+					break;
+				}
+				case analyzer::QueryTermExpression::Instruction::Operator:
+					break;
+			}
+			std::cerr << std::endl;
+		}
+#endif
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::Query());
+	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::QueryTermExpression());
 }
 
 

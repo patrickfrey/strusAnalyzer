@@ -46,7 +46,7 @@ struct DateNumGranularity
 
 	static uint64_t daynum( const TimeStruct& timstmp)
 	{
-		uint64_t yy = timstmp.tm_year + 1900;
+		uint64_t yy = timstmp.tm_year;
 		uint64_t mm = timstmp.tm_mon + 1;
 		if (timstmp.tm_mon <= 1)
 		{
@@ -70,10 +70,10 @@ struct DateNumGranularity
 		return (minnum(timstmp) * 60 + timstmp.tm_sec);
 	}
 
-	uint64_t getValue( const TimeStruct& timstmp) const
+	int64_t getValue( const TimeStruct& timstmp) const
 	{
-		uint64_t aa = 0;
-		uint64_t bb = 0;
+		int64_t aa = 0;
+		int64_t bb = 0;
 		switch (m_type)
 		{
 			case Second:
@@ -122,6 +122,8 @@ public:
 	{
 		try
 		{
+			if (srcsize == 0) return std::string();
+
 			TimeStruct result;
 
 			std::vector<std::string>::const_iterator ci = m_config.fmtar.begin(), ce = m_config.fmtar.end();
@@ -141,7 +143,7 @@ public:
 				throw strus::runtime_error(_TXT("unknown time format: '%s'"), inputstr.c_str());
 			}
 			std::mktime( &result);
-			uint64_t rtnum = m_config.granularity.getValue( result);
+			int64_t rtnum = m_config.granularity.getValue( result);
 			std::ostringstream out;
 			out << rtnum;
 			return out.str();
@@ -172,35 +174,35 @@ static DateNumGranularity::Type parseGranularityType( char const*& gi)
 {
 	if (*gi == 's')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Second;
 	}
 	else if (*gi == 'm')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Minute;
 	}
 	else if (*gi == 'h')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Hour;
 	}
 	else if (*gi == 'd')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
 	else if (*gi == 'y')
 	{
-		if (isAlphaNum(gi[1])) throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+		if (isAlphaNum(gi[1])) throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 		gi++;
 		return DateNumGranularity::Day;
 	}
-	throw strus::runtime_error( _TXT("error in result definition: unknown time unit identifier"));
+	throw strus::runtime_error( "%s", _TXT("error in result definition: unknown time unit identifier"));
 }
 
 static unsigned int parseNumber( char const*& gi)
@@ -211,11 +213,11 @@ static unsigned int parseNumber( char const*& gi)
 	{
 		unsigned int fo = rt;
 		rt = rt * 10 + (*gi - '0');
-		if (fo < rt) throw strus::runtime_error( _TXT("error in result definition: number out of range"));
+		if (fo < rt) throw strus::runtime_error( "%s", _TXT("error in result definition: number out of range"));
 	}
 	if (!rt)
 	{
-		throw strus::runtime_error( _TXT("error in result definition: number expected"));
+		throw strus::runtime_error( "%s", _TXT("error in result definition: number expected"));
 	}
 	return rt;
 }
@@ -232,7 +234,7 @@ DateNumGranularity parseGranularity( char const* gi)
 	{
 		++gi;
 		factor = parseNumber( gi);
-		if (factor == 0) throw strus::runtime_error(_TXT("illegal factor"));
+		if (factor == 0) throw strus::runtime_error( "%s", _TXT("illegal factor"));
 	}
 	gi = skipSpaces( gi);
 	if (*gi)
@@ -245,7 +247,7 @@ DateNumGranularity parseGranularity( char const* gi)
 	}
 	else
 	{
-		start.tm_year = 1970;
+		start.tm_year = 70;
 		start.tm_mday = 1;
 	}
 	std::mktime( &start);
@@ -257,15 +259,22 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 {
 	try
 	{
-		if (args.size() < 2)
+		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("too few arguments (%u)"), (unsigned int)args.size());
-			return 0;
+			DateNumGranularity granularity( parseGranularity( "d"));
+			std::vector<std::string> defaultFacets;
+			defaultFacets.push_back( "%Y/%m/%d");
+			defaultFacets.push_back( "%Y-%m-%d");
+			defaultFacets.push_back( "%d.%m.%Y");
+			return new Date2IntNormalizerFunctionInstance( granularity, defaultFacets, m_errorhnd);
 		}
-		std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-		DateNumGranularity granularity( parseGranularity( ai->c_str()));
-		std::vector<std::string> facets( ++ai, ae);
-		return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
+		else
+		{
+			std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
+			DateNumGranularity granularity( parseGranularity( ai->c_str()));
+			std::vector<std::string> facets( ++ai, ae);
+			return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
+		}
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
 }

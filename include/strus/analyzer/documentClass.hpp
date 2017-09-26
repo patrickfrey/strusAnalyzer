@@ -58,6 +58,14 @@ public:
 	/// \return the character set encoding string
 	const std::string& encoding() const			{return m_encoding;}
 
+	/// \brief Evaluate if this document class definition is defined
+	/// \return true if defined
+	bool defined() const					{return !m_mimeType.empty();}
+	/// \brief Evaluate the level of definition of the document class
+	/// \return level of definition
+	/// \note this method is used to weight different oppinions of document class detection
+	unsigned int level() const				{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
+
 private:
 	std::string m_mimeType;
 	std::string m_scheme;

@@ -9,7 +9,6 @@
 /// \file queryAnalyzerInterface.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
-#include "strus/analyzer/term.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include <vector>
@@ -39,20 +38,8 @@ public:
 	/// \param[in] fieldtype type of the field of this element in the query
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
-	virtual void addSearchIndexElement(
+	virtual void addElement(
 			const std::string& termtype,
-			const std::string& fieldtype,
-			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
-
-	/// \brief Declare a feature to be searched in the meta data table
-	/// \param[in] metaname name of the column in the meta data table this feature is searched in
-	/// \param[in] fieldtype type of the field of this element in the query
-	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
-	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
-	/// \remark The field in the meta data table must exist before this function is called
-	virtual void addMetaDataElement(
-			const std::string& metaname,
 			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
@@ -93,18 +80,8 @@ public:
 	/// \param[in] patternTypeName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
 	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
-	virtual void addSearchIndexElementFromPatternMatch(
+	virtual void addElementFromPatternMatch(
 			const std::string& type,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
-
-	/// \brief Declare a feature of the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item
-	/// \param[in] metaname name of the column in the meta data table this feature is written to
-	/// \param[in] patternTypeName type name of the pattern match result or result item
-	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
-	/// \remark The field in the meta data table must exist before this function is called
-	virtual void addMetaDataElementFromPatternMatch(
-			const std::string& metaname,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 	

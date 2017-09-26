@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -12,25 +12,30 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	"${Boost_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/src/normalizer_snowball"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_dictmap"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_ngram"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_charconv"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_dateconv"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_regex"
-	"${PROJECT_SOURCE_DIR}/src/normalizer_wordjoin"
-	"${PROJECT_SOURCE_DIR}/src/tokenizer_punctuation"
- 	"${PROJECT_SOURCE_DIR}/src/tokenizer_word"
- 	"${PROJECT_SOURCE_DIR}/src/tokenizer_regex"
- 	"${PROJECT_SOURCE_DIR}/src/tokenizer_textcat"
- 	"${PROJECT_SOURCE_DIR}/src/aggregator_vsm"
- 	"${PROJECT_SOURCE_DIR}/src/pattern"
- 	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${MAIN_SOURCE_DIR}/normalizer_snowball"
+	"${MAIN_SOURCE_DIR}/normalizer_dictmap"
+	"${MAIN_SOURCE_DIR}/normalizer_ngram"
+	"${MAIN_SOURCE_DIR}/normalizer_charconv"
+	"${MAIN_SOURCE_DIR}/normalizer_dateconv"
+	"${MAIN_SOURCE_DIR}/normalizer_regex"
+	"${MAIN_SOURCE_DIR}/normalizer_wordjoin"
+	"${MAIN_SOURCE_DIR}/tokenizer_punctuation"
+ 	"${MAIN_SOURCE_DIR}/tokenizer_word"
+ 	"${MAIN_SOURCE_DIR}/tokenizer_regex"
+ 	"${MAIN_SOURCE_DIR}/tokenizer_textcat"
+ 	"${MAIN_SOURCE_DIR}/aggregator_vsm"
+ 	"${MAIN_SOURCE_DIR}/aggregator_set"
+ 	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
+ 	"${MAIN_SOURCE_DIR}/segmenter_cjson"
+ 	"${MAIN_SOURCE_DIR}/segmenter_tsv"
+ 	"${MAIN_SOURCE_DIR}/segmenter_plain"
+ 	"${MAIN_SOURCE_DIR}/pattern"
+ 	"${MAIN_SOURCE_DIR}/utils"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )
@@ -43,6 +48,10 @@ add_library( strus_textproc SHARED ${source_files} )
 target_link_libraries(
 	strus_textproc
 	strus_detector_std
+	strus_segmenter_textwolf
+	strus_segmenter_cjson
+	strus_segmenter_tsv
+	strus_segmenter_plain
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
@@ -55,8 +64,9 @@ target_link_libraries(
 	strus_tokenizer_regex
 	strus_tokenizer_textcat
 	strus_aggregator_vsm
+	strus_aggregator_set
 	strus_pattern_termfeeder
-	strus_private_utils )
+	strusanalyzer_private_utils )
 
 set_target_properties(
     strus_textproc

@@ -39,7 +39,7 @@ public:
 	{
 		try
 		{
-			if (!id) throw strus::runtime_error(_TXT("used 0 as lexem identifier"));
+			if (!id) throw strus::runtime_error( "%s", _TXT("used 0 as lexem identifier"));
 
 			m_typeTable[ utils::tolower(type)] = id;
 		}
@@ -53,13 +53,13 @@ public:
 	{
 		try
 		{
-			if (!id) throw strus::runtime_error(_TXT("used 0 as symbol identifier"));
+			if (!id) throw strus::runtime_error( "%s", _TXT("used 0 as symbol identifier"));
 
 			std::size_t idx = m_symbolTable.getOrCreate( name);
-			if (idx == 0) throw strus::runtime_error( m_errorhnd->fetchError());
+			if (idx == 0) throw strus::runtime_error( "%s", m_errorhnd->fetchError());
 			if (m_symbolTable.isNew())
 			{
-				if (idx != m_syminfotab.size() +1) throw strus::runtime_error(_TXT("corrupt symbol table"));
+				if (idx != m_syminfotab.size() +1) throw strus::runtime_error( "%s", _TXT("corrupt symbol table"));
 				m_syminfoar.push_back( SymbolInfo( lexemid, id, 0));
 				m_syminfotab.push_back( m_syminfoar.size());
 			}

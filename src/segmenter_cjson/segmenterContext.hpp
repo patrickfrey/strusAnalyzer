@@ -9,6 +9,8 @@
 #define _STRUS_SEGMENTER_CONTEXT_CJSON_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/reference.hpp"
+#include "private/textEncoder.hpp"
 #include "cjson/cJSON.h"
 #include "private/xpathAutomaton.hpp"
 #include <cstdlib>
@@ -21,11 +23,12 @@ class SegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_)
+	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const strus::Reference<strus::utils::TextEncoderBase>& encoder_)
 		:m_automaton(automaton_)
 		,m_content()
 		,m_tree(0)
 		,m_eof(false)
+		,m_encoder(encoder_)
 		,m_itemidx(0)
 		,m_errorhnd(errorhnd)
 	{}
@@ -58,6 +61,7 @@ private:
 	std::string m_content;
 	cJSON* m_tree;
 	bool m_eof;
+	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
 
 	std::vector<Item> m_itemar;
 	std::size_t m_itemidx;

@@ -67,7 +67,7 @@ NormalizerFunctionInstanceInterface* WordJoinNormalizerFunction::createInstance(
 {
 	try
 	{
-		if (args.size() > 1) throw strus::runtime_error(_TXT("too many arguments"));
+		if (args.size() > 1) throw strus::runtime_error( "%s", _TXT("too many arguments"));
 		if (args.size() == 1)
 		{
 			return new WordJoinNormalizerInstance( args[0], m_errorhnd);

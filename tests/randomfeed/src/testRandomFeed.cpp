@@ -27,6 +27,8 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/base/stdint.h"
+#include "strus/base/local_ptr.hpp"
 #include "private/internationalization.hpp"
 #include <string>
 #include <vector>
@@ -38,7 +40,6 @@
 #include <memory>
 #include <cstdarg>
 #include <stdio.h>
-#include "strus/base/stdint.h"
 
 /// \brief Pseudo random generator 
 enum {KnuthIntegerHashFactor=2654435761U};
@@ -179,7 +180,7 @@ static void testTokenizer( strus::TextProcessorInterface* textproc, unsigned int
 		{
 			args.push_back( tk[ai]);
 		}
-		std::auto_ptr<strus::TokenizerFunctionInstanceInterface> instance( tokenizer->createInstance( args, textproc));
+		strus::local_ptr<strus::TokenizerFunctionInstanceInterface> instance( tokenizer->createInstance( args, textproc));
 		if (!instance.get())
 		{
 			throw std::runtime_error( std::string("failed to create tokenizer  '") + name + "' instance: " + g_errorhnd->fetchError());
@@ -246,7 +247,7 @@ static void testNormalizer( strus::TextProcessorInterface* textproc, unsigned in
 		{
 			args.push_back( nrm[ai]);
 		}
-		std::auto_ptr<strus::NormalizerFunctionInstanceInterface> instance( normalizer->createInstance( args, textproc));
+		strus::local_ptr<strus::NormalizerFunctionInstanceInterface> instance( normalizer->createInstance( args, textproc));
 		if (!instance.get())
 		{
 			throw std::runtime_error( std::string("failed to create normalizer '") + name + "' instance: " + g_errorhnd->fetchError());
@@ -316,7 +317,7 @@ int main( int argc, const char* argv[])
 		unsigned int maxSize = getUintValue( argv[2]);
 		const char* resourcePath = argv[3];
 
-		std::auto_ptr<strus::TextProcessorInterface>
+		strus::local_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
 		textproc->addResourcePath( resourcePath);
 

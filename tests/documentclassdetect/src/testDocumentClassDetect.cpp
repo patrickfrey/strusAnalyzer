@@ -11,7 +11,9 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "private/internationalization.hpp"
+#include "private/utils.hpp"
 #include "strus/base/inputStream.hpp"
+#include "strus/base/local_ptr.hpp"
 #include "strus/analyzer/documentClass.hpp"
 
 #include <iostream>
@@ -67,7 +69,7 @@ int main( int argc, const char* argv[])
 		const char* expectedCharset = argv[3];
 		const char* testFile = argv[4];
 
-		std::auto_ptr<strus::TextProcessorInterface>
+		strus::local_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
 		textproc->addResourcePath( workingDir);
 				
@@ -83,7 +85,7 @@ int main( int argc, const char* argv[])
 		strus::analyzer::DocumentClass dclass;
 		if (!textproc->detectDocumentClass( dclass, hdrbuf, hdrsize))
 		{
-			throw std::runtime_error( _TXT("failed to detect document class")); 
+			throw std::runtime_error( "failed to detect document class"); 
 		}
 
 		const char* err = g_errorhnd->fetchError();
@@ -97,11 +99,11 @@ int main( int argc, const char* argv[])
 		std::cout << "charset: " << dclass.encoding() << std::endl;
 #endif
 		
-		if (dclass.mimeType() != expectedMIMEType) {
+		if (!strus::utils::caseInsensitiveEquals( dclass.mimeType(), expectedMIMEType)) {
 			throw std::runtime_error( "mismatched mime type");
 		}
 		
-		if (dclass.encoding() != expectedCharset) {
+		if (!strus::utils::caseInsensitiveEquals( dclass.encoding(), expectedCharset)) {
 			throw std::runtime_error( "mismatched charset");
 		}
 

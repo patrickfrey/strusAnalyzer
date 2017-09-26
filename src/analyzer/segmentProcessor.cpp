@@ -60,13 +60,17 @@ struct Position
 	{
 		return seg == o.seg ? ofs < o.ofs : seg < o.seg;
 	}
+	bool operator <= (const Position& o) const
+	{
+		return seg == o.seg ? ofs <= o.ofs : seg <= o.seg;
+	}
 	bool operator == (const Position& o) const
 	{
 		return seg == o.seg && ofs == o.ofs;
 	}
 };
 
-static void fillPositionSet( std::set<Position>& pset, const std::vector<BindTerm>& terms)
+static void fillPositionSet( std::set<Position>& pset, std::set<Position>& pset_unique, const std::vector<BindTerm>& terms)
 {
 	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
 	for (; ri != re; ++ri)
@@ -75,6 +79,34 @@ static void fillPositionSet( std::set<Position>& pset, const std::vector<BindTer
 		{
 			pset.insert( Position( ri->seg(), ri->ofs()+1));
 		}
+		else if (ri->posbind() == analyzer::BindUnique)
+		{
+			pset_unique.insert( Position( ri->seg(), ri->ofs()+1));
+		}
+	}
+}
+
+static void mergeUniquePositionSet( std::set<Position>& pset, const std::set<Position>& pset_unique)
+{
+	std::set<Position>::const_iterator si = pset.begin(), se = pset.end();
+	std::set<Position>::const_iterator ui = pset_unique.begin(), ue = pset_unique.end();
+	while (si != se && ui != ue)
+	{
+		while (*si < *ui && si != se) ++si;
+		if (si != se)
+		{
+			for (++ui; ui != ue && *ui <= *si; ++ui){}
+			// ... take only the last of a unique sequence
+			std::set<Position>::const_iterator lastinseq = ui;
+			--lastinseq;
+			pset.insert( *lastinseq);
+		}
+	}
+	if (ui != ue)
+	{
+		std::set<Position>::const_iterator lastinseq = ue;
+		--lastinseq;
+		pset.insert( *lastinseq);
 	}
 }
 
@@ -92,26 +124,10 @@ static PositionMap getPositionMap( const std::set<Position>& pset)
 	return posmap;
 }
 
-static std::vector<std::size_t> getQueryFieldEndPositions( const PositionMap& posmap)
-{
-	std::vector<std::size_t> fields;
-	unsigned int curseg = 0;
-	PositionMap::const_iterator pi = posmap.begin(), pe = posmap.end();
-	for (; pi != pe; ++pi)
-	{
-		if (curseg != pi->first.seg)
-		{
-			while (curseg < pi->first.seg)
-			{
-				fields.push_back( pi->second);
-				++curseg;
-			}
-		}
-	}
-	return fields;
-}
-
-static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindTerm>& terms, const PositionMap& posmap, std::size_t posofs)
+static void fillTermsDocument(
+		std::vector<analyzer::DocumentTerm>& res,
+		const std::vector<BindTerm>& terms,
+		const PositionMap& posmap, std::size_t posofs)
 {
 	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
 	for (; ri != re; ++ri)
@@ -122,16 +138,17 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 			{
 				PositionMap::const_iterator
 					mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
-				res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
+				res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
 				break;
 			}
+			case analyzer::BindUnique:
 			case analyzer::BindSuccessor:
 			{
 				PositionMap::const_iterator
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()));
 				if (mi != posmap.end())
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs, ri->len()));
+					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
 				}
 				break;
 			}
@@ -141,11 +158,29 @@ static void fillTerms( std::vector<analyzer::Term>& res, const std::vector<BindT
 					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()+1));
 				if (mi != posmap.end() && mi->second + posofs > 1)
 				{
-					res.push_back( analyzer::Term( ri->type(), ri->value(), mi->second + posofs - 1, ri->len()));
+					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs - 1));
 				}
 				break;
 			}
 		}
+	}
+}
+
+static void fillTermsQuery( 
+		std::vector<SegmentProcessor::QueryElement>& res,
+		const std::vector<BindTerm>& terms,
+		const PositionMap& posmap, std::size_t posofs)
+{
+	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
+	for (; ri != re; ++ri)
+	{
+		if (ri->posbind() != analyzer::BindContent)
+		{
+			throw strus::runtime_error( "%s", _TXT("only position bind content expected in query"));
+		}
+		PositionMap::const_iterator
+			mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
+		res.push_back( SegmentProcessor::QueryElement( ri->seg(), mi->second + posofs, analyzer::QueryTerm( ri->type(), ri->value(), ri->len())));
 	}
 }
 
@@ -154,15 +189,17 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	analyzer::Document rt;
 
 	std::set<Position> pset;
-	fillPositionSet( pset, m_searchTerms);
-	fillPositionSet( pset, m_forwardTerms);
+	std::set<Position> pset_unique;
+	fillPositionSet( pset, pset_unique, m_searchTerms);
+	fillPositionSet( pset, pset_unique, m_forwardTerms);
+	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
 	std::size_t posofs = 0;
-	std::vector<analyzer::Term> seterms;
-	fillTerms( seterms, m_searchTerms, posmap, posofs);
-	std::vector<analyzer::Term> fwterms;
-	fillTerms( fwterms, m_forwardTerms, posmap, posofs);
+	std::vector<analyzer::DocumentTerm> seterms;
+	fillTermsDocument( seterms, m_searchTerms, posmap, posofs);
+	std::vector<analyzer::DocumentTerm> fwterms;
+	fillTermsDocument( fwterms, m_forwardTerms, posmap, posofs);
 
 	rt.addSearchIndexTerms( seterms);
 	rt.addForwardIndexTerms( fwterms);
@@ -186,84 +223,17 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	return rt;
 }
 
-static void query_addMetaData( unsigned int fieldno, analyzer::Query& qry, const analyzer::Term& term)
+std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 {
-	NumericVariant value;
-	if (!value.initFromString( term.value().c_str()))
-	{
-		throw strus::runtime_error(_TXT("cannot convert normalized item to number (metadata element): %s"), term.value().c_str());
-	}
-	qry.addMetaData( fieldno, term.pos(), analyzer::MetaData( term.type(), value));
-}
-
-analyzer::Query SegmentProcessor::fetchQuery()
-{
-	analyzer::Query rt;
 	std::set<Position> pset;
-	fillPositionSet( pset, m_searchTerms);
-	fillPositionSet( pset, m_metadataTerms);
+	std::set<Position> pset_unique;
+	fillPositionSet( pset, pset_unique, m_searchTerms);
+	fillPositionSet( pset, pset_unique, m_metadataTerms);
+	mergeUniquePositionSet( pset, pset_unique);
 	PositionMap posmap = getPositionMap( pset);
 
-	std::vector<analyzer::Term> seterms;
-	fillTerms( seterms, m_searchTerms, posmap, 0/*position offset*/);
-	std::vector<analyzer::Term> mtterms;
-	fillTerms( mtterms, m_metadataTerms, posmap, 0/*position offset*/);
-
-	std::vector<std::size_t> fieldmap = getQueryFieldEndPositions( posmap);
-
-	unsigned int fieldno = 0;
-	std::vector<std::size_t>::const_iterator pi = fieldmap.begin(), pe = fieldmap.end();
-	std::vector<analyzer::Term>::const_iterator si = seterms.begin(), se = seterms.end();
-	std::vector<analyzer::Term>::const_iterator mi = mtterms.begin(), me = mtterms.end();
-	while (mi != me && si != se)
-	{
-		if (mi->pos() < si->pos())
-		{
-			while (pi < pe && *pi <= mi->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			query_addMetaData( fieldno, rt, *mi++);
-		}
-		else if (mi->pos() > si->pos())
-		{
-			while (pi < pe && *pi <= si->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			rt.addSearchIndexTerm( fieldno, *si++);
-		}
-		else/* if (mi->pos() == si->pos())*/
-		{
-			while (pi < pe && *pi <= si->pos())
-			{
-				++fieldno;
-				++pi;
-			}
-			query_addMetaData( fieldno, rt, *mi++);
-			rt.addSearchIndexTerm( fieldno, *si++);
-		}
-	}
-	while (mi != me)
-	{
-		while (pi < pe && *pi <= mi->pos())
-		{
-			++fieldno;
-			++pi;
-		}
-		query_addMetaData( fieldno, rt, *mi++);
-	}
-	while (si != se)
-	{
-		while (pi < pe && *pi <= si->pos())
-		{
-			++fieldno;
-			++pi;
-		}
-		rt.addSearchIndexTerm( fieldno, *si++);
-	}
+	std::vector<QueryElement> rt;
+	fillTermsQuery( rt, m_searchTerms, posmap, 0/*position offset*/);
 	return rt;
 }
 
@@ -417,7 +387,7 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
 				break;
 			case FeatPatternLexem:
-				throw strus::runtime_error(_TXT("internal: illegal feature class for pattern match result"));
+				throw strus::runtime_error( "%s", _TXT("internal: illegal feature class for pattern match result"));
 		}
 	}
 }

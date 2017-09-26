@@ -32,7 +32,9 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
 	,m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
+	,m_segmenterstack()
 	,m_eof(false)
+	,m_curr_position_ofs(0)
 	,m_curr_position(0)
 	,m_start_position(0)
 	,m_nof_segments(0)
@@ -41,13 +43,18 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 {
 	if (!m_segmenter)
 	{
-		throw strus::runtime_error( _TXT("failed to create document analyzer context"));
+		throw strus::runtime_error( "%s", _TXT("failed to create document analyzer context"));
 	}
 }
 
 DocumentAnalyzerContext::~DocumentAnalyzerContext()
 {
 	delete m_segmenter;
+	std::vector<SegmenterStackElement>::const_iterator si = m_segmenterstack.begin(), se = m_segmenterstack.begin();
+	for (; si != se; ++si)
+	{
+		delete si->segmenter;
+	}
 }
 
 void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
@@ -139,73 +146,102 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		std::size_t segsrcsize = 0;
 		int featidx = 0;
 	
-		// [1] Scan the document and push the normalized tokenization of the elements to the result:
-		while (m_segmenter->getNext( featidx, m_curr_position, segsrc, segsrcsize))
+		for (;;)
 		{
-			try
+			// [1] Scan the document and push the normalized tokenization of the elements to the result:
+			while (m_segmenter->getNext( featidx, m_curr_position, segsrc, segsrcsize))
 			{
+				m_curr_position += m_curr_position_ofs;
+				try
+				{
 #ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "fetch document segment '" << featidx << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
+					std::cout << "fetch document segment (pos " << m_curr_position << ", fidx= " << featidx << "): " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
 #endif
-				if (featidx >= SubDocumentEnd)
-				{
-					//... start or end of document marker
-					if (featidx == SubDocumentEnd)
+					if (featidx >= SubDocumentEnd)
 					{
-						if (m_nof_segments == 0)
+						if (featidx >= OfsSubContent)
 						{
-							return false;
+							const DocumentAnalyzer::SubSegmenterDef* subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
+							if (subsegmenterdef)
+							{
+								SegmenterContextInterface* ns = subsegmenterdef->segmenterInstance->createContext( subsegmenterdef->documentClass);
+								if (!ns) throw strus::runtime_error( "%s", _TXT("failed to create sub segmenter context"));
+								m_segmenterstack.push_back( SegmenterStackElement( m_start_position, m_curr_position_ofs, m_segmenter));
+								m_segmenter = ns;
+								m_curr_position_ofs = m_curr_position;
+								m_segmenter->putInput( segsrc, segsrcsize, true);
+							}
 						}
-						//... end of sub document -> out of loop and return document
-						m_nof_segments = 0;
-						completeDocumentProcessing( doc);
-						m_subdocTypeName.clear();
-						return true;
-					}
-					else
-					{
-						if (m_nof_segments > 0)
+						//... start or end of document marker
+						else if (featidx == SubDocumentEnd)
 						{
-							throw strus::runtime_error(_TXT("addressing segments outside of a sub document or overlapping sub documents found"));
-						}
-						// create new sub document:
-						m_subdocTypeName = m_analyzer->subdoctypes()[ featidx-OfsSubDocument];
-						m_start_position = m_curr_position;
-					}
-				}
-				else
-				{
-					++m_nof_segments;
-					if (featidx >= OfsPatternMatchSegment)
-					{
-						PreProcPatternMatchContext& ppctx
-							= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
-						std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-						ppctx.process( rel_position, segsrc, segsrcsize);
-					}
-					else
-					{
-						const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
-						if (feat.tokenizer()->concatBeforeTokenize())
-						{
-							// concat chunks that need to be concatenated before tokenization:
-							std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-							m_segmentProcessor.concatDocumentSegment(
-									featidx, rel_position, segsrc, segsrcsize);
+							if (m_nof_segments == 0)
+							{
+								return false;
+							}
+							//... end of sub document -> out of loop and return document
+							m_nof_segments = 0;
+							completeDocumentProcessing( doc);
+							m_subdocTypeName.clear();
+							return true;
 						}
 						else
 						{
+							if (m_nof_segments > 0)
+							{
+								throw strus::runtime_error( "%s", _TXT("addressing segments outside of a sub document or overlapping sub documents found"));
+							}
+							// create new sub document:
+							m_subdocTypeName = m_analyzer->subdoctypes()[ featidx-OfsSubDocument];
+							m_start_position = m_curr_position;
+						}
+					}
+					else
+					{
+						++m_nof_segments;
+						if (featidx >= OfsPatternMatchSegment)
+						{
+							PreProcPatternMatchContext& ppctx
+								= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
 							std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-							m_segmentProcessor.processDocumentSegment(
-									featidx, rel_position, segsrc, segsrcsize);
+							ppctx.process( rel_position, segsrc, segsrcsize);
+						}
+						else
+						{
+							const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
+							if (feat.tokenizer()->concatBeforeTokenize())
+							{
+								// concat chunks that need to be concatenated before tokenization:
+								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+								m_segmentProcessor.concatDocumentSegment(
+										featidx, rel_position, segsrc, segsrcsize);
+							}
+							else
+							{
+								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+								m_segmentProcessor.processDocumentSegment(
+										featidx, rel_position, segsrc, segsrcsize);
+							}
 						}
 					}
 				}
+				catch (const std::runtime_error& err)
+				{
+					std::string chunk( segsrc, segsrcsize);
+					throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
+				}
 			}
-			catch (const std::runtime_error& err)
+			if (m_segmenterstack.empty())
 			{
-				std::string chunk( segsrc, segsrcsize);
-				throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
+				break;
+			}
+			else
+			{
+				delete m_segmenter;
+				m_segmenter = m_segmenterstack.back().segmenter;
+				m_curr_position_ofs = m_segmenterstack.back().curr_position_ofs;
+				m_start_position = m_segmenterstack.back().start_position;
+				m_segmenterstack.pop_back();
 			}
 		}
 		if (m_eof && m_nof_segments > 0)

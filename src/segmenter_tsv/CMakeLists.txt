@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -16,7 +16,7 @@ include_directories(
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 
@@ -24,7 +24,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_tsv SHARED ${source_files} )
-target_link_libraries( strus_segmenter_tsv strus_segmenter_utils strus_private_utils )
+target_link_libraries( strus_segmenter_tsv strus_segmenter_utils strusanalyzer_private_utils )
 set_target_properties(
     strus_segmenter_tsv
     PROPERTIES

@@ -21,7 +21,8 @@ enum PositionBind
 {
 	BindContent,		///< An element in the document that gets an own ordinal position assigned
 	BindSuccessor,		///< An element in the document that gets the ordinal position of the element at the same position or the succeding content element assigned
-	BindPredecessor		///< An element in the document that gets the ordinal position of the element at the same position or the preceding content element assigned
+	BindPredecessor,	///< An element in the document that gets the ordinal position of the element at the same position or the preceding content element assigned
+	BindUnique		///< An element in the document that gets an own ordinal position assigned if it is not preceeded by another element with unique position assignment
 };
 
 }}//namespace

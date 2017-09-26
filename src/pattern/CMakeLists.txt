@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -22,7 +22,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_pattern_termfeeder SHARED  libstrus_pattern_termfeeder.cpp  ${source_files} )
-target_link_libraries( strus_pattern_termfeeder  strus_private_utils strus_base )
+target_link_libraries( strus_pattern_termfeeder  strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_pattern_termfeeder
     PROPERTIES
@@ -32,7 +32,7 @@ set_target_properties(
 )
 
 add_library( strus_pattern_serialize SHARED  libstrus_pattern_serialize.cpp  ${source_files} )
-target_link_libraries( strus_pattern_serialize  strus_private_utils strus_base )
+target_link_libraries( strus_pattern_serialize  strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_pattern_serialize
     PROPERTIES

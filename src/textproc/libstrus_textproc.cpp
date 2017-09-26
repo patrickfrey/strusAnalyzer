@@ -18,6 +18,7 @@
 #include "strus/lib/tokenizer_regex.hpp"
 #include "strus/lib/tokenizer_textcat.hpp"
 #include "strus/lib/aggregator_vsm.hpp"
+#include "strus/lib/aggregator_set.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
@@ -133,6 +134,18 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineAggregator( "sumsquaretf", agr);
+	if (0==(agr = createAggregator_typeset( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineAggregator( "typeset", agr);
+	if (0==(agr = createAggregator_valueset( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineAggregator( "valueset", agr);
 	return rt;
 }
 

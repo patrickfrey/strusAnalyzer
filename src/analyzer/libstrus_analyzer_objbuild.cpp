@@ -102,7 +102,7 @@ public:
 
 	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const
 	{
-		return strus::createDocumentAnalyzer( segmenter, opts, m_errorhnd);
+		return strus::createDocumentAnalyzer( m_textproc.get(), segmenter, opts, m_errorhnd);
 	}
 
 	virtual QueryAnalyzerInterface* createQueryAnalyzer() const

@@ -50,6 +50,9 @@ dist/obs/strusanalyzer-Debian_7.0.dsc
 dist/obs/strusanalyzer-xUbuntu_12.04.dsc
 dist/redhat/strusanalyzer.spec
 
+# Suggested build directory
+build
+
 # Compiled Programs
 src/strusAnalyze/strusAnalyze
 src/strusInsert/strusInsert
@@ -74,8 +77,6 @@ tests/segmenter_textwolf/markup.res
 tests/segmenter_cjson/output.txt
 tests/segmenter_tsv/output.txt
 tests/posbind/data/doc.out
-
-.travis.yml
 
 # autoconf-like generated configuration file (textcat)
 3rdParty/textcat/src/config.h

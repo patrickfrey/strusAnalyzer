@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -17,7 +17,8 @@ include_directories(
 # -------------------------------------------
 # COMPACT NODE TRIE LIBRARY
 # -------------------------------------------
-add_library( compactnodetrie_static STATIC ${source_files})
+add_library( compactnodetrie_analyzer_static STATIC ${source_files})
+set_property( TARGET compactnodetrie_analyzer_static PROPERTY POSITION_INDEPENDENT_CODE TRUE )
 
 
 

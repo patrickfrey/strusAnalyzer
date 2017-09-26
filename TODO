@@ -1,1 +1,4 @@
-
+- Table structure in forward index: Table header element (counted), Column element (count), A summarizer can use table column info and refer to the header.
+- Filtering of tokens is very difficult. For example to remove tokens matching a regular pattern. Think about it
+- Add aggregator that creates a bitfield from term occurrencies (list of term types as arguments defines the bits 1: occurreny > 0, 0: feature does not exist)
+- Add unary function 'bitcnt' to /scalarfunc/scalarFunctionParser.cpp that counts bits and a binary function 'bitxor' that does a bitwise XOR.

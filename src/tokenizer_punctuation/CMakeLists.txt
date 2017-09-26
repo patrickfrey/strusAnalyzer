@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -12,16 +12,16 @@ set(source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
-	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/include"
+	"${TEXTWOLF_INCLUDE_DIRS}"
+	"${CNODETRIE_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
 	"${Boost_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/3rdParty/compactNodeTrie/src"
- 	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${CNODETRIE_LIBRARY_DIRS}"
+ 	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 
@@ -30,7 +30,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_punctuation SHARED ${source_files} )
-target_link_libraries( strus_tokenizer_punctuation compactnodetrie_static strus_private_utils )
+target_link_libraries( strus_tokenizer_punctuation compactnodetrie_analyzer_static strusanalyzer_private_utils )
 set_target_properties(
     strus_tokenizer_punctuation
     PROPERTIES

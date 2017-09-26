@@ -40,13 +40,27 @@ private:
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
 	void completeDocumentProcessing( analyzer::Document& res);
 
+	struct SegmenterStackElement
+	{
+		SegmenterPosition start_position;
+		SegmenterPosition curr_position_ofs;
+		SegmenterContextInterface* segmenter;
+
+		SegmenterStackElement( SegmenterPosition start_position_, SegmenterPosition curr_position_ofs_, SegmenterContextInterface* segmenter_)
+			:start_position(start_position_),curr_position_ofs(curr_position_ofs_),segmenter(segmenter_){}
+		SegmenterStackElement( const SegmenterStackElement& o)
+			:start_position(o.start_position),curr_position_ofs(o.curr_position_ofs),segmenter(o.segmenter){}
+	};
+
 private:
 	SegmentProcessor m_segmentProcessor;
 	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
 	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const DocumentAnalyzer* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
+	std::vector<SegmenterStackElement> m_segmenterstack;
 	bool m_eof;
+	SegmenterPosition m_curr_position_ofs;
 	SegmenterPosition m_curr_position;
 	SegmenterPosition m_start_position;
 	unsigned int m_nof_segments;

@@ -29,13 +29,6 @@ FeatureConfig::FeatureConfig(
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {
-	if (tokenizer_->concatBeforeTokenize())
-	{
-		if (m_options.positionBind() != analyzer::BindContent)
-		{
-			throw strus::runtime_error( _TXT("illegal definition of a feature that has a tokenizer processing the content concatenated with positions bound to other features"));
-		}
-	}
 	try
 	{
 		m_normalizerlist.reserve( normalizers_.size());

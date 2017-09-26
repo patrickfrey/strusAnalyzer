@@ -31,13 +31,16 @@ class ErrorBufferInterface;
 class SegmenterInterface;
 /// \brief Forward declaration
 class SegmenterInstanceInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
 
 /// \brief Document analyzer implementation
 class DocumentAnalyzer
 	:public DocumentAnalyzerInterface
 {
 public:
-	DocumentAnalyzer( 
+	DocumentAnalyzer(
+			const TextProcessorInterface* textproc_,
 			const SegmenterInterface* segmenter_,
 			const analyzer::SegmenterOptions& opts,
 			ErrorBufferInterface* errorhnd);
@@ -77,6 +80,10 @@ public:
 	virtual void defineSubDocument(
 			const std::string& subDocumentTypeName,
 			const std::string& selectexpr);
+
+	virtual void defineSubContent(
+			const std::string& selectexpr,
+			const analyzer::DocumentClass& documentClass);
 
 	virtual void addPatternLexem(
 			const std::string& termtype,
@@ -149,7 +156,20 @@ public:/*DocumentAnalyzerContext*/
 		StatisticsReference m_statfunc;
 	};
 
+	struct SubSegmenterDef
+	{
+		analyzer::DocumentClass documentClass;
+		SegmenterInstanceInterface* segmenterInstance;
+		std::string selectorPrefix;
+
+		SubSegmenterDef( const analyzer::DocumentClass& documentClass_, SegmenterInstanceInterface* segmenterInstance_, const std::string& selectorPrefix_)
+			:documentClass(documentClass_),segmenterInstance(segmenterInstance_),selectorPrefix(selectorPrefix_){}
+		SubSegmenterDef( const SubSegmenterDef& o)
+			:documentClass(o.documentClass),segmenterInstance(o.segmenterInstance),selectorPrefix(o.selectorPrefix){}
+	};
+
 	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
+	const SubSegmenterDef* subsegmenter( unsigned int idx) const			{return (idx<m_subsegmenterList.size()) ? &m_subsegmenterList[idx]:(const SubSegmenterDef*)0;}
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
@@ -160,7 +180,13 @@ public:/*DocumentAnalyzerContext*/
 	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
 
 private:
+	void defineSelectorExpression( unsigned int featdidx, const std::string& selectexpr);
+	void defineSubSection( int startId, int endId, const std::string& expression);
+
+private:
+	const TextProcessorInterface* m_textproc;
 	SegmenterInstanceInterface* m_segmenter;
+	std::vector<SubSegmenterDef> m_subsegmenterList;
 	FeatureConfigMap m_featureConfigMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
 	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;

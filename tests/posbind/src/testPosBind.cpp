@@ -24,6 +24,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/local_ptr.hpp"
 #include "strus/analyzer/positionBind.hpp"
 #include "strus/analyzer/featureOptions.hpp"
 #include <memory>
@@ -96,7 +97,7 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 	};
 	analyzer->defineSubDocument( "doc", "/doc");
 	const strus::AggregatorFunctionInterface* aggf = textproc->getAggregator( "count");
-	std::auto_ptr<strus::AggregatorFunctionInstanceInterface> aggfi( aggf->createInstance( std::vector<std::string>( 1,"stem")));
+	strus::local_ptr<strus::AggregatorFunctionInstanceInterface> aggfi( aggf->createInstance( std::vector<std::string>( 1,"stem")));
 	analyzer->defineAggregatedMetaData( "doclen", aggfi.get());
 	(void)aggfi.release();
 
@@ -106,7 +107,7 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 		FuncDef tdef( ci->tokenizer);
 		const strus::TokenizerFunctionInterface* tk = textproc->getTokenizer( tdef.name);
 		if (!tk) throw std::runtime_error( std::string("unknown tokenizer: '") + tdef.name + "'");
-		std::auto_ptr<strus::TokenizerFunctionInstanceInterface> tki( tk->createInstance( tdef.args, textproc));
+		strus::local_ptr<strus::TokenizerFunctionInstanceInterface> tki( tk->createInstance( tdef.args, textproc));
 		std::vector<strus::NormalizerFunctionInstanceInterface*> normalizers;
 		std::size_t ni = 0;
 		for (; ci->normalizers[ni]; ++ni)
@@ -114,7 +115,7 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 			FuncDef ndef( ci->normalizers[ni]);
 			const strus::NormalizerFunctionInterface* nm = textproc->getNormalizer( ndef.name);
 			if (!nm) throw std::runtime_error( std::string("unknown normalizer: '") + ndef.name + "'");
-			std::auto_ptr<strus::NormalizerFunctionInstanceInterface> nmi( nm->createInstance( ndef.args, textproc));
+			strus::local_ptr<strus::NormalizerFunctionInstanceInterface> nmi( nm->createInstance( ndef.args, textproc));
 			if (!nmi.get())
 			{
 				std::vector<strus::NormalizerFunctionInstanceInterface*>::iterator zi = normalizers.begin(), ze = normalizers.end();
@@ -148,14 +149,6 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 				break;
 		}
 	}
-}
-
-static bool cmpTerm( const strus::analyzer::Term& a, const strus::analyzer::Term& b)
-{
-	if (a.pos() != b.pos()) return a.pos() < b.pos();
-	if (a.type() != b.type()) return a.type() < b.type();
-	if (a.value() != b.value()) return a.value() < b.value();
-	return false;
 }
 
 int main( int argc, const char* argv[])
@@ -198,11 +191,12 @@ int main( int argc, const char* argv[])
 		{
 			outputfile.append( std::string( argv[2]) + ".out");
 		}
-		std::auto_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
+		strus::local_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
 			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
-		const strus::SegmenterInterface* segmenter = objbuild->getSegmenter( "textwolf");
-		std::auto_ptr<strus::DocumentAnalyzerInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
-		loadAnalyzerConfig( analyzer.get(), objbuild->getTextProcessor());
+		const strus::TextProcessorInterface* textproc = objbuild->getTextProcessor();
+		const strus::SegmenterInterface* segmenter = textproc->getSegmenterByName( "textwolf");
+		strus::local_ptr<strus::DocumentAnalyzerInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
+		loadAnalyzerConfig( analyzer.get(), textproc);
 
 		std::string inputsrc;
 		unsigned int ec;
@@ -214,34 +208,34 @@ int main( int argc, const char* argv[])
 
 		strus::analyzer::DocumentClass documentClass( "application/xml", "UTF-8");
 		std::ostringstream output;
-		std::auto_ptr<strus::DocumentAnalyzerContextInterface> analyzerctx( analyzer->createContext( documentClass));
+		strus::local_ptr<strus::DocumentAnalyzerContextInterface> analyzerctx( analyzer->createContext( documentClass));
 		analyzerctx->putInput( inputsrc.c_str(), inputsrc.size(), true);
 		strus::analyzer::Document doc;
 		while (analyzerctx->analyzeNext( doc))
 		{
 			output << "DOC " << doc.subDocumentTypeName() << std::endl;
-			std::vector<strus::analyzer::Attribute>::const_iterator
+			std::vector<strus::analyzer::DocumentAttribute>::const_iterator
 				ai = doc.attributes().begin(), ae = doc.attributes().end();
 			for (; ai != ae; ++ai)
 			{
 				output << "Attribute " << ai->name() << " = '" << ai->value() << "'" << std::endl;
 			}
-			std::vector<strus::analyzer::MetaData>::const_iterator
+			std::vector<strus::analyzer::DocumentMetaData>::const_iterator
 				mi = doc.metadata().begin(), me = doc.metadata().end();
 			for (; mi != me; ++mi)
 			{
 				output << "MetaData " << mi->name() << " = '" << mi->value().tostring().c_str() << "'" << std::endl;
 			}
-			std::vector<strus::analyzer::Term> searchIndexTerms = doc.searchIndexTerms();
-			std::sort( searchIndexTerms.begin(), searchIndexTerms.end(), cmpTerm);
-			std::vector<strus::analyzer::Term>::const_iterator
+			std::vector<strus::analyzer::DocumentTerm> searchIndexTerms = doc.searchIndexTerms();
+			std::sort( searchIndexTerms.begin(), searchIndexTerms.end());
+			std::vector<strus::analyzer::DocumentTerm>::const_iterator
 				ti = searchIndexTerms.begin(), te = searchIndexTerms.end();
 			for (; ti != te; ++ti)
 			{
 				output << "SearchTerm term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
-			std::vector<strus::analyzer::Term> forwardIndexTerms = doc.forwardIndexTerms();
-			std::sort( forwardIndexTerms.begin(), forwardIndexTerms.end(), cmpTerm);
+			std::vector<strus::analyzer::DocumentTerm> forwardIndexTerms = doc.forwardIndexTerms();
+			std::sort( forwardIndexTerms.begin(), forwardIndexTerms.end());
 			ti = forwardIndexTerms.begin(), te = forwardIndexTerms.end();
 			for (; ti != te; ++ti)
 			{

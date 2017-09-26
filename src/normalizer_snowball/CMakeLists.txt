@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # --------------------------------------
 # SOURCES AND INCLUDES
@@ -10,16 +10,16 @@ set(source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c/include"
-	"${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include"
+	"${SNOWBALL_INCLUDE_DIRS}"
+	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
 	"${Boost_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
-	"${PROJECT_SOURCE_DIR}/3rdParty/snowball/libstemmer_c"
-	"${PROJECT_SOURCE_DIR}/src/utils"
+	"${SNOWBALL_LIBRARY_DIRS}"
+	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
 )
 
@@ -27,7 +27,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_snowball SHARED ${source_files} )
-target_link_libraries( strus_normalizer_snowball  strus_stemmer strus_private_utils )
+target_link_libraries( strus_normalizer_snowball  strus_stemmer strusanalyzer_private_utils )
 set_target_properties(
     strus_normalizer_snowball
     PROPERTIES
