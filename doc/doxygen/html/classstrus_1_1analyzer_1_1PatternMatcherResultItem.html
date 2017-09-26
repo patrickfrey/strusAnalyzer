@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -73,9 +73,9 @@
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad4229230e6e94a9070a891fa33fefc0d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#ad4229230e6e94a9070a891fa33fefc0d">PatternMatcherResultItem</a> (const char *name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, float weight_)</td></tr>
-<tr class="memdesc:ad4229230e6e94a9070a891fa33fefc0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad4229230e6e94a9070a891fa33fefc0d">More...</a><br/></td></tr>
-<tr class="separator:ad4229230e6e94a9070a891fa33fefc0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ae1ab236717100dc65c24f1ac742c76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a4ae1ab236717100dc65c24f1ac742c76">PatternMatcherResultItem</a> (const char *name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_)</td></tr>
+<tr class="memdesc:a4ae1ab236717100dc65c24f1ac742c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a4ae1ab236717100dc65c24f1ac742c76">More...</a><br/></td></tr>
+<tr class="separator:a4ae1ab236717100dc65c24f1ac742c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a5a958c9fedd69abf069d2e8f757a0ebf">PatternMatcherResultItem</a> (const <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html">PatternMatcherResultItem</a> &amp;o)</td></tr>
 <tr class="memdesc:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#a5a958c9fedd69abf069d2e8f757a0ebf">More...</a><br/></td></tr>
 <tr class="separator:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,14 +103,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a244c6cc635d568bc5077bb9c0e9c22c8">end_origpos</a> () const </td></tr>
 <tr class="memdesc:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Original byte position end of the result item in the source segment as UTF-8 specified with start_origseg.  <a href="#a244c6cc635d568bc5077bb9c0e9c22c8">More...</a><br/></td></tr>
 <tr class="separator:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58f34ee94be6b3dce016bc665a794a21"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a58f34ee94be6b3dce016bc665a794a21">weight</a> () const </td></tr>
-<tr class="memdesc:a58f34ee94be6b3dce016bc665a794a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weight of the item, defined by the weight of the variable assignment.  <a href="#a58f34ee94be6b3dce016bc665a794a21">More...</a><br/></td></tr>
-<tr class="separator:a58f34ee94be6b3dce016bc665a794a21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Result item structure of a pattern match result. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ad4229230e6e94a9070a891fa33fefc0d"></a>
+<a class="anchor" id="a4ae1ab236717100dc65c24f1ac742c76"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -157,13 +154,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>end_origpos_</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>weight_</em>&#160;</td>
+          <td class="paramname"><em>end_origpos_</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -409,39 +400,14 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a58f34ee94be6b3dce016bc665a794a21"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float strus::analyzer::PatternMatcherResultItem::weight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Weight of the item, defined by the weight of the variable assignment. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/<a class="el" href="patternMatcherResultItem_8hpp_source.html">patternMatcherResultItem.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/analyzer/<a class="el" href="patternMatcherResultItem_8hpp_source.html">patternMatcherResultItem.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

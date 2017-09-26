@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -80,12 +80,6 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#aa8f9090a8fb1af0134fa9c3b82f57834">getTextProcessor</a> () const =0</td></tr>
 <tr class="memdesc:aa8f9090a8fb1af0134fa9c3b82f57834"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the analyzer text processor interface.  <a href="#aa8f9090a8fb1af0134fa9c3b82f57834">More...</a><br/></td></tr>
 <tr class="separator:aa8f9090a8fb1af0134fa9c3b82f57834"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37a30b1cd2cfae781ef571add0312711"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711">getSegmenter</a> (const std::string &amp;segmenterName) const =0</td></tr>
-<tr class="memdesc:a37a30b1cd2cfae781ef571add0312711"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a loaded document segmenter object reference.  <a href="#a37a30b1cd2cfae781ef571add0312711">More...</a><br/></td></tr>
-<tr class="separator:a37a30b1cd2cfae781ef571add0312711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2eed2ab33a80795277c9fb4c6d9ba6f6"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a2eed2ab33a80795277c9fb4c6d9ba6f6">findMimeTypeSegmenter</a> (const std::string &amp;mimetype) const =0</td></tr>
-<tr class="memdesc:a2eed2ab33a80795277c9fb4c6d9ba6f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a loaded document segmenter object reference that is able to process the specified MIME type.  <a href="#a2eed2ab33a80795277c9fb4c6d9ba6f6">More...</a><br/></td></tr>
-<tr class="separator:a2eed2ab33a80795277c9fb4c6d9ba6f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1ae0997afebe326b7560778b9b4c680"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html">DocumentAnalyzerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#ab1ae0997afebe326b7560778b9b4c680">createDocumentAnalyzer</a> (const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *segmenter, const <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a> &amp;opts=<a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a>()) const =0</td></tr>
 <tr class="memdesc:ab1ae0997afebe326b7560778b9b4c680"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a document analyzer object.  <a href="#ab1ae0997afebe326b7560778b9b4c680">More...</a><br/></td></tr>
 <tr class="separator:ab1ae0997afebe326b7560778b9b4c680"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,72 +186,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a2eed2ab33a80795277c9fb4c6d9ba6f6"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::AnalyzerObjectBuilderInterface::findMimeTypeSegmenter </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>mimetype</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get a loaded document segmenter object reference that is able to process the specified MIME type. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">mimetype</td><td>MIME type of the document type to process </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a read only document segmenter reference </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a37a30b1cd2cfae781ef571add0312711"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::AnalyzerObjectBuilderInterface::getSegmenter </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>segmenterName</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get a loaded document segmenter object reference. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">segmenterName</td><td>name of the segmenter used (if empty, find the first one loaded or the default one) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a read only document segmenter reference </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="aa8f9090a8fb1af0134fa9c3b82f57834"></a>
 <div class="memitem">
 <div class="memproto">
@@ -285,13 +213,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="analyzerObjectBuilderInterface_8hpp_source.html">analyzerObjectBuilderInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="analyzerObjectBuilderInterface_8hpp_source.html">analyzerObjectBuilderInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

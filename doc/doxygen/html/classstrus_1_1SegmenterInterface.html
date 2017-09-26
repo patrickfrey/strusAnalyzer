@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,9 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#a50a585521f2868d25b0b7f5de02ebb82">createInstance</a> (const <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a> &amp;opts=<a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a>()) const =0</td></tr>
 <tr class="memdesc:a50a585521f2868d25b0b7f5de02ebb82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a parameterizable segmenter instance.  <a href="#a50a585521f2868d25b0b7f5de02ebb82">More...</a><br/></td></tr>
 <tr class="separator:a50a585521f2868d25b0b7f5de02ebb82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af343beb35b22487958c0d71bcc35f85c"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterInterface.html#af343beb35b22487958c0d71bcc35f85c">getDescription</a> () const =0</td></tr>
+<tr class="memdesc:af343beb35b22487958c0d71bcc35f85c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a description of the function for user help.  <a href="#af343beb35b22487958c0d71bcc35f85c">More...</a><br/></td></tr>
+<tr class="separator:af343beb35b22487958c0d71bcc35f85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines an interface for creating instances of programs for document segmentation. </p>
@@ -145,6 +148,32 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af343beb35b22487958c0d71bcc35f85c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const char* strus::SegmenterInterface::getDescription </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a description of the function for user help. </p>
+<dl class="section return"><dt>Returns</dt><dd>the description string </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a13581b55eec2642f98bbef78d5cd779c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -172,13 +201,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="segmenterInterface_8hpp_source.html">segmenterInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="segmenterInterface_8hpp_source.html">segmenterInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

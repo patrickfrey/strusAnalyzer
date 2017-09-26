@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/lib/analyzer.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/lib/analyzer.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -47,12 +47,11 @@
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_34a3d69fc0edbd883437b52adfca797b.html">lib</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_35070828f9ca81e0ca44b8badc62fb53.html">lib</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -77,23 +76,24 @@
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">class </span>DocumentAnalyzerInterface;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">class </span>QueryAnalyzerInterface;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">class </span>SegmenterInterface;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;DocumentAnalyzerInterface* <a class="code" href="namespacestrus.html#ae57ad0c553c1ec0298cb2d543ea173d3">createDocumentAnalyzer</a>( <span class="keyword">const</span> SegmenterInterface* segmenter, <span class="keyword">const</span> analyzer::SegmenterOptions&amp; opts, ErrorBufferInterface* errorhnd);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;QueryAnalyzerInterface* <a class="code" href="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632">createQueryAnalyzer</a>( ErrorBufferInterface* errorhnd);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="namespacestrus_html_ae57ad0c553c1ec0298cb2d543ea173d3"><div class="ttname"><a href="namespacestrus.html#ae57ad0c553c1ec0298cb2d543ea173d3">strus::createDocumentAnalyzer</a></div><div class="ttdeci">DocumentAnalyzerInterface * createDocumentAnalyzer(const SegmenterInterface *segmenter, const analyzer::SegmenterOptions &amp;opts, ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Creates a parameterizable analyzer instance for analyzing documents. </div></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">class </span>TextProcessorInterface;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;DocumentAnalyzerInterface* <a class="code" href="namespacestrus.html#a03c450c5bf273cdea26aa326c8830169">createDocumentAnalyzer</a>( <span class="keyword">const</span> TextProcessorInterface* textproc, <span class="keyword">const</span> SegmenterInterface* segmenter, <span class="keyword">const</span> analyzer::SegmenterOptions&amp; opts, ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;QueryAnalyzerInterface* <a class="code" href="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632">createQueryAnalyzer</a>( ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="namespacestrus_html_ab44bf498faf162d411fc08f3cfc45632"><div class="ttname"><a href="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632">strus::createQueryAnalyzer</a></div><div class="ttdeci">QueryAnalyzerInterface * createQueryAnalyzer(ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Creates a parameterizable analyzer instance for analyzing queries. </div></div>
+<div class="ttc" id="namespacestrus_html_a03c450c5bf273cdea26aa326c8830169"><div class="ttname"><a href="namespacestrus.html#a03c450c5bf273cdea26aa326c8830169">strus::createDocumentAnalyzer</a></div><div class="ttdeci">DocumentAnalyzerInterface * createDocumentAnalyzer(const TextProcessorInterface *textproc, const SegmenterInterface *segmenter, const analyzer::SegmenterOptions &amp;opts, ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Creates a parameterizable analyzer instance for analyzing documents. </div></div>
 <div class="ttc" id="segmenterOptions_8hpp_html"><div class="ttname"><a href="segmenterOptions_8hpp.html">segmenterOptions.hpp</a></div><div class="ttdoc">Options to stear the segmenter behaviour or the structure of input if not self defined in the documen...</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

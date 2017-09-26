@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -75,12 +75,13 @@
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ab187472640084bc0d62da1d04a9de353"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> { <br/>
-&#160;&#160;<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a716b4771502cb2ed8ec11512d927849d">TokenizerFunction</a>, 
+&#160;&#160;<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353ad09ce47297dc9b135b897ba7923f64ce">Segmenter</a>, 
+<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a716b4771502cb2ed8ec11512d927849d">TokenizerFunction</a>, 
 <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353aac2f3d1bf0821e31c66feb1c668ef627">NormalizerFunction</a>, 
 <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a07cea7ef374ca79522e99574696cf779">AggregatorFunction</a>, 
-<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353ac909287f3acbd4a5de878f1b98eeb945">PatternLexer</a>, 
 <br/>
-&#160;&#160;<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a0821db8853155d713b51aa9355994571">PatternMatcher</a>
+&#160;&#160;<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353ac909287f3acbd4a5de878f1b98eeb945">PatternLexer</a>, 
+<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353a0821db8853155d713b51aa9355994571">PatternMatcher</a>
 <br/>
  }</td></tr>
 <tr class="memdesc:ab187472640084bc0d62da1d04a9de353"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function type for fetching descriptions of available functions.  <a href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">More...</a><br/></td></tr>
@@ -97,6 +98,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a35eeab2013e6c2d60e93a7d4463f7821"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">getResourcePath</a> (const std::string &amp;filename) const =0</td></tr>
 <tr class="memdesc:a35eeab2013e6c2d60e93a7d4463f7821"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute path of a resource file.  <a href="#a35eeab2013e6c2d60e93a7d4463f7821">More...</a><br/></td></tr>
 <tr class="separator:a35eeab2013e6c2d60e93a7d4463f7821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae026d50dcab9030e6891c9e6fbad89fb"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ae026d50dcab9030e6891c9e6fbad89fb">getSegmenterByName</a> (const std::string &amp;segmenterName) const =0</td></tr>
+<tr class="memdesc:ae026d50dcab9030e6891c9e6fbad89fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document segmenter object reference.  <a href="#ae026d50dcab9030e6891c9e6fbad89fb">More...</a><br/></td></tr>
+<tr class="separator:ae026d50dcab9030e6891c9e6fbad89fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35addad7758700a5eb4d130c7aaa4be2"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a35addad7758700a5eb4d130c7aaa4be2">getSegmenterByMimeType</a> (const std::string &amp;mimetype) const =0</td></tr>
+<tr class="memdesc:a35addad7758700a5eb4d130c7aaa4be2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document segmenter object reference that is able to process the specified MIME type.  <a href="#a35addad7758700a5eb4d130c7aaa4be2">More...</a><br/></td></tr>
+<tr class="separator:a35addad7758700a5eb4d130c7aaa4be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa34172b9a6a2e8e89c39baa8e2e1273c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#aa34172b9a6a2e8e89c39baa8e2e1273c">getSegmenterOptions</a> (const std::string &amp;scheme) const =0</td></tr>
+<tr class="memdesc:aa34172b9a6a2e8e89c39baa8e2e1273c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the options for a document segmenter for a specific document type.  <a href="#aa34172b9a6a2e8e89c39baa8e2e1273c">More...</a><br/></td></tr>
+<tr class="separator:aa34172b9a6a2e8e89c39baa8e2e1273c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12be7c7a76632607dad91d8208c120c3"><td class="memItemLeft" align="right" valign="top">virtual const <br class="typebreak"/>
 <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3">getTokenizer</a> (const std::string &amp;name) const =0</td></tr>
 <tr class="memdesc:a12be7c7a76632607dad91d8208c120c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a const reference to a tokenizer object that implements the splitting of a text segments into tokens.  <a href="#a12be7c7a76632607dad91d8208c120c3">More...</a><br/></td></tr>
@@ -127,6 +137,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adc5841797633ff7b733198f8db1bfe81"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#adc5841797633ff7b733198f8db1bfe81">defineDocumentClassDetector</a> (<a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *detector)=0</td></tr>
 <tr class="memdesc:adc5841797633ff7b733198f8db1bfe81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a content detector.  <a href="#adc5841797633ff7b733198f8db1bfe81">More...</a><br/></td></tr>
 <tr class="separator:adc5841797633ff7b733198f8db1bfe81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f635d3a5b29e88f75859cf4ef16aae7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a3f635d3a5b29e88f75859cf4ef16aae7">defineSegmenter</a> (const std::string &amp;name, <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *segmenter)=0</td></tr>
+<tr class="memdesc:a3f635d3a5b29e88f75859cf4ef16aae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a document segmenter by name.  <a href="#a3f635d3a5b29e88f75859cf4ef16aae7">More...</a><br/></td></tr>
+<tr class="separator:a3f635d3a5b29e88f75859cf4ef16aae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a120d2abdcd01991748a94231ac37f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a50a120d2abdcd01991748a94231ac37f">defineSegmenterOptions</a> (const std::string &amp;scheme, const <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a> &amp;options)=0</td></tr>
+<tr class="memdesc:a50a120d2abdcd01991748a94231ac37f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define segmenter optione by document scheme identifier.  <a href="#a50a120d2abdcd01991748a94231ac37f">More...</a><br/></td></tr>
+<tr class="separator:a50a120d2abdcd01991748a94231ac37f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18948ae7b281702ed4982aedf3c7726b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a18948ae7b281702ed4982aedf3c7726b">defineTokenizer</a> (const std::string &amp;name, <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html">TokenizerFunctionInterface</a> *tokenizer)=0</td></tr>
 <tr class="memdesc:a18948ae7b281702ed4982aedf3c7726b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a tokenizer by name.  <a href="#a18948ae7b281702ed4982aedf3c7726b">More...</a><br/></td></tr>
 <tr class="separator:a18948ae7b281702ed4982aedf3c7726b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,7 +177,10 @@ Public Member Functions</h2></td></tr>
 
 <p>Function type for fetching descriptions of available functions. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ab187472640084bc0d62da1d04a9de353a716b4771502cb2ed8ec11512d927849d"></a>TokenizerFunction</em>&#160;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="ab187472640084bc0d62da1d04a9de353ad09ce47297dc9b135b897ba7923f64ce"></a>Segmenter</em>&#160;</td><td class="fielddoc">
+<p>Addresses a document segmenter. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="ab187472640084bc0d62da1d04a9de353a716b4771502cb2ed8ec11512d927849d"></a>TokenizerFunction</em>&#160;</td><td class="fielddoc">
 <p>Addresses a tokenizer. </p>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="ab187472640084bc0d62da1d04a9de353aac2f3d1bf0821e31c66feb1c668ef627"></a>NormalizerFunction</em>&#160;</td><td class="fielddoc">
@@ -443,6 +462,92 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a3f635d3a5b29e88f75859cf4ef16aae7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::TextProcessorInterface::defineSegmenter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td>
+          <td class="paramname"><em>segmenter</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define a document segmenter by name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the document segmenter to define </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">segmenter</td><td>a document segmenter object (pass ownership) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a50a120d2abdcd01991748a94231ac37f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::TextProcessorInterface::defineSegmenterOptions </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>scheme</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define segmenter optione by document scheme identifier. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">scheme</td><td>identifier of the document type </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">options</td><td>attached to this scheme </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a18948ae7b281702ed4982aedf3c7726b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -478,7 +583,7 @@ Public Member Functions</h2></td></tr>
 <p>Define a tokenizer by name. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the normalizer to define </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the tokenizer to define </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>a tokenizer object (pass ownership) </td></tr>
   </table>
   </dd>
@@ -735,6 +840,104 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a35addad7758700a5eb4d130c7aaa4be2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::TextProcessorInterface::getSegmenterByMimeType </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>mimetype</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a document segmenter object reference that is able to process the specified MIME type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">mimetype</td><td>MIME type of the document type to process </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a read only document segmenter reference </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae026d50dcab9030e6891c9e6fbad89fb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a>* strus::TextProcessorInterface::getSegmenterByName </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>segmenterName</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a document segmenter object reference. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">segmenterName</td><td>name of the segmenter used (if empty, find the first one loaded or the default one) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a read only document segmenter reference </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aa34172b9a6a2e8e89c39baa8e2e1273c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html">analyzer::SegmenterOptions</a> strus::TextProcessorInterface::getSegmenterOptions </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>scheme</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the options for a document segmenter for a specific document type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">scheme</td><td>document scheme identifier identifying the type of document and its external structure definition </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a12be7c7a76632607dad91d8208c120c3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -763,13 +966,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="textProcessorInterface_8hpp_source.html">textProcessorInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="textProcessorInterface_8hpp_source.html">textProcessorInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -59,6 +59,7 @@
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -80,7 +81,6 @@
       <li><a href="functions_func_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_func_t.html#index_t"><span>t</span></a></li>
       <li><a href="functions_func_v.html#index_v"><span>v</span></a></li>
-      <li><a href="functions_func_w.html#index_w"><span>w</span></a></li>
       <li><a href="functions_func_~.html#index_~"><span>~</span></a></li>
     </ul>
   </div>
@@ -104,6 +104,7 @@
 , <a class="el" href="classstrus_1_1NormalizerFunctionInterface.html#a6ad77e1f270c82b7f3f7d9eebaf7c58f">strus::NormalizerFunctionInterface</a>
 , <a class="el" href="classstrus_1_1PatternLexerInterface.html#ae48af383ad61aaad5ede5c4436507c17">strus::PatternLexerInterface</a>
 , <a class="el" href="classstrus_1_1PatternMatcherInterface.html#aa2855ca75aeb226a6556c9249dcad5a6">strus::PatternMatcherInterface</a>
+, <a class="el" href="classstrus_1_1SegmenterInterface.html#af343beb35b22487958c0d71bcc35f85c">strus::SegmenterInterface</a>
 , <a class="el" href="classstrus_1_1TokenizerFunctionInterface.html#a52f3f173b899b1ae3d7439393452cd97">strus::TokenizerFunctionInterface</a>
 </li>
 <li>getFunctionList()
@@ -111,6 +112,9 @@
 </li>
 <li>getLexem()
 : <a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html#aa626d68456b8483606254029acfb9c35">strus::PatternTermFeederInstanceInterface</a>
+</li>
+<li>getLexemName()
+: <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html#a83dc9572a1c277e1ba81343d3e641a99">strus::PatternLexerInstanceInterface</a>
 </li>
 <li>getNext()
 : <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
@@ -131,8 +135,14 @@
 <li>getResourcePath()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">strus::TextProcessorInterface</a>
 </li>
-<li>getSegmenter()
-: <a class="el" href="classstrus_1_1AnalyzerObjectBuilderInterface.html#a37a30b1cd2cfae781ef571add0312711">strus::AnalyzerObjectBuilderInterface</a>
+<li>getSegmenterByMimeType()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35addad7758700a5eb4d130c7aaa4be2">strus::TextProcessorInterface</a>
+</li>
+<li>getSegmenterByName()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ae026d50dcab9030e6891c9e6fbad89fb">strus::TextProcessorInterface</a>
+</li>
+<li>getSegmenterOptions()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#aa34172b9a6a2e8e89c39baa8e2e1273c">strus::TextProcessorInterface</a>
 </li>
 <li>getStatistics()
 : <a class="el" href="classstrus_1_1PatternMatcherContextInterface.html#a345d6864a2be326b16a7717c05a222bc">strus::PatternMatcherContextInterface</a>
@@ -155,7 +165,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

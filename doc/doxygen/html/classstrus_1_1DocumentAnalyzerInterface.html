@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac0029a1e451c9183fb28f7a3f74612f7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7">defineSubDocument</a> (const std::string &amp;subDocumentTypeName, const std::string &amp;selectexpr)=0</td></tr>
 <tr class="memdesc:ac0029a1e451c9183fb28f7a3f74612f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a sub document for the handling of multi part documents in an analyzed content.  <a href="#ac0029a1e451c9183fb28f7a3f74612f7">More...</a><br/></td></tr>
 <tr class="separator:ac0029a1e451c9183fb28f7a3f74612f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a852c61c9bd07aad416e406edce3cc9b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a852c61c9bd07aad416e406edce3cc9b1">defineSubContent</a> (const std::string &amp;selectexpr, const <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;documentClass)=0</td></tr>
+<tr class="memdesc:a852c61c9bd07aad416e406edce3cc9b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a sub content of the document that has to be processed with a different segmenter.  <a href="#a852c61c9bd07aad416e406edce3cc9b1">More...</a><br/></td></tr>
+<tr class="separator:a852c61c9bd07aad416e406edce3cc9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa01b64be6fc124c091c769d2fa065ade"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#aa01b64be6fc124c091c769d2fa065ade">addPatternLexem</a> (const std::string &amp;termtype, const std::string &amp;selectexpr, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
 <tr class="memdesc:aa01b64be6fc124c091c769d2fa065ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare an element to be used as lexem by post processing pattern matching but not put into the result of document analysis.  <a href="#aa01b64be6fc124c091c769d2fa065ade">More...</a><br/></td></tr>
 <tr class="separator:aa01b64be6fc124c091c769d2fa065ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -898,6 +901,50 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a852c61c9bd07aad416e406edce3cc9b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::DocumentAnalyzerInterface::defineSubContent </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>selectexpr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;&#160;</td>
+          <td class="paramname"><em>documentClass</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Declare a sub content of the document that has to be processed with a different segmenter. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">selectexpr</td><td>an expression that addresses the sub content declared </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">documentClass</td><td>defines the content type of the sub content </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section remark"><dt>Remarks</dt><dd>Sub contents have to be defined before (!) any item with a selection expression referring to it. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ac0029a1e451c9183fb28f7a3f74612f7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -943,13 +990,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="documentAnalyzerInterface_8hpp_source.html">documentAnalyzerInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="documentAnalyzerInterface_8hpp_source.html">documentAnalyzerInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

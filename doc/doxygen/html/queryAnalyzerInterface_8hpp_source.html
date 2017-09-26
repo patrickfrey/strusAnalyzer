@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/queryAnalyzerInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/queryAnalyzerInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -47,12 +47,11 @@
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,92 +68,77 @@
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="term_8hpp.html">strus/analyzer/term.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="normalizerFunctionInstanceInterface_8hpp.html">strus/normalizerFunctionInstanceInterface.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tokenizerFunctionInstanceInterface_8hpp.html">strus/tokenizerFunctionInstanceInterface.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">class </span>QueryAnalyzerContextInterface;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">class </span>PatternTermFeederInstanceInterface;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">class </span>PatternMatcherInstanceInterface;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">class </span>PatternLexerInstanceInterface;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface.html">   31</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1QueryAnalyzerInterface.html">QueryAnalyzerInterface</a></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">   35</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a>(){}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a943633b98106e525660170157e7232ba">addSearchIndexElement</a>(</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        <span class="keyword">const</span> std::string&amp; termtype,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <span class="keyword">const</span> std::string&amp; fieldtype,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a71d03e8ff4eed374b5b582d89031ad03">addMetaDataElement</a>(</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <span class="keyword">const</span> std::string&amp; metaname,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <span class="keyword">const</span> std::string&amp; fieldtype,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a526ed6c32574d0ce5a38991450c7f237">addPatternLexem</a>(</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        <span class="keyword">const</span> std::string&amp; termtype,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keyword">const</span> std::string&amp; fieldtype,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">definePatternMatcherPostProc</a>(</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                        <a class="code" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a>* matcher,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                        <a class="code" href="classstrus_1_1PatternTermFeederInstanceInterface.html">PatternTermFeederInstanceInterface</a>* feeder)=0;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">definePatternMatcherPreProc</a>(</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        <a class="code" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a>* matcher,</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a>* lexer,</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; selectexpr)=0;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#ae8603560d243f3ad92ca50468658365d">addSearchIndexElementFromPatternMatch</a>(</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                        <span class="keyword">const</span> std::string&amp; type,</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a99d62041b7c732d2d94e270afc6cbdf0">addMetaDataElementFromPatternMatch</a>(</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                        <span class="keyword">const</span> std::string&amp; metaname,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html">QueryAnalyzerContextInterface</a>* <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a5309268fcb340c2c4cc759c8d78fdcf3">createContext</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;};</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="normalizerFunctionInstanceInterface_8hpp.html">strus/normalizerFunctionInstanceInterface.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tokenizerFunctionInstanceInterface_8hpp.html">strus/tokenizerFunctionInstanceInterface.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">class </span>QueryAnalyzerContextInterface;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">class </span>PatternTermFeederInstanceInterface;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">class </span>PatternMatcherInstanceInterface;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">class </span>PatternLexerInstanceInterface;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface.html">   30</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1QueryAnalyzerInterface.html">QueryAnalyzerInterface</a></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">   34</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">~QueryAnalyzerInterface</a>(){}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a7b157fafca9973842ddf7268f38ca56d">addElement</a>(</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        <span class="keyword">const</span> std::string&amp; termtype,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        <span class="keyword">const</span> std::string&amp; fieldtype,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a526ed6c32574d0ce5a38991450c7f237">addPatternLexem</a>(</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        <span class="keyword">const</span> std::string&amp; termtype,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                        <span class="keyword">const</span> std::string&amp; fieldtype,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">definePatternMatcherPostProc</a>(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        <a class="code" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a>* matcher,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <a class="code" href="classstrus_1_1PatternTermFeederInstanceInterface.html">PatternTermFeederInstanceInterface</a>* feeder)=0;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">definePatternMatcherPreProc</a>(</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        <a class="code" href="classstrus_1_1PatternMatcherInstanceInterface.html">PatternMatcherInstanceInterface</a>* matcher,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a>* lexer,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; selectexpr)=0;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a1266f9d536cf35a5b73fb37205c25bf6">addElementFromPatternMatch</a>(</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="keyword">const</span> std::string&amp; type,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        <span class="keyword">const</span> std::string&amp; patternTypeName,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html">QueryAnalyzerContextInterface</a>* <a class="code" href="classstrus_1_1QueryAnalyzerInterface.html#a5309268fcb340c2c4cc759c8d78fdcf3">createContext</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;};</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a5309268fcb340c2c4cc759c8d78fdcf3"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a5309268fcb340c2c4cc759c8d78fdcf3">strus::QueryAnalyzerInterface::createContext</a></div><div class="ttdeci">virtual QueryAnalyzerContextInterface * createContext() const =0</div><div class="ttdoc">Create the context used for analyzing a query. </div></div>
-<div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html">strus::PatternTermFeederInstanceInterface</a></div><div class="ttdoc">Instance interface for defining a mapping of terms of the document analysis outout as lexems used as ...</div><div class="ttdef"><b>Definition:</b> patternTermFeederInstanceInterface.hpp:21</div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a71d03e8ff4eed374b5b582d89031ad03"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a71d03e8ff4eed374b5b582d89031ad03">strus::QueryAnalyzerInterface::addMetaDataElement</a></div><div class="ttdeci">virtual void addMetaDataElement(const std::string &amp;metaname, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare a feature to be searched in the meta data table. </div></div>
+<div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html">strus::PatternTermFeederInstanceInterface</a></div><div class="ttdoc">Instance interface for defining a mapping of terms of the document analysis outout as lexems used as ...</div><div class="ttdef"><b>Definition:</b> patternTermFeederInstanceInterface.hpp:20</div></div>
 <div class="ttc" id="normalizerFunctionInstanceInterface_8hpp_html"><div class="ttname"><a href="normalizerFunctionInstanceInterface_8hpp.html">normalizerFunctionInstanceInterface.hpp</a></div><div class="ttdoc">Interface for a parameterized normalizer function. </div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a8970fb0702519b73bf1ac15fe57b4ad1"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">strus::QueryAnalyzerInterface::~QueryAnalyzerInterface</a></div><div class="ttdeci">virtual ~QueryAnalyzerInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:35</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a8970fb0702519b73bf1ac15fe57b4ad1"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a8970fb0702519b73bf1ac15fe57b4ad1">strus::QueryAnalyzerInterface::~QueryAnalyzerInterface</a></div><div class="ttdeci">virtual ~QueryAnalyzerInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:34</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a1266f9d536cf35a5b73fb37205c25bf6"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a1266f9d536cf35a5b73fb37205c25bf6">strus::QueryAnalyzerInterface::addElementFromPatternMatch</a></div><div class="ttdeci">virtual void addElementFromPatternMatch(const std::string &amp;type, const std::string &amp;patternTypeName, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare a feature to be searched for derived from a pattern matcher result item. </div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternMatcherInstanceInterface.html">strus::PatternMatcherInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting patterns in text. </div><div class="ttdef"><b>Definition:</b> patternMatcherInstanceInterface.hpp:21</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a7b157fafca9973842ddf7268f38ca56d"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a7b157fafca9973842ddf7268f38ca56d">strus::QueryAnalyzerInterface::addElement</a></div><div class="ttdeci">virtual void addElement(const std::string &amp;termtype, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare an element to be retrieved from the search index. </div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html">strus::PatternLexerInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting lexems used as basic entities by pattern matching ...</div><div class="ttdef"><b>Definition:</b> patternLexerInstanceInterface.hpp:22</div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInstanceInterface.html">strus::TokenizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for tokenization. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInstanceInterface.hpp:20</div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></div><div class="ttdoc">Defines a program for analyzing chunks of a query. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:31</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html">strus::QueryAnalyzerInterface</a></div><div class="ttdoc">Defines a program for analyzing chunks of a query. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerInterface.hpp:30</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html">strus::QueryAnalyzerContextInterface</a></div><div class="ttdoc">Defines the context for analyzing queries for the strus IR engine. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a280669662ba72a6cf2a7a94952970117"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">strus::QueryAnalyzerInterface::definePatternMatcherPreProc</a></div><div class="ttdeci">virtual void definePatternMatcherPreProc(const std::string &amp;patternTypeName, PatternMatcherInstanceInterface *matcher, PatternLexerInstanceInterface *lexer, const std::vector&lt; std::string &gt; &amp;selectexpr)=0</div><div class="ttdoc">Declare a pattern matcher on the query features after other query analysis. </div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a99d62041b7c732d2d94e270afc6cbdf0"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a99d62041b7c732d2d94e270afc6cbdf0">strus::QueryAnalyzerInterface::addMetaDataElementFromPatternMatch</a></div><div class="ttdeci">virtual void addMetaDataElementFromPatternMatch(const std::string &amp;metaname, const std::string &amp;patternTypeName, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare a feature of the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a526ed6c32574d0ce5a38991450c7f237"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a526ed6c32574d0ce5a38991450c7f237">strus::QueryAnalyzerInterface::addPatternLexem</a></div><div class="ttdeci">virtual void addPatternLexem(const std::string &amp;termtype, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare an element to be used as lexem by post processing pattern matching but not put into the resul...</div></div>
 <div class="ttc" id="tokenizerFunctionInstanceInterface_8hpp_html"><div class="ttname"><a href="tokenizerFunctionInstanceInterface_8hpp.html">tokenizerFunctionInstanceInterface.hpp</a></div><div class="ttdoc">Interface for a parameterized tokenizer function. </div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a943633b98106e525660170157e7232ba"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a943633b98106e525660170157e7232ba">strus::QueryAnalyzerInterface::addSearchIndexElement</a></div><div class="ttdeci">virtual void addSearchIndexElement(const std::string &amp;termtype, const std::string &amp;fieldtype, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare an element to be retrieved from the search index. </div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_ae8603560d243f3ad92ca50468658365d"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#ae8603560d243f3ad92ca50468658365d">strus::QueryAnalyzerInterface::addSearchIndexElementFromPatternMatch</a></div><div class="ttdeci">virtual void addSearchIndexElementFromPatternMatch(const std::string &amp;type, const std::string &amp;patternTypeName, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare a feature to be searched for derived from a pattern matcher result item. </div></div>
-<div class="ttc" id="term_8hpp_html"><div class="ttname"><a href="term_8hpp.html">term.hpp</a></div><div class="ttdoc">Enumeration value to determine how an ordinal position of a term is assigned. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerInterface_html_a0eb4d8a3e0756e5851c592a54f09d9b8"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">strus::QueryAnalyzerInterface::definePatternMatcherPostProc</a></div><div class="ttdeci">virtual void definePatternMatcherPostProc(const std::string &amp;patternTypeName, PatternMatcherInstanceInterface *matcher, PatternTermFeederInstanceInterface *feeder)=0</div><div class="ttdoc">Declare a pattern matcher on the query features after other query analysis. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

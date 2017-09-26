@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -76,7 +76,8 @@
 Public Types</h2></td></tr>
 <tr class="memitem:a8cd543840390d38e06db37e9396926be"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">GroupBy</a> { <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea0c7a7da4be77e79bbba12606f3f5e481">GroupByPosition</a>, 
 <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beac1188a7620dbfaa7beaa3ff6933786f6">GroupEvery</a>, 
-<a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63">GroupAll</a>
+<a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63">GroupAll</a>, 
+<a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beaf14f3a723a567ad3decbaa67428ed2ae">GroupUnique</a>
  }</td></tr>
 <tr class="memdesc:a8cd543840390d38e06db37e9396926be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Descriptor that tells how to group elements together.  <a href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">More...</a><br/></td></tr>
 <tr class="separator:a8cd543840390d38e06db37e9396926be"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -92,9 +93,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afd45fe8bd1f60f1ba2796322d98ba3b4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#afd45fe8bd1f60f1ba2796322d98ba3b4">groupElements</a> (unsigned int groupid, const std::vector&lt; unsigned int &gt; &amp;fieldnoList, const <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">GroupBy</a> &amp;groupBy, bool groupSingle)=0</td></tr>
 <tr class="memdesc:afd45fe8bd1f60f1ba2796322d98ba3b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group elements of the query together.  <a href="#afd45fe8bd1f60f1ba2796322d98ba3b4">More...</a><br/></td></tr>
 <tr class="separator:afd45fe8bd1f60f1ba2796322d98ba3b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a749d58c6cde296fcca2c2d5e4688f363"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1Query.html">analyzer::Query</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a749d58c6cde296fcca2c2d5e4688f363">analyze</a> ()=0</td></tr>
-<tr class="memdesc:a749d58c6cde296fcca2c2d5e4688f363"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze the query feeded with <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8" title="Feed the analyzer with the a field of the query. ">putField(unsigned int,const std::string&amp;,const std::string&amp;)</a> and groupElements(const std::string&amp;,const std::vector&lt;unsigned int&gt;&amp;,const GroupBy&amp;)  <a href="#a749d58c6cde296fcca2c2d5e4688f363">More...</a><br/></td></tr>
-<tr class="separator:a749d58c6cde296fcca2c2d5e4688f363"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4b796b0b0daed50295cf46d62ea96b7"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression.html">analyzer::QueryTermExpression</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4b796b0b0daed50295cf46d62ea96b7">analyze</a> ()=0</td></tr>
+<tr class="memdesc:aa4b796b0b0daed50295cf46d62ea96b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze the term expression feeded with <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8" title="Feed the analyzer with the a field of the query. ">putField(unsigned int,const std::string&amp;,const std::string&amp;)</a> and groupElements(const std::string&amp;,const std::vector&lt;unsigned int&gt;&amp;,const GroupBy&amp;)  <a href="#aa4b796b0b0daed50295cf46d62ea96b7">More...</a><br/></td></tr>
+<tr class="separator:aa4b796b0b0daed50295cf46d62ea96b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines the context for analyzing queries for the strus IR engine. </p>
@@ -119,6 +121,9 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><em><a class="anchor" id="a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63"></a>GroupAll</em>&#160;</td><td class="fielddoc">
 <p>All elements are grouped together. </p>
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a8cd543840390d38e06db37e9396926beaf14f3a723a567ad3decbaa67428ed2ae"></a>GroupUnique</em>&#160;</td><td class="fielddoc">
+<p>Single element grouped and the element must exist. </p>
 </td></tr>
 </table>
 
@@ -151,7 +156,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a749d58c6cde296fcca2c2d5e4688f363"></a>
+<a class="anchor" id="aa4b796b0b0daed50295cf46d62ea96b7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -159,7 +164,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1Query.html">analyzer::Query</a> strus::QueryAnalyzerContextInterface::analyze </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression.html">analyzer::QueryTermExpression</a> strus::QueryAnalyzerContextInterface::analyze </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -172,8 +177,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Analyze the query feeded with <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8" title="Feed the analyzer with the a field of the query. ">putField(unsigned int,const std::string&amp;,const std::string&amp;)</a> and groupElements(const std::string&amp;,const std::vector&lt;unsigned int&gt;&amp;,const GroupBy&amp;) </p>
-<dl class="section return"><dt>Returns</dt><dd>the query structure </dd></dl>
+<p>Analyze the term expression feeded with <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8" title="Feed the analyzer with the a field of the query. ">putField(unsigned int,const std::string&amp;,const std::string&amp;)</a> and groupElements(const std::string&amp;,const std::vector&lt;unsigned int&gt;&amp;,const GroupBy&amp;) </p>
+<dl class="section return"><dt>Returns</dt><dd>the term expression structure </dd></dl>
 
 </div>
 </div>
@@ -286,13 +291,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="queryAnalyzerContextInterface_8hpp_source.html">queryAnalyzerContextInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="queryAnalyzerContextInterface_8hpp_source.html">queryAnalyzerContextInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

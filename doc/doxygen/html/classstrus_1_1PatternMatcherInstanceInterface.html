@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.15</span>
    </div>
   </td>
  </tr>
@@ -108,9 +108,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7cfcd0204e9edf1f42b7bd279379405e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a7cfcd0204e9edf1f42b7bd279379405e">pushPattern</a> (const std::string &amp;name)=0</td></tr>
 <tr class="memdesc:a7cfcd0204e9edf1f42b7bd279379405e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a reference to a pattern on the stack.  <a href="#a7cfcd0204e9edf1f42b7bd279379405e">More...</a><br/></td></tr>
 <tr class="separator:a7cfcd0204e9edf1f42b7bd279379405e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a697847fdf48fa684669cb0fbd570e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a6a697847fdf48fa684669cb0fbd570e5">attachVariable</a> (const std::string &amp;name, float weight)=0</td></tr>
-<tr class="memdesc:a6a697847fdf48fa684669cb0fbd570e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attaches a variable to the top expression or term on the stack.  <a href="#a6a697847fdf48fa684669cb0fbd570e5">More...</a><br/></td></tr>
-<tr class="separator:a6a697847fdf48fa684669cb0fbd570e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#aa2890cb3c55ee6b3fa9800b5d3b4779e">attachVariable</a> (const std::string &amp;name)=0</td></tr>
+<tr class="memdesc:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attaches a variable to the top expression or term on the stack.  <a href="#aa2890cb3c55ee6b3fa9800b5d3b4779e">More...</a><br/></td></tr>
+<tr class="separator:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3df8ff854b850b2cefd91888a5f27d37"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a3df8ff854b850b2cefd91888a5f27d37">definePattern</a> (const std::string &amp;name, bool visible)=0</td></tr>
 <tr class="memdesc:a3df8ff854b850b2cefd91888a5f27d37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pattern that can be referenced by the given name and can be declared as part of the result.  <a href="#a3df8ff854b850b2cefd91888a5f27d37">More...</a><br/></td></tr>
 <tr class="separator:a3df8ff854b850b2cefd91888a5f27d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,7 +189,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a6a697847fdf48fa684669cb0fbd570e5"></a>
+<a class="anchor" id="aa2890cb3c55ee6b3fa9800b5d3b4779e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -200,18 +200,8 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual void strus::PatternMatcherInstanceInterface::attachVariable </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>name</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>weight</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -225,12 +215,10 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the variable attached </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">weight</td><td>of the variable attached </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>The stack is not changed </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The weight attached is not used by the pattern matching itself. It is just forwarded to the result produced with this variable assignment. </dd></dl>
 
 </div>
 </div>
@@ -545,13 +533,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="patternMatcherInstanceInterface_8hpp_source.html">patternMatcherInstanceInterface.hpp</a></li>
+<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="patternMatcherInstanceInterface_8hpp_source.html">patternMatcherInstanceInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
