@@ -30,7 +30,7 @@ target_link_libraries( strus_tokenizer_word strusanalyzer_private_utils strus_ba
 set_target_properties(
     strus_tokenizer_word
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

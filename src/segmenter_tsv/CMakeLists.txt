@@ -28,7 +28,7 @@ target_link_libraries( strus_segmenter_tsv strus_segmenter_utils strusanalyzer_p
 set_target_properties(
     strus_segmenter_tsv
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

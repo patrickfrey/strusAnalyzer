@@ -41,7 +41,7 @@ target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc st
 set_target_properties(
     strus_analyzer
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )
@@ -51,7 +51,7 @@ target_link_libraries( strus_analyzer_objbuild strus_analyzer strus_segmenter_te
 set_target_properties(
     strus_analyzer_objbuild
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

@@ -29,7 +29,7 @@ target_link_libraries( strus_normalizer_regex strusanalyzer_private_utils )
 set_target_properties(
     strus_normalizer_regex
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

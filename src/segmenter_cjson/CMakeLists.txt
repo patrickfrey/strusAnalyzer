@@ -30,7 +30,7 @@ target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strusanalyzer
 set_target_properties(
     strus_segmenter_cjson
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

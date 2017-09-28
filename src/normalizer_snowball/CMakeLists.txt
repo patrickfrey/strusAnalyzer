@@ -31,7 +31,7 @@ target_link_libraries( strus_normalizer_snowball  strus_stemmer strusanalyzer_pr
 set_target_properties(
     strus_normalizer_snowball
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )
