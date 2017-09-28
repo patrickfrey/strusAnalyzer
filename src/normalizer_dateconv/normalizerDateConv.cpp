@@ -35,6 +35,12 @@ struct DateNumGranularity
 		Hour,
 		Day
 	};
+	static const char* typeName( Type i)
+	{
+		static const char* ar[] = {"Second","Minute","Hour","Day"};
+		return ar[(int)i];
+	}
+
 	DateNumGranularity( Type type_, const TimeStruct& start_, unsigned int factor_)
 		:m_type(type_),m_start(start_),m_factor(factor_){}
 	DateNumGranularity( const DateNumGranularity& o)
@@ -46,7 +52,7 @@ struct DateNumGranularity
 
 	static uint64_t daynum( const TimeStruct& timstmp)
 	{
-		uint64_t yy = timstmp.tm_year;
+		uint64_t yy = timstmp.tm_year + 1900;
 		uint64_t mm = timstmp.tm_mon + 1;
 		if (timstmp.tm_mon <= 1)
 		{
@@ -253,7 +259,6 @@ DateNumGranularity parseGranularity( char const* gi)
 	std::mktime( &start);
 	return DateNumGranularity( type, start, factor);
 }
-
 
 NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {

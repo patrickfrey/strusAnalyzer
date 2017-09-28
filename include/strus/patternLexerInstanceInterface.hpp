@@ -38,7 +38,7 @@ public:
 
 	/// \brief Define a pattern for detecting a basic lexem of this pattern matching lexer
 	/// \param[in] id identifier given to the lexem, 0 if the lexem is not part of the output (only used for assigning ordinal positions).
-	/// \param[in] expression expression string defining the lexem
+	/// \param[in] expression expression string defining the lexem (usually a regular expression, appromaxitive matching with edit distance is declared by convenience with a '~' followed by the edit distance, e.g. "[Hh]ello [Ww]orld ~2")
 	/// \param[in] resultIndex index of subexpression that defines the result lexem, 0 for the whole match
 	/// \param[in] level weight of this lexical pattern. A lexical pattern match causes the suppressing of all lexems of lower level that are completely covered by one lexem of this pattern
 	/// \param[in] posbind defines how the ordinal position is assigned to the result lexem
