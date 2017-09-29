@@ -16,19 +16,6 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}/src )
 # -------------------------------------------
 # CONFIGURATION
 # -------------------------------------------
-
-# copied from build_rules.cmake, removed C99 standard (because of compilation issues)
-if(CMAKE_COMPILER_IS_GNUCXX)
-set( STRUS_OPTIMIZATION_LEVEL "3" )
-set( CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -fvisibility=hidden -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-set( CMAKE_C_FLAGS "-Wall -pedantic -Wfatal-errors -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-endif()
-if(CMAKE_CXX_COMPILER MATCHES ".*clang")
-set( STRUS_OPTIMIZATION_LEVEL "3" )
-set( CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -fvisibility=hidden -Wno-unused-private-field -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-set( CMAKE_C_FLAGS "-Wall -pedantic -Wfatal-errors -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-endif()
-
 set( PACKAGE_VERSION "2.2" )
 
 include( CheckIncludeFiles )
