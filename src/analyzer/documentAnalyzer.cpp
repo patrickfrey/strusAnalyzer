@@ -203,8 +203,8 @@ void DocumentAnalyzer::defineSubContent(
 	try
 	{
 		defineSelectorExpression( m_subsegmenterList.size()+OfsSubContent, selectexpr);
-		const SegmenterInterface* segmenter = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
-		if (!segmenter)
+		const SegmenterInterface* segmenter_ = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
+		if (!segmenter_)
 		{
 			throw strus::runtime_error(_TXT("no document segmenter defined for encoding=%s; mimetype=%s; scheme=%s"), documentClass.encoding().c_str(), documentClass.mimeType().c_str(), documentClass.scheme().c_str());
 		}
@@ -213,7 +213,7 @@ void DocumentAnalyzer::defineSubContent(
 		{
 			opts = m_textproc->getSegmenterOptions( documentClass.scheme());
 		}
-		Reference<SegmenterInstanceInterface> segmenterinst( segmenter->createInstance( opts));
+		Reference<SegmenterInstanceInterface> segmenterinst( segmenter_->createInstance( opts));
 		if (!segmenterinst.get()) throw strus::runtime_error( "%s", _TXT("failed to create segmenter instance"));
 		m_subsegmenterList.push_back( SubSegmenterDef( documentClass, segmenterinst.get(), selectexpr));
 		segmenterinst.release();

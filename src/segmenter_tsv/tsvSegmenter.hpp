@@ -30,8 +30,8 @@ class TSVParserException : public std::runtime_error {
 	
 	public:
 	
-		TSVParserException( const std::string &what )
-			: std::runtime_error( what ) { }
+		TSVParserException( const std::string &what_ )
+			: std::runtime_error( what_ ) { }
 };
 
 class TSVParserDefinition

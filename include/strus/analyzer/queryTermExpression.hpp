@@ -72,10 +72,10 @@ public:
 
 	/// \brief Add a search index term to the query
 	/// \param[in] term term to add
-	void pushTerm( const analyzer::QueryTerm& term)
+	void pushTerm( const analyzer::QueryTerm& term_)
 	{
 		m_instructions.push_back( Instruction( Instruction::Term, m_terms.size()));
-		m_terms.push_back( term);
+		m_terms.push_back( term_);
 	}
 
 	/// \brief Add an instruction
