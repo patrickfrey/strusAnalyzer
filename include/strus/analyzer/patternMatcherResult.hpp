@@ -23,6 +23,8 @@ class PatternMatcherResult
 public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
+	PatternMatcherResult()
+		:m_name(0),m_start_ordpos(0),m_end_ordpos(0),m_start_origseg(0),m_end_origseg(0),m_start_origpos(0),m_end_origpos(0),m_itemlist(){}
 	/// \brief Constructor
 	PatternMatcherResult( const char* name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
 		:m_name(name_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
