@@ -21,7 +21,14 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 {
 	try
 	{
-		m_automaton.defineSelectorExpression( id, expression);
+		if (expression.empty())
+		{
+			m_automaton.defineSelectorExpression( id, "//()");
+		}
+		else
+		{
+			m_automaton.defineSelectorExpression( id, expression);
+		}
 	}
 	CATCH_ERROR_MAP_ARG1( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
