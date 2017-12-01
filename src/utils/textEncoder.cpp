@@ -163,7 +163,7 @@ const char* utils::detectBOM( const char* src, std::size_t srcsize, std::size_t&
 	const unsigned char* bom = (const unsigned char*)src;
 	if (bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF) {BOM_size = 3; return "utf-8";}
 	if (bom[0] == 0x00 && bom[1] == 0x00 && bom[2] == 0xFE && bom[3] == 0xFF) {BOM_size = 4; return "utf-32be";}
-	if (bom[0] == 0xFF && bom[1] == 0xFE && bom[2] == 0x00 && bom[3] == 0x00) {BOM_size = 4; return "utf-32be";}
+	if (bom[0] == 0xFF && bom[1] == 0xFE && bom[2] == 0x00 && bom[3] == 0x00) {BOM_size = 4; return "utf-32le";}
 	if (bom[0] == 0xFE && bom[1] == 0xFF) {BOM_size = 2; return "utf-16be";}
 	if (bom[0] == 0xFF && bom[1] == 0xFE) {BOM_size = 2; return "utf-16le";}
 	return 0;
@@ -207,7 +207,7 @@ const char* utils::detectCharsetEncoding( const char* src, std::size_t srcsize)
 	}
 	if (mcnt[0] == 0 && mcnt[2] == 0 && mcnt[0] < mcnt[1] && mcnt[2] < mcnt[3])
 	{
-		return "utf-32le";
+		return "utf-16le";
 	}
 	return 0;
 }

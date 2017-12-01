@@ -26,7 +26,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_cjson SHARED ${source_files} )
-target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strusanalyzer_private_utils cjson )
+target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strusanalyzer_private_utils strus_cjson )
 set_target_properties(
     strus_segmenter_cjson
     PROPERTIES
