@@ -175,7 +175,7 @@ const char* utils::detectCharsetEncoding( const char* src, std::size_t srcsize)
 	const char* ce = src + srcsize;
 	unsigned int zcnt = 0;
 	unsigned int max_zcnt = 0;
-	unsigned int mcnt[ 4];
+	unsigned int mcnt[ 4] = {0,0,0,0};
 	for (int cidx=0; ci != ce; ++ci,++cidx)
 	{
 		if (*ci == 0x00)
@@ -193,19 +193,19 @@ const char* utils::detectCharsetEncoding( const char* src, std::size_t srcsize)
 	{
 		return "utf-8";
 	}
-	if (mcnt[0] > mcnt[1] && mcnt[1] > mcnt[2] && mcnt[2] > mcnt[3] && mcnt[3] == 0)
+	if (mcnt[0] >= mcnt[1] && mcnt[1] >= mcnt[2] && mcnt[2] >= mcnt[3] && mcnt[3] == 0)
 	{
 		return "utf-32be";
 	}
-	if (mcnt[0] == 0 && mcnt[0] < mcnt[1] && mcnt[1] < mcnt[2] && mcnt[2] < mcnt[3])
+	if (mcnt[0] == 0 && mcnt[0] <= mcnt[1] && mcnt[1] <= mcnt[2] && mcnt[2] <= mcnt[3])
 	{
 		return "utf-32le";
 	}
-	if (mcnt[0] > mcnt[1] && mcnt[2] > mcnt[3] && mcnt[1] == 0 && mcnt[3] == 0)
+	if (mcnt[0] >= mcnt[1] && mcnt[2] >= mcnt[3] && mcnt[1] == 0 && mcnt[3] == 0)
 	{
 		return "utf-16be";
 	}
-	if (mcnt[0] == 0 && mcnt[2] == 0 && mcnt[0] < mcnt[1] && mcnt[2] < mcnt[3])
+	if (mcnt[0] == 0 && mcnt[2] == 0 && mcnt[0] <= mcnt[1] && mcnt[2] <= mcnt[3])
 	{
 		return "utf-16le";
 	}
