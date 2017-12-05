@@ -195,7 +195,7 @@ int main( int argc, const char* argv[])
 		strus::local_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( g_errorhnd));
 		if (!detector.get()) throw std::runtime_error("failed to create document class detector");
 		strus::analyzer::DocumentClass dclass;
-		if (!detector->detect( dclass, inpsrc.c_str(), inpsrc.size())) throw std::runtime_error("failed to detect document class of input source");
+		if (!detector->detect( dclass, inpsrc.c_str(), inpsrc.size(), true)) throw std::runtime_error("failed to detect document class of input source");
 
 		std::ostringstream outstr;
 		strus::local_ptr<strus::SegmenterMarkupContextInterface> segmenterMarkupContext( segmenterInstance->createMarkupContext( dclass, inpsrc));

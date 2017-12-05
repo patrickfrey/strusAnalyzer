@@ -27,7 +27,7 @@ public:
 		:m_errorhnd(errorhnd_){}
 	virtual ~StandardDocumentClassDetector(){}
 
-	virtual bool detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual bool detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

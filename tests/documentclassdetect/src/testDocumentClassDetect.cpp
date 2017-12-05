@@ -79,11 +79,11 @@ int main( int argc, const char* argv[])
 		s.append( testFile);
 
 		strus::InputStream input( s.c_str());
-		char hdrbuf[ 1024];
+		char hdrbuf[ 4096];
 		std::size_t hdrsize = input.readAhead( hdrbuf, sizeof( hdrbuf));
 
 		strus::analyzer::DocumentClass dclass;
-		if (!textproc->detectDocumentClass( dclass, hdrbuf, hdrsize))
+		if (!textproc->detectDocumentClass( dclass, hdrbuf, hdrsize, false))
 		{
 			throw std::runtime_error( "failed to detect document class"); 
 		}

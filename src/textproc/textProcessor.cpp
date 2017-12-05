@@ -802,14 +802,14 @@ const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
 	return m_patterntermfeeder;
 }
 
-bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
 {
 	unsigned int level = 0;
 	std::vector<DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
 	for (; ci != ce; ++ci)
 	{
 		analyzer::DocumentClass dclass_candidate;
-		if ((*ci)->detect( dclass_candidate, contentBegin, contentBeginSize))
+		if ((*ci)->detect( dclass_candidate, contentBegin, contentBeginSize, isComplete))
 		{
 			if (dclass_candidate.level() >= level)
 			{

@@ -93,9 +93,11 @@ public:
 
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class
-	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
+	/// \param[in] contentBegin start chunk of the document with a reasonable size
+	/// \param[in] contentBeginSize size of chunk passed
+	/// \param[in] isComplete true, of the chunk passed is the whole document (this might influence the result)
 	/// \return true, if the document format was recognized, false else
-	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const=0;
 
 	/// \brief Define a content detector
 	/// \param[in] tokenizer a tokenizer object (pass ownership)

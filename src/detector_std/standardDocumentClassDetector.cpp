@@ -60,7 +60,7 @@ static bool isDocumentJson( char const* ci, const char* ce)
 	return false;
 }
 
-static bool isDocumentTSV( const char* ci, const char* ce)
+static int checkDocumentTSV( const char* ci, const char* ce)
 {
 	unsigned int seps[2];
 	unsigned int nofSeps = 0;
@@ -93,12 +93,12 @@ static bool isDocumentTSV( const char* ci, const char* ce)
 		{
 			if (nofSeps != seps[i])
 			{
-				return false;
+				return -1;
 			}
 		}
-		return true;
+		return +1;
 	}
-	return false;
+	return 0;
 }
 
 static bool isDocumentText( const char* ci, const char* ce)
@@ -111,7 +111,7 @@ static bool isDocumentText( const char* ci, const char* ce)
 	return true;
 }
 
-bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
 {
 	try
 	{
@@ -148,12 +148,13 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 							return true;
 						}
 						ci = contentBegin + BOMsize;
-						if (isDocumentTSV( ci, ce))
+						int tsvcheck = checkDocumentTSV( ci, ce);
+						if (tsvcheck > 0)
 						{
 							initDocumentClass( dclass, "text/tab-separated-values", encoding);
 							return true;
 						}
-						else if (isDocumentText( ci, ce))
+						else if (tsvcheck < 0 && isDocumentText( ci, ce))
 						{
 							initDocumentClass( dclass, "text/plain", encoding);
 							return true;

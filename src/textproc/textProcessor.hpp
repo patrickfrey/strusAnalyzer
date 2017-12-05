@@ -44,7 +44,7 @@ public:
 
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const;
 
-	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const;
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
 
