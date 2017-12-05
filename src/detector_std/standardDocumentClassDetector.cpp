@@ -101,6 +101,16 @@ static bool isDocumentTSV( const char* ci, const char* ce)
 	return false;
 }
 
+static bool isDocumentText( const char* ci, const char* ce)
+{
+	for (; ci != ce; ++ci)
+	{
+		if (*ci == 0) continue;
+		if ((unsigned char)*ci < 32 && *ci != '\t' && *ci != '\n' && *ci != '\r') return false;
+	}
+	return true;
+}
+
 bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
 {
 	try
@@ -128,7 +138,7 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 					{
 						if (!encoding)
 						{
-							encoding = strus::utils::detectCharsetEncoding( ci+BOMsize, contentBeginSize-BOMsize);
+							encoding = strus::utils::detectCharsetEncoding( contentBegin+BOMsize, contentBeginSize-BOMsize);
 						}
 						// Try to find out if its JSON:
 						for (; ci != ce && (unsigned char)*ci < 32; ++ci){}
@@ -138,9 +148,14 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 							return true;
 						}
 						ci = contentBegin + BOMsize;
-						if (isDocumentTSV(ci,ce))
+						if (isDocumentTSV( ci, ce))
 						{
 							initDocumentClass( dclass, "text/tab-separated-values", encoding);
+							return true;
+						}
+						else if (isDocumentText( ci, ce))
+						{
+							initDocumentClass( dclass, "text/plain", encoding);
 							return true;
 						}
 						// Give up:
