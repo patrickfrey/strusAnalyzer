@@ -134,22 +134,22 @@ int main( int argc, const char* argv[])
 	}
 	catch (const std::bad_alloc&)
 	{
-		std::cerr << "ERROR memory allocation error" << std::endl;
+		std::cerr << std::endl << "ERROR memory allocation error" << std::endl;
 	}
 	catch (const std::runtime_error& e)
 	{
 		if (g_errorhnd && g_errorhnd->hasError())
 		{
-			std::cerr << "ERROR " << e.what() << ":" << g_errorhnd->fetchError() << std::endl;
+			std::cerr << std::endl << "ERROR " << e.what() << ":" << g_errorhnd->fetchError() << std::endl;
 		}
 		else
 		{
-			std::cerr << "ERROR " << e.what() << std::endl;
+			std::cerr << std::endl << "ERROR " << e.what() << std::endl;
 		}
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "EXCEPTION " << e.what() << std::endl;
+		std::cerr << std::endl << "EXCEPTION " << e.what() << std::endl;
 	}
 	if (g_errorhnd)
 	{
