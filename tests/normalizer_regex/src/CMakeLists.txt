@@ -11,13 +11,12 @@ link_directories(
 	"${MAIN_SOURCE_DIR}/analyzer"
 	"${MAIN_SOURCE_DIR}/textproc"
 	"${MAIN_SOURCE_DIR}/utils"
-	"${MAIN_SOURCE_DIR}/detector_std"
-	"${MAIN_SOURCE_DIR}/tokenizer_textcat"
+	"${MAIN_SOURCE_DIR}/normalizer_regex"
 	"${Boost_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
 )
 
-add_executable( testTokenizerTextcat testTokenizerTextcat.cpp)
-target_link_libraries( testTokenizerTextcat strus_error strus_textproc strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+add_executable( testNormalizerRegex testNormalizerRegex.cpp)
+target_link_libraries( testNormalizerRegex strus_error strus_textproc ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

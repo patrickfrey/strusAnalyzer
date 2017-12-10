@@ -25,11 +25,10 @@ CharTable::CharTable( const char* op)
 	}
 }
 
-static const UnicodeWordDelimiters g_unicodeWordDelimiters;
-
 bool strus::wordBoundaryDelimiter( char const* si, const char* se)
 {
 	static const CharTable wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	static const UnicodeWordDelimiters unicodeWordDelimiters;
 	if ((unsigned char)*si <= 32)
 	{
 		return true;
@@ -37,7 +36,7 @@ bool strus::wordBoundaryDelimiter( char const* si, const char* se)
 	else if ((unsigned char)*si >= 128)
 	{
 		unsigned int chr = utf8decode( si, utf8charlen(*si));
-		if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end()) return true;
+		if (unicodeWordDelimiters.find( chr) != unicodeWordDelimiters.end()) return true;
 		return false;
 	}
 	else if (wordCharacter[ *si])
