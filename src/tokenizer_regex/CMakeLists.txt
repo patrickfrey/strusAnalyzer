@@ -18,13 +18,14 @@ include_directories(
 link_directories(
 	"${UTILS_LIBRARY_DIRS}"
 	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_regex SHARED libstrus_tokenizer_regex.cpp ${source_files} )
-target_link_libraries( strus_tokenizer_regex strusanalyzer_private_utils )
+target_link_libraries( strus_tokenizer_regex strusanalyzer_private_utils strus_base )
 
 set_target_properties(
     strus_tokenizer_regex
