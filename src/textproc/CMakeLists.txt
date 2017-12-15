@@ -66,7 +66,8 @@ target_link_libraries(
 	strus_aggregator_vsm
 	strus_aggregator_set
 	strus_pattern_termfeeder
-	strusanalyzer_private_utils )
+	strusanalyzer_private_utils
+	strus_base )
 
 set_target_properties(
     strus_textproc

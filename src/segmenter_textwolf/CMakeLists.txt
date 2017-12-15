@@ -17,6 +17,7 @@ include_directories(
 )
 link_directories(
 	"${MAIN_SOURCE_DIR}/segmenter_utils" 
+	"${strusbase_LIBRARY_DIRS}"
 	${Boost_LIBRARY_DIRS}
 )
 
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strusanalyzer_private_utils )
+target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_segmenter_textwolf
     PROPERTIES

@@ -16,6 +16,7 @@ include_directories(
 )
 
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
 	${Boost_LIBRARY_DIRS}
 )
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_detector_std SHARED ${source_files} )
-target_link_libraries( strus_detector_std strusanalyzer_private_utils )
+target_link_libraries( strus_detector_std strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_detector_std
     PROPERTIES

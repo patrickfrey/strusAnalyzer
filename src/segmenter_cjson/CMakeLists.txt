@@ -18,6 +18,7 @@ include_directories(
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 	"${CJSON_LIBRARY_DIRS}"
 	${Boost_LIBRARY_DIRS}
 )
@@ -26,7 +27,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_cjson SHARED ${source_files} )
-target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strusanalyzer_private_utils strus_cjson )
+target_link_libraries( strus_segmenter_cjson strus_segmenter_utils strusanalyzer_private_utils strus_cjson strus_base )
 set_target_properties(
     strus_segmenter_cjson
     PROPERTIES

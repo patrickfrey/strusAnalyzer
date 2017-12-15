@@ -17,6 +17,7 @@ include_directories(
 
 link_directories(
 	"${UTILS_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
 	${Boost_LIBRARY_DIRS}
 )
 
@@ -24,7 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_ngram SHARED ${source_files} libstrus_normalizer_ngram.cpp )
-target_link_libraries( strus_normalizer_ngram strusanalyzer_private_utils )
+target_link_libraries( strus_normalizer_ngram strusanalyzer_private_utils strus_base )
 
 set_target_properties(
     strus_normalizer_ngram
