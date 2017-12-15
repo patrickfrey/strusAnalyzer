@@ -80,7 +80,7 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 		unsigned int selectIndex = 0;
 		if (args.size() == 2)
 		{
-			selectIndex = numstring_conv::touint( argv[ 1], 256);
+			selectIndex = numstring_conv::touint( args[ 1], 256);
 		}
 		return new RegexTokenizerFunctionInstance( args[0], selectIndex, m_errorhnd);
 	}
