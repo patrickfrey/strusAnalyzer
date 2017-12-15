@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 include_directories(
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${Intl_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${strusbase_INCLUDE_DIRS}"
@@ -19,7 +19,7 @@ link_directories(
 	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
 	"${MAIN_SOURCE_DIR}/tokenizer_punctuation"
 	"${MAIN_SOURCE_DIR}/tokenizer_word"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )
 

@@ -9,7 +9,7 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${TEXTCAT_INCLUDE_DIRS}"
@@ -19,7 +19,7 @@ include_directories(
 link_directories(
 	"${UTILS_LIBRARY_DIRS}"
 	"${TEXTCAT_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------

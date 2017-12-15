@@ -4,13 +4,13 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 include_directories(
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include"
 	"${strusbase_INCLUDE_DIRS}"
 	"${TEXTWOLF_INCLUDE_DIRS}"
 )
 link_directories(
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 

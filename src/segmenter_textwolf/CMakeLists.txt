@@ -10,14 +10,14 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
 	"${MAIN_SOURCE_DIR}/segmenter_utils" 
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------

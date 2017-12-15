@@ -13,14 +13,14 @@ include_directories(
 	"${SNOWBALL_INCLUDE_DIRS}"
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
 	"${SNOWBALL_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------

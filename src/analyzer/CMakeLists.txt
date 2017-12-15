@@ -20,7 +20,7 @@ set(source_files
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${Intl_INCLUDE_DIRS}"
- 	"${Boost_INCLUDE_DIRS}"
+ 	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
@@ -28,7 +28,7 @@ link_directories(
  	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
  	"${MAIN_SOURCE_DIR}/textproc"
  	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )
 

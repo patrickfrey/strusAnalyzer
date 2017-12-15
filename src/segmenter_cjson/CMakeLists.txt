@@ -11,7 +11,7 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${CJSON_INCLUDE_DIRS}"
 	"${TEXTWOLF_INCLUDE_DIRS}"
@@ -19,7 +19,7 @@ include_directories(
 )
 link_directories(
 	"${CJSON_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------
