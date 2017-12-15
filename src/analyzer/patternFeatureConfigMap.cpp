@@ -9,7 +9,7 @@
 #include "featureConfig.hpp"
 #include "featureConfigMap.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 
 using namespace strus;
 
@@ -34,7 +34,7 @@ void PatternFeatureConfigMap::defineFeature(
 	{
 		m_map[ patternTypeName] = m_ar.size();
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PatternFeatureConfig( utils::tolower( name), normalizers, featureClass, options));
+		m_ar.push_back( PatternFeatureConfig( string_conv::tolower( name), normalizers, featureClass, options));
 	}
 	catch (const std::bad_alloc&)
 	{

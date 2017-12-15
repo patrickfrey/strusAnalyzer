@@ -21,9 +21,9 @@
 #include "strus/documentAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
-#include "private/utils.hpp"
 #include "strus/base/configParser.hpp"
 #include <memory>
 
@@ -56,15 +56,15 @@ public:
 	{
 		try
 		{
-			if (segmenterName.empty() || utils::caseInsensitiveEquals( segmenterName, "textwolf"))
+			if (segmenterName.empty() || strus::caseInsensitiveEquals( segmenterName, "textwolf"))
 			{
 				return m_segmenter_textwolf.get();
 			}
-			else if (utils::caseInsensitiveEquals( segmenterName, "cjson"))
+			else if (strus::caseInsensitiveEquals( segmenterName, "cjson"))
 			{
 				return m_segmenter_cjson.get();
 			}
-			else if (utils::caseInsensitiveEquals( segmenterName, "tsv"))
+			else if (strus::caseInsensitiveEquals( segmenterName, "tsv"))
 			{
 				return m_segmenter_tsv.get();
 			}
@@ -80,15 +80,15 @@ public:
 	{
 		try
 		{
-			if (utils::caseInsensitiveEquals( mimetype, m_segmenter_textwolf->mimeType()))
+			if (strus::caseInsensitiveEquals( mimetype, m_segmenter_textwolf->mimeType()))
 			{
 				return m_segmenter_textwolf.get();
 			}
-			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_cjson->mimeType()))
+			else if (strus::caseInsensitiveEquals( mimetype, m_segmenter_cjson->mimeType()))
 			{
 				return m_segmenter_cjson.get();
 			}
-			else if (utils::caseInsensitiveEquals( mimetype, m_segmenter_tsv->mimeType()))
+			else if (strus::caseInsensitiveEquals( mimetype, m_segmenter_tsv->mimeType()))
 			{
 				return m_segmenter_tsv.get();
 			}

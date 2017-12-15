@@ -10,15 +10,11 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/base/regex.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
 #include <iterator>
 #include <limits>
-#include <boost/regex.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 
 using namespace strus;
 

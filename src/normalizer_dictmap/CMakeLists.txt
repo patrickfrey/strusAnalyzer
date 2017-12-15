@@ -11,7 +11,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${CNODETRIE_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
@@ -19,7 +19,7 @@ link_directories(
 	"${CNODETRIE_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
 	"${strusbase_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------

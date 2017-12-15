@@ -7,9 +7,9 @@
  */
 #include "normalizerCharConv.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/string_conv.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -4449,7 +4449,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 		}
 		else
 		{
-			std::string language_lo = utils::tolower( args[0]);
+			std::string language_lo = string_conv::tolower( args[0]);
 			if (language_lo == "de")
 			{
 				return new CharMapNormalizerInstance( CharMap::Diacritical, germanUmlautExceptions, m_errorhnd);
@@ -4476,7 +4476,7 @@ public:
 		std::vector<std::string>::const_iterator si = setnames.begin(), se = setnames.end();
 		for (; si != se; ++si)
 		{
-			std::string name = utils::tolower( *si);
+			std::string name = string_conv::tolower( *si);
 			if (name == "punct_en" || name == "punct_de")
 			{
 				addRange( 44, 47);

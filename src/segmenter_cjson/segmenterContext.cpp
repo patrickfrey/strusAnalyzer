@@ -9,7 +9,6 @@
 #include "strus/errorBufferInterface.hpp"
 #include "segmenter.hpp"
 #include "private/xpathAutomaton.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstdlib>

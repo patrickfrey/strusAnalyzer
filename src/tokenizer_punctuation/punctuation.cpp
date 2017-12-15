@@ -9,7 +9,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "punctuation_de.hpp"
@@ -49,11 +49,11 @@ public:
 			{
 				punctChar = args[1].c_str();
 			}
-			if (utils::caseInsensitiveEquals( args[0], "de"))
+			if (strus::caseInsensitiveEquals( args[0], "de"))
 			{
 				return new PunctuationTokenizerInstance_de( punctChar, m_errorhnd);
 			}
-			else if (utils::caseInsensitiveEquals( args[0], "en"))
+			else if (strus::caseInsensitiveEquals( args[0], "en"))
 			{
 				return new PunctuationTokenizerInstance_en( punctChar, m_errorhnd);
 			}

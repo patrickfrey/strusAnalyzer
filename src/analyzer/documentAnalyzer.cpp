@@ -14,7 +14,7 @@
 #include "strus/textProcessorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/local_ptr.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
@@ -115,7 +115,7 @@ void DocumentAnalyzer::addSearchIndexFeature(
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, tokenizer, normalizers, options);
 		defineSelectorExpression( featidx, selectexpr);
-		m_searchIndexTermTypeSet.insert( utils::tolower( type));
+		m_searchIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding search index feature: %s"), *m_errorhnd);
 }
@@ -131,7 +131,7 @@ void DocumentAnalyzer::addForwardIndexFeature(
 	{
 		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, tokenizer, normalizers, options);
 		defineSelectorExpression( featidx, selectexpr);
-		m_forwardIndexTermTypeSet.insert( utils::tolower( type));
+		m_forwardIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding forward index feature: %s"), *m_errorhnd);
 }

@@ -15,14 +15,15 @@ include_directories(
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${CNODETRIE_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 	"${CNODETRIE_LIBRARY_DIRS}"
  	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 
@@ -30,7 +31,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_punctuation SHARED ${source_files} )
-target_link_libraries( strus_tokenizer_punctuation compactnodetrie_analyzer_static strusanalyzer_private_utils )
+target_link_libraries( strus_tokenizer_punctuation compactnodetrie_analyzer_static strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_tokenizer_punctuation
     PROPERTIES

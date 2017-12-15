@@ -7,7 +7,6 @@
  */
 #include "normalizerDateConv.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/base/stdint.h"

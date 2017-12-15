@@ -20,7 +20,7 @@ set(source_files
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${Intl_INCLUDE_DIRS}"
- 	"${Boost_INCLUDE_DIRS}"
+ 	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
@@ -28,7 +28,7 @@ link_directories(
  	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
  	"${MAIN_SOURCE_DIR}/textproc"
  	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )
 
@@ -37,7 +37,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_library( strus_analyzer SHARED  libstrus_analyzer.cpp  ${source_files} )
-target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strusanalyzer_private_utils )
+target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_analyzer
     PROPERTIES

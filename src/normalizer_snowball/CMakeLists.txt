@@ -13,21 +13,22 @@ include_directories(
 	"${SNOWBALL_INCLUDE_DIRS}"
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
 	"${SNOWBALL_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_normalizer_snowball SHARED ${source_files} )
-target_link_libraries( strus_normalizer_snowball  strus_stemmer strusanalyzer_private_utils )
+target_link_libraries( strus_normalizer_snowball  strus_stemmer strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_normalizer_snowball
     PROPERTIES

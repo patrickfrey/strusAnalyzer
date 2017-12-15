@@ -7,7 +7,7 @@
  */
 #include "featureConfigMap.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 
 using namespace strus;
 
@@ -44,7 +44,7 @@ unsigned int FeatureConfigMap::defineFeature(
 			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( utils::tolower( featType), tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), tokenizer, normalizers, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

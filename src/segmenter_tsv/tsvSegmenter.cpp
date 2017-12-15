@@ -7,9 +7,9 @@
  */
 
 #include "tsvSegmenter.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -111,7 +111,7 @@ bool TSVParserDefinition::moreOftheSame( )
 
 // TSVSegmenterContext
 
-TSVSegmenterContext::TSVSegmenterContext( TSVParserDefinition *parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
+TSVSegmenterContext::TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
 	: m_errbuf( errbuf ), m_errorReporting( errorReporting), m_buf( ),
 	m_eof( false ), m_is( m_buf ), m_currentLine( ),
 	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -3 ), m_linepos( 0 ),
@@ -185,7 +185,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 {
 	// start of line, emit start of section
 	if( m_pos == -2 ) {
-		id = m_parserDefinition->getStartId( );
+		id = m_parserDefinition.getStartId( );
 		if( id != 0 ) {
 			m_pos++;
 			return true;
@@ -197,9 +197,9 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 
 	// hard-coded field line number (not present in the TSV file itself)
 	if( m_pos == -1 ) {
-		id = m_parserDefinition->getNextId( "lineno" );
+		id = m_parserDefinition.getNextId( "lineno" );
 		if( id != 0 ) {
-			if( !m_parserDefinition->moreOftheSame( ) ) {
+			if( !m_parserDefinition.moreOftheSame( ) ) {
 				m_pos++;
 			}
 			pos = m_linepos * m_headers.size( );
@@ -209,7 +209,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 			return true;
 		}
 
-		if( !m_parserDefinition->moreOftheSame( ) ) {
+		if( !m_parserDefinition.moreOftheSame( ) ) {
 			m_pos++;
 		}
 	}
@@ -224,7 +224,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		std::cout << "DEBUG: field " << m_linepos << ":" << m_pos << "'" << headerName << "': '" << m_data[m_pos] << "'" << std::endl;
 #endif
 		
-		id = m_parserDefinition->getNextId( headerName );
+		id = m_parserDefinition.getNextId( headerName );
 		
 		if( id == 0 ) {
 			m_pos++;
@@ -237,12 +237,12 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		pos = m_linepos * m_headers.size( ) + m_pos;
 		segment = m_data[m_pos].c_str( );
 		segmentsize = m_data[m_pos].size( );
-		if( !m_parserDefinition->moreOftheSame( ) ) {
+		if( !m_parserDefinition.moreOftheSame( ) ) {
 			m_pos++;
 		}
 		if( (size_t)m_pos >= m_headers.size( ) ) {
 			m_pos = -3;
-			id = m_parserDefinition->getEndId( );
+			id = m_parserDefinition.getEndId( );
 			if( id != 0 ) {
 				return true;
 			}
@@ -253,7 +253,7 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 	m_pos++;
 	if( (size_t)m_pos >= m_headers.size( ) ) {
 		m_pos = -3;
-		id = m_parserDefinition->getEndId( );
+		id = m_parserDefinition.getEndId( );
 		if( id != 0 ) {
 			return true;
 		}
@@ -327,16 +327,15 @@ NEXTLINE:
 // TSVSegmenterInstance
 
 TSVSegmenterInstance::TSVSegmenterInstance( strus::ErrorBufferInterface *errbuf, bool errorReporting )
-	: m_errbuf( errbuf ), m_errorReporting( errorReporting )
+	: m_errbuf( errbuf ), m_errorReporting( errorReporting ), m_parserDefinition( )
 {
-	m_parserDefinition.reset( new TSVParserDefinition( ) );
 }
 
 void TSVSegmenterInstance::defineSelectorExpression( int id, const std::string &expression )
 {
 	try
 	{
-	m_parserDefinition->defineSelectorExpression( id, expression );
+	m_parserDefinition.defineSelectorExpression( id, expression );
 	}
 	CATCH_ERROR_MAP_ARG1( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
@@ -345,7 +344,7 @@ void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::
 {
 	try
 	{
-	m_parserDefinition->defineSubSection( startId, endId, expression );
+		m_parserDefinition.defineSubSection( startId, endId, expression );
 	}
 	CATCH_ERROR_MAP_ARG1( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
@@ -355,11 +354,11 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	try
 	{
 	strus::Reference<strus::utils::TextEncoderBase> encoder;
-	if (dclass.defined() && !strus::utils::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+	if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 	{
 		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 	}
-	return new TSVSegmenterContext( m_parserDefinition.get( ), encoder, m_errbuf, m_errorReporting );
+	return new TSVSegmenterContext( m_parserDefinition, encoder, m_errbuf, m_errorReporting );
 	}
 	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }

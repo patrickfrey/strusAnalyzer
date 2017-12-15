@@ -10,21 +10,22 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${strusbase_INCLUDE_DIRS}"
 )
 
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_markup_std SHARED ${source_files} )
-target_link_libraries( strus_markup_std strusanalyzer_private_utils )
+target_link_libraries( strus_markup_std strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_markup_std
     PROPERTIES

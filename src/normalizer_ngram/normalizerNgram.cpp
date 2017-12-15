@@ -9,9 +9,10 @@
 #include "strus/errorBufferInterface.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/base/numstring.hpp"
+#include "strus/base/string_conv.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -98,17 +99,17 @@ NormalizerFunctionInstanceInterface* NgramNormalizerFunction::createInstance( co
 	{
 		if ((*ai)[0] >= '0' && ((*ai)[0] <= '9'))
 		{
-			config.width = utils::toint( *ai);
+			config.width = numstring_conv::touint( *ai, 256);
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "RoundRobin"))
+		else if (strus::caseInsensitiveEquals( *ai, "RoundRobin"))
 		{
 			config.roundRobin = true;
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "WithEnd"))
+		else if (strus::caseInsensitiveEquals( *ai, "WithEnd"))
 		{
 			config.withEnd = true;
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "WithStart"))
+		else if (strus::caseInsensitiveEquals( *ai, "WithStart"))
 		{
 			config.withStart = true;
 		}

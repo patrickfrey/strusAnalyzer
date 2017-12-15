@@ -11,9 +11,9 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -32,7 +32,7 @@ class SetAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	SetAggregatorFunctionInstance( const std::string& type, const std::vector<std::string>& items, ErrorBufferInterface* errorhnd)
-		:m_type(utils::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
+		:m_type(string_conv::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
 	{
 		if (items.size() >= (8 * sizeof(unsigned int)))
 		{

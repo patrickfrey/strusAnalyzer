@@ -9,7 +9,7 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${TEXTCAT_INCLUDE_DIRS}"
@@ -17,16 +17,17 @@ include_directories(
 )
 
 link_directories(
+	"${strusbase_LIBRARY_DIRS}"
 	"${UTILS_LIBRARY_DIRS}"
 	"${TEXTCAT_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_tokenizer_textcat SHARED ${source_files} )
-target_link_libraries( strus_tokenizer_textcat strusanalyzer_private_utils strus_textcat )
+target_link_libraries( strus_tokenizer_textcat strusanalyzer_private_utils strus_textcat strus_base )
 
 set_target_properties(
     strus_tokenizer_textcat

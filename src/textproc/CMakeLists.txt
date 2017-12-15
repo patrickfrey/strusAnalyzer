@@ -10,7 +10,7 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
@@ -36,7 +36,7 @@ link_directories(
  	"${MAIN_SOURCE_DIR}/segmenter_plain"
  	"${MAIN_SOURCE_DIR}/pattern"
  	"${MAIN_SOURCE_DIR}/utils"
-	"${Boost_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )
 
@@ -66,7 +66,8 @@ target_link_libraries(
 	strus_aggregator_vsm
 	strus_aggregator_set
 	strus_pattern_termfeeder
-	strusanalyzer_private_utils )
+	strusanalyzer_private_utils
+	strus_base )
 
 set_target_properties(
     strus_textproc

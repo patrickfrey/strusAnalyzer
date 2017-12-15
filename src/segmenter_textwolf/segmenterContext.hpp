@@ -8,7 +8,6 @@
 #ifndef _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #define _STRUS_SEGMENTER_CONTEXT_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterContextInterface.hpp"
-#include "private/utils.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "strus/errorBufferInterface.hpp"
@@ -18,6 +17,7 @@
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include <cstdlib>
+#include <list>
 #include <setjmp.h>
 
 #define SEGMENTER_NAME "textwolf"

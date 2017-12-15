@@ -13,9 +13,9 @@
 #include "strus/patternTermFeederInstanceInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/symbolTable.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
-#include "private/utils.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ public:
 		{
 			if (!id) throw strus::runtime_error( "%s", _TXT("used 0 as lexem identifier"));
 
-			m_typeTable[ utils::tolower(type)] = id;
+			m_typeTable[ string_conv::tolower(type)] = id;
 		}
 		CATCH_ERROR_MAP( _TXT("cannot define term feeder lexem: %s"), *m_errorhnd);
 	}

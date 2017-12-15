@@ -9,7 +9,7 @@ set(source_files
 
 include_directories(  
 	"${Intl_INCLUDE_DIRS}"
-	"${Boost_INCLUDE_DIRS}"
+	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
@@ -17,14 +17,15 @@ include_directories(
 
 link_directories(
 	"${UTILS_LIBRARY_DIRS}"
-	"${Boost_LIBRARY_DIRS}"
+	"${strusbase_LIBRARY_DIRS}"
+	${Boost_LIBRARY_DIRS}
 )
 
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
 add_library( strus_segmenter_utils STATIC ${source_files} )
-target_link_libraries( strus_segmenter_utils strusanalyzer_private_utils )
+target_link_libraries( strus_segmenter_utils strusanalyzer_private_utils strus_base )
 set_property( TARGET strus_segmenter_utils PROPERTY POSITION_INDEPENDENT_CODE TRUE )
 
 

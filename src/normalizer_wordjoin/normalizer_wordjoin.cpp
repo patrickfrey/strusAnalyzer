@@ -7,7 +7,6 @@
  */
 #include "normalizer_wordjoin.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"

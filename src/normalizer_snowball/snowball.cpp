@@ -10,9 +10,9 @@
 #include "strus/errorBufferInterface.hpp"
 #include "snowball.hpp"
 #include "libstemmer.h"
+#include "strus/base/string_conv.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
@@ -26,7 +26,7 @@ public:
 	StemNormalizerFunctionInstance( const std::string& language, ErrorBufferInterface* errorhnd)
 	{
 		m_errorhnd = errorhnd;
-		std::string language_lo = utils::tolower( language);
+		std::string language_lo = string_conv::tolower( language);
 		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
 		if (!m_stemmer)
 		{

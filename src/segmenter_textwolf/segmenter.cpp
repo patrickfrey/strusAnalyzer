@@ -8,8 +8,8 @@
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/base/string_conv.hpp"
 #include "textwolf/charset.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "segmenterMarkupContext.hpp"
@@ -65,8 +65,8 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 		}
 		else
 		{
-			if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
-			||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+			if (strus::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+			||  strus::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
 			{
 				char const* cc = dclass.encoding().c_str() + 8;
 				if (*cc == '-')
@@ -83,37 +83,37 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 				}
 				return new SegmenterContext<IsoLatin>( m_errorhnd, &m_automaton, IsoLatin(codepage));
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
 			{
 				return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
 			{
 				return new SegmenterContext<UTF16BE>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
 			{
 				return new SegmenterContext<UTF16LE>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
 			{
 				return new SegmenterContext<UCS2BE>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
 			{
 				return new SegmenterContext<UCS2LE>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
 			{
 				return new SegmenterContext<UCS4BE>( m_errorhnd, &m_automaton);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
 			{
 				return new SegmenterContext<UCS4LE>( m_errorhnd, &m_automaton);
 			}
@@ -146,8 +146,8 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 		}
 		else
 		{
-			if (utils::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
-			||  utils::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+			if (strus::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+			||  strus::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
 			{
 				char const* cc = dclass.encoding().c_str() + 8;
 				if (*cc == '-')
@@ -164,37 +164,37 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 				}
 				return new SegmenterMarkupContext<IsoLatin>( m_errorhnd, content, IsoLatin(codepage));
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
 			{
 				return new SegmenterMarkupContext<UTF8>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
 			{
 				return new SegmenterMarkupContext<UTF16BE>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
 			{
 				return new SegmenterMarkupContext<UTF16LE>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
 			{
 				return new SegmenterMarkupContext<UCS2BE>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
 			{
 				return new SegmenterMarkupContext<UCS2LE>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
 			{
 				return new SegmenterMarkupContext<UCS4BE>( m_errorhnd, content);
 			}
-			else if (utils::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
-			||       utils::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
 			{
 				return new SegmenterMarkupContext<UCS4LE>( m_errorhnd, content);
 			}
