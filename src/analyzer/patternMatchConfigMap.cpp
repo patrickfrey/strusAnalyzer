@@ -7,7 +7,7 @@
  */
 #include "patternMatchConfigMap.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "featureConfigMap.hpp"
 
 using namespace strus;
@@ -34,7 +34,7 @@ unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PreProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, lexer, allowCrossSegmentMatches));
+		m_ar.push_back( PreProcPatternMatchConfig( string_conv::tolower(patternTypeName), matcher, lexer, allowCrossSegmentMatches));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)
@@ -75,7 +75,7 @@ unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PostProcPatternMatchConfig( utils::tolower(patternTypeName), matcher, feeder, allowCrossSegmentMatches));
+		m_ar.push_back( PostProcPatternMatchConfig( string_conv::tolower(patternTypeName), matcher, feeder, allowCrossSegmentMatches));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

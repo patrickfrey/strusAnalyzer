@@ -11,7 +11,7 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "strus/base/inputStream.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/analyzer/documentClass.hpp"
@@ -93,17 +93,16 @@ int main( int argc, const char* argv[])
 		{
 			std::cerr << "has error '" << err << "'" << std::endl;
 		}
-				
+
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "MIME type:" << dclass.mimeType() << std::endl;
 		std::cout << "charset: " << dclass.encoding() << std::endl;
 #endif
 		
-		if (!strus::utils::caseInsensitiveEquals( dclass.mimeType(), expectedMIMEType)) {
+		if (!strus::caseInsensitiveEquals( dclass.mimeType(), expectedMIMEType)) {
 			throw std::runtime_error( "mismatched mime type");
 		}
-		
-		if (!strus::utils::caseInsensitiveEquals( dclass.encoding(), expectedCharset)) {
+		if (!strus::caseInsensitiveEquals( dclass.encoding(), expectedCharset)) {
 			throw std::runtime_error( "mismatched charset");
 		}
 

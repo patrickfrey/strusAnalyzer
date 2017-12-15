@@ -8,7 +8,7 @@
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/textEncoder.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -42,9 +42,9 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 	try
 	{
 		strus::Reference<strus::utils::TextEncoderBase> encoder;
-		if (dclass.defined() && !utils::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+			encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 		}
 		return new SegmenterContext( m_errorhnd, &m_segids, encoder);
 	}

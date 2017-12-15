@@ -9,7 +9,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/base/regex.hpp"
-#include "private/utils.hpp"
+#include "strus/base/numstring.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -80,7 +80,7 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 		unsigned int selectIndex = 0;
 		if (args.size() == 2)
 		{
-			selectIndex = utils::touint( args[1]);
+			selectIndex = numstring_conv::touint( argv[ 1], 256);
 		}
 		return new RegexTokenizerFunctionInstance( args[0], selectIndex, m_errorhnd);
 	}

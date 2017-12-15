@@ -11,9 +11,9 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -38,14 +38,13 @@ double sumSquareTfAggregatorFunctionCall( const std::vector<double>& input)
 	return sqrt( sum);
 }
 
-
 class VsmAggregatorFunctionInstance
 	:public AggregatorFunctionInstanceInterface
 {
 public:
 	/// \brief Constructor
 	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{

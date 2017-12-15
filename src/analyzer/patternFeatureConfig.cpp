@@ -8,7 +8,6 @@
 #include "patternFeatureConfig.hpp"
 #include "featureConfig.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 

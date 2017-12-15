@@ -27,7 +27,8 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/pattern_termfeeder.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/base/fileio.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "resourceDirectory.hpp"
@@ -388,7 +389,7 @@ class CountAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	CountAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -450,7 +451,7 @@ class MaxPosAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, unsigned int incr_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -514,7 +515,7 @@ class MinPosAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	MinPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -609,7 +610,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 		}
 		else
 		{
-			ti = m_segmenterMap.find( utils::tolower( name));
+			ti = m_segmenterMap.find( string_conv::tolower( name));
 		}
 		if (ti == m_segmenterMap.end())
 		{
@@ -645,7 +646,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	try
 	{
 		std::map<std::string,SegmenterInterface*>::const_iterator
-			ti = m_mimeSegmenterMap.find( utils::tolower( mimetype));
+			ti = m_mimeSegmenterMap.find( string_conv::tolower( mimetype));
 		if (ti == m_mimeSegmenterMap.end())
 		{
 			if (m_mimeSegmenterMap.size() < 8)
@@ -680,7 +681,7 @@ analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string
 	try
 	{
 		std::map<std::string,analyzer::SegmenterOptions>::const_iterator
-			oi = m_schemeSegmenterOptions_map.find(utils::tolower(scheme));
+			oi = m_schemeSegmenterOptions_map.find( string_conv::tolower(scheme));
 		if (oi == m_schemeSegmenterOptions_map.end())
 		{
 			return analyzer::SegmenterOptions();
@@ -702,7 +703,7 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 	try
 	{
 		std::map<std::string,TokenizerFunctionInterface*>::const_iterator
-			ti = m_tokenizer_map.find( utils::tolower( name));
+			ti = m_tokenizer_map.find( string_conv::tolower( name));
 		if (ti == m_tokenizer_map.end())
 		{
 			m_errorhnd->report( _TXT("no tokenizer defined with name '%s'"), name.c_str());
@@ -722,7 +723,7 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 	try
 	{
 		std::map<std::string,NormalizerFunctionInterface*>::const_iterator
-			ni = m_normalizer_map.find( utils::tolower( name));
+			ni = m_normalizer_map.find( string_conv::tolower( name));
 		if (ni == m_normalizer_map.end())
 		{
 			m_errorhnd->report( _TXT("no normalizer defined with name '%s'"), name.c_str());
@@ -742,7 +743,7 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 	try
 	{
 		std::map<std::string,AggregatorFunctionInterface*>::const_iterator
-			ni = m_aggregator_map.find( utils::tolower( name));
+			ni = m_aggregator_map.find( string_conv::tolower( name));
 		if (ni == m_aggregator_map.end())
 		{
 			m_errorhnd->report( _TXT("no aggregator function defined with name '%s'"), name.c_str());
@@ -762,7 +763,7 @@ const PatternLexerInterface* TextProcessor::getPatternLexer( const std::string& 
 	try
 	{
 		std::map<std::string,PatternLexerInterface*>::const_iterator
-			ni = m_patternlexer_map.find( utils::tolower( name));
+			ni = m_patternlexer_map.find( string_conv::tolower( name));
 		if (ni == m_patternlexer_map.end())
 		{
 			m_errorhnd->report( _TXT("no pattern lexer defined with name '%s'"), name.c_str());
@@ -782,7 +783,7 @@ const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::stri
 	try
 	{
 		std::map<std::string,PatternMatcherInterface*>::const_iterator
-			ni = m_patternmatcher_map.find( utils::tolower( name));
+			ni = m_patternmatcher_map.find( string_conv::tolower( name));
 		if (ni == m_patternmatcher_map.end())
 		{
 			m_errorhnd->report( _TXT("no pattern matcher defined with name '%s'"), name.c_str());
@@ -842,14 +843,14 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 {
 	try
 	{
-		std::string mimeid( utils::tolower(segmenter->mimeType()));
+		std::string mimeid( string_conv::tolower(segmenter->mimeType()));
 		m_mimeSegmenterMap[ mimeid] = segmenter;
 		const char* mimeid2 = std::strchr( mimeid.c_str(), '/');
 		if (mimeid2 && m_mimeSegmenterMap.find( mimeid2+1) == m_mimeSegmenterMap.end())
 		{
 			m_mimeSegmenterMap[ mimeid2+1] = segmenter;
 		}
-		m_segmenterMap[ utils::tolower(name)] = segmenter;
+		m_segmenterMap[ string_conv::tolower(name)] = segmenter;
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -862,7 +863,7 @@ void TextProcessor::defineSegmenterOptions( const std::string& scheme, const ana
 {
 	try
 	{
-		m_schemeSegmenterOptions_map[ utils::tolower(scheme)] = options;
+		m_schemeSegmenterOptions_map[ string_conv::tolower(scheme)] = options;
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -874,7 +875,7 @@ void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionI
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.find(id);
 		if (ti != m_tokenizer_map.end())
 		{
@@ -897,7 +898,7 @@ void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctio
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,NormalizerFunctionInterface*>::iterator ni = m_normalizer_map.find(id);
 		if (ni != m_normalizer_map.end())
 		{
@@ -920,7 +921,7 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,AggregatorFunctionInterface*>::iterator ai = m_aggregator_map.find(id);
 		if (ai != m_aggregator_map.end())
 		{
@@ -943,7 +944,7 @@ void TextProcessor::definePatternLexer( const std::string& name, PatternLexerInt
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,PatternLexerInterface*>::iterator ai = m_patternlexer_map.find(id);
 		if (ai != m_patternlexer_map.end())
 		{
@@ -966,7 +967,7 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,PatternMatcherInterface*>::iterator ai = m_patternmatcher_map.find(id);
 		if (ai != m_patternmatcher_map.end())
 		{
@@ -993,12 +994,12 @@ void TextProcessor::addResourcePath( const std::string& path)
 		char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
 		for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
 		{
-			m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
+			m_resourcePaths.push_back( string_conv::trim( std::string( cc, ee)));
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
 #endif
 		}
-		m_resourcePaths.push_back( utils::trim( std::string( cc)));
+		m_resourcePaths.push_back( string_conv::trim( std::string( cc)));
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
 #endif
@@ -1018,7 +1019,7 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "check resource path '" << absfilename << "'" << std::endl;
 #endif
-			if (utils::isFile( absfilename))
+			if (strus::isFile( absfilename))
 			{
 				return absfilename;
 			}

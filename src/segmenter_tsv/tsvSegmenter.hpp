@@ -9,8 +9,6 @@
 #ifndef TSV_SEGMENTER_H_INLCUDED
 #define TSV_SEGMENTER_H_INLCUDED
 
-#include "boost/scoped_ptr.hpp"
-
 #include "strus/errorBufferInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -18,6 +16,7 @@
 #include "strus/segmenterMarkupContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/reference.hpp"
+#include "strus/base/unique_ptr.hpp"
 #include "private/textEncoder.hpp"
 
 #include <string> 
@@ -115,7 +114,7 @@ class TSVSegmenterInstance : public strus::SegmenterInstanceInterface
 
 		strus::ErrorBufferInterface *m_errbuf;
 		bool m_errorReporting;
-		boost::scoped_ptr<TSVParserDefinition> m_parserDefinition;
+		strus::unique_ptr<TSVParserDefinition> m_parserDefinition;
 };
 
 class TSVSegmenter : public strus::SegmenterInterface

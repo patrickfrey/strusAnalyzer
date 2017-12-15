@@ -24,7 +24,6 @@
 #include "strus/versionAnalyzer.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <memory>

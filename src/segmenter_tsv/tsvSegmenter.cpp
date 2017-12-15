@@ -7,9 +7,9 @@
  */
 
 #include "tsvSegmenter.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -355,7 +355,7 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	try
 	{
 	strus::Reference<strus::utils::TextEncoderBase> encoder;
-	if (dclass.defined() && !strus::utils::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+	if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 	{
 		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 	}
