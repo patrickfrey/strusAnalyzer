@@ -16,7 +16,6 @@
 #include "strus/segmenterMarkupContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/reference.hpp"
-#include "strus/base/unique_ptr.hpp"
 #include "private/textEncoder.hpp"
 
 #include <string> 
@@ -36,15 +35,20 @@ class TSVParserException : public std::runtime_error {
 class TSVParserDefinition
 {
 	public:
-	
 		TSVParserDefinition( );
-		
+		TSVParserDefinition( const TSVParserDefinition& o)
+			:m_map(o.m_map),m_startId(o.m_startId),m_endId(o.m_endId)
+		{
+			m_it = m_map.end();
+			m_end = m_map.end();
+		}
+
 		void defineSelectorExpression( int id, const std::string &expression );
 		void defineSubSection( int startId, int endId, const std::string &expression );
 		int getNextId( const std::string &definition );
 		bool moreOftheSame( );
-		int getStartId( ) { return m_startId; }
-		int getEndId( ) { return m_endId; }
+		int getStartId( ) const { return m_startId; }
+		int getEndId( ) const { return m_endId; }
 	
 	private:
 	
@@ -61,7 +65,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 {		
 	public:
 	
-		TSVSegmenterContext( TSVParserDefinition *parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
+		TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
 
 		virtual ~TSVSegmenterContext( );
 		
@@ -83,7 +87,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		bool m_eof;
 		std::istringstream m_is;
 		std::string m_currentLine;
-		TSVParserDefinition *m_parserDefinition;
+		TSVParserDefinition m_parserDefinition;
 		std::vector<std::string> m_data;
 		int m_pos;
 		unsigned int m_linepos;
@@ -114,7 +118,7 @@ class TSVSegmenterInstance : public strus::SegmenterInstanceInterface
 
 		strus::ErrorBufferInterface *m_errbuf;
 		bool m_errorReporting;
-		strus::unique_ptr<TSVParserDefinition> m_parserDefinition;
+		TSVParserDefinition m_parserDefinition;
 };
 
 class TSVSegmenter : public strus::SegmenterInterface
