@@ -8,6 +8,7 @@ set( source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
+	"${CMAKE_CURRENT_BINARY_DIR}/../../include" 
 	"${Intl_INCLUDE_DIRS}"
  	"${Boost_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
