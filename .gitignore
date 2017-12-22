@@ -50,8 +50,9 @@ dist/obs/strusanalyzer-Debian_7.0.dsc
 dist/obs/strusanalyzer-xUbuntu_12.04.dsc
 dist/redhat/strusanalyzer.spec
 
-# Suggested build directory
+# Suggested build directories
 build
+build_clang
 
 # Compiled Programs
 src/strusAnalyze/strusAnalyze
