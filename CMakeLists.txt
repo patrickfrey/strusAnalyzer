@@ -69,7 +69,9 @@ endif()
 install(DIRECTORY include/strus
           DESTINATION include
           FILES_MATCHING PATTERN "*.hpp")
-
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/strus
+          DESTINATION include
+          FILES_MATCHING PATTERN "versionAnalyzer.hpp")
 if(NOT STRUS_ALL)
 include( cmake/standard_targets.cmake )
 endif()
