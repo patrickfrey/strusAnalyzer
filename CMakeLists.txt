@@ -25,7 +25,7 @@ endif()
 
 find_strus_package( base )
 set( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
-configure_file( "${PROJECT_SOURCE_DIR}/include/strus/versionAnalyzer.hpp.in"  "${CMAKE_BINARY_DIR}/include/strus/versionAnalyzer.hpp"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/include/strus/versionAnalyzer.hpp.in"  "${CMAKE_CURRENT_BINARY_DIR}/include/strus/versionAnalyzer.hpp"  @ONLY )
 configure_file( "${PROJECT_SOURCE_DIR}/dist/obs/deploy_to_obs.sh.in"  "${PROJECT_SOURCE_DIR}/dist/obs/deploy_to_obs.sh"  @ONLY )
 configure_file( "${PROJECT_SOURCE_DIR}/dist/archlinux/PKGBUILD.in"  "${PROJECT_SOURCE_DIR}/dist/archlinux/PKGBUILD"  @ONLY )
 configure_file( "${PROJECT_SOURCE_DIR}/dist/obs/strusanalyzer.dsc.in"  "${PROJECT_SOURCE_DIR}/dist/obs/strusanalyzer.dsc"  @ONLY )
@@ -33,7 +33,7 @@ configure_file( "${PROJECT_SOURCE_DIR}/dist/redhat/strusanalyzer.spec.in"  "${PR
 
 set( STRUS_GETTEXT_PACKAGE "strus-dom" )	#... 1st parameter of bindtextdomain(...)
 set( STRUS_GETTEXT_LOCALEDIR "" )			#... 2nd parameter of bindtextdomain(...)
-configure_file( "${PROJECT_SOURCE_DIR}/src/utils/internationalization.cpp.in"  "${PROJECT_SOURCE_DIR}/src/utils/internationalization.cpp"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/src/utils/internationalization.cpp.in"  "${CMAKE_CURRENT_BINARY_DIR}/src/utils/internationalization.cpp"  @ONLY )
 
 IF (WIN32)
 set( STRUS_RESOURCE_PATHSEP ';')
@@ -42,7 +42,7 @@ ELSE (WIN32)
 set( STRUS_RESOURCE_PATHSEP ':')
 set( STRUS_RESOURCE_DIRSEP '/' )
 ENDIF (WIN32)
-configure_file( "${PROJECT_SOURCE_DIR}/src/textproc/resourceDirectory.hpp.in"  "${PROJECT_SOURCE_DIR}/src/textproc/resourceDirectory.hpp"  @ONLY )
+configure_file( "${PROJECT_SOURCE_DIR}/src/textproc/resourceDirectory.hpp.in"  "${CMAKE_CURRENT_BINARY_DIR}/src/textproc/resourceDirectory.hpp"  @ONLY )
 
 enable_testing()
 
@@ -58,6 +58,7 @@ set( CNODETRIE_INCLUDE_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactN
 set( CNODETRIE_LIBRARY_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactNodeTrie/src" )
 set( UTILS_LIBRARY_DIRS                 "${CMAKE_CURRENT_BINARY_DIR}/src/utils" )
 set( MAIN_SOURCE_DIR                    "${PROJECT_SOURCE_DIR}/src" )
+set( GEN_INCLUDE_DIR                     "${CMAKE_CURRENT_BINARY_DIR}/include" )
 
 # Subdirectories:
 add_subdirectory( 3rdParty )

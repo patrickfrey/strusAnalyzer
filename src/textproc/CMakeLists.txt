@@ -14,6 +14,7 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include" 
 	"${TEXTWOLF_INCLUDE_DIRS}"
 	"${strusbase_INCLUDE_DIRS}"
+	"${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 link_directories(
