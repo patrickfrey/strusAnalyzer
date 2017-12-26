@@ -19,7 +19,6 @@ link_directories(
 	${Boost_LIBRARY_DIRS}
 )
 
-
 # -------------------------------------------
 # UTILS LIBRARY
 # Library with some helper functions used by strus libraries and programs but not part of the public interface
