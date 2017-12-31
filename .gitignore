@@ -49,6 +49,7 @@ dist/obs/strusanalyzer.dsc
 dist/obs/strusanalyzer-Debian_7.0.dsc
 dist/obs/strusanalyzer-xUbuntu_12.04.dsc
 dist/redhat/strusanalyzer.spec
+strusanalyzer-0.*.tar.gz
 
 # Suggested build directories
 build
