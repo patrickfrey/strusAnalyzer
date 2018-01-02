@@ -43,7 +43,10 @@ void QueryAnalyzerContext::groupElements( int groupId, const std::vector<int>& f
 {
 	try
 	{
-		if (groupId <= 0) throw strus::runtime_error(_TXT("invalid group identifier %d, must be a positive integer"), groupId);
+		if (groupId <= 0)
+		{
+			throw strus::runtime_error(_TXT("invalid group identifier %d, must be a positive integer"), groupId);
+		}
 		m_groups.push_back( Group( groupId, fieldNoList, groupBy, groupSingle));
 	}
 	CATCH_ERROR_MAP( _TXT("error grouping query fields: %s"), *m_errorhnd);

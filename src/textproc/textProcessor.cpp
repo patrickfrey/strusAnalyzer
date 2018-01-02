@@ -805,7 +805,7 @@ const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
 
 bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
 {
-	unsigned int level = 0;
+	int level = 0;
 	std::vector<DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
 	for (; ci != ce; ++ci)
 	{
