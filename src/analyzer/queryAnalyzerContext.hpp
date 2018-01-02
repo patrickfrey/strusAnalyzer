@@ -32,9 +32,9 @@ public:
 
 	virtual ~QueryAnalyzerContext(){}
 
-	virtual void putField( unsigned int fieldNo, const std::string& fieldType, const std::string& content);
+	virtual void putField( int fieldNo, const std::string& fieldType, const std::string& content);
 
-	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
+	virtual void groupElements( int groupId, const std::vector<int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
 	virtual analyzer::QueryTermExpression analyze();
 
@@ -44,23 +44,23 @@ private:
 public:
 	struct Field
 	{
-		unsigned int fieldNo;
+		int fieldNo;
 		std::string fieldType;
 		std::string content;
 
-		Field( unsigned int fieldNo_, const std::string& fieldType_, const std::string& content_)
+		Field( int fieldNo_, const std::string& fieldType_, const std::string& content_)
 			:fieldNo(fieldNo_), fieldType(fieldType_), content(content_) {}
 		Field( const Field& o)
 			:fieldNo(o.fieldNo), fieldType(o.fieldType), content(o.content) {}
 	};
 	struct Group
 	{
-		unsigned int groupId;
+		int groupId;
 		GroupBy groupBy;
 		bool groupSingle;
-		std::vector<unsigned int> fieldNoList;
+		std::vector<int> fieldNoList;
 
-		Group( unsigned int groupId_, const std::vector<unsigned int>& fieldNoList_, const GroupBy& groupBy_, bool groupSingle_)
+		Group( int groupId_, const std::vector<int>& fieldNoList_, const GroupBy& groupBy_, bool groupSingle_)
 			:groupId(groupId_), groupBy(groupBy_), groupSingle(groupSingle_), fieldNoList(fieldNoList_) {}
 		Group( const Group& o)
 			:groupId(o.groupId), groupBy(o.groupBy), groupSingle(o.groupSingle), fieldNoList(o.fieldNoList) {}

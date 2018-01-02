@@ -12,6 +12,7 @@
 #include "segmentProcessor.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
+#include "strus/base/string_format.hpp"
 #include <vector>
 #include <string>
 #include <set>
@@ -28,19 +29,21 @@ QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, Erro
 	,m_errorhnd(errorhnd_)
 {}
 
-void QueryAnalyzerContext::putField( unsigned int fieldNo, const std::string& fieldType, const std::string& content)
+void QueryAnalyzerContext::putField( int fieldNo, const std::string& fieldType, const std::string& content)
 {
 	try
 	{
+		if (fieldNo <= 0) throw strus::runtime_error(_TXT("invalid field number %d, must be a positive integer"), fieldNo);
 		m_fields.push_back( Field( fieldNo, fieldType, content));
 	}
 	CATCH_ERROR_MAP( _TXT("error defining query field: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerContext::groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle)
+void QueryAnalyzerContext::groupElements( int groupId, const std::vector<int>& fieldNoList, const GroupBy& groupBy, bool groupSingle)
 {
 	try
 	{
+		if (groupId <= 0) throw strus::runtime_error(_TXT("invalid group identifier %d, must be a positive integer"), groupId);
 		m_groups.push_back( Group( groupId, fieldNoList, groupBy, groupSingle));
 	}
 	CATCH_ERROR_MAP( _TXT("error grouping query fields: %s"), *m_errorhnd);
@@ -48,12 +51,12 @@ void QueryAnalyzerContext::groupElements( unsigned int groupId, const std::vecto
 
 struct QueryTreeNode
 {
-	QueryTreeNode( unsigned int groupId_, unsigned int queryElement_, unsigned int position_, unsigned int nofChild_, unsigned int child_, unsigned int next_)
+	QueryTreeNode( int groupId_, unsigned int queryElement_, unsigned int position_, unsigned int nofChild_, unsigned int child_, unsigned int next_)
 		:groupId(groupId_),queryElement(queryElement_),position(position_),nofChild(nofChild_),child(child_),next(next_){}
 	QueryTreeNode( const QueryTreeNode& o)
 		:groupId(o.groupId),queryElement(o.queryElement),position(o.position),nofChild(o.nofChild),child(o.child),next(o.next){}
 
-	unsigned int groupId;
+	int groupId;
 	unsigned int queryElement;
 	unsigned int position;
 	unsigned int nofChild;
@@ -74,7 +77,7 @@ struct QueryTree
 
 static void buildQueryTreeNode(
 		std::vector<QueryTreeNode>& nodear,
-		unsigned int groupId, unsigned int position,
+		int groupId, unsigned int position,
 		const std::vector<unsigned int>& children)
 {
 	nodear.push_back( QueryTreeNode( groupId, std::numeric_limits<unsigned int>::max(), position, children.size(), children.empty()?0:children[0], 0));
@@ -308,10 +311,11 @@ static QueryTree buildQueryTree(
 	{
 		// Build up the argument list (set of root nodes of the selected arguments) for the grouping operation
 		std::vector<unsigned int> args;			// set of arguments (node indices)
-		std::vector<unsigned int>::const_iterator
-			fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
+		std::vector<int>::const_iterator fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
+			if (*fi <= 0) throw strus::runtime_error(_TXT("invalid fieldno %d passed to group elements operation, must be a positive integer"), *fi);
+
 			FieldElementRange range = fieldElementMap.equal_range( *fi);
 			FieldElementMapItr ri = range.first, re = range.second;
 			// For each element of a selected field:
@@ -388,8 +392,7 @@ static QueryTree buildQueryTree(
 
 				// Group every selected node into its own group:
 				std::vector<unsigned int> uargs = reduceUnifiedNodes( args);
-				std::vector<unsigned int>::const_iterator
-					ui = uargs.begin(), ue = uargs.end();
+				std::vector<unsigned int>::const_iterator ui = uargs.begin(), ue = uargs.end();
 				for (; ui != ue; ++ui)
 				{
 					std::vector<unsigned int> sargs;
@@ -501,6 +504,18 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 		}
 		else
 		{
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cerr << "QUERY ELEMENTS:" << std::endl;
+			std::vector<SegmentProcessor::QueryElement>::const_iterator
+				ei = elems.begin(), ee = elems.end();
+			for ( ;ei!=ee; ++ei)
+			{
+				std::cerr
+					<< strus::string_format( "type='%s' value='%s' len='%d' fieldno=%d pos=%u",
+									ei->type().c_str(), ei->value().c_str(), ei->len(), ei->fieldno(), ei->pos())
+					<< std::endl;
+			}
+#endif
 			QueryTree queryTree = buildQueryTree( m_groups, m_fields, elems);
 			std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
 			for (; ri != re; ++ri)
@@ -524,6 +539,7 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 					break;
 				}
 				case analyzer::QueryTermExpression::Instruction::Operator:
+					std::cerr << " operator";
 					break;
 			}
 			std::cerr << std::endl;

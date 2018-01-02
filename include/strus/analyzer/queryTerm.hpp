@@ -31,7 +31,7 @@ public:
 	/// \param[in] t name of the term
 	/// \param[in] v value of the term
 	/// \param[in] l length of the term
-	QueryTerm( const std::string& t, const std::string& v, unsigned int l)
+	QueryTerm( const std::string& t, const std::string& v, int l)
 		:m_type(t),m_value(v),m_len(l){}
 
 	/// \brief Get the type name of the term
@@ -42,16 +42,16 @@ public:
 	const std::string& value() const	{return m_value;}
 	/// \brief Get the length of the term (ordinal position count)
 	/// \return ordinal position count of the term
-	unsigned int len() const		{return m_len;}
+	int len() const				{return m_len;}
 
 	/// \brief Set the length of the term (ordinal position count)
 	/// \param[in] len_ length (term count) of the term
-	void setLen( unsigned int len_)		{m_len = len_;}
+	void setLen( int len_)			{m_len = len_;}
 
 private:
 	std::string m_type;
 	std::string m_value;
-	unsigned int m_len;
+	int m_len;
 };
 
 }}//namespace

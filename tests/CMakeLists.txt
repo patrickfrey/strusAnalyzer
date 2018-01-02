@@ -9,4 +9,5 @@ add_subdirectory( tokenizer_textcat )
 add_subdirectory( tokenizer_regex )
 add_subdirectory( posbind )
 add_subdirectory( normalizer_regex )
+add_subdirectory( querytree )
 

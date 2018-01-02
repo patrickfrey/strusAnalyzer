@@ -5,6 +5,7 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	"${PROJECT_SOURCE_DIR}/include"
 	"${strusbase_INCLUDE_DIRS}"
+	${TESTUTILS_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -19,6 +20,7 @@ link_directories(
 	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
 	"${MAIN_SOURCE_DIR}/tokenizer_punctuation"
 	"${MAIN_SOURCE_DIR}/tokenizer_word"
+	${TESTUTILS_LIBRARY_DIRS}
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )

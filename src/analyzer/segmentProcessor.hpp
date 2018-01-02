@@ -68,14 +68,14 @@ public:
 	public:
 		QueryElement( const QueryElement& o)
 			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_pos(o.m_pos){}
-		QueryElement( unsigned int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
+		QueryElement( int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
 			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_pos(pos_){}
 
-		unsigned int fieldno() const	{return m_fieldno;}
+		int fieldno() const		{return m_fieldno;}
 		unsigned int pos() const	{return m_pos;}
 
 	private:
-		unsigned int m_fieldno;
+		int m_fieldno;
 		unsigned int m_pos;
 	};
 

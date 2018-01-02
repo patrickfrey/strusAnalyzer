@@ -64,7 +64,7 @@ public:
 	/// \brief Evaluate the level of definition of the document class
 	/// \return level of definition
 	/// \note this method is used to weight different oppinions of document class detection
-	unsigned int level() const				{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
+	int level() const					{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
 
 private:
 	std::string m_mimeType;
