@@ -195,7 +195,7 @@ public:
 				return m_defaultResult;
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
 private:
@@ -212,7 +212,7 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
 			return 0;
 		}
 		std::string defaultValue;
@@ -224,13 +224,13 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 
 			if (args.size() > 2)
 			{
-				m_errorhnd->report( _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
+				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
 				return 0;
 			}
 		}
 		return new DictMapNormalizerInstance( args[0], defaultValue, defaultOrig, textproc, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
 
 

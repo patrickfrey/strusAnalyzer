@@ -84,7 +84,7 @@ public:
 			}
 			return NumericVariant( (NumericVariant::IntType)rt);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
 private:
@@ -104,14 +104,14 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try
 		{
 			return new SetAggregatorFunctionInstance( std::string(), args, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -135,14 +135,14 @@ public:
 	{
 		if (args.size() < 2)
 		{
-			m_errorhnd->report( _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try
 		{
 			return new SetAggregatorFunctionInstance( args[0], std::vector<std::string>( args.begin()+1, args.end()), m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -167,7 +167,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_typeset( ErrorBu
 		}
 		return new TypeSetAggregatorFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s': %s"), "aggregator typeset", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s': %s"), "aggregator typeset", *errorhnd, 0);
 }
 
 DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_valueset( ErrorBufferInterface* errorhnd)
@@ -181,7 +181,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_valueset( ErrorB
 		}
 		return new ValueSetAggregatorFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s': %s"), "aggregator valueset", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s': %s"), "aggregator valueset", *errorhnd, 0);
 }
 
 

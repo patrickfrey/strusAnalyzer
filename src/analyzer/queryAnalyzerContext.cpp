@@ -10,6 +10,7 @@
 #include "queryAnalyzerContext.hpp"
 #include "queryAnalyzer.hpp"
 #include "segmentProcessor.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "strus/base/string_format.hpp"

@@ -30,7 +30,7 @@ public:
 		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
 		if (!m_stemmer)
 		{
-			errorhnd->report( "language '%s' unknown for snowball stemmer", language.c_str());
+			errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), "language '%s' unknown for snowball stemmer", language.c_str());
 		}
 	}
 
@@ -55,7 +55,7 @@ public:
 		}
 		catch (const std::bad_alloc& )
 		{
-			m_errorhnd->report( "memory allocation error in stemmer");
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), "memory allocation error in stemmer");
 			return std::string();
 		}
 	}
@@ -72,7 +72,7 @@ NormalizerFunctionInstanceInterface* StemNormalizerFunction::createInstance( con
 	{
 		if (args.size() != 1)
 		{
-			m_errorhnd->report( "illegal number of arguments passed to snowball stemmer");
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), "illegal number of arguments passed to snowball stemmer");
 			return 0;
 		}
 		return new StemNormalizerFunctionInstance( args[0], m_errorhnd);

@@ -54,7 +54,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
 private:
@@ -84,7 +84,7 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 		}
 		return new RegexTokenizerFunctionInstance( args[0], selectIndex, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating \"%s\" tokenizer instance: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating \"%s\" tokenizer instance: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
 }
 
 const char* RegexTokenizerFunction::getDescription() const
@@ -93,7 +93,7 @@ const char* RegexTokenizerFunction::getDescription() const
 	{
 		return _TXT("Tokenizer selecting tokens from source that are matching a regular expression.");
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error getting \"%s\" tokenizer description: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error getting \"%s\" tokenizer description: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
 }
 
 

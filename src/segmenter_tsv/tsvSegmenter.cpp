@@ -10,6 +10,7 @@
 #include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/errorBufferInterface.hpp"
 
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -22,6 +23,8 @@
 #include <iterator>
 
 #define SEGMENTER_NAME "tsv"
+
+using namespace strus;
 
 // TSVParserDefinition
 
@@ -132,7 +135,7 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 #endif
 	
 	if( m_eof ) {
-		m_errbuf->report( _TXT("fed chunk after declared end of input" ));
+		m_errbuf->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseOperationOrder), _TXT("fed chunk after declared end of input" ));
 		return;
 	}
 	if (m_encoder.get())
@@ -147,7 +150,7 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 	
 	m_is.str( m_buf );
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
+	CATCH_ERROR_ARG1_MAP( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 
 static std::vector<std::string> splitLine( const std::string &s, const std::string &delimiter, bool keepEmpty )
@@ -321,7 +324,7 @@ NEXTLINE:
 	}
 	return false;
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, false);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, false);
 }
 
 // TSVSegmenterInstance
@@ -337,7 +340,7 @@ void TSVSegmenterInstance::defineSelectorExpression( int id, const std::string &
 	{
 	m_parserDefinition.defineSelectorExpression( id, expression );
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 		
 void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::string &expression )
@@ -346,7 +349,7 @@ void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::
 	{
 		m_parserDefinition.defineSubSection( startId, endId, expression );
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
+	CATCH_ERROR_ARG1_MAP( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
 }
 
 strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::analyzer::DocumentClass &dclass ) const
@@ -360,17 +363,17 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	}
 	return new TSVSegmenterContext( m_parserDefinition, encoder, m_errbuf, m_errorReporting );
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
 strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContext( const strus::analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
 	{
-	m_errbuf->report( _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errbuf->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseNotImplemented), _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
 
@@ -393,7 +396,7 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 	if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
 	return new TSVSegmenterInstance( m_errbuf, m_errorReporting );
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
 const char* TSVSegmenter::getDescription() const

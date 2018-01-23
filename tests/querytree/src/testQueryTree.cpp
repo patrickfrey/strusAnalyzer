@@ -217,7 +217,7 @@ static std::string normalizeMultiplication( const char* src, std::size_t srcsize
 	}
 	catch (const std::runtime_error&)
 	{
-		g_errorhnd->report( "out of memory in 'multiply' normalizer");
+		g_errorhnd->report( *strus::ErrorCode(strus::StrusComponentAnalyzer,strus::ErrorOperationBuildData,strus::ErrorCauseOutOfMem), "out of memory in 'multiply' normalizer");
 		return std::string();
 	}
 }

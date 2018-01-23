@@ -31,7 +31,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 			m_automaton.defineSelectorExpression( id, expression);
 		}
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
 
@@ -41,7 +41,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 	{
 		m_automaton.defineSubSection( startId, endId, expression);
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error defining subsection for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining subsection for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
 
@@ -123,7 +123,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 			}
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter creating context: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter creating context: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
@@ -204,7 +204,7 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 			}
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
@@ -214,7 +214,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
 		return new SegmenterInstance( m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 const char* Segmenter::getDescription() const

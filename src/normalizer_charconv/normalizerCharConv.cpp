@@ -4388,7 +4388,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
 		return 0;
 	}
 	try
@@ -4397,7 +4397,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "lc");
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
 }
@@ -4406,7 +4406,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
 		return 0;
 	}
 	try
@@ -4415,7 +4415,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "uc");
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
 }
@@ -4440,7 +4440,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	{
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to normalizer '%s'"), "convdia");
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to normalizer '%s'"), "convdia");
 			return 0;
 		}
 		if (args.size() == 0)
@@ -4462,7 +4462,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( "out of memory");
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), "out of memory");
 		return 0;
 	}
 }
@@ -4600,7 +4600,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
 	}
 
 private:
@@ -4614,7 +4614,7 @@ NormalizerFunctionInstanceInterface* CharSelectNormalizerFunction::createInstanc
 	{
 		return new CharSelectNormalizerInstance( args, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
 }
 
 
