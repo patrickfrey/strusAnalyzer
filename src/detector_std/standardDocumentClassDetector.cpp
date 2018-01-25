@@ -11,6 +11,7 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/textEncoder.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include <cstring>
 #include <stdexcept>
 

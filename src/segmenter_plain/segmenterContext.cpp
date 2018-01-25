@@ -31,7 +31,7 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 			}
 		}
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error in put input of %s segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error in put input of %s segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
 bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)

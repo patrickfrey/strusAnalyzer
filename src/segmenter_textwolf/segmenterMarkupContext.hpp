@@ -73,7 +73,7 @@ public:
 			segmentsize = m_segmentitr->second.segsize;
 			return true;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
 	}
 
 	virtual unsigned int segmentSize( const SegmenterPosition& segpos)
@@ -133,7 +133,7 @@ public:
 				return std::string( m_strings.c_str()+tagidx);
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag name of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get tag name of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, std::string());
 	}
 
 	virtual int tagLevel( const SegmenterPosition& segpos) const
@@ -150,7 +150,7 @@ public:
 				return segitr->second.taglevel;
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag hierarchy level of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get tag hierarchy level of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, 0);
 	}
 
 	virtual void putOpenTag(
@@ -196,7 +196,7 @@ public:
 				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, segitr->second.origpos, m_markups.size(), value));
 			}
 		}
-		CATCH_ERROR_MAP_ARG1( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
+		CATCH_ERROR_ARG1_MAP( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
 	}
 
 	virtual std::string getContent() const
@@ -281,7 +281,7 @@ public:
 			rt.append( m_source.c_str() + prevpos, m_source.size() - prevpos);
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, std::string());
 	}
 
 private:

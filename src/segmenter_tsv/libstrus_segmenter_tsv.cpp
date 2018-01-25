@@ -28,7 +28,7 @@ DLL_PUBLIC SegmenterInterface* strus::createSegmenter_tsv( ErrorBufferInterface*
 		}
 		return new TSVSegmenter( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' segmenter: %s"), "tsv", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' segmenter: %s"), "tsv", *errorhnd, 0);
 }
 
 

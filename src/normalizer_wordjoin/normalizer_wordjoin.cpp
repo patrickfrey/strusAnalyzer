@@ -54,7 +54,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
 private:
@@ -76,6 +76,6 @@ NormalizerFunctionInstanceInterface* WordJoinNormalizerFunction::createInstance(
 			return new WordJoinNormalizerInstance( " ", m_errorhnd);
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
 

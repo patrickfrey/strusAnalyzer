@@ -74,7 +74,7 @@ public:
 			}
 			return m_call( tfar);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, (NumericVariant::IntType)0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
 private:
@@ -95,19 +95,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to '%s' aggregator function"), m_name);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to '%s' aggregator function"), m_name);
 			return 0;
 		}
 		try
 		{
 			return new VsmAggregatorFunctionInstance( args[0], m_call, m_name, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -134,7 +134,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_sumSquareTf( Err
 		}
 		return new VsmAggregatorFunction( &sumSquareTfAggregatorFunctionCall, "sumsqaretf", _TXT("aggregator for calculating the sum of the square of the tf of all selected elements"), errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' aggregator: %s"), "sumsqaretf", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' aggregator: %s"), "sumsqaretf", *errorhnd, 0);
 }
 
 

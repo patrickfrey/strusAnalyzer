@@ -40,7 +40,7 @@ public:
 		std::string rt;
 		if (!m_subst.exec( rt, src, srcsize))
 		{
-			m_errorhnd->report( _TXT("failed to match regular expression in normalizer function '%s'"), "regex");
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseInvalidRegex), _TXT("failed to match regular expression in normalizer function '%s'"), "regex");
 			return std::string();
 		}
 		else
@@ -71,7 +71,7 @@ NormalizerFunctionInstanceInterface* RegexNormalizerFunction::createInstance(
 		}
 		return new RegexNormalizerFunctionInstance( args[0], args[1], m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 const char* RegexNormalizerFunction::getDescription() const
@@ -80,7 +80,7 @@ const char* RegexNormalizerFunction::getDescription() const
 	{
 		return _TXT( "Normalizer that does a regular expression match with the first argument and a replace with the format string defined in the second argument.");
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
 

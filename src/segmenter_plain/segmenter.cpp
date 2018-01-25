@@ -23,17 +23,17 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	{
 		if (!expression.empty())
 		{
-			m_errorhnd->report( _TXT("only empty expressions allowed for '%s' segmenter, got '%s' for %d"), SEGMENTER_NAME, expression.c_str(), id);
+			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("only empty expressions allowed for '%s' segmenter, got '%s' for %d"), SEGMENTER_NAME, expression.c_str(), id);
 		}
 		m_segids.insert( id);
 	}
-	CATCH_ERROR_MAP_ARG1( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
 
 void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
-	m_errorhnd->report( _TXT("not implemented: '%s'"), "SegmenterInstance::defineSubSection");
+	m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("not implemented: '%s'"), "SegmenterInstance::defineSubSection");
 }
 
 
@@ -48,12 +48,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 		}
 		return new SegmenterContext( m_errorhnd, &m_segids, encoder);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
-	m_errorhnd->report( _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 
@@ -64,7 +64,7 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
 		return new SegmenterInstance( m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 const char* Segmenter::getDescription() const

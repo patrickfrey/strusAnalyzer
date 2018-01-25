@@ -9,6 +9,7 @@
 #include "punctuation_utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include <iostream>
 
 using namespace strus;

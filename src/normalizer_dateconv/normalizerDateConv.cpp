@@ -153,7 +153,7 @@ public:
 			out << rtnum;
 			return out.str();
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
 	}
 
 private:
@@ -280,7 +280,7 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 			return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
 }
 
 

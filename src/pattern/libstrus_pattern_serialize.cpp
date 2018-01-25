@@ -315,13 +315,13 @@ public:
 	virtual unsigned int getLexem(
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::getLexem not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::getLexem not implemented in serializer"));
 		return 0;
 	}
 
 	virtual std::vector<std::string> lexemTypes() const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::lexemTypes not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::lexemTypes not implemented in serializer"));
 		return std::vector<std::string>();
 	}
 
@@ -329,7 +329,7 @@ public:
 			unsigned int ,
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
 		return 0;
 	}
 
@@ -398,13 +398,13 @@ public:
 			unsigned int ,
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::getSymbol not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::getSymbol not implemented in serializer"));
 		return 0;
 	}
 
 	virtual const char* getLexemName( unsigned int) const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::getLexemName not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::getLexemName not implemented in serializer"));
 		return 0;
 	}
 
@@ -433,7 +433,7 @@ public:
 
 	virtual PatternLexerContextInterface* createContext() const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::createContext not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::createContext not implemented in serializer"));
 		return 0;
 	}
 
@@ -547,7 +547,7 @@ public:
 
 	virtual PatternMatcherContextInterface* createContext() const
 	{
-		m_errorhnd->report(_TXT("command PatternMatcher::createContext not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternMatcher::createContext not implemented in serializer"));
 		return 0;
 	}
 
@@ -591,13 +591,13 @@ public:
 	virtual unsigned int getLexem(
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::getLexem not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::getLexem not implemented in serializer"));
 		return 0;
 	}
 
 	virtual std::vector<std::string> lexemTypes() const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::lexemTypes not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::lexemTypes not implemented in serializer"));
 		return std::vector<std::string>();
 	}
 
@@ -605,7 +605,7 @@ public:
 			unsigned int ,
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
 		return 0;
 	}
 
@@ -660,13 +660,13 @@ public:
 			unsigned int ,
 			const std::string& ) const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::getSymbol not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::getSymbol not implemented in serializer"));
 		return 0;
 	}
 
 	virtual const char* getLexemName( unsigned int) const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::getLexemName not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::getLexemName not implemented in serializer"));
 		return 0;
 	}
 
@@ -691,7 +691,7 @@ public:
 
 	virtual PatternLexerContextInterface* createContext() const
 	{
-		m_errorhnd->report(_TXT("command PatternLexer::createContext not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternLexer::createContext not implemented in serializer"));
 		return 0;
 	}
 
@@ -784,7 +784,7 @@ public:
 
 	virtual PatternMatcherContextInterface* createContext() const
 	{
-		m_errorhnd->report(_TXT("command PatternMatcher::createContext not implemented in serializer"));
+		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("command PatternMatcher::createContext not implemented in serializer"));
 		return 0;
 	}
 

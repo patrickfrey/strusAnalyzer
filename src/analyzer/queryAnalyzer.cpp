@@ -9,6 +9,7 @@
 #include "queryAnalyzerContext.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
