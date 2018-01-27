@@ -1011,11 +1011,16 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 {
 	try
 	{
+		if (hasUpdirReference( filename))
+		{
+			m_errorhnd->report( *ErrorCode( StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotAllowed), _TXT("tried to read resource file with upper directory reference in the name"));
+			return std::string();
+		}
 		std::vector<std::string>::const_iterator
 			pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
 		for (; pi != pe; ++pi)
 		{
-			std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
+			std::string absfilename = strus::joinFilePath( *pi, filename);
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "check resource path '" << absfilename << "'" << std::endl;
 #endif
