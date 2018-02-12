@@ -148,6 +148,11 @@ public:
 		PatternLexer,			///< Addresses a pattern lexer
 		PatternMatcher			///< Addresses a pattern matcher
 	};
+	static const char* functionTypeName( FunctionType t)
+	{
+		const char* ar[] = {"Segmenter","Tokenizer","Normalizer","Aggregator","PatternLexer","PatternMatcher",0};
+		return ar[t];
+	}
 
 	/// \brief Get a list of all functions of a specific type available
 	/// \param[in] type type of the function
