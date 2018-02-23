@@ -47,6 +47,8 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINA
 # -------------------------------------------
 # TEXTCAT LANGUAGE DETECTION LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_textcat ${textcat_source_files} )
+
 add_library( strus_textcat SHARED ${textcat_source_files})
 set_target_properties(
     strus_textcat

@@ -13,5 +13,7 @@ link_directories(
 	"${strusbase_LIBRARY_DIRS}"
 )
 
+add_cppcheck( testSegmenterTsv testSegmenterTsv.cpp )
+
 add_executable( testSegmenterTsv testSegmenterTsv.cpp)
 target_link_libraries( testSegmenterTsv strus_segmenter_tsv strus_segmenter_utils strus_detector_std  strus_base  strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )

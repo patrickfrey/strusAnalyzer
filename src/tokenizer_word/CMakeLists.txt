@@ -11,7 +11,7 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 
@@ -24,6 +24,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_tokenizer_word ${source_files} )
+
 add_library( strus_tokenizer_word SHARED ${source_files} )
 target_link_libraries( strus_tokenizer_word strusanalyzer_private_utils strus_base )
 

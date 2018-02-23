@@ -13,7 +13,7 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories(
@@ -24,6 +24,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_segmenter_plain ${source_files} )
+
 add_library( strus_segmenter_plain SHARED ${source_files} )
 target_link_libraries( strus_segmenter_plain strus_segmenter_utils strusanalyzer_private_utils strus_base )
 set_target_properties(

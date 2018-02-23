@@ -24,6 +24,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_detector_std ${source_files} )
+
 add_library( strus_detector_std SHARED ${source_files} )
 target_link_libraries( strus_detector_std strusanalyzer_private_utils strus_base )
 set_target_properties(

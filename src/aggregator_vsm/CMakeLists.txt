@@ -23,6 +23,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_aggregator_vsm ${source_files} )
+
 add_library( strus_aggregator_vsm SHARED ${source_files} )
 target_link_libraries( strus_aggregator_vsm strusanalyzer_private_utils strus_base )
 set_target_properties(

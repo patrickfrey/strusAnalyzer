@@ -13,5 +13,7 @@ link_directories(
 	"${strusbase_LIBRARY_DIRS}"
 )
 
+add_cppcheck( testSegmenterCJson testSegmenterCJson.cpp )
+
 add_executable( testSegmenterCJson testSegmenterCJson.cpp)
 target_link_libraries( testSegmenterCJson strus_segmenter_cjson strus_segmenter_utils strus_detector_std  strus_base  strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
