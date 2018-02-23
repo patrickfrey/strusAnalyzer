@@ -9,7 +9,7 @@ set( source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
@@ -24,6 +24,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_normalizer_regex ${source_files} libstrus_normalizer_regex.cpp )
+
 add_library( strus_normalizer_regex SHARED ${source_files} libstrus_normalizer_regex.cpp )
 target_link_libraries( strus_normalizer_regex strusanalyzer_private_utils strus_base )
 

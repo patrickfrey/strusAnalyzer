@@ -25,6 +25,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_normalizer_dictmap ${source_files}  libstrus_normalizer_dictmap.cpp )
+
 add_library( strus_normalizer_dictmap SHARED ${source_files} libstrus_normalizer_dictmap.cpp )
 target_link_libraries( strus_normalizer_dictmap compactnodetrie_analyzer_static strusanalyzer_private_utils strus_base )
 

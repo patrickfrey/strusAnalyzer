@@ -17,6 +17,8 @@ link_directories(
 	${TESTUTILS_LIBRARY_DIRS}
 )
 
+add_cppcheck( testQueryTree testQueryTree.cpp )
+
 add_executable( testQueryTree testQueryTree.cpp)
 target_link_libraries(
 	testQueryTree

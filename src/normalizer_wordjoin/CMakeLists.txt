@@ -9,7 +9,7 @@ set( source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
@@ -24,6 +24,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_normalizer_wordjoin ${source_files} libstrus_normalizer_wordjoin.cpp )
+
 add_library( strus_normalizer_wordjoin SHARED ${source_files} libstrus_normalizer_wordjoin.cpp )
 target_link_libraries( strus_normalizer_wordjoin strusanalyzer_private_utils strus_base )
 

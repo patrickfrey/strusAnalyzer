@@ -23,6 +23,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_pattern_termfeeder libstrus_pattern_termfeeder.cpp  ${source_files} )
+
 add_library( strus_pattern_termfeeder SHARED  libstrus_pattern_termfeeder.cpp  ${source_files} )
 target_link_libraries( strus_pattern_termfeeder  strusanalyzer_private_utils strus_base )
 set_target_properties(

@@ -25,6 +25,8 @@ link_directories(
 	"${strusbase_LIBRARY_DIRS}"
 )
 
+add_cppcheck( testRandomFeed testRandomFeed.cpp )
+
 add_executable( testRandomFeed testRandomFeed.cpp)
 target_link_libraries( testRandomFeed strus_stemmer strus_error strus_tokenizer_word strus_tokenizer_punctuation strus_tokenizer_textcat strus_segmenter_textwolf strus_analyzer strus_normalizer_dateconv strus_normalizer_dictmap strus_detector_std strus_normalizer_charconv strus_textproc  strus_normalizer_snowball strus_aggregator_vsm strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 

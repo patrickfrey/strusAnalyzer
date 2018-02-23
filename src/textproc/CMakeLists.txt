@@ -12,7 +12,7 @@ include_directories(
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${strusbase_INCLUDE_DIRS}"
 	"${CMAKE_CURRENT_BINARY_DIR}"
 )
@@ -45,6 +45,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_textproc ${source_files} )
+
 add_library( strus_textproc SHARED ${source_files} )
 target_link_libraries(
 	strus_textproc

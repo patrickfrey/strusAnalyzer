@@ -12,7 +12,7 @@ set(source_files
 
 include_directories(  
 	"${PROJECT_SOURCE_DIR}/include" 
-	"${TEXTWOLF_INCLUDE_DIRS}"
+	${TEXTWOLF_INCLUDE_DIRS}
 	"${CNODETRIE_INCLUDE_DIRS}"
 	"${Intl_INCLUDE_DIRS}"
 	${Boost_INCLUDE_DIRS}
@@ -30,6 +30,8 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_tokenizer_punctuation ${source_files} )
+
 add_library( strus_tokenizer_punctuation SHARED ${source_files} )
 target_link_libraries( strus_tokenizer_punctuation compactnodetrie_analyzer_static strusanalyzer_private_utils strus_base )
 set_target_properties(
