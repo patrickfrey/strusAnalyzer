@@ -41,7 +41,7 @@ class TextcatTokenizerInstance
 {
 public:
 	TextcatTokenizerInstance( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
-		:m_language(language), m_errorhnd(errorhnd)
+		:m_language(language), m_errorhnd(errorhnd), m_textcat(0)
 	{
 		initialize( config );
 	}
