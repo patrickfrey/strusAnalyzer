@@ -10,6 +10,7 @@
 #include "queryAnalyzerContext.hpp"
 #include "queryAnalyzer.hpp"
 #include "segmentProcessor.hpp"
+#include "strus/errorCodes.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
@@ -416,6 +417,9 @@ static QueryTree buildQueryTree(
 
 std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFields() const
 {
+	typedef QueryAnalyzer::FieldTypePatternMap FieldTypePatternMap;
+	typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
+
 	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
 	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap());
 	PostProcPatternMatchContextMap postProcPatternMatchContextMap( m_analyzer->postProcPatternMatchConfigMap());
@@ -424,20 +428,30 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 	unsigned int fidx=0;
 	for (fidx=0; fi != fe; ++fi,++fidx)
 	{
-		typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
 		std::pair<FieldTypeFeatureMap::const_iterator,FieldTypeFeatureMap::const_iterator>
 			range = m_analyzer->fieldTypeFeatureMap().equal_range( fi->fieldType);
 		FieldTypeFeatureMap::const_iterator ti = range.first, te = range.second;
-		for (;ti != te; ++ti)
+		if (ti == te)
 		{
-			segmentProcessor.processDocumentSegment(
-				ti->second/*feature type index*/, fi->fieldNo/*segment pos = fieldNo*/, 
-				fi->content.c_str(), fi->content.size());
+			if (m_analyzer->fieldTypePatternMap().find( fi->fieldType) == m_analyzer->fieldTypePatternMap().end())
+			{
+				throw strus::runtime_error( 
+					ErrorCode( StrusComponentAnalyzer, ErrorOperationBuildData, ErrorCauseUnknownIdentifier),
+					_TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
+			}
+		}
+		else
+		{
+			for (;ti != te; ++ti)
+			{
+				segmentProcessor.processDocumentSegment(
+					ti->second/*feature type index*/, fi->fieldNo/*segment pos = fieldNo*/, 
+					fi->content.c_str(), fi->content.size());
+			}
 		}
 	}
 	if (!m_analyzer->fieldTypePatternMap().empty()) for (fidx=0,fi=m_fields.begin(); fi != fe; ++fi,++fidx)
 	{
-		typedef QueryAnalyzer::FieldTypePatternMap FieldTypePatternMap;
 		std::pair<FieldTypePatternMap::const_iterator,FieldTypePatternMap::const_iterator>
 			range = m_analyzer->fieldTypePatternMap().equal_range( fi->fieldType);
 		FieldTypePatternMap::const_iterator ti = range.first, te = range.second;

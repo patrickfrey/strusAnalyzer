@@ -260,7 +260,7 @@ static void defineQueryAnalysis( strus::QueryAnalyzerInterface* qana, strus::Tex
 	for (; ti < te; ++ti)
 	{
 		std::string termtype = desttypes[ ti % didx];
-		std::string fieldtype = fieldTypeName( ti);
+		std::string fieldtype = fieldTypeName( ti-1);
 		const strus::TokenizerFunctionInterface* tokenizertype = textproc->getTokenizer( "split");
 		if (!tokenizertype) throw std::runtime_error( g_errorhnd->fetchError());
 		strus::Reference<strus::TokenizerFunctionInstanceInterface> tokenizer( tokenizertype->createInstance( std::vector<std::string>(), textproc));
@@ -269,6 +269,9 @@ static void defineQueryAnalysis( strus::QueryAnalyzerInterface* qana, strus::Tex
 		normalizers.push_back( new MultiplyNormalizerFunctionInstance( ti));
 
 		qana->addElement( termtype, fieldtype, tokenizer.get(), normalizers);
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cerr << strus::string_format( "Define query element type '%s' field '%s' normalizer * %d\n", termtype.c_str(), fieldtype.c_str(), ti);
+#endif
 		tokenizer.release();
 	}
 }
