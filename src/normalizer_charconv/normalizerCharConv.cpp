@@ -20,7 +20,24 @@ class CharMap
 {
 public:
 	enum ConvType {Diacritical, Lowercase, Uppercase};
+	static const CharMap* getMap( ConvType type)
+	{
+		static const CharMap rt_Diacritical( Diacritical);
+		static const CharMap rt_Lowercase( Lowercase);
+		static const CharMap rt_Uppercase( Uppercase);
+		switch (type)
+		{
+			case Diacritical: return &rt_Diacritical;
+			case Lowercase: return &rt_Lowercase;
+			case Uppercase: return &rt_Uppercase;
+		}
+		throw  std::logic_error("bad enum value");
+	}
 
+	typedef const char* (*ExceptionsF)( unsigned int chr);
+	std::string rewrite( const char* src, std::size_t srcsize, ExceptionsF exceptions, ErrorBufferInterface* errorhnd) const;
+
+private:
 	CharMap(){}
 	explicit CharMap( ConvType type)
 	{
@@ -28,11 +45,6 @@ public:
 	}
 
 	void load( ConvType type);
-
-	typedef const char* (*ExceptionsF)( unsigned int chr);
-	std::string rewrite( const char* src, std::size_t srcsize, ExceptionsF exceptions, ErrorBufferInterface* errorhnd) const;
-
-private:
 	void set( unsigned int chr, const char* value);
 	void set( unsigned int chr, unsigned int mapchr);
 
@@ -50,17 +62,17 @@ class CharMapNormalizerInstance
 {
 public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype_, CharMap::ExceptionsF exceptions_, ErrorBufferInterface* errorhnd_)
-		:m_map(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
+		:m_map(CharMap::getMap(maptype_)),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize) const
 	{
-		return m_map.rewrite( src, srcsize, m_exceptions, m_errorhnd);
+		return m_map->rewrite( src, srcsize, m_exceptions, m_errorhnd);
 	}
 
 private:
-	CharMap m_map;
+	const CharMap* m_map;
 	CharMap::ExceptionsF m_exceptions;
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -4537,27 +4549,40 @@ public:
 	bool isMember( uint32_t chr) const
 	{
 		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
-		for (; ri != re; ++ri)
-		{
-			if (chr >= ri->first && chr <= ri->second) return true;
-		}
-		return false;
+		for (; ri != re && chr > ri->second; ++ri){}
+		return ri != re && chr >= ri->first;
 	}
 
 	void addRange( uint32_t first, uint32_t second)
 	{
 		if (first > second) throw strus::runtime_error(_TXT("illegal character range defined: %u..%u"), first, second);
-		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
-		for (; ri != re; ++ri)
+		std::vector<Range>::iterator ri = m_ranges.begin(), re = m_ranges.end();
+		for (; ri != re && first < ri->first; ++ri){}
+		m_ranges.insert( ri, Range( first,second));	//... inserts new range before ri, so the ranges are sorted ascending by first
+
+		ri = m_ranges.begin(), re = m_ranges.end();
+		std::vector<Range>::iterator next = ri+1;
+		// Iterate through the list of ranges sorted ascending by first and resolve overlappings with all successor elements:
+		while (next != re)
 		{
-			if (first >= ri->first && second <= ri->second) return;
+			if (ri->second >= next->first)
+			{
+				if (ri->second < next->second)
+				{
+					ri->second = next->second;
+				}
+				m_ranges.erase( next);
+				next = ri+1;
+				continue;
+			}
+			++ri;
+			++next;
 		}
-		m_ranges.push_back( Range( first,second));
 	}
 
 private:
 	typedef std::pair<uint32_t,uint32_t> Range;
-	std::vector<Range> m_ranges;
+	std::vector<Range> m_ranges;			///< list of ranges sorted ascending by first
 };
 
 class CharSelectNormalizerInstance
