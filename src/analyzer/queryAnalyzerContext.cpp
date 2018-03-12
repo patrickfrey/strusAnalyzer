@@ -435,9 +435,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		{
 			if (m_analyzer->fieldTypePatternMap().find( fi->fieldType) == m_analyzer->fieldTypePatternMap().end())
 			{
-				throw strus::runtime_error( 
-					ErrorCode( StrusComponentAnalyzer, ErrorOperationBuildData, ErrorCauseUnknownIdentifier),
-					_TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
+				throw strus::runtime_error( ErrorCodeUnknownIdentifier, _TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
 			}
 		}
 		else

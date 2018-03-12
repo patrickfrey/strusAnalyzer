@@ -40,7 +40,7 @@ public:
 		std::string rt;
 		if (!m_subst.exec( rt, src, srcsize))
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseInvalidRegex), _TXT("failed to match regular expression in normalizer function '%s'"), "regex");
+			m_errorhnd->report( ErrorCodeInvalidRegex, _TXT("failed to match regular expression in normalizer function '%s'"), "regex");
 			return std::string();
 		}
 		else

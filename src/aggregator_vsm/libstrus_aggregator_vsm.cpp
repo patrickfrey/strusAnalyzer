@@ -95,12 +95,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to '%s' aggregator function"), m_name);
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), m_name);
 			return 0;
 		}
 		try

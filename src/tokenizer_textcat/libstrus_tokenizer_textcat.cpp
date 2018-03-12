@@ -187,17 +187,17 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report(  *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("name of textcat config file expected as first argument for the 'textcat' tokenizer"));
+			m_errorhnd->report(  ErrorCodeIncompleteDefinition, _TXT("name of textcat config file expected as first argument for the 'textcat' tokenizer"));
 			return 0;
 		}
 		if (args.size() == 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("filter language expected as second parameter of the textcat tokenizer"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("filter language expected as second parameter of the textcat tokenizer"));
 			return 0;
 		}
 		if (args.size() > 2)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments for 'textcat' tokenizer"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for 'textcat' tokenizer"));
 			return 0;
 		}
 		try

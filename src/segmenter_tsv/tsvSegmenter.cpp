@@ -135,7 +135,7 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 #endif
 	
 	if( m_eof ) {
-		m_errbuf->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseOperationOrder), _TXT("fed chunk after declared end of input" ));
+		m_errbuf->report( ErrorCodeOperationOrder, _TXT("fed chunk after declared end of input" ));
 		return;
 	}
 	if (m_encoder.get())
@@ -370,7 +370,7 @@ strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContex
 {
 	try
 	{
-	m_errbuf->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseNotImplemented), _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errbuf->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);

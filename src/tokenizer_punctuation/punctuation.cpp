@@ -36,12 +36,12 @@ public:
 		{
 			if (args.size() > 2)
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
+				m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
 				return 0;
 			}
 			if (args.size() < 1)
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
+				m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
 				return 0;
 			}
 			const char* punctChar = 0;
@@ -59,7 +59,7 @@ public:
 			}
 			else
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
 				return 0;
 			}
 		}

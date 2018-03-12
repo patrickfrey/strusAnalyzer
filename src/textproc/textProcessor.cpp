@@ -114,7 +114,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), "no arguments expected for 'empty' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'empty' normalizer");
 			return 0;
 		}
 		try
@@ -162,7 +162,7 @@ public:
 	{
 		if (args.size() != 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), "one argument expected for 'const' normalizer");
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, "one argument expected for 'const' normalizer");
 			return 0;
 		}
 		try
@@ -227,7 +227,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
 			return 0;
 		}
 		try
@@ -304,7 +304,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
 			return 0;
 		}
 		try
@@ -363,7 +363,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), "no arguments expected for 'content' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'content' normalizer");
 			return 0;
 		}
 		try
@@ -421,12 +421,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("feature type name as argument expected for 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'count' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'count' aggregator function"));
 			return 0;
 		}
 		try
@@ -484,12 +484,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'maxpos' aggregator function"));
 			return 0;
 		}
 		try
@@ -547,12 +547,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("feature type name as argument expected for 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'minpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'minpos' aggregator function"));
 			return 0;
 		}
 		try
@@ -624,11 +624,11 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 					if (sidx) segmenterlist.append( ", ");
 					segmenterlist.append( si->first);
 				}
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("no segmenter defined with name '%s' (is none of {%s})"), name.c_str(), segmenterlist.c_str());
+				m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("no segmenter defined with name '%s' (is none of {%s})"), name.c_str(), segmenterlist.c_str());
 			}
 			else
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no segmenter defined with name '%s'"), name.c_str());
+				m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no segmenter defined with name '%s'"), name.c_str());
 			}
 			return 0;
 		}
@@ -636,7 +636,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting segmenter by name '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting segmenter by name '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -659,11 +659,11 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 					if (sidx) segmenterlist.append( ", ");
 					segmenterlist.append( si->second->mimeType());
 				}
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("no segmenter defined for MIME type '%s' (is none of {%s})"), mimetype.c_str(), segmenterlist.c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("no segmenter defined for MIME type '%s' (is none of {%s})"), mimetype.c_str(), segmenterlist.c_str());
 			}
 			else
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
 			}
 			return 0;
 		}
@@ -671,7 +671,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting segmenter by MIME type '%s'"), mimetype.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting segmenter by MIME type '%s'"), mimetype.c_str());
 		return 0;
 	}
 }
@@ -693,7 +693,7 @@ analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 		return analyzer::SegmenterOptions();
 	}
 }
@@ -706,14 +706,14 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 			ti = m_tokenizer_map.find( string_conv::tolower( name));
 		if (ti == m_tokenizer_map.end())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no tokenizer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no tokenizer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ti->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting tokenizer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting tokenizer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -726,14 +726,14 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 			ni = m_normalizer_map.find( string_conv::tolower( name));
 		if (ni == m_normalizer_map.end())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no normalizer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no normalizer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting normalizer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting normalizer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -746,14 +746,14 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 			ni = m_aggregator_map.find( string_conv::tolower( name));
 		if (ni == m_aggregator_map.end())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no aggregator function defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no aggregator function defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting aggregator '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting aggregator '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -766,14 +766,14 @@ const PatternLexerInterface* TextProcessor::getPatternLexer( const std::string& 
 			ni = m_patternlexer_map.find( string_conv::tolower( name));
 		if (ni == m_patternlexer_map.end())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no pattern lexer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no pattern lexer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting pattern lexer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting pattern lexer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -786,14 +786,14 @@ const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::stri
 			ni = m_patternmatcher_map.find( string_conv::tolower( name));
 		if (ni == m_patternmatcher_map.end())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseUnknownIdentifier), _TXT("no pattern matcher defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no pattern matcher defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory getting pattern matcher '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting pattern matcher '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -835,7 +835,7 @@ void TextProcessor::defineDocumentClassDetector( DocumentClassDetectorInterface*
 	catch (const std::bad_alloc&)
 	{
 		delete detector;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -855,7 +855,7 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 	catch (const std::bad_alloc&)
 	{
 		delete segmenter;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -867,7 +867,7 @@ void TextProcessor::defineSegmenterOptions( const std::string& scheme, const ana
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -890,7 +890,7 @@ void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionI
 	catch (const std::bad_alloc&)
 	{
 		delete tokenizer;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -913,7 +913,7 @@ void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctio
 	catch (const std::bad_alloc&)
 	{
 		delete normalizer;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -936,7 +936,7 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 	catch (const std::bad_alloc&)
 	{
 		delete statfunc;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -959,7 +959,7 @@ void TextProcessor::definePatternLexer( const std::string& name, PatternLexerInt
 	catch (const std::bad_alloc&)
 	{
 		delete func;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -982,7 +982,7 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 	catch (const std::bad_alloc&)
 	{
 		delete func;
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -1013,7 +1013,7 @@ std::string TextProcessor::getResourcePath( const std::string& filename) const
 	{
 		if (hasUpdirReference( filename))
 		{
-			m_errorhnd->report( *ErrorCode( StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotAllowed), _TXT("tried to read resource file with upper directory reference in the name"));
+			m_errorhnd->report( ErrorCodeNotAllowed, _TXT("tried to read resource file with upper directory reference in the name"));
 			return std::string();
 		}
 		std::vector<std::string>::const_iterator
@@ -1068,7 +1068,7 @@ std::vector<std::string> TextProcessor::getFunctionList( const FunctionType& typ
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 	return std::vector<std::string>();
 }

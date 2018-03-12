@@ -4400,7 +4400,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
+		m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
 		return 0;
 	}
 	try
@@ -4409,7 +4409,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory in normalizer '%s'"), "lc");
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
 }
@@ -4418,7 +4418,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
+		m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
 		return 0;
 	}
 	try
@@ -4427,7 +4427,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory in normalizer '%s'"), "uc");
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
 }
@@ -4452,7 +4452,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	{
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments passed to normalizer '%s'"), "convdia");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to normalizer '%s'"), "convdia");
 			return 0;
 		}
 		if (args.size() == 0)
@@ -4474,7 +4474,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), "out of memory");
+		m_errorhnd->report( ErrorCodeOutOfMem, "out of memory");
 		return 0;
 	}
 }

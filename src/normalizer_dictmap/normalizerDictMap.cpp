@@ -212,7 +212,7 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
 			return 0;
 		}
 		std::string defaultValue;
@@ -224,7 +224,7 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 
 			if (args.size() > 2)
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
+				m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
 				return 0;
 			}
 		}

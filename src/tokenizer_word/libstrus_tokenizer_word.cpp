@@ -55,7 +55,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("no arguments expected for tokenizer"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for tokenizer"));
 			return 0;
 		}
 		try

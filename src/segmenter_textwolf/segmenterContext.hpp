@@ -73,7 +73,7 @@ public:
 		{
 			if (m_eof)
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseOperationOrder), _TXT( "feeded chunk after declared end of input"));
+				m_errorhnd->report( ErrorCodeOperationOrder, _TXT( "feeded chunk after declared end of input"));
 				return;
 			}
 			try
@@ -83,7 +83,7 @@ public:
 			}
 			catch (const std::bad_alloc&)
 			{
-				m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseOutOfMem), _TXT("out of memory when buffering chunks for '%s' segmenter"), SEGMENTER_NAME);
+				m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory when buffering chunks for '%s' segmenter"), SEGMENTER_NAME);
 			}
 			if (!m_initialized)
 			{
@@ -102,7 +102,7 @@ public:
 			{
 				if (m_chunkbuf.empty())
 				{
-					if (!m_eof) m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseUnexpectedEof), _TXT( "unexpected end of input in '%s' segmenter"), SEGMENTER_NAME);
+					if (!m_eof) m_errorhnd->report( ErrorCodeUnexpectedEof, _TXT( "unexpected end of input in '%s' segmenter"), SEGMENTER_NAME);
 					return false;
 				}
 				else
@@ -128,12 +128,12 @@ public:
 				{
 					const char* errstr = "";
 					m_scanner.getError( &errstr);
-					m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseSyntax), _TXT("error in document at position %u: %s"), (unsigned int)m_scanner.getTokenPosition(), errstr);
+					m_errorhnd->report( ErrorCodeSyntax, _TXT("error in document at position %u: %s"), (unsigned int)m_scanner.getTokenPosition(), errstr);
 					return false;
 				}
 				else if (et == XMLScanner::Exit)
 				{
-					if (!m_eof) m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseSyntax), _TXT( "unexpected exit in '%s' segmenter without eof"), SEGMENTER_NAME);
+					if (!m_eof) m_errorhnd->report( ErrorCodeSyntax, _TXT( "unexpected exit in '%s' segmenter without eof"), SEGMENTER_NAME);
 					return false;
 				}
 				m_xpathselect.putElement( m_itr->type(), m_itr->content(), m_itr->size());

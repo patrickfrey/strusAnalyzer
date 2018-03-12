@@ -104,7 +104,7 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try
@@ -135,7 +135,7 @@ public:
 	{
 		if (args.size() < 2)
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseIncompleteDefinition), _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try

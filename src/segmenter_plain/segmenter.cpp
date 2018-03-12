@@ -23,7 +23,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	{
 		if (!expression.empty())
 		{
-			m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseInvalidArgument), _TXT("only empty expressions allowed for '%s' segmenter, got '%s' for %d"), SEGMENTER_NAME, expression.c_str(), id);
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("only empty expressions allowed for '%s' segmenter, got '%s' for %d"), SEGMENTER_NAME, expression.c_str(), id);
 		}
 		m_segids.insert( id);
 	}
@@ -33,7 +33,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 
 void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
-	m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("not implemented: '%s'"), "SegmenterInstance::defineSubSection");
+	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("not implemented: '%s'"), "SegmenterInstance::defineSubSection");
 }
 
 
@@ -53,7 +53,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 
 SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
-	m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseNotImplemented), _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 

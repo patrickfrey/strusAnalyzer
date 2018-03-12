@@ -40,9 +40,6 @@ CPackConfig.cmake.user
 CPackSourceConfig.cmake
 CPackSourceConfig.cmake.user
 cmake/build_rules.cmake.user
-include/strus/versionAnalyzer.hpp
-src/textproc/resourceDirectory.hpp
-src/utils/internationalization.cpp
 dist/obs/deploy_to_obs.sh
 dist/archlinux/PKGBUILD
 dist/obs/strusanalyzer.dsc

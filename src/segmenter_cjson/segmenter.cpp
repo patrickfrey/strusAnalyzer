@@ -60,7 +60,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 
 SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
-	m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationScanInput,ErrorCauseNotImplemented), _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 

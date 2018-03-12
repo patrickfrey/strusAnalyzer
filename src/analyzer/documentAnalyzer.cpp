@@ -174,7 +174,7 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( *ErrorCode(StrusComponentAnalyzer,ErrorOperationBuildData,ErrorCauseOutOfMem), _TXT("out of memory defining aggregated metadata '%s'"), metaname.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory defining aggregated metadata '%s'"), metaname.c_str());
 		delete statfunc;
 	}
 }
