@@ -1,3 +1,11 @@
+strusanalyzer (0.15.7-1) unstable; urgency=low
+  * added make target cppcheck for static code analysis
+  * performance improvements of char conversion normalizer
+  * adapted changes in error handling defined in strus base: simplified error codes
+  * report error for unknown query fields passed to analyzer
+  * fixed segfault in textcat (language detection) segmenter 
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Thu, 15 Mar 2018 10:00:00 +0100
+
 strusanalyzer (0.15.6-1) unstable; urgency=low
   * added some functions for introspection needed by the webservice
   * adapted error handling to changes in base: mandatory error codes everywhere
