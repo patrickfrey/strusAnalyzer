@@ -17,7 +17,6 @@
 #include "strus/base/string_conv.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/reference.hpp"
-#include "strus/summarizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
