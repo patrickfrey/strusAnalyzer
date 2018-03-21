@@ -25,12 +25,12 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_cppcheck( strus_analyzer_prgloader_std ${source_files} )
+add_cppcheck( strus_analyzer_prgload_std ${source_files} )
 
-add_library( strus_analyzer_prgloader_std SHARED ${source_files} )
-target_link_libraries( strus_analyzer_prgloader_std strus_pattern_serialize strusanalyzer_private_utils strus_base )
+add_library( strus_analyzer_prgload_std SHARED ${source_files} )
+target_link_libraries( strus_analyzer_prgload_std strus_pattern_serialize strusanalyzer_private_utils strus_base )
 set_target_properties(
-    strus_analyzer_prgloader_std
+    strus_analyzer_prgload_std
     PROPERTIES
     DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
@@ -40,6 +40,6 @@ set_target_properties(
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strus_analyzer_prgloader_std
+install( TARGETS strus_analyzer_prgload_std
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

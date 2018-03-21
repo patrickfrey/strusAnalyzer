@@ -8,11 +8,11 @@ include_directories(
 )
 
 link_directories(
-	"${MAIN_SOURCE_DIR}/analyzer"
-	"${MAIN_SOURCE_DIR}/textproc"
-	"${MAIN_SOURCE_DIR}/utils"
-	"${MAIN_SOURCE_DIR}/detector_std"
-	"${MAIN_SOURCE_DIR}/tokenizer_textcat"
+	"${MAIN_LIBRARY_DIR}/analyzer"
+	"${MAIN_LIBRARY_DIR}/textproc"
+	"${MAIN_LIBRARY_DIR}/utils"
+	"${MAIN_LIBRARY_DIR}/detector_std"
+	"${MAIN_LIBRARY_DIR}/tokenizer_textcat"
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )

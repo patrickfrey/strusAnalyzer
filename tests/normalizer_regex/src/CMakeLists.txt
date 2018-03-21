@@ -8,10 +8,10 @@ include_directories(
 )
 
 link_directories(
-	"${MAIN_SOURCE_DIR}/analyzer"
-	"${MAIN_SOURCE_DIR}/textproc"
-	"${MAIN_SOURCE_DIR}/utils"
-	"${MAIN_SOURCE_DIR}/normalizer_regex"
+	"${MAIN_LIBRARY_DIR}/analyzer"
+	"${MAIN_LIBRARY_DIR}/textproc"
+	"${MAIN_LIBRARY_DIR}/utils"
+	"${MAIN_LIBRARY_DIR}/normalizer_regex"
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )

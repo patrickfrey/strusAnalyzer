@@ -59,6 +59,7 @@ set( CNODETRIE_INCLUDE_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactN
 set( CNODETRIE_LIBRARY_DIRS       "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/compactNodeTrie/src" )
 set( UTILS_LIBRARY_DIRS                 "${CMAKE_CURRENT_BINARY_DIR}/src/utils" )
 set( MAIN_SOURCE_DIR                    "${PROJECT_SOURCE_DIR}/src" )
+set( MAIN_LIBRARY_DIR                    "${CMAKE_CURRENT_BINARY_DIR}/src" )
 set( GEN_INCLUDE_DIR                     "${CMAKE_CURRENT_BINARY_DIR}/include" )
 set( TESTUTILS_LIBRARY_DIRS         "${PROJECT_SOURCE_DIR}/tests/utils" )
 set( TESTUTILS_INCLUDE_DIRS         "${PROJECT_SOURCE_DIR}/tests/utils" )

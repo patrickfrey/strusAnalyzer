@@ -8,7 +8,6 @@
 /// \brief Implements the parser for a pattern match program
 /// \file patternMatchProgramParser.hpp
 #include "patternMatchProgramParser.hpp"
-#include "strus/index.hpp"
 #include "strus/base/programLexer.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/patternMatcherInterface.hpp"
@@ -635,7 +634,7 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 							{
 								throw strus::runtime_error( _TXT("unsigned integer expected as proximity range value after '|' in expression parameter list"));
 							}
-							range = numstring_conv::touint( cur.value(), std::numeric_limits<strus::Index>::max());
+							range = numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
 							cur = lexer.next();
 						}
 						else

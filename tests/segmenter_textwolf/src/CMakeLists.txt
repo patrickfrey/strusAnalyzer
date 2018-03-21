@@ -8,7 +8,7 @@ include_directories(
 )
 
 link_directories(
-	"${MAIN_SOURCE_DIR}/segmenter_textwolf"
+	"${MAIN_LIBRARY_DIR}/segmenter_textwolf"
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )

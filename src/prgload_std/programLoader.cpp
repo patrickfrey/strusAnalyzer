@@ -179,7 +179,11 @@ static void parseFunctionDef( ProgramLexer& lexer, const char* functype, std::st
 		if (cur.isToken( TokOpenOvalBracket))
 		{
 			cur = lexer.next();
-			if (!cur.isToken( TokCloseOvalBracket))
+			if (cur.isToken( TokCloseOvalBracket))
+			{
+				lexer.next();
+			}
+			else
 			{
 				arg = parseArgumentList( lexer);
 			}
@@ -187,8 +191,8 @@ static void parseFunctionDef( ProgramLexer& lexer, const char* functype, std::st
 			{
 				throw strus::runtime_error( _TXT("comma ',' as argument separator or close oval bracket ')' expected at end of %s argument list"), functype);
 			}
+			lexer.next();
 		}
-		lexer.next();
 	}
 	else
 	{
@@ -299,12 +303,12 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 				{
 					throw strus::runtime_error( _TXT("unknown option '%s'"), optname.c_str());
 				}
+				cur = lexer.next();
 			}
 			else
 			{
 				throw strus::runtime_error( _TXT("bad option name token '%s'"), cur.value().c_str());
 			}
-			lexer.next();
 		}
 		while (cur.isToken( TokComma));
 
@@ -784,6 +788,36 @@ static void expandIncludes(
 	}
 }
 
+static std::string getContentTypeElem( const char* key, const std::string& val)
+{
+	char const* ci;
+	char const* ce;
+	if (!key)
+	{
+		ci = val.c_str();
+		ce = std::strchr( ci, ';');
+		if (!ce) ce = std::strchr( ci, '\0');
+		char const* eq = std::strchr( ci, '=');
+		return (eq && eq < ce) ? std::string() : string_conv::trim( std::string( ci, ce-ci));
+	}
+	else
+	{
+		char keybuf[ 32];
+		std::snprintf( keybuf, sizeof(keybuf), "%s=", key);
+
+		ci = std::strstr( val.c_str(), keybuf);
+		if (ci && (ci == val.c_str() || *(ci-1) == ',' || *(ci-1) == ';' || (unsigned char)*(ci-1) <= 32))
+		{
+			ci += std::strlen( keybuf);
+			ce = std::strchr( ci, ',');
+			if (!ce) ce = std::strchr( ci, ';');
+			if (!ce) ce = std::strchr( ci, '\0');
+			return string_conv::trim( std::string( ci, ce-ci));
+		}
+	}
+	return std::string();
+}
+
 static analyzer::DocumentClass parseDocumentClass( ProgramLexer& lexer)
 {
 	ProgramLexem cur = lexer.current();
@@ -791,25 +825,18 @@ static analyzer::DocumentClass parseDocumentClass( ProgramLexer& lexer)
 	{
 		throw strus::runtime_error( _TXT("expected document class as string at start of sub content definition"));
 	}
-	std::string mimeType;
-	std::string encoding;
-	std::string value = cur.value();
-
-	char const* start = value.c_str();
-	char const* ei = std::strchr( start, ';');
-	if (!ei) ei = std::strchr( start, '\0');
-
-	mimeType = string_conv::trim( std::string( start, ei-start));
-	char const* ci;
-	char const* ce;
-	ci = std::strstr( ei, "charset=");
-	if (ci)
+	std::string mimeType = getContentTypeElem( 0, cur.value());
+	if (mimeType.empty())
 	{
-		ci += std::strlen( "charset=");
-		ce = std::strchr( ci, ',');
-		if (!ce) ce = std::strchr( ci, '\n');
-		encoding = string_conv::trim( std::string( ci, ce-ci));
+		mimeType = getContentTypeElem( "content", cur.value());
 	}
+	std::string encoding = getContentTypeElem( "charset", cur.value());
+	if (encoding.empty())
+	{
+		encoding = getContentTypeElem( "encoding", cur.value());
+	}
+	std::string scheme = getContentTypeElem( "scheme", cur.value());
+
 	if (isEqual( mimeType,"xml") || isEqual( mimeType,"text/xml"))
 	{
 		mimeType = "application/xml";
@@ -855,12 +882,12 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 		ProgramLexem cur = lexer.next();
 		while (!cur.end())
 		{
-			while (cur.isToken( TokOpenSquareBracket))
+			if (lexer.current().isToken( TokOpenSquareBracket))
 			{
 				featclass = parseFeatureClassDef( lexer, featclassid);
+				cur = lexer.current();
+				continue;
 			}
-			if (cur.end()) break;
-
 			if (featclass == FeatSubContent)
 			{
 				// Define document content with different content-type:
@@ -870,7 +897,7 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 				std::string xpathexpr( parseSelectorExpression( lexer));
 				analyzer->defineSubContent( xpathexpr, documentClass);
 
-				if (!lexer.next().isToken(TokSemiColon))
+				if (!lexer.current().isToken(TokSemiColon))
 				{
 					throw strus::runtime_error( _TXT("semicolon ';' expected at end of feature declaration"));
 				}
@@ -935,7 +962,7 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 					parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
 					break;
 			}
-			if (!cur.isToken( TokSemiColon))
+			if (!lexer.current().isToken( TokSemiColon))
 			{
 				throw strus::runtime_error( _TXT("semicolon ';' expected at end of feature declaration"));
 			}

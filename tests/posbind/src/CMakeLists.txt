@@ -8,17 +8,17 @@ include_directories(
 )
 
 link_directories(
-	"${MAIN_SOURCE_DIR}/analyzer" 
-	"${MAIN_SOURCE_DIR}/textproc" 
-	"${MAIN_SOURCE_DIR}/utils" 
-	"${MAIN_SOURCE_DIR}/detector_std" 
-	"${MAIN_SOURCE_DIR}/normalizer_charconv" 
-	"${MAIN_SOURCE_DIR}/normalizer_dateconv" 
-	"${MAIN_SOURCE_DIR}/normalizer_dictmap" 
-	"${MAIN_SOURCE_DIR}/normalizer_snowball" 
-	"${MAIN_SOURCE_DIR}/segmenter_textwolf" 
-	"${MAIN_SOURCE_DIR}/tokenizer_punctuation" 
-	"${MAIN_SOURCE_DIR}/tokenizer_word" 
+	"${MAIN_LIBRARY_DIR}/analyzer" 
+	"${MAIN_LIBRARY_DIR}/textproc" 
+	"${MAIN_LIBRARY_DIR}/utils" 
+	"${MAIN_LIBRARY_DIR}/detector_std" 
+	"${MAIN_LIBRARY_DIR}/normalizer_charconv" 
+	"${MAIN_LIBRARY_DIR}/normalizer_dateconv" 
+	"${MAIN_LIBRARY_DIR}/normalizer_dictmap" 
+	"${MAIN_LIBRARY_DIR}/normalizer_snowball" 
+	"${MAIN_LIBRARY_DIR}/segmenter_textwolf" 
+	"${MAIN_LIBRARY_DIR}/tokenizer_punctuation" 
+	"${MAIN_LIBRARY_DIR}/tokenizer_word" 
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 )

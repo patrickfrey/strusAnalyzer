@@ -9,9 +9,9 @@ include_directories(
 )
 
 link_directories(
-	"${MAIN_SOURCE_DIR}/analyzer" 
-	"${MAIN_SOURCE_DIR}/textproc" 
-	"${MAIN_SOURCE_DIR}/utils" 
+	"${MAIN_LIBRARY_DIR}/analyzer" 
+	"${MAIN_LIBRARY_DIR}/textproc" 
+	"${MAIN_LIBRARY_DIR}/utils" 
 	${Boost_LIBRARY_DIRS}
 	"${strusbase_LIBRARY_DIRS}"
 	${TESTUTILS_LIBRARY_DIRS}
