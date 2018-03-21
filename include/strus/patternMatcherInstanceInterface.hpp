@@ -49,6 +49,11 @@ public:
 		OpAny,			///< At least one of the argument patterns must appear for the completion of the rule.
 		OpAnd			///< All of the argument patterns must appear for the completion of the rule at the same ordinal position.
 	};
+	static const char* joinOperationName( JoinOperation op)
+	{
+		static const char* ar[] = {"sequence","sequence_imm","sequence_struct","within","within_struct","any","and",0};
+		return ar[ op];
+	}
 
 	/// \brief Take the topmost elements from the stack, build an expression out of them and replace the argument elements with the created element on the stack
 	/// \param[in] operation identifier of the operation to perform as string

@@ -24,4 +24,4 @@ add_subdirectory( markup )
 add_subdirectory( textproc )
 add_subdirectory( analyzer )
 add_subdirectory( pattern )
-
+add_subdirectory( prgload_std )
