@@ -11,10 +11,14 @@
     sent = empty content {position=unique} /doc/text/h1~;
     sent = empty content {position=unique} /doc/text//li~;
     sent = empty content {position=unique} /doc/title~;
-    punct = empty punctuation("en",",") {position=unique} /doc/text//();
-    sent = empty punctuation("en","")   {position=unique} /doc/text//();
+    punct= empty punctuation("en",",") {position=unique} /doc/text//();
+    punct= empty punctuation("en",",") {position=unique} /doc/embedded()/text//();
+    sent = empty punctuation("en","")  {position=unique} /doc/text//();
+    sent = empty punctuation("en","")  {position=unique} /doc/embedded()/text//();
     stem = lc:convdia(en):stem(en) word /doc/title();
     stem = lc:convdia(en):stem(en) word /doc/text//();
+    stem = lc:convdia(en):stem(en) word /doc/embedded()/title//();
+    stem = lc:convdia(en):stem(en) word /doc/embedded()/text//();
     tist = lc:convdia(en):stem(en) word /doc/title();
 
 [ForwardIndex]

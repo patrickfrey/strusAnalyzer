@@ -572,7 +572,7 @@ int main( int argc, const char* argv[])
 		int ec = strus::createDir( outputdir, false);
 		if (ec) throw std::runtime_error( strus::string_format( "failed to create output directory '%s'", outputdir.c_str()));
 
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2);
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
 		if (!g_errorhnd)
 		{
 			throw std::runtime_error("failed to create error buffer object");

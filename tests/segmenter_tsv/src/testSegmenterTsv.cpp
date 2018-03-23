@@ -135,7 +135,7 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2);
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
 		if (!g_errorhnd)
 		{
 			throw std::runtime_error("failed to create error buffer object");

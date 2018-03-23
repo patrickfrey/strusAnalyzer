@@ -18,7 +18,8 @@ namespace strus
 {
 /// \brief Forward declaration
 class ErrorBufferInterface;
-
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
@@ -66,6 +67,7 @@ private:
 	unsigned int m_nof_segments;
 	std::string m_subdocTypeName;
 	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

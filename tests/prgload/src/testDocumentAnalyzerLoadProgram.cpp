@@ -7,6 +7,7 @@
  */
 
 #include "strus/errorBufferInterface.hpp"
+#include "strus/debugTraceInterface.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"
@@ -39,53 +40,108 @@ static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
-	std::cerr << "usage: " << argv[0] << " <resourcedir> <prgfile> <xmldoc> <expectfile>" << std::endl;
+	std::cerr << "usage: " << argv[0] << " [options] <resourcedir> <prgfile> <xmldoc> <expectfile>" << std::endl;
 	std::cerr << "<resourcedir> = analyzer resource directory" << std::endl;
 	std::cerr << "<prgfile>     = path of the file with the analyzer program to load" << std::endl;
 	std::cerr << "<xmldoc>      = xml file to test document analysis on" << std::endl;
 	std::cerr << "<expectfile>  = text file with the expected output" << std::endl;
+	std::cerr << "options:"<< std::endl;
+	std::cerr << "-h            = print this usage" << std::endl;
+	std::cerr << "-G <SEL>      = print debug info of name <SEL>" << std::endl;
+}
+
+static std::string getFilePath( const std::string& resourcedir, const std::string& filename)
+{
+	return (strus::isRelativePath( filename) && filename[0] != '.') ? strus::joinFilePath( resourcedir, filename) : filename;
 }
 
 int main( int argc, const char* argv[])
 {
-	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
-	{
-		printUsage( argc, argv);
-		return 0;
-	}
-	else if (argc < 5)
-	{
-		std::cerr << "ERROR too few arguments" << std::endl;
-		printUsage( argc, argv);
-		return 1;
-	}
-	else if (argc > 5)
-	{
-		std::cerr << "ERROR too many arguments" << std::endl;
-		printUsage( argc, argv);
-		return 1;
-	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2);
+		// Parse arguments:
+		int argi = 1;
+		std::vector<std::string> debugselectors;
+		for (; argi < argc && argv[ argi][ 0] == '-'; ++argi)
+		{
+			if (std::strcmp( argv[ argi], "-h") == 0 || std::strcmp( argv[ argi], "--help") == 0)
+			{
+				printUsage( argc, argv);
+				return 0;
+			}
+			else if (std::strcmp( argv[ argi], "-G") == 0 || std::strcmp( argv[ argi], "--debug") == 0)
+			{
+				if (++argi == argc)
+				{
+					printUsage( argc, argv);
+					return 0;
+				}
+				debugselectors.push_back( argv[argi]);
+			}
+			else if (argv[ argi][ 1] == '-')
+			{
+				++argi;
+				break;
+			}
+			else
+			{
+				std::cerr << "unknown option " << argv[argi] << std::endl;
+				printUsage( argc, argv);
+				return -1;
+			}
+		}
+		if (argc - argi < 4)
+		{
+			std::cerr << "too few arguments" << std::endl;
+			printUsage( argc, argv);
+			return -2;
+		}
+		else if (argc - argi > 4)
+		{
+			std::cerr << "too many arguments" << std::endl;
+			printUsage( argc, argv);
+			return -2;
+		}
+		const char* resourceDir = argv[argi+0];
+		std::string programFile = getFilePath( resourceDir, argv[ argi+1]);
+		std::string docFile = getFilePath( resourceDir, argv[ argi+2]);
+		std::string expectFile = getFilePath( resourceDir, argv[ argi+3]);
+
+		// Select configured debug traces:
+		strus::DebugTraceInterface* dbgtrace = NULL;
+		if (!debugselectors.empty())
+		{
+			dbgtrace = strus::createDebugTrace_standard( 2/*threads*/);
+			if (!dbgtrace)
+			{
+				throw std::runtime_error("failed to create debug trace object");
+			}
+			std::vector<std::string>::const_iterator di = debugselectors.begin(), de = debugselectors.end();
+			for (; di != de; ++di)
+			{
+				if (!dbgtrace->enable( *di))
+				{
+					throw std::runtime_error( "failed to build debug trace object");
+				}
+			}
+		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, dbgtrace);
 		if (!g_errorhnd)
 		{
 			throw std::runtime_error("failed to create error buffer object");
 		}
-		const char* workingDir = argv[1];
-		std::string programFile = strus::joinFilePath( workingDir, argv[2]);
-		std::string docFile = strus::joinFilePath( workingDir, argv[3]);
-		std::string expectFile = strus::joinFilePath( workingDir, argv[4]);
 
+		// Create objects:
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( "failed to create textprocessor");
-		textproc->addResourcePath( workingDir);
+		textproc->addResourcePath( resourceDir);
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error( "failed to create XML segmenter");
 
 		strus::local_ptr<strus::DocumentAnalyzerInterface> analyzer( createDocumentAnalyzer( textproc.get(), segmenter.get(), strus::analyzer::SegmenterOptions(), g_errorhnd));
 		if (!analyzer.get()) throw std::runtime_error( "failed to create document analyzer");
 
+		// Read input:
 		std::string programContent;
 		std::string docContent;
 		std::string expectContent;
@@ -102,6 +158,8 @@ int main( int argc, const char* argv[])
 		{
 			throw std::runtime_error( strus::string_format("failed to load analyzer program in file '%s'", programFile.c_str()));
 		}
+
+		// Do the job:
 		strus::analyzer::DocumentClass documentClass( "application/xml", "UTF-8");
 		strus::local_ptr<strus::DocumentAnalyzerContextInterface> context( analyzer->createContext( documentClass));
 		if (!context.get()) throw std::runtime_error( "failed to create document analyzer context");
@@ -143,12 +201,21 @@ int main( int argc, const char* argv[])
 			}
 			out << "--" << std::endl << std::endl;
 		}
+		// Dump debug output selected (options -G <sel>):
+		if (dbgtrace)
+		{
+			if (!dumpDebugTrace( dbgtrace, NULL/*filename*/))
+			{
+				std::cerr << "failed to dump debug trace" << std::endl;
+			}
+		}
+		// Verify output:
 		if (g_errorhnd->hasError()) throw std::runtime_error( "document analysis failed");
 		std::string output = out.str();
 		if (strus::string_conv::trim( expectContent) != strus::string_conv::trim( output))
 		{
 			std::cout << output << std::endl;
-			throw std::runtime_error("test outpu differs");
+			throw std::runtime_error("test output differs");
 		}
 		std::cerr << "OK" << std::endl;
 		return 0;

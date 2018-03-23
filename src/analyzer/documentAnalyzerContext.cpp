@@ -6,6 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "documentAnalyzerContext.hpp"
+#include "strus/debugTraceInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
@@ -21,7 +22,27 @@
 #include <cstring>
 #include <limits>
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_COMPONENT_NAME "documentAnalyzer"
+#define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
+#define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
+#define DEBUG_EVENT1( NAME, FMT, ID)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID);
+#define DEBUG_EVENT2( NAME, FMT, ID, VAL)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID, VAL);
+#define DEBUG_EVENT2_CONTENT( NAME, FMT, ID, VAL, STR, LEN)	if (m_debugtrace) {std::string cs(contentCut(STR,LEN,100)); m_debugtrace->event( NAME, FMT, ID, VAL, cs.c_str());}
+
+#define B10000000 128
+#define B11000000 (127+64)
+
+static std::string contentCut( const char* str, std::size_t size, std::size_t len)
+{
+	if (len >= size) len = size;
+	while (len && (str[ len-1] & B11000000) == B10000000) --len;
+	std::string rt;
+	for (std::size_t si=0; si<len; ++si)
+	{
+		if ((unsigned char)str[si] < 32) rt.push_back('_'); else rt.push_back(str[si]);
+	}
+	return rt;
+}
 
 using namespace strus;
 
@@ -39,11 +60,14 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_nof_segments(0)
 	,m_subdocTypeName()
 	,m_errorhnd(errorhnd)
+	,m_debugtrace(0)
 {
 	if (!m_segmenter)
 	{
 		throw strus::runtime_error( "%s", _TXT("failed to create document analyzer context"));
 	}
+	DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
+	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_COMPONENT_NAME);
 }
 
 DocumentAnalyzerContext::~DocumentAnalyzerContext()
@@ -66,14 +90,14 @@ void DocumentAnalyzerContext::processAggregatedMetadata( analyzer::Document& res
 {
 	std::vector<DocumentAnalyzer::StatisticsConfig>::const_iterator
 		si = m_analyzer->statisticsConfigs().begin(), se = m_analyzer->statisticsConfigs().end();
+	DEBUG_OPEN( "metadata");
 	for (; si != se; ++si)
 	{
 		NumericVariant value = si->statfunc()->evaluate( res);
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add aggregated metadata " << si->name() << " " << value.tostring().c_str() << std::endl;
-#endif
 		res.setMetaData( si->name(), value);
+		DEBUG_EVENT2( "aggregated", "%s %s", si->name().c_str(), value.tostring().c_str());
 	}
+	DEBUG_CLOSE();
 }
 
 
@@ -145,6 +169,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 		std::size_t segsrcsize = 0;
 		int featidx = 0;
 	
+		DEBUG_OPEN( "analyze");
 		for (;;)
 		{
 			// [1] Scan the document and push the normalized tokenization of the elements to the result:
@@ -153,9 +178,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 				m_curr_position += m_curr_position_ofs;
 				try
 				{
-#ifdef STRUS_LOWLEVEL_DEBUG
-					std::cout << "fetch document segment (pos " << m_curr_position << ", fidx= " << featidx << "): " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
-#endif
+					DEBUG_EVENT2_CONTENT( "segment", "%d %d %s", (int)m_curr_position, (featidx), segsrc, segsrcsize);
 					if (featidx >= SubDocumentEnd)
 					{
 						if (featidx >= OfsSubContent)
@@ -163,6 +186,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 							const DocumentAnalyzer::SubSegmenterDef* subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
 							if (subsegmenterdef)
 							{
+								DEBUG_EVENT2( "subcontent", "%s; charset=%s", subsegmenterdef->documentClass.mimeType().c_str(), subsegmenterdef->documentClass.encoding().c_str());
 								SegmenterContextInterface* ns = subsegmenterdef->segmenterInstance->createContext( subsegmenterdef->documentClass);
 								if (!ns) throw strus::runtime_error( "%s", _TXT("failed to create sub segmenter context"));
 								m_segmenterstack.push_back( SegmenterStackElement( m_start_position, m_curr_position_ofs, m_segmenter));
@@ -176,12 +200,15 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						{
 							if (m_nof_segments == 0)
 							{
+								DEBUG_CLOSE();
 								return false;
 							}
 							//... end of sub document -> out of loop and return document
 							m_nof_segments = 0;
 							completeDocumentProcessing( doc);
+							DEBUG_EVENT1( "subdocument-end", "%s", m_subdocTypeName.c_str());
 							m_subdocTypeName.clear();
+							DEBUG_CLOSE();
 							return true;
 						}
 						else
@@ -193,6 +220,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 							// create new sub document:
 							m_subdocTypeName = m_analyzer->subdoctypes()[ featidx-OfsSubDocument];
 							m_start_position = m_curr_position;
+							DEBUG_EVENT1( "subdocument-start", "%s", m_subdocTypeName.c_str());
 						}
 					}
 					else
@@ -200,16 +228,19 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 						++m_nof_segments;
 						if (featidx >= OfsPatternMatchSegment)
 						{
+							DEBUG_OPEN( "pre-patternmatch");
 							PreProcPatternMatchContext& ppctx
 								= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
 							std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 							ppctx.process( rel_position, segsrc, segsrcsize);
+							DEBUG_CLOSE();
 						}
 						else
 						{
 							const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
 							if (feat.tokenizer()->concatBeforeTokenize())
 							{
+								DEBUG_EVENT1( "concat-feat", "%s", feat.name().c_str());
 								// concat chunks that need to be concatenated before tokenization:
 								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 								m_segmentProcessor.concatDocumentSegment(
@@ -217,6 +248,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 							}
 							else
 							{
+								DEBUG_EVENT1( "process-feat", "%s", feat.name().c_str());
 								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
 								m_segmentProcessor.processDocumentSegment(
 										featidx, rel_position, segsrc, segsrcsize);
@@ -251,8 +283,10 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 			}
 			completeDocumentProcessing( doc);
 			m_nof_segments = 0;
+			DEBUG_CLOSE();
 			return true;
 		}
+		DEBUG_CLOSE();
 		return false;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in DocumentAnalyzerContext::analyzeNext: %s"), *m_errorhnd, false);
