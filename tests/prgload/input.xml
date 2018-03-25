@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<list>
 <doc>
 <docid>123</docid>
 <title>Software</title>
@@ -30,4 +31,28 @@
 </p>
 </text>
 </doc>
-
+<doc>
+<docid>456</docid>
+<title>Hardware</title>
+<embedded>
+{
+	"title": "embedded hardware title",
+	"text": "embedded hardware text"
+}
+</embedded>
+<text>
+<h1>Introduction</h1>
+<p>
+   Computer hardware are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, graphic card,
+   sound card and motherboard.[1] By contrast, software is instructions that can be stored and ran by hardware.
+   Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system.
+</p>
+<h1>References</h1>
+<p>
+    <ol><li>"Media related to Computer hardware at Wikimedia Commons".
+    </li><li>Learning materials related to Computer hardware at Wikiversity
+    </li></ol>
+</p>
+</text>
+</doc>
+</list>

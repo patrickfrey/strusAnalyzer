@@ -1,29 +1,32 @@
 [Attribute]
-    title = text content /doc/title();
-    docid = text content /doc/docid();
+    title = text content /list/doc/title();
+    docid = text content /list/doc/docid();
+
+[Document]
+    doc = /list/doc;
 
 [Content]
-    "encoding=UTF-8; content=JSON;" /doc/embedded();
+    "encoding=UTF-8; content=JSON;" /list/doc/embedded();
 
 [SearchIndex]
-    start = empty content /doc/text;
-    para = empty content /doc/text/h1;
-    sent = empty content {position=unique} /doc/text/h1~;
-    sent = empty content {position=unique} /doc/text//li~;
-    sent = empty content {position=unique} /doc/title~;
-    punct= empty punctuation("en",",") {position=unique} /doc/text//();
-    punct= empty punctuation("en",",") {position=unique} /doc/embedded()/text//();
-    sent = empty punctuation("en","")  {position=unique} /doc/text//();
-    sent = empty punctuation("en","")  {position=unique} /doc/embedded()/text//();
-    stem = lc:convdia(en):stem(en) word /doc/title();
-    stem = lc:convdia(en):stem(en) word /doc/text//();
-    stem = lc:convdia(en):stem(en) word /doc/embedded()/title//();
-    stem = lc:convdia(en):stem(en) word /doc/embedded()/text//();
-    tist = lc:convdia(en):stem(en) word /doc/title();
+    start = empty content /list/doc/text;
+    para = empty content /list/doc/text/h1;
+    sent = empty content {position=unique} /list/doc/text/h1~;
+    sent = empty content {position=unique} /list/doc/text//li~;
+    sent = empty content {position=unique} /list/doc/title~;
+    punct= empty punctuation("en",",") {position=unique} /list/doc/text//();
+    punct= empty punctuation("en",",") {position=unique} /list/doc/embedded()/text//();
+    sent = empty punctuation("en","")  {position=unique} /list/doc/text//();
+    sent = empty punctuation("en","")  {position=unique} /list/doc/embedded()/text//();
+    stem = lc:convdia(en):stem(en) word /list/doc/title();
+    stem = lc:convdia(en):stem(en) word /list/doc/text//();
+    stem = lc:convdia(en):stem(en) word /list/doc/embedded()/title//();
+    stem = lc:convdia(en):stem(en) word /list/doc/embedded()/text//();
+    tist = lc:convdia(en):stem(en) word /list/doc/title();
 
 [ForwardIndex]
-    orig = orig split /doc/text//();
-    orig = orig split /doc/title();
+    orig = orig split /list/doc/text//();
+    orig = orig split /list/doc/title();
 
 [Aggregator]
     title_start = minpos( tist);
