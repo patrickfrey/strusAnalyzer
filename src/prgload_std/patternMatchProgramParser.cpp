@@ -124,77 +124,6 @@ static bool isEqual( const std::string& id, const char* idstr)
 	return !*si && !*di;
 }
 
-static void loadMatcherOption( ProgramLexer& lexer, PatternMatcherInstanceInterface* patternMatcher)
-{
-	if (lexer.current().isToken( TokIdentifier))
-	{
-		std::string name = lexer.current().value();
-		lexer.next();
-		if (lexer.current().isToken( TokAssign))
-		{
-			ProgramLexem cur = lexer.next();
-			if (cur.isToken( TokFloat) || cur.isToken( TokInteger))
-			{
-				double value = numstring_conv::todouble( cur.value());
-				patternMatcher->defineOption( name, value);
-			}
-			else
-			{
-				throw strus::runtime_error( _TXT("expected number as matcher option value after assign"));
-			}
-		}
-		else
-		{
-			patternMatcher->defineOption( name, 0.0);
-		}
-	}
-	else
-	{
-		throw strus::runtime_error( _TXT("identifier expected at start of pattern matcher option declaration"));
-	}
-}
-
-static void loadLexerOption( ProgramLexer& lexer, PatternLexerInstanceInterface* patternLexer)
-{
-	if (lexer.current().isToken( TokIdentifier))
-	{
-		std::string name = lexer.current().value();
-		lexer.next();
-		patternLexer->defineOption( name, 0);
-	}
-	else
-	{
-		throw strus::runtime_error( _TXT("identifier expected at start of pattern lexer option declaration"));
-	}
-}
-
-static void loadFeederOption( ProgramLexer& lexer, PatternMatcherProgramParser* parser)
-{
-	if (lexer.current().isToken( TokIdentifier))
-	{
-		std::string name = lexer.current().value();
-		lexer.next();
-		if (isEqual( name, "lexem"))
-		{
-			if (!lexer.current().isToken( TokIdentifier))
-			{
-				throw strus::runtime_error( _TXT("identifier expected as argument of feeder option 'lexem'"));
-			}
-			std::string lexemid( lexer.current().value());
-			(void)parser->defineAnalyzerTermType( lexemid);
-			lexer.next();
-		}
-		else
-		{
-			throw strus::runtime_error(_TXT("unknown feeder option '%s'"), name.c_str());
-		}
-	}
-	else
-	{
-		throw strus::runtime_error( _TXT("option name expected at start of pattern feeder option declaration"));
-	}
-}
-
 static std::string parse_REGEX( char const*& src)
 {
 	std::string rt;
@@ -213,6 +142,297 @@ static std::string parse_REGEX( char const*& src)
 	return rt;
 }
 
+void PatternMatcherProgramParser::loadMatcherOption( ProgramLexer& lexer)
+{
+	if (lexer.current().isToken( TokIdentifier))
+	{
+		std::string name = lexer.current().value();
+		lexer.next();
+		if (lexer.current().isToken( TokAssign))
+		{
+			ProgramLexem cur = lexer.next();
+			if (cur.isToken( TokFloat) || cur.isToken( TokInteger))
+			{
+				double value = numstring_conv::todouble( cur.value());
+				m_patternMatcher->defineOption( name, value);
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("expected number as matcher option value after assign"));
+			}
+		}
+		else
+		{
+			m_patternMatcher->defineOption( name, 0.0);
+		}
+	}
+	else
+	{
+		throw strus::runtime_error( _TXT("identifier expected at start of pattern matcher option declaration"));
+	}
+}
+
+void PatternMatcherProgramParser::loadLexerOption( ProgramLexer& lexer)
+{
+	if (lexer.current().isToken( TokIdentifier))
+	{
+		std::string name = lexer.current().value();
+		lexer.next();
+		m_patternLexer->defineOption( name, 0);
+	}
+	else
+	{
+		throw strus::runtime_error( _TXT("identifier expected at start of pattern lexer option declaration"));
+	}
+}
+
+void PatternMatcherProgramParser::loadFeederOption( ProgramLexer& lexer)
+{
+	if (lexer.current().isToken( TokIdentifier))
+	{
+		std::string name = lexer.current().value();
+		if (isEqual( name, "lexem"))
+		{
+			lexer.next();
+			if (!lexer.current().isToken( TokIdentifier))
+			{
+				throw strus::runtime_error( _TXT("identifier expected as argument of feeder option 'lexem'"));
+			}
+			std::string lexemid( lexer.current().value());
+			(void)defineAnalyzerTermType( lexemid);
+			lexer.next();
+		}
+		else
+		{
+			throw strus::runtime_error(_TXT("unknown feeder option '%s'"), name.c_str());
+		}
+	}
+	else
+	{
+		throw strus::runtime_error( _TXT("option name expected at start of pattern feeder option declaration"));
+	}
+}
+
+void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
+{
+	ProgramLexem cur;
+	while (!lexer.current().end())
+	{
+		cur = lexer.current();
+		if (cur.isToken( TokLEXER) || cur.isToken( TokMATCHER) || cur.isToken( TokFEEDER))
+		{
+			if (cur.isToken( TokLEXER))
+			{
+				if (!m_patternLexer)
+				{
+					throw strus::runtime_error( _TXT("defined '%%LEXER' option without lexer defined"));
+				}
+				do
+				{
+					lexer.next();
+					loadLexerOption( lexer);
+				} while (lexer.current().isToken(TokComma));
+			}
+			else if (cur.isToken( TokMATCHER))
+			{
+				do
+				{
+					lexer.next();
+					loadMatcherOption( lexer);
+				} while (lexer.current().isToken(TokComma));
+			}
+			else //if (cur.isToken( TokFEEDER))
+			{
+				if (!m_patternTermFeeder)
+				{
+					throw strus::runtime_error( _TXT("defined '%%FEEDER' option without feeder defined"));
+				}
+				do
+				{
+					lexer.next();
+					loadFeederOption( lexer);
+				} while (lexer.current().isToken(TokComma));
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+void PatternMatcherProgramParser::loadLexerRule( ProgramLexer& lexer, const std::string& name, unsigned int level)
+{
+	ProgramLexem cur;
+	if (m_patternLexer)
+	{
+		unsigned int nameid = m_regexNameSymbolTab.getOrCreate( name);
+		if (nameid == 0)
+		{
+			throw strus::runtime_error( _TXT("failed to define lexem name symbol"));
+		}
+		if (nameid >= MaxPatternTermNameId)
+		{
+			throw strus::runtime_error(_TXT("too many regular expression tokens defined: %u"), nameid);
+		}
+		if (m_regexNameSymbolTab.isNew())
+		{
+			m_patternLexer->defineLexemName( nameid, name);
+		}
+		std::string regex;
+		do
+		{
+			char const* rxptr = lexer.nextpos();
+			regex = parse_REGEX( rxptr);
+			lexer.skipto( rxptr);
+			cur = lexer.next();
+
+			if (cur.isToken(TokEditDistance))
+			{
+				//... edit distance operator "~1","~2",....
+				regex.append(cur.value());
+				cur = lexer.next();
+			}
+			unsigned int resultIndex = 0;
+			if (cur.isToken(TokOpenSquareBracket))
+			{
+				cur = lexer.next();
+				if (!cur.isToken( TokInteger))
+				{
+					throw strus::runtime_error( _TXT("expected result index (unsigned inside square brackets '[' .. ']'"));
+				}
+				resultIndex = numstring_conv::touint( cur.value(), std::numeric_limits<char>::max());
+				if (!lexer.next().isToken( TokCloseSquareBracket))
+				{
+					throw strus::runtime_error( _TXT("close square bracket ']' expected at end of result index definition"));
+				}
+				cur = lexer.next();
+			}
+			analyzer::PositionBind posbind = analyzer::BindContent;
+			if (cur.isToken( TokLeftArrow))
+			{
+				cur = lexer.next();
+				posbind = analyzer::BindPredecessor;
+			}
+			else if (cur.isToken( TokRightArrow))
+			{
+				cur = lexer.next();
+				posbind = analyzer::BindSuccessor;
+			}
+			m_patternLexer->defineLexem( nameid, regex, resultIndex, level, posbind);
+		}
+		while (cur.isToken( TokOr));
+	}
+	else if (m_patternTermFeeder)
+	{
+		throw strus::runtime_error( _TXT("pattern analyzer terms are defined by option %%lexem type and not with id : regex"));
+	}
+	else
+	{
+		throw strus::runtime_error( _TXT("loading lexer rule without lexer defined"));
+	}
+}
+
+void PatternMatcherProgramParser::loadMatcherRule( ProgramLexer& lexer, const std::string& name, bool visible)
+{
+	ProgramLexem cur;
+	//... token pattern expression declaration
+	unsigned int nameid = m_patternNameSymbolTab.getOrCreate( name);
+	if (nameid == 0)
+	{
+		throw strus::runtime_error( _TXT("failed to define pattern name symbol"));
+	}
+	do
+	{
+		//... Token pattern def -> name = expression ;
+		cur = lexer.next();
+		SubExpressionInfo exprinfo;
+		loadExpression( lexer, exprinfo);
+		std::set<uint32_t>::iterator ui = m_unresolvedPatternNameSet.find( nameid);
+		if (ui != m_unresolvedPatternNameSet.end())
+		{
+			m_unresolvedPatternNameSet.erase( ui);
+		}
+		std::map<uint32_t,unsigned int>::iterator li = m_patternLengthMap.find( nameid);
+		if (li != m_patternLengthMap.end())
+		{
+			li->second = std::max( li->second, exprinfo.maxrange);
+		}
+		else
+		{
+			m_patternLengthMap[ nameid] = exprinfo.maxrange;
+		}
+		m_patternMatcher->definePattern( name, visible);
+	}
+	while (lexer.current().isToken( TokOr));
+}
+
+void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
+{
+	ProgramLexem cur;
+	while (!lexer.current().end())
+	{
+		cur = lexer.current();
+		bool visible = true;
+		if (cur.isToken( TokDot))
+		{
+			//... declare rule as invisible (private)
+			visible = false;
+			cur = lexer.next();
+		}
+		if (cur.isToken( TokIdentifier) || cur.isString())
+		{
+			bool nameIsString = cur.isString();
+			std::string name = cur.value();
+			if (name.empty()) throw strus::runtime_error( _TXT("pattern name is empty"));
+
+			cur = lexer.next();
+
+			unsigned int level = 0;
+			bool has_level = false;
+			if (cur.isToken( TokExp))
+			{
+				cur = lexer.next();
+				if (!cur.isToken( TokInteger)) throw strus::runtime_error( _TXT("expected unsigned integer as level"));
+				level = numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
+				has_level = true;
+				cur = lexer.next();
+			}
+			if (cur.isToken( TokColon))
+			{
+				//... lexem expression declaration
+				if (nameIsString) throw strus::runtime_error( _TXT("string not allowed as lexem type"));
+				if (!visible) throw strus::runtime_error( _TXT("unexpected colon ':' after dot '.' followed by an identifier, that starts an token pattern declaration marked as private (invisible in output)"));
+
+				loadLexerRule( lexer, name, level);
+			}
+			else if (cur.isToken( TokAssign))
+			{
+				if (has_level) throw strus::runtime_error( _TXT("unsupported definition of level \"^N\" in token pattern definition"));
+
+				loadMatcherRule( lexer, name, visible);
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("assign '=' (token pattern definition) or colon ':' (lexem pattern definition) expected after name starting a pattern declaration"));
+			}
+			if (!cur.isToken( TokSemiColon))
+			{
+				throw strus::runtime_error( _TXT("semicolon ';' expected at end of rule"));
+			}
+			lexer.next();
+			if (m_errorhnd->hasError())
+			{
+				throw strus::runtime_error( _TXT("error in rule definition"));
+			}
+		}
+		else
+		{
+			throw strus::runtime_error( _TXT("identifier or string expected at start of rule"));
+		}
+	}
+}
+
 bool PatternMatcherProgramParser::load( const std::string& source)
 {
 	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, m_errorhnd);
@@ -220,203 +440,9 @@ bool PatternMatcherProgramParser::load( const std::string& source)
 	try
 	{
 		lexer.next();
-		while (!lexer.current().end())
-		{
-			ProgramLexem cur = lexer.current();
-			if (cur.isToken( TokLEXER) || cur.isToken( TokMATCHER) || cur.isToken( TokFEEDER))
-			{
-				if (cur.isToken( TokLEXER))
-				{
-					if (!m_patternLexer)
-					{
-						throw strus::runtime_error( _TXT("defined '%%LEXER' option without lexer defined"));
-					}
-					do
-					{
-						lexer.next();
-						loadLexerOption( lexer, m_patternLexer);
-					} while (lexer.current().isToken(TokComma));
-				}
-				else if (cur.isToken( TokMATCHER))
-				{
-					do
-					{
-						lexer.next();
-						loadMatcherOption( lexer, m_patternMatcher);
-					} while (lexer.current().isToken(TokComma));
-				}
-				else //if (cur.isToken( TokFEEDER))
-				{
-					if (!m_patternTermFeeder)
-					{
-						throw strus::runtime_error( _TXT("defined '%%FEEDER' option without feeder defined"));
-					}
-					do
-					{
-						lexer.next();
-						loadFeederOption( lexer, this);
-					} while (lexer.current().isToken(TokComma));
-				}
-				continue;
-			}
-			bool visible = true;
-			if (cur.isToken( TokDot))
-			{
-				//... declare rule as invisible (private)
-				visible = false;
-				cur = lexer.next();
-			}
-			if (cur.isToken( TokIdentifier) || cur.isString())
-			{
-				bool nameIsString = cur.isString();
-				std::string name = cur.value();
-				if (name.empty())
-				{
-					throw strus::runtime_error( _TXT("pattern name is empty"));
-				}
-				cur = lexer.next();
+		loadOptions( lexer);
+		loadRules( lexer);
 
-				unsigned int level = 0;
-				bool has_level = false;
-				if (cur.isToken( TokExp))
-				{
-					cur = lexer.next();
-					if (!cur.isToken( TokInteger)) throw strus::runtime_error( _TXT("expected unsigned integer as level"));
-					level = numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
-					has_level = true;
-					cur = lexer.next();
-				}
-				if (cur.isToken( TokColon))
-				{
-					if (m_patternLexer)
-					{
-						//... lexem expression declaration
-						if (nameIsString)
-						{
-							throw strus::runtime_error( _TXT("string not allowed as lexem type"));
-						}
-						if (!visible)
-						{
-							throw strus::runtime_error( _TXT("unexpected colon ':' after dot '.' followed by an identifier, that starts an token pattern declaration marked as private (invisible in output)"));
-						}
-						unsigned int nameid = m_regexNameSymbolTab.getOrCreate( name);
-						if (nameid == 0)
-						{
-							throw strus::runtime_error( _TXT("failed to define lexem name symbol"));
-						}
-						if (nameid >= MaxPatternTermNameId)
-						{
-							throw strus::runtime_error(_TXT("too many regular expression tokens defined: %u"), nameid);
-						}
-						if (m_regexNameSymbolTab.isNew())
-						{
-							m_patternLexer->defineLexemName( nameid, name);
-						}
-						std::string regex;
-						do
-						{
-							char const* rxptr = lexer.nextpos();
-							regex = parse_REGEX( rxptr);
-							lexer.skipto( rxptr);
-							cur = lexer.next();
-
-							if (cur.isToken(TokEditDistance))
-							{
-								//... edit distance operator "~1","~2",....
-								regex.append(cur.value());
-								cur = lexer.next();
-							}
-							unsigned int resultIndex = 0;
-							if (cur.isToken(TokOpenSquareBracket))
-							{
-								cur = lexer.next();
-								if (!cur.isToken( TokInteger))
-								{
-									throw strus::runtime_error( _TXT("expected result index (unsigned inside square brackets '[' .. ']'"));
-								}
-								resultIndex = numstring_conv::touint( cur.value(), std::numeric_limits<char>::max());
-								if (!lexer.next().isToken( TokCloseSquareBracket))
-								{
-									throw strus::runtime_error( _TXT("close square bracket ']' expected at end of result index definition"));
-								}
-								cur = lexer.next();
-							}
-							analyzer::PositionBind posbind = analyzer::BindContent;
-							if (cur.isToken( TokLeftArrow))
-							{
-								cur = lexer.next();
-								posbind = analyzer::BindPredecessor;
-							}
-							else if (cur.isToken( TokRightArrow))
-							{
-								cur = lexer.next();
-								posbind = analyzer::BindSuccessor;
-							}
-							m_patternLexer->defineLexem(
-								nameid, regex, resultIndex, level, posbind);
-						}
-						while (cur.isToken( TokOr));
-					}
-					else if (m_patternTermFeeder)
-					{
-						throw strus::runtime_error( _TXT("pattern analyzer terms are defined by option %%lexem type and not with id : regex"));
-					}
-				}
-				else if (cur.isToken( TokAssign))
-				{
-					if (has_level)
-					{
-						throw strus::runtime_error( _TXT("unsupported definition of level \"^N\" in token pattern definition"));
-					}
-					//... token pattern expression declaration
-					unsigned int nameid = m_patternNameSymbolTab.getOrCreate( name);
-					if (nameid == 0)
-					{
-						throw strus::runtime_error( _TXT("failed to define pattern name symbol"));
-					}
-					do
-					{
-						//... Token pattern def -> name = expression ;
-						cur = lexer.next();
-						SubExpressionInfo exprinfo;
-						loadExpression( lexer, exprinfo);
-						std::set<uint32_t>::iterator ui = m_unresolvedPatternNameSet.find( nameid);
-						if (ui != m_unresolvedPatternNameSet.end())
-						{
-							m_unresolvedPatternNameSet.erase( ui);
-						}
-						std::map<uint32_t,unsigned int>::iterator li = m_patternLengthMap.find( nameid);
-						if (li != m_patternLengthMap.end())
-						{
-							li->second = std::max( li->second, exprinfo.maxrange);
-						}
-						else
-						{
-							m_patternLengthMap[ nameid] = exprinfo.maxrange;
-						}
-						m_patternMatcher->definePattern( name, visible);
-					}
-					while (cur.isToken( TokOr));
-				}
-				else
-				{
-					throw strus::runtime_error( _TXT("assign '=' (token pattern definition) or colon ':' (lexem pattern definition) expected after name starting a pattern declaration"));
-				}
-				if (!cur.isToken( TokSemiColon))
-				{
-					throw strus::runtime_error( _TXT("semicolon ';' expected at end of rule"));
-				}
-				lexer.next();
-				if (m_errorhnd->hasError())
-				{
-					throw strus::runtime_error( _TXT("error in rule definition"));
-				}
-			}
-			else
-			{
-				throw strus::runtime_error( _TXT("identifier or string expected at start of rule"));
-			}
-		}
 		return true;
 	}
 	catch (const std::runtime_error& err)
