@@ -62,7 +62,7 @@ public:
 		return m_patternNameSymbolTab.size() > 0;
 	}
 
-public:
+private:
 	struct SubExpressionInfo
 	{
 		explicit SubExpressionInfo( unsigned int minrange_=0,unsigned int maxrange_=0)
@@ -80,6 +80,13 @@ public:
 	unsigned int getAnalyzerTermType( const std::string& type) const;
 	void loadExpressionNode( ProgramLexer& lexer, const std::string& name, SubExpressionInfo& exprinfo);
 	void loadExpression( ProgramLexer& lexer, SubExpressionInfo& exprinfo);
+	void loadFeederOption( ProgramLexer& lexer);
+	void loadLexerOption( ProgramLexer& lexer);
+	void loadMatcherOption( ProgramLexer& lexer);
+	void loadOptions( ProgramLexer& lexer);
+	void loadRules( ProgramLexer& lexer);
+	void loadLexerRule( ProgramLexer& lexer, const std::string& name, unsigned int level);
+	void loadMatcherRule( ProgramLexer& lexer, const std::string& name, bool visible);
 
 private:
 	ErrorBufferInterface* m_errorhnd;
