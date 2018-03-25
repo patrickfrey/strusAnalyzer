@@ -36,7 +36,7 @@ TSVParserDefinition::TSVParserDefinition( )
 
 void TSVParserDefinition::printDefinitions( )
 {
-#ifdef STRUS_LOWLEVEL_DEBUG	
+#ifdef STRUS_LOWLEVEL_DEBUG
 	std::cout << "DEBUG: definition multimap contains: ";
 	for( std::multimap<std::string, int>::const_iterator it = m_map.begin( ); it != m_map.end( ); it++ ) {
 		std::cout << "[" << it->first << ", " << it->second << "], ";

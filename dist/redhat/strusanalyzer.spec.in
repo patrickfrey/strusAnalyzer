@@ -362,6 +362,8 @@ make test
 %{_libdir}/strus/libstrus_pattern_termfeeder.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_pattern_serialize.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_pattern_serialize.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_analyzer_prgload_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_analyzer_prgload_std.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %dir %{_datadir}/strus
 %dir %{_datadir}/strus/textcat
 %dir %{_datadir}/strus/textcat/LM
@@ -396,6 +398,7 @@ make test
 %{_libdir}/strus/libstrus_markup_std.so
 %{_libdir}/strus/libstrus_pattern_termfeeder.so
 %{_libdir}/strus/libstrus_pattern_serialize.so
+%{_libdir}/strus/libstrus_analyzer_prgload_std.so
 %dir %{_includedir}/strus
 %{_includedir}/strus/*.hpp
 %dir %{_includedir}/strus/lib
