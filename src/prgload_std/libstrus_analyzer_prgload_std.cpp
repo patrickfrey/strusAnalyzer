@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, std::vector<std::string>& warnings, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -27,7 +27,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInterf
 			g_intl_initialized = true;
 		}
 		bool allowIncludes = true;
-		return loadDocumentAnalyzerProgram( analyzer, textproc, content, allowIncludes, warnings, errorhnd);
+		return loadDocumentAnalyzerProgram( analyzer, textproc, content, allowIncludes, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot load analyzer from DSL program: %s"), *errorhnd, 0);
 }

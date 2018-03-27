@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Andreas Baumann <mail@andreasbaumann.cc>
+ * Copyright (c) 2018 Patrick P. Frey
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -22,7 +22,7 @@
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_format.hpp"
 #include "strus/base/string_conv.hpp"
-
+#include "lexerImpl.hpp"
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -46,8 +46,8 @@ static void printUsage( int argc, const char* argv[])
 	std::cerr << "<xmldoc>      = xml file to test document analysis on" << std::endl;
 	std::cerr << "<expectfile>  = text file with the expected output" << std::endl;
 	std::cerr << "options:"<< std::endl;
-	std::cerr << "-h            = print this usage" << std::endl;
-	std::cerr << "-G <SEL>      = print debug info of name <SEL>" << std::endl;
+	std::cerr << "-h|--help         = print this usage" << std::endl;
+	std::cerr << "-G|--debug <SEL>  = print debug info of name <SEL>" << std::endl;
 }
 
 static std::string getFilePath( const std::string& resourcedir, const std::string& filename)
@@ -134,6 +134,8 @@ int main( int argc, const char* argv[])
 		// Create objects:
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( "failed to create textprocessor");
+		TestPatternLexer* patternLexer = new TestPatternLexer( g_errorhnd);
+		textproc->definePatternLexer( "", patternLexer);
 		textproc->addResourcePath( resourceDir);
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error( "failed to create XML segmenter");
@@ -145,7 +147,6 @@ int main( int argc, const char* argv[])
 		std::string programContent;
 		std::string docContent;
 		std::string expectContent;
-		std::vector<std::string> warnings;
 
 		int ec;
 		ec = strus::readFile( programFile, programContent);
@@ -154,7 +155,7 @@ int main( int argc, const char* argv[])
 		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with document to process: %s", docFile.c_str(), std::strerror(ec)));
 		ec = strus::readFile( expectFile, expectContent);
 		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with expected test output: %s", expectFile.c_str(), std::strerror(ec)));
-		if (!strus::load_DocumentAnalyzer_program_std( analyzer.get(), textproc.get(), programContent, warnings, g_errorhnd))
+		if (!strus::load_DocumentAnalyzer_program_std( analyzer.get(), textproc.get(), programContent, g_errorhnd))
 		{
 			throw std::runtime_error( strus::string_format("failed to load analyzer program in file '%s'", programFile.c_str()));
 		}

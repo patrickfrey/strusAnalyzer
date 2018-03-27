@@ -1,0 +1,5 @@
+LOCASE ^1 : /[a-z]\S*/;
+UPCASE ^1 : /[a-z]\S*/;
+
+upcase    = UPCASE ;
+

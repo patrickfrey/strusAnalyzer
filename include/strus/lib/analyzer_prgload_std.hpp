@@ -20,7 +20,7 @@ class DocumentAnalyzerInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
-bool load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, std::vector<std::string>& warnings, ErrorBufferInterface* errorhnd);
+bool load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd);
 
 } //namespace
 #endif

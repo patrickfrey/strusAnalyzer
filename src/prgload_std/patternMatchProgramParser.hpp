@@ -32,6 +32,8 @@ class PatternMatcherInstanceInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
 /// \brief Forward declaration
+class DebugTraceContextInterface;
+/// \brief Forward declaration
 class PatternMatcherProgram;
 /// \brief Forward declaration
 class ProgramLexer;
@@ -52,10 +54,10 @@ public:
 			PatternTermFeederInstanceInterface* tfm,
 			PatternMatcherInstanceInterface* tpm,
 			ErrorBufferInterface* errorhnd_);
+	~PatternMatcherProgramParser();
 
 	bool load( const std::string& source);
 	bool compile();
-	const std::vector<std::string>& warnings() const	{return m_warnings;}
 
 	bool hasMatcherRules() const
 	{
@@ -90,6 +92,7 @@ private:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_dbgtrace;
 	PatternMatcherInstanceInterface* m_patternMatcher;
 	PatternLexerInstanceInterface* m_patternLexer;
 	PatternTermFeederInstanceInterface* m_patternTermFeeder;
@@ -99,7 +102,6 @@ private:
 	std::map<uint32_t,unsigned int> m_patternLengthMap;
 	std::vector<uint32_t> m_symbolRegexIdList;
 	std::set<uint32_t> m_unresolvedPatternNameSet;
-	std::vector<std::string> m_warnings;
 };
 
 }//namespace

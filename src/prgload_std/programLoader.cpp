@@ -66,7 +66,25 @@ static const char* g_tokens[] = {
 	":",
 	";",
 	"<-",
-	"[/][^\\;,\\{]*",
+	"[/][^;,{} ]*",
+	NULL
+};
+static const char* g_token_names[] = {
+	"identifier",
+	"flating point number",
+	"integer",
+	"open oval bracket '('",
+	"close oval bracket ')'",
+	"open curly bracket '{'",
+	"close curly bracket '}'",
+	"open square bracket '['",
+	"close square bracket ']'",
+	"assign '='",
+	"comma ','",
+	"colon ':'",
+	"semicolon ';'",
+	"left arrow '<-'",
+	"path",
 	NULL
 };
 static const char* g_errtokens[] = {
@@ -75,6 +93,18 @@ static const char* g_errtokens[] = {
 };
 static const char* g_eolncomment = "#";
 
+static const char* tokenName( const ProgramLexem& cur)
+{
+	switch (cur.type())
+	{
+		case ProgramLexem::Eof:		return "EOF";
+		case ProgramLexem::SQString:	return "string";
+		case ProgramLexem::DQString:	return "string";
+		case ProgramLexem::Error:	return "bad lexem";
+		case ProgramLexem::Token:	return g_token_names[ cur.id()];
+	}
+	return "?";
+}
 
 enum FeatureClass
 {
@@ -138,7 +168,7 @@ static std::vector<std::string> parseArgumentList( ProgramLexer& lexer)
 		}
 		else
 		{
-			throw strus::runtime_error( _TXT("unexpected token in argument list: %s"), cur.value().c_str());
+			throw strus::runtime_error( _TXT("unexpected token %s in argument list"), tokenName(cur));
 		}
 		cur = lexer.next();
 		if (cur.isToken( TokComma))
@@ -172,14 +202,14 @@ static void parseFunctionDef( ProgramLexer& lexer, const char* functype, std::st
 			}
 			if (!lexer.current().isToken( TokCloseOvalBracket))
 			{
-				throw strus::runtime_error( _TXT("comma ',' as argument separator or close oval bracket ')' expected at end of %s argument list"), functype);
+				throw strus::runtime_error( _TXT("comma ',' as argument separator or close oval bracket ')' instead of %s expected at end of %s argument list"), tokenName( lexer.current()), functype);
 			}
 			lexer.next();
 		}
 	}
 	else
 	{
-		throw strus::runtime_error( _TXT("%s definition (identifier) expected"), functype);
+		throw strus::runtime_error( _TXT("identifier expected instead of %s at start of %s definition"), tokenName( lexer.current()), functype);
 	}
 }
 
@@ -252,7 +282,7 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 				cur = lexer.next();
 				if (!cur.isToken( TokAssign))
 				{
-					throw strus::runtime_error( _TXT("assign '=' expected after open curly brackets '{' and option identifier"));
+					throw strus::runtime_error( _TXT("assign '=' instead of %s expected after open curly brackets '{' and option identifier"), tokenName( lexer.current()));
 				}
 				cur = lexer.next();
 				if (cur.isString() || cur.isToken( TokIdentifier))
@@ -261,7 +291,7 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 				}
 				else
 				{
-					throw strus::runtime_error( _TXT("identifier or string expected as option value"));
+					throw strus::runtime_error( _TXT("identifier or string expected instead of %s as option value"), tokenName( lexer.current()));
 				}
 				if (strus::caseInsensitiveEquals( optname, "position"))
 				{
@@ -279,7 +309,7 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 					}
 					else
 					{
-						throw strus::runtime_error( _TXT("'pred' or 'succ' expected as 'position' option value instead of '%s'"), optval.c_str());
+						throw strus::runtime_error( _TXT("'pred' or 'succ' expected instead of %s as 'position' option value"), optval.c_str());
 					}
 				}
 				else
@@ -290,14 +320,14 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 			}
 			else
 			{
-				throw strus::runtime_error( _TXT("bad option name token '%s'"), cur.value().c_str());
+				throw strus::runtime_error( _TXT("expected identifier instead of %s as token name"), tokenName( lexer.current()));
 			}
 		}
 		while (cur.isToken( TokComma));
 
 		if (!cur.isToken( TokCloseCurlyBracket))
 		{
-			throw strus::runtime_error( _TXT("close curly bracket '}' expected at end of option list"));
+			throw strus::runtime_error( _TXT("close curly bracket '}' expected instead of %s at end of option list"), tokenName( lexer.current()));
 		}
 		lexer.next();
 	}
@@ -315,7 +345,7 @@ static std::string parseSelectorExpression( ProgramLexer& lexer)
 	}
 	else
 	{
-		throw strus::runtime_error( _TXT("bad selector expression token '%s'"), cur.value().c_str());
+		throw strus::runtime_error( _TXT("expected string or path instead of %s as selector expression"), tokenName( lexer.current()));
 	}
 }
 
@@ -376,21 +406,22 @@ static void parseDocumentPatternFeatureDef(
 	FeatureDef featuredef;
 
 	// [1] Parse pattern item name:
-	ProgramLexem cur = lexer.current();
-	if (!cur.isToken( TokIdentifier))
+	if (!lexer.current().isToken( TokIdentifier))
 	{
-		throw strus::runtime_error( _TXT("identifier expected in pattern matcher feature definition after left arrow"));
+		throw strus::runtime_error( _TXT("identifier expected in pattern matcher instead of %s inf feature definition after left arrow"), tokenName( lexer.current()));
 	}
-	std::string patternTypeName = cur.value();
+	std::string patternTypeName = lexer.current().value();
+	lexer.next();
 
 	// [2] Parse normalizer, if defined:
-	if (!cur.isToken( TokSemiColon) && !cur.isToken( TokOpenCurlyBracket))
+	if (!lexer.current().isToken( TokSemiColon) && !lexer.current().isToken( TokOpenCurlyBracket))
 	{
 		featuredef.parseNormalizer( lexer, textproc);
 	}
 	// [3] Parse feature options, if defined:
 	analyzer::FeatureOptions featopt( parseFeatureOptions( lexer));
 
+	// [4] Define the feature:
 	switch (featureClass)
 	{
 		case FeatSearchIndexTerm:
@@ -523,13 +554,13 @@ static SectionHeader parseSectionHeader( ProgramLexer& lexer)
 		}
 		if (!cur.isToken(TokCloseSquareBracket))
 		{
-			throw strus::runtime_error( _TXT("close square bracket ']' expected to close feature class section definition"));
+			throw strus::runtime_error( _TXT("close square bracket ']' expected instead of %s to close feature class section definition"), tokenName( lexer.current()));
 		}
 		lexer.next();
 	}
 	else
 	{
-		throw strus::runtime_error( _TXT("feature class identifier expected after open square bracket '['"));
+		throw strus::runtime_error( _TXT("feature class identifier expected instead of %s after open square bracket '['"), tokenName( lexer.current()));
 	}
 	return rt;
 }
@@ -539,8 +570,7 @@ static bool loadPatternMatcherProgramWithFeeder(
 		PatternTermFeederInstanceInterface* feeder,
 		PatternMatcherInstanceInterface* matcher,
 		const std::string& source,
-		ErrorBufferInterface* errorhnd,
-		std::vector<std::string>& warnings)
+		ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -560,7 +590,6 @@ static bool loadPatternMatcherProgramWithFeeder(
 				errorhnd->explain(_TXT("failed to compile pattern match program for analyzer output: %s"));
 				return false;
 			}
-			warnings = program.warnings();
 		}
 		return true;
 	}
@@ -580,8 +609,7 @@ static bool loadPatternMatcherProgramWithLexer(
 		PatternLexerInstanceInterface* lexer,
 		PatternMatcherInstanceInterface* matcher,
 		const std::string& source,
-		ErrorBufferInterface* errorhnd,
-		std::vector<std::string>& warnings)
+		ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -602,7 +630,6 @@ static bool loadPatternMatcherProgramWithLexer(
 				errorhnd->explain(_TXT("failed to compile pattern match program: %s"));
 				return false;
 			}
-			warnings = program.warnings();
 		}
 		return true;
 	}
@@ -625,25 +652,23 @@ static void parseAnalyzerPatternMatchProgramDef(
 		const TextProcessorInterface* textproc,
 		const std::string& patternModuleName,
 		const std::string& patternTypeName,
-		std::vector<std::string>& warnings,
 		ErrorBufferInterface* errorhnd)
 {
+	// Parse selection expressions if defined in case of pre-processing pattern matching
 	std::vector<std::string> selectexprlist;
-	ProgramLexem cur = lexer.current();
-
-	if (cur.isToken(TokOpenCurlyBracket))
+	if (lexer.current().isToken(TokOpenCurlyBracket))
 	{
-		do
-		{
-			cur = lexer.next();
+		do  {
+			lexer.next();
 			selectexprlist.push_back( parseSelectorExpression( lexer));
-		} while (cur.isToken(TokComma));
-		if (!cur.isToken(TokCloseCurlyBracket))
+		} while (lexer.current().isToken(TokComma));
+		if (!lexer.current().isToken(TokCloseCurlyBracket))
 		{
-			throw strus::runtime_error( _TXT("expected close curly bracket '}' at end of pattern lexer selection expressions"));
+			throw strus::runtime_error( _TXT("expected close curly bracket '}' instead of %s at end of pattern lexer selection expressions"), tokenName( lexer.current()));
 		}
-		cur = lexer.next();
+		lexer.next();
 	}
+	// Read source:
 	std::vector<std::pair<std::string,std::string> > ptsources;
 	std::string filename = parseSelectorExpression( lexer);
 	std::string filepath = textproc->getResourcePath( filename);
@@ -657,6 +682,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 	{
 		throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
 	}
+	// Load the program:
 	if (selectexprlist.empty())
 	{
 		const PatternMatcherInterface* matcher = textproc->getPatternMatcher( patternModuleName);
@@ -671,7 +697,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 		{
 			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
 		}
-		if (!loadPatternMatcherProgramWithFeeder( feederctx.get(), matcherctx.get(), source, errorhnd, warnings))
+		if (!loadPatternMatcherProgramWithFeeder( feederctx.get(), matcherctx.get(), source, errorhnd))
 		{
 			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
 		}
@@ -697,7 +723,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 		{
 			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
 		}
-		if (!loadPatternMatcherProgramWithLexer( lexerctx.get(), matcherctx.get(), source, errorhnd, warnings))
+		if (!loadPatternMatcherProgramWithLexer( lexerctx.get(), matcherctx.get(), source, errorhnd))
 		{
 			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
 		}
@@ -786,12 +812,31 @@ static std::string getContentTypeElem( const char* key, const std::string& val)
 	return std::string();
 }
 
+static void loadIncludes( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, ErrorBufferInterface* errorhnd)
+{
+	std::set<std::string> visited;
+	std::vector<std::pair<std::string,std::string> > include_contents;
+
+	expandIncludes( source, textproc, visited, include_contents, errorhnd);
+	std::vector<std::pair<std::string,std::string> >::const_iterator
+		ci = include_contents.begin(), ce = include_contents.end();
+	for (; ci != ce; ++ci)
+	{
+		if (!strus::loadDocumentAnalyzerProgram(
+				analyzer, textproc, ci->second,
+				false/*!allowIncludes*/, errorhnd))
+		{
+			throw strus::runtime_error(_TXT("failed to load include file '%s': %s"), ci->first.c_str(), errorhnd->fetchError());
+		}
+	}
+}
+
 static analyzer::DocumentClass parseDocumentClass( ProgramLexer& lexer)
 {
 	ProgramLexem cur = lexer.current();
 	if (!cur.isString())
 	{
-		throw strus::runtime_error( _TXT("expected document class as string at start of sub content definition"));
+		throw strus::runtime_error( _TXT("expected document class as string instead of %s at start of sub content definition"), tokenName( lexer.current()));
 	}
 	std::string mimeType = getContentTypeElem( 0, cur.value());
 	if (mimeType.empty())
@@ -817,10 +862,159 @@ static analyzer::DocumentClass parseDocumentClass( ProgramLexer& lexer)
 	{
 		mimeType = "text/tab-separated-values";
 	}
-	return analyzer::DocumentClass( mimeType, encoding);
+	lexer.next();
+	return analyzer::DocumentClass( mimeType, encoding, scheme);
 }
 
-bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, std::vector<std::string>& warnings, ErrorBufferInterface* errorhnd)
+static void loadContentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, ErrorBufferInterface* errorhnd)
+{
+	ProgramLexem cur;
+	if (!header.arg.empty())
+	{
+		throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		// Define document content with different content-type:
+		analyzer::DocumentClass documentClass = parseDocumentClass( lexer);
+
+		std::string xpathexpr( parseSelectorExpression( lexer));
+		analyzer->defineSubContent( xpathexpr, documentClass);
+
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadDocumentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, ErrorBufferInterface* errorhnd)
+{
+	if (!header.arg.empty())
+	{
+		throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("feature type name (identifier) instead of %s expected at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		std::string identifier = lexer.current().value();
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
+		lexer.next();
+
+		std::string xpathexpr( parseSelectorExpression( lexer));
+		analyzer->defineSubDocument( identifier, xpathexpr);
+
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' expected instead of %s at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadAggregatorSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+{
+	if (!header.arg.empty())
+	{
+		throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("feature type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		std::string identifier = lexer.current().value();
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
+		lexer.next();
+
+		FunctionConfig cfg = parseAggregatorFunctionConfig( lexer);
+
+		const AggregatorFunctionInterface* sf = textproc->getAggregator( cfg.name());
+		if (!sf) throw strus::runtime_error(_TXT( "unknown aggregator function '%s'"), cfg.name().c_str());
+		
+		strus::local_ptr<AggregatorFunctionInstanceInterface> statfunc( sf->createInstance( cfg.args()));
+		if (!statfunc.get()) throw strus::runtime_error(_TXT( "failed to create instance of aggregator function '%s'"), cfg.name().c_str());
+
+		analyzer->defineAggregatedMetaData( identifier, statfunc.get());
+		statfunc.release();
+
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadPatternMatchSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+{
+	std::string patternModuleName = header.arg.empty() ? std::string() : header.arg[0];
+	if (header.arg.size() > 2)
+	{
+		throw strus::runtime_error( _TXT("too many arguments in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("feature type name (identifier) expected at start of a %s declaration"), header.name.c_str());
+		}
+		std::string identifier = lexer.current().value();
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
+		lexer.next();
+		parseAnalyzerPatternMatchProgramDef( lexer, analyzer, textproc, patternModuleName, identifier, errorhnd);
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadFeatureSection( ProgramLexer& lexer, const FeatureClass& featclass, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+{
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("feature type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), "feature");
+		}
+		std::string identifier = lexer.current().value();
+		lexer.next();
+
+		if (lexer.current().isToken(TokAssign))
+		{
+			lexer.next();
+			parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
+		}
+		else if (lexer.current().isToken( TokLeftArrow))
+		{
+			lexer.next();
+			parseDocumentPatternFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
+		}
+		else
+		{
+			throw strus::runtime_error( _TXT("assignment operator '=' or '<-' instead of %s expected after set identifier in a %s declaration"), tokenName( lexer.current()), "feature");
+		}
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), "feature");
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
 {
 	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
 	try
@@ -828,172 +1022,53 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 		if (errorhnd->hasError()) return false;
 		if (allowIncludes)
 		{
-			std::set<std::string> visited;
-			std::vector<std::pair<std::string,std::string> > include_contents;
-
-			expandIncludes( source, textproc, visited, include_contents, errorhnd);
-			std::vector<std::pair<std::string,std::string> >::const_iterator
-				ci = include_contents.begin(), ce = include_contents.end();
-			for (; ci != ce; ++ci)
-			{
-				if (!strus::loadDocumentAnalyzerProgram(
-						analyzer, textproc, ci->second,
-						false/*!allowIncludes*/, warnings, errorhnd))
-				{
-					throw strus::runtime_error(_TXT("failed to load include file '%s': %s"), ci->first.c_str(), errorhnd->fetchError());
-				}
-			}
+			loadIncludes( analyzer, textproc, source, errorhnd);
 		}
-		FeatureClass featclass = FeatSearchIndexTerm;
-
-		ProgramLexem cur = lexer.next();
-		while (!cur.end())
+		if (!lexer.next().isToken( TokOpenSquareBracket))
 		{
-			if (lexer.current().isToken( TokOpenSquareBracket))
+			loadFeatureSection( lexer, FeatSearchIndexTerm, analyzer, textproc, errorhnd);
+		}
+		while (lexer.current().isToken( TokOpenSquareBracket))
+		{
+			lexer.next();
+			SectionHeader header = parseSectionHeader( lexer);
+			if (isEqual( header.name, "Content"))
 			{
-				lexer.next();
-				SectionHeader header = parseSectionHeader( lexer);
-				if (isEqual( header.name, "Content"))
+				loadContentSection( lexer, header, analyzer, errorhnd);
+			}
+			else if (isEqual( header.name, "Document"))
+			{
+				loadDocumentSection( lexer, header, analyzer, errorhnd);
+			}
+			else if (isEqual( header.name, "Aggregator"))
+			{
+				loadAggregatorSection( lexer, header, analyzer, textproc, errorhnd);
+			}
+			else if (isEqual( header.name, "PatternMatch"))
+			{
+				loadPatternMatchSection( lexer, header, analyzer, textproc, errorhnd);
+			}
+			else
+			{
+				if (!header.arg.empty())
 				{
-					if (!header.arg.empty())
-					{
-						throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
-					}
-					do
-					{
-						// Define document content with different content-type:
-						analyzer::DocumentClass documentClass = parseDocumentClass( lexer);
-						cur = lexer.next();
-		
-						std::string xpathexpr( parseSelectorExpression( lexer));
-						analyzer->defineSubContent( xpathexpr, documentClass);
-		
-						if (!lexer.current().isToken( TokSemiColon))
-						{
-							throw strus::runtime_error( _TXT("semicolon ';' expected at end of %s declaration"), header.name.c_str());
-						}
-						cur = lexer.next();
-					}
-					while (!cur.end() && !cur.isToken( TokOpenSquareBracket));
-					continue;
+					throw strus::runtime_error( _TXT("no arguments expected in section %s definition"), header.name.c_str());
 				}
-				else if (isEqual( header.name, "Document"))
+				FeatureClass featclass;
+				if (getFeatureClassFromName( featclass, header.name))
 				{
-					if (!header.arg.empty())
-					{
-						throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
-					}
-					do
-					{
-						std::string identifier = lexer.current().value();
-						if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' after identifier of sub document definition"));
-						lexer.next();
-	
-						std::string xpathexpr( parseSelectorExpression( lexer));
-						analyzer->defineSubDocument( identifier, xpathexpr);
-
-						if (!lexer.current().isToken( TokSemiColon))
-						{
-							throw strus::runtime_error( _TXT("semicolon ';' expected at end of %s declaration"), header.name.c_str());
-						}
-						cur = lexer.next();
-					}
-					while (!cur.end() && !cur.isToken( TokOpenSquareBracket));
-					continue;
-				}
-				else if (isEqual( header.name, "Aggregator"))
-				{
-					if (!header.arg.empty())
-					{
-						throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
-					}
-					do
-					{
-						std::string identifier = lexer.current().value();
-						if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' after identifier of sub document definition"));
-						lexer.next();
-	
-						FunctionConfig cfg = parseAggregatorFunctionConfig( lexer);
-		
-						const AggregatorFunctionInterface* sf = textproc->getAggregator( cfg.name());
-						if (!sf) throw strus::runtime_error(_TXT( "unknown aggregator function '%s'"), cfg.name().c_str());
-						
-						strus::local_ptr<AggregatorFunctionInstanceInterface> statfunc( sf->createInstance( cfg.args()));
-						if (!statfunc.get()) throw strus::runtime_error(_TXT( "failed to create instance of aggregator function '%s'"), cfg.name().c_str());
-		
-						analyzer->defineAggregatedMetaData( identifier, statfunc.get());
-						statfunc.release();
-
-						if (!lexer.current().isToken( TokSemiColon))
-						{
-							throw strus::runtime_error( _TXT("semicolon ';' expected at end of %s declaration"), header.name.c_str());
-						}
-						cur = lexer.next();
-					}
-					while (!cur.end() && !cur.isToken( TokOpenSquareBracket));
-					continue;
-				}
-				else if (isEqual( header.name, "PatternMatch"))
-				{
-					std::string patternModuleName = header.arg.empty() ? std::string() : header.arg[0];
-					if (header.arg.size() > 2)
-					{
-						throw strus::runtime_error( _TXT("too many arguments in section %s definition"), header.name.c_str());
-					}
-					do
-					{
-						std::string identifier = lexer.current().value();
-						if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' after identifier of sub document definition"));
-						lexer.next();
-						parseAnalyzerPatternMatchProgramDef( lexer, analyzer, textproc, patternModuleName, identifier, warnings, errorhnd);
-						if (!lexer.current().isToken( TokSemiColon))
-						{
-							throw strus::runtime_error( _TXT("semicolon ';' expected at end of %s declaration"), header.name.c_str());
-						}
-						cur = lexer.next();
-					}
-					while (!cur.end() && !cur.isToken( TokOpenSquareBracket));
-					continue;
-				}
-				else if (getFeatureClassFromName( featclass, header.name))
-				{
-					if (!header.arg.empty())
-					{
-						throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
-					}
-					cur = lexer.current();
+					loadFeatureSection( lexer, featclass, analyzer, textproc, errorhnd);
 				}
 				else
 				{
 					throw strus::runtime_error( _TXT("unknown analyzer program section name '%s'"), header.name.c_str());
+					continue;
 				}
 			}
-			if (!cur.isToken(TokIdentifier))
-			{
-				throw strus::runtime_error( _TXT("feature type name (identifier) expected at start of a feature declaration"));
-			}
-			std::string identifier = cur.value();
-			cur = lexer.next();
-
-			if (cur.isToken(TokAssign))
-			{
-				lexer.next();
-				parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
-			}
-			else if (cur.isToken( TokLeftArrow))
-			{
-				lexer.next();
-				parseDocumentPatternFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
-			}
-			else
-			{
-				throw strus::runtime_error( _TXT("assignment operator '=' or '<-' expected after set identifier in a feature declaration"));
-			}
-			if (!lexer.current().isToken( TokSemiColon))
-			{
-				throw strus::runtime_error( _TXT("semicolon ';' expected at end of feature declaration"));
-			}
-			cur = lexer.next();
+		}
+		if (!lexer.current().end())
+		{
+			throw strus::runtime_error( _TXT("unexpected token (%s) in analyzer program"), tokenName( lexer.current()));
 		}
 		return true;
 	}

@@ -6,7 +6,7 @@
     doc = /list/doc;
 
 [Content]
-    "encoding=UTF-8; content=JSON;" /list/doc/embedded();
+    "application/json; charset=UTF-8" /list/doc/embedded();
 
 [SearchIndex]
     start = empty content /list/doc/text;
@@ -23,6 +23,7 @@
     stem = lc:convdia(en):stem(en) word /list/doc/embedded()/title//();
     stem = lc:convdia(en):stem(en) word /list/doc/embedded()/text//();
     tist = lc:convdia(en):stem(en) word /list/doc/title();
+    uwrd <- upcaseword uc:convdia(en);
 
 [ForwardIndex]
     orig = orig split /list/doc/text//();
@@ -32,4 +33,7 @@
     title_start = minpos( tist);
     title_end = nextpos( tist);
     doclen = count( stem);
+
+[PatternMatch]
+    upcaseword = { /list/doc/text//(), /list/doc/title//()} "detect_upcase.rul";
 

@@ -22,7 +22,7 @@
 #include <cstring>
 #include <limits>
 
-#define STRUS_COMPONENT_NAME "documentAnalyzer"
+#define STRUS_COMPONENT_NAME "analyzer"
 #define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
 #define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
 #define DEBUG_EVENT1( NAME, FMT, ID)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID);

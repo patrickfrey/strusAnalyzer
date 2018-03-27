@@ -10,6 +10,7 @@
 #include "patternMatchProgramParser.hpp"
 #include "strus/base/programLexer.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/debugTraceInterface.hpp"
 #include "strus/patternMatcherInterface.hpp"
 #include "strus/patternLexerInterface.hpp"
 #include "strus/patternTermFeederInterface.hpp"
@@ -22,6 +23,7 @@
 #include <sstream>
 #include <limits>
 
+#define STRUS_COMPONENT_NAME "pattern"
 using namespace strus;
 
 PatternMatcherProgramParser::PatternMatcherProgramParser(
@@ -29,6 +31,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 		PatternMatcherInstanceInterface* tpm,
 		ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
+	,m_dbgtrace(0)
 	,m_patternMatcher(tpm)
 	,m_patternLexer(crm)
 	,m_patternTermFeeder(0)
@@ -40,6 +43,8 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 	,m_unresolvedPatternNameSet()
 {
 	if (!m_patternMatcher || !m_patternLexer) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
+	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
+	m_dbgtrace = dbg ? dbg->createTraceContext( STRUS_COMPONENT_NAME) : NULL;
 }
 
 PatternMatcherProgramParser::PatternMatcherProgramParser(
@@ -57,6 +62,11 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 	,m_unresolvedPatternNameSet()
 {
 	if (!m_patternMatcher || !m_patternTermFeeder) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
+}
+
+PatternMatcherProgramParser::~PatternMatcherProgramParser()
+{
+	if (m_dbgtrace) delete m_dbgtrace;
 }
 
 enum Tokens {
@@ -388,14 +398,12 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 
 			cur = lexer.next();
 
-			unsigned int level = 0;
-			bool has_level = false;
+			int level = -1;
 			if (cur.isToken( TokExp))
 			{
 				cur = lexer.next();
 				if (!cur.isToken( TokInteger)) throw strus::runtime_error( _TXT("expected unsigned integer as level"));
-				level = numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
-				has_level = true;
+				level = (int)(unsigned int)numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
 				cur = lexer.next();
 			}
 			if (cur.isToken( TokColon))
@@ -404,11 +412,11 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 				if (nameIsString) throw strus::runtime_error( _TXT("string not allowed as lexem type"));
 				if (!visible) throw strus::runtime_error( _TXT("unexpected colon ':' after dot '.' followed by an identifier, that starts an token pattern declaration marked as private (invisible in output)"));
 
-				loadLexerRule( lexer, name, level);
+				loadLexerRule( lexer, name, level>=0?level:0);
 			}
 			else if (cur.isToken( TokAssign))
 			{
-				if (has_level) throw strus::runtime_error( _TXT("unsupported definition of level \"^N\" in token pattern definition"));
+				if (level >= 0) throw strus::runtime_error( _TXT("unsupported definition of level \"^N\" in token pattern definition"));
 
 				loadMatcherRule( lexer, name, visible);
 			}
@@ -476,7 +484,7 @@ bool PatternMatcherProgramParser::compile()
 				ue = m_unresolvedPatternNameSet.end();
 			for (std::size_t uidx=0; ui != ue && uidx<10; ++ui,++uidx)
 			{
-				m_warnings.push_back( string_format( _TXT("unresolved pattern reference '%s'"), m_patternNameSymbolTab.key(*ui)));
+				if (m_dbgtrace) m_dbgtrace->event( "unresolved", "%s", m_patternNameSymbolTab.key(*ui));
 			}
 		}
 		bool rt = true;
@@ -530,11 +538,13 @@ uint32_t PatternMatcherProgramParser::getOrCreateSymbol( unsigned int regexid, c
 		}
 		if (m_patternLexer)
 		{
+			if (m_dbgtrace) m_dbgtrace->event( "lexer-symbol", "%d %s", regexid, name.c_str());
 			m_patternLexer->defineSymbol( symid, regexid, name);
 			m_patternLexer->defineLexemName( symid, name);
 		}
 		else if (m_patternTermFeeder)
 		{
+			if (m_dbgtrace) m_dbgtrace->event( "feeder-symbol", "%d %s", regexid, name.c_str());
 			m_patternTermFeeder->defineSymbol( symid, regexid, name);
 		}
 		else
@@ -590,7 +600,8 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 		unsigned int nofArguments = 0;
 		ProgramLexem cur = lexer.next();
 
-		if (!cur.isToken(TokCloseOvalBracket)) do
+		if (!cur.isToken(TokCloseOvalBracket))
+		do
 		{
 			SubExpressionInfo argexprinfo;
 			loadExpression( lexer, argexprinfo);
@@ -731,6 +742,7 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 				}
 				break;
 		}
+		if (m_dbgtrace) m_dbgtrace->event( "expression", "op %s card %d range %d args %d", name.c_str(), cardinality, range, nofArguments);
 		m_patternMatcher->pushExpression( operation, nofArguments, range, cardinality);
 	}
 	else if (lexer.current().isToken( TokAssign))
@@ -824,6 +836,7 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 	}
 	if (lexer.next().isToken(TokAssign))
 	{
+		if (m_dbgtrace) m_dbgtrace->event( "assign", "%s", name.c_str());
 		ProgramLexem cur = lexer.next();
 		if (!cur.isToken(TokIdentifier))
 		{
