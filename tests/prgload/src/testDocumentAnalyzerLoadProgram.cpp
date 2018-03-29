@@ -13,6 +13,7 @@
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/analyzer_prgload_std.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
+#include "strus/lib/pattern_test.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
@@ -22,7 +23,6 @@
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_format.hpp"
 #include "strus/base/string_conv.hpp"
-#include "lexerImpl.hpp"
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -126,16 +126,20 @@ int main( int argc, const char* argv[])
 			}
 		}
 		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, dbgtrace);
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
 
 		// Create objects:
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( "failed to create textprocessor");
-		TestPatternLexer* patternLexer = new TestPatternLexer( g_errorhnd);
+
+		strus::PatternLexerInterface* patternLexer = strus::createPatternLexer_test( g_errorhnd);
+		if (!patternLexer) throw std::runtime_error( "failed to create pattern lexer");
 		textproc->definePatternLexer( "", patternLexer);
+
+		strus::PatternMatcherInterface* patternMatcher = strus::createPatternMatcher_test( g_errorhnd);
+		if (!patternMatcher) throw std::runtime_error( "failed to create pattern matcher");
+		textproc->definePatternMatcher( "", patternMatcher);
+
 		textproc->addResourcePath( resourceDir);
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error( "failed to create XML segmenter");

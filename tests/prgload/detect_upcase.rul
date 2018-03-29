@@ -1,5 +1,5 @@
-LOCASE ^1 : /[a-z]\S*/;
-UPCASE ^1 : /[a-z]\S*/;
+LOCASE ^1 : /\b[a-z][^ \;\,\!\.\:\-\/]*/;
+UPCASE ^1 : /\b[A-Z][a-z][^ \;\,\!\.\:\-\/]*/;
 
 upcase    = UPCASE ;
 

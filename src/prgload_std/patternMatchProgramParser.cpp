@@ -23,7 +23,7 @@
 #include <sstream>
 #include <limits>
 
-#define STRUS_COMPONENT_NAME "pattern"
+#define STRUS_DBGTRACE_COMPONENT_NAME "pattern"
 using namespace strus;
 
 PatternMatcherProgramParser::PatternMatcherProgramParser(
@@ -44,7 +44,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 {
 	if (!m_patternMatcher || !m_patternLexer) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
 	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
-	m_dbgtrace = dbg ? dbg->createTraceContext( STRUS_COMPONENT_NAME) : NULL;
+	m_dbgtrace = dbg ? dbg->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
 }
 
 PatternMatcherProgramParser::PatternMatcherProgramParser(
@@ -114,7 +114,7 @@ static const char* g_tokens[] = {
 	":",
 	";",
 	"\\.",
-	"^",
+	"\\^",
 	"~[0-9][0-9_]*",
 	"<-",
 	"->",
@@ -157,13 +157,12 @@ void PatternMatcherProgramParser::loadMatcherOption( ProgramLexer& lexer)
 	if (lexer.current().isToken( TokIdentifier))
 	{
 		std::string name = lexer.current().value();
-		lexer.next();
-		if (lexer.current().isToken( TokAssign))
+		if (lexer.next().isToken( TokAssign))
 		{
-			ProgramLexem cur = lexer.next();
-			if (cur.isToken( TokFloat) || cur.isToken( TokInteger))
+			lexer.next();
+			if (lexer.current().isToken( TokFloat) || lexer.current().isToken( TokInteger))
 			{
-				double value = numstring_conv::todouble( cur.value());
+				double value = numstring_conv::todouble( lexer.current().value());
 				m_patternMatcher->defineOption( name, value);
 			}
 			else
@@ -225,13 +224,11 @@ void PatternMatcherProgramParser::loadFeederOption( ProgramLexer& lexer)
 
 void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 {
-	ProgramLexem cur;
 	while (!lexer.current().end())
 	{
-		cur = lexer.current();
-		if (cur.isToken( TokLEXER) || cur.isToken( TokMATCHER) || cur.isToken( TokFEEDER))
+		if (lexer.current().isToken( TokLEXER) || lexer.current().isToken( TokMATCHER) || lexer.current().isToken( TokFEEDER))
 		{
-			if (cur.isToken( TokLEXER))
+			if (lexer.current().isToken( TokLEXER))
 			{
 				if (!m_patternLexer)
 				{
@@ -243,7 +240,7 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 					loadLexerOption( lexer);
 				} while (lexer.current().isToken(TokComma));
 			}
-			else if (cur.isToken( TokMATCHER))
+			else if (lexer.current().isToken( TokMATCHER))
 			{
 				do
 				{
@@ -251,7 +248,7 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 					loadMatcherOption( lexer);
 				} while (lexer.current().isToken(TokComma));
 			}
-			else //if (cur.isToken( TokFEEDER))
+			else //if (lexer.current().isToken( TokFEEDER))
 			{
 				if (!m_patternTermFeeder)
 				{
@@ -273,7 +270,6 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 
 void PatternMatcherProgramParser::loadLexerRule( ProgramLexer& lexer, const std::string& name, unsigned int level)
 {
-	ProgramLexem cur;
 	if (m_patternLexer)
 	{
 		unsigned int nameid = m_regexNameSymbolTab.getOrCreate( name);
@@ -295,43 +291,41 @@ void PatternMatcherProgramParser::loadLexerRule( ProgramLexer& lexer, const std:
 			char const* rxptr = lexer.nextpos();
 			regex = parse_REGEX( rxptr);
 			lexer.skipto( rxptr);
-			cur = lexer.next();
 
-			if (cur.isToken(TokEditDistance))
+			if (lexer.next().isToken(TokEditDistance))
 			{
 				//... edit distance operator "~1","~2",....
-				regex.append(cur.value());
-				cur = lexer.next();
+				regex.append( lexer.current().value());
+				lexer.next();
 			}
 			unsigned int resultIndex = 0;
-			if (cur.isToken(TokOpenSquareBracket))
+			if (lexer.current().isToken(TokOpenSquareBracket))
 			{
-				cur = lexer.next();
-				if (!cur.isToken( TokInteger))
+				if (!lexer.next().isToken( TokInteger))
 				{
 					throw strus::runtime_error( _TXT("expected result index (unsigned inside square brackets '[' .. ']'"));
 				}
-				resultIndex = numstring_conv::touint( cur.value(), std::numeric_limits<char>::max());
+				resultIndex = numstring_conv::touint( lexer.current().value(), std::numeric_limits<char>::max());
 				if (!lexer.next().isToken( TokCloseSquareBracket))
 				{
 					throw strus::runtime_error( _TXT("close square bracket ']' expected at end of result index definition"));
 				}
-				cur = lexer.next();
+				lexer.next();
 			}
 			analyzer::PositionBind posbind = analyzer::BindContent;
-			if (cur.isToken( TokLeftArrow))
+			if (lexer.current().isToken( TokLeftArrow))
 			{
-				cur = lexer.next();
+				lexer.next();
 				posbind = analyzer::BindPredecessor;
 			}
-			else if (cur.isToken( TokRightArrow))
+			else if (lexer.current().isToken( TokRightArrow))
 			{
-				cur = lexer.next();
+				lexer.next();
 				posbind = analyzer::BindSuccessor;
 			}
 			m_patternLexer->defineLexem( nameid, regex, resultIndex, level, posbind);
 		}
-		while (cur.isToken( TokOr));
+		while (lexer.current().isToken( TokOr));
 	}
 	else if (m_patternTermFeeder)
 	{
@@ -382,31 +376,29 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 	ProgramLexem cur;
 	while (!lexer.current().end())
 	{
-		cur = lexer.current();
 		bool visible = true;
-		if (cur.isToken( TokDot))
+		if (lexer.current().isToken( TokDot))
 		{
 			//... declare rule as invisible (private)
 			visible = false;
 			cur = lexer.next();
 		}
-		if (cur.isToken( TokIdentifier) || cur.isString())
+		if (lexer.current().isToken( TokIdentifier) || lexer.current().isString())
 		{
-			bool nameIsString = cur.isString();
-			std::string name = cur.value();
+			bool nameIsString = lexer.current().isString();
+			std::string name = lexer.current().value();
 			if (name.empty()) throw strus::runtime_error( _TXT("pattern name is empty"));
-
-			cur = lexer.next();
+			lexer.next();
 
 			int level = -1;
-			if (cur.isToken( TokExp))
+			if (lexer.current().isToken( TokExp))
 			{
-				cur = lexer.next();
-				if (!cur.isToken( TokInteger)) throw strus::runtime_error( _TXT("expected unsigned integer as level"));
-				level = (int)(unsigned int)numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
+				lexer.next();
+				if (!lexer.current().isToken( TokInteger)) throw strus::runtime_error( _TXT("expected unsigned integer as level"));
+				level = (int)(unsigned int)numstring_conv::touint( lexer.current().value(), std::numeric_limits<int>::max());
 				cur = lexer.next();
 			}
-			if (cur.isToken( TokColon))
+			if (lexer.current().isToken( TokColon))
 			{
 				//... lexem expression declaration
 				if (nameIsString) throw strus::runtime_error( _TXT("string not allowed as lexem type"));
@@ -414,7 +406,7 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 
 				loadLexerRule( lexer, name, level>=0?level:0);
 			}
-			else if (cur.isToken( TokAssign))
+			else if (lexer.current().isToken( TokAssign))
 			{
 				if (level >= 0) throw strus::runtime_error( _TXT("unsupported definition of level \"^N\" in token pattern definition"));
 
@@ -424,7 +416,7 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 			{
 				throw strus::runtime_error( _TXT("assign '=' (token pattern definition) or colon ':' (lexem pattern definition) expected after name starting a pattern declaration"));
 			}
-			if (!cur.isToken( TokSemiColon))
+			if (!lexer.current().isToken( TokSemiColon))
 			{
 				throw strus::runtime_error( _TXT("semicolon ';' expected at end of rule"));
 			}
@@ -598,9 +590,9 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 		unsigned int cardinality = 0;
 		unsigned int range = 0;
 		unsigned int nofArguments = 0;
-		ProgramLexem cur = lexer.next();
+		lexer.next();
 
-		if (!cur.isToken(TokCloseOvalBracket))
+		if (!lexer.current().isToken(TokCloseOvalBracket))
 		do
 		{
 			SubExpressionInfo argexprinfo;
@@ -654,43 +646,40 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 					}
 					break;
 			}
-			cur = lexer.current();
 			++nofArguments;
-			if (cur.isToken(TokOr) || cur.isToken(TokExp))
+			if (lexer.current().isToken(TokOr) || lexer.current().isToken(TokExp))
 			{
 				unsigned int mask = 0;
-				while (cur.isToken(TokOr) || cur.isToken(TokExp))
+				while (lexer.current().isToken(TokOr) || lexer.current().isToken(TokExp))
 				{
-					if (cur.isToken(TokOr))
+					if (lexer.current().isToken(TokOr))
 					{
 						if ((mask & 0x01) == 0)
 						{
 							mask |= 0x01;
-							cur = lexer.next();
-							if (!cur.isToken(TokInteger))
+							if (!lexer.next().isToken(TokInteger))
 							{
 								throw strus::runtime_error( _TXT("unsigned integer expected as proximity range value after '|' in expression parameter list"));
 							}
-							range = numstring_conv::touint( cur.value(), std::numeric_limits<int>::max());
-							cur = lexer.next();
+							range = numstring_conv::touint( lexer.current().value(), std::numeric_limits<int>::max());
+							lexer.next();
 						}
 						else
 						{
 							throw strus::runtime_error( _TXT("duplicate definition of range"));
 						}
 					}
-					else if (cur.isToken(TokExp))
+					else if (lexer.current().isToken(TokExp))
 					{
 						if ((mask & 0x02) == 0)
 						{
 							mask |= 0x02;
-							cur = lexer.next();
-							if (!cur.isToken(TokInteger))
+							if (!lexer.next().isToken(TokInteger))
 							{
 								throw strus::runtime_error( _TXT("unsigned integer expected as cardinality value after '^' in expression parameter list"));
 							}
-							cardinality = numstring_conv::touint( cur.value(), std::numeric_limits<short>::max());
-							cur = lexer.next();
+							cardinality = numstring_conv::touint( lexer.current().value(), std::numeric_limits<short>::max());
+							lexer.next();
 						}
 						else
 						{
@@ -698,14 +687,14 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 						}
 					}
 				}
-				if (cur.isToken(TokComma))
+				if (lexer.current().isToken(TokComma))
 				{
 					throw strus::runtime_error( _TXT("unexpected comma ',' after proximity range and/or cardinality specification than must only appear at the end of the arguments list"));
 				}
 			}
 		}
-		while (cur.isToken(TokComma));
-		if (!cur.isToken(TokCloseOvalBracket))
+		while (lexer.current().isToken(TokComma));
+		if (!lexer.current().isToken(TokCloseOvalBracket))
 		{
 			throw strus::runtime_error( _TXT("close bracket ')' expected at end of join operation expression"));
 		}
@@ -837,12 +826,11 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 	if (lexer.next().isToken(TokAssign))
 	{
 		if (m_dbgtrace) m_dbgtrace->event( "assign", "%s", name.c_str());
-		ProgramLexem cur = lexer.next();
-		if (!cur.isToken(TokIdentifier))
+		if (!lexer.next().isToken(TokIdentifier))
 		{
 			throw strus::runtime_error( _TXT("expected variable after assign '='"));
 		}
-		std::string op = cur.value();
+		std::string op = lexer.current().value();
 		lexer.next();
 		loadExpressionNode( lexer, op, exprinfo);
 		m_patternMatcher->attachVariable( name);

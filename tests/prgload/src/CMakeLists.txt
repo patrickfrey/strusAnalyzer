@@ -20,6 +20,6 @@ link_directories(
 add_cppcheck( testDocumentAnalyzerLoadProgram testDocumentAnalyzerLoadProgram.cpp )
 
 add_executable( testDocumentAnalyzerLoadProgram testDocumentAnalyzerLoadProgram.cpp)
-target_link_libraries( testDocumentAnalyzerLoadProgram strus_analyzer strus_analyzer_prgload_std strus_segmenter_textwolf strus_error strus_textproc strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testDocumentAnalyzerLoadProgram strus_analyzer strus_analyzer_prgload_std strus_segmenter_textwolf strus_pattern_test strus_error strus_textproc strus_base   ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 
