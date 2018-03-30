@@ -134,11 +134,11 @@ int main( int argc, const char* argv[])
 
 		strus::PatternLexerInterface* patternLexer = strus::createPatternLexer_test( g_errorhnd);
 		if (!patternLexer) throw std::runtime_error( "failed to create pattern lexer");
-		textproc->definePatternLexer( "", patternLexer);
+		textproc->definePatternLexer( "test", patternLexer);
 
 		strus::PatternMatcherInterface* patternMatcher = strus::createPatternMatcher_test( g_errorhnd);
 		if (!patternMatcher) throw std::runtime_error( "failed to create pattern matcher");
-		textproc->definePatternMatcher( "", patternMatcher);
+		textproc->definePatternMatcher( "test", patternMatcher);
 
 		textproc->addResourcePath( resourceDir);
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));

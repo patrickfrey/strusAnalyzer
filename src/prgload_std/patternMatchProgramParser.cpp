@@ -590,9 +590,8 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 		unsigned int cardinality = 0;
 		unsigned int range = 0;
 		unsigned int nofArguments = 0;
-		lexer.next();
 
-		if (!lexer.current().isToken(TokCloseOvalBracket))
+		if (!lexer.next().isToken(TokCloseOvalBracket))
 		do
 		{
 			SubExpressionInfo argexprinfo;
@@ -693,7 +692,7 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 				}
 			}
 		}
-		while (lexer.current().isToken(TokComma));
+		while (lexer.current().isToken(TokComma) && lexer.next());
 		if (!lexer.current().isToken(TokCloseOvalBracket))
 		{
 			throw strus::runtime_error( _TXT("close bracket ')' expected at end of join operation expression"));

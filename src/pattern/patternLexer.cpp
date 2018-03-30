@@ -351,7 +351,10 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 				{
 					std::string symkey( src+mi->pos, mi->len);
 					int symid = m_instance->getSymbol( id, symkey);
-					if (symid) id = symid;
+					if (symid)
+					{
+						rt.push_back( analyzer::PatternLexem( symid, ordpos, 0, mi->pos, mi->len));
+					}
 				}
 				rt.push_back( analyzer::PatternLexem( id, ordpos, 0, mi->pos, mi->len));
 			}

@@ -28,7 +28,7 @@ using namespace strus;
 #define STRUS_DBGTRACE_COMPONENT_NAME_PROC "pattern_proc"
 
 enum {
-	MaxId=(1<<20),
+	MaxId=(1<<28),
 	PatternIdOfs=(1<<28),
 	ExpressionIdOfs=(1<<29)
 };
@@ -109,7 +109,6 @@ void TestPatternMatcherInstance::pushPattern( const std::string& name)
 	{
 		if (m_dbgtrace) m_dbgtrace->event( "push", "pattern %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "pushPattern");
-		if (m_stk.empty()) throw std::runtime_error("illegal operation");
 		if (m_patternar.size() > MaxId) throw std::runtime_error("too many expressions pushed");
 	
 		m_stk.push_back( m_patternrefar.size() + PatternIdOfs);
@@ -136,6 +135,7 @@ void TestPatternMatcherInstance::definePattern( const std::string& name, bool vi
 	{
 		if (m_dbgtrace) m_dbgtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "definePattern");
+		if (m_stk.empty()) throw std::runtime_error("illegal operation");
 		m_patternar.push_back( Pattern( m_stk.back(), name));
 		m_stk.pop_back();
 	}
@@ -241,6 +241,7 @@ std::vector<analyzer::PatternMatcherResult> TestPatternMatcherContext::fetchResu
 		std::vector<TestPatternMatcherInstance::Pattern>::const_iterator pi = m_instance->m_patternar.begin(), pe = m_instance->m_patternar.end();
 		for (; pi != pe; ++pi)
 		{
+			if (m_dbgtrace_proc) m_dbgtrace_proc->event( "evalpattern", "name %s id %d", pi->name.c_str(), (int)pi->id);
 			evalPattern( rt, *pi);
 		}
 		std::sort( rt.begin(), rt.end(), comparePatternMatcherResult);
@@ -279,12 +280,12 @@ void TestPatternMatcherContext::joinResult( MatchResult& result, const MatchResu
 
 bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned int id, int inputiter, unsigned int maxordlen, bool imm, bool seq) const
 {
-	for (std::size_t ii=inputiter; ii < m_inputar.size(); ++ii)
+	for (; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
 		if (maxordlen)
 		{
-			const analyzer::PatternLexem& token = m_inputar[ ii];
-			if (result.match.ordpos + result.match.ordlen - token.ordpos() > maxordlen) return false;
+			const analyzer::PatternLexem& token = m_inputar[ inputiter];
+			if (token.ordpos() - result.match.ordpos > maxordlen) return false;
 		}
 		MatchResult aresult;
 		if (!matchItem( aresult, id, inputiter)) continue;
@@ -301,7 +302,7 @@ bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned in
 			if (maxordlen)
 			{
 				int endordpos = std::max( aresult.match.ordpos + aresult.match.ordlen, result.match.ordpos + result.match.ordlen);
-				if (endordpos < result.match.ordpos + (int)maxordlen) continue;
+				if (endordpos > result.match.ordpos + (int)maxordlen) continue;
 			}
 			joinResult( result, aresult);
 			return true;
@@ -315,7 +316,7 @@ bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned in
 			if (maxordlen)
 			{
 				int endordpos = std::max( aresult.match.ordpos + aresult.match.ordlen, result.match.ordpos + result.match.ordlen);
-				if (endordpos < result.match.ordpos + (int)maxordlen) continue;
+				if (endordpos > result.match.ordpos + (int)maxordlen) continue;
 			}
 			joinResult( result, aresult);
 			return true;
@@ -342,6 +343,7 @@ bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int
 		if (!pidx)
 		{
 			if (!matchItem( result, *pi, inputiter)) return false;
+			++nofMatches;
 		}
 		else
 		{
@@ -359,9 +361,9 @@ bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int
 	}
 	if (cardinality ? nofMatches >= (int)cardinality : nofMatches == pidx)
 	{
-		if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchcombined", "%s%s%s pos %d nof %d cardinality %d",
+		if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchcombined", "%s%s%s pos %d len %d nof %d cardinality %d",
 					(seq?"sequence":"within"), (structid?"_struct":""), (imm?"_imm":""),
-					result.match.ordpos, nofMatches, cardinality ? cardinality : pidx);
+					result.match.ordpos, result.match.ordlen, nofMatches, cardinality ? cardinality : pidx);
 		return true;
 	}
 	else
@@ -468,7 +470,15 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 		case ItemPatternRef:
 		{
 			std::vector<unsigned int> patterns = m_instance->getPatternRefs( m_instance->m_patternrefar[ itemidx]);
-			return matchShortest( result, patterns.begin(), patterns.end(), inputiter);
+			if (patterns.size() == 1)
+			{
+				return matchItem( result, patterns[0], inputiter);
+			}
+			else if (!patterns.empty())
+			{
+				return matchShortest( result, patterns.begin(), patterns.end(), inputiter);
+			}
+			return false;
 		}
 		case ItemExpression:
 		{
@@ -504,8 +514,15 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 	for (int inputiter=0; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
 		MatchResult result;
+		if (m_dbgtrace_proc)
+		{
+			const analyzer::PatternLexem& lexem = m_inputar[ inputiter];
+			m_dbgtrace_proc->event( "token", "[%d] id %d pos %d", inputiter, (int)lexem.id(), (int)lexem.ordpos());
+		}
 		if (matchItem( result, pattern.id, inputiter))
 		{
+			if (m_dbgtrace) m_dbgtrace->event( "pattern", "id %d name %s at %d length %d", (int)pattern.id, pattern.name.c_str(), result.match.ordpos, result.match.ordlen);
+
 			std::vector<analyzer::PatternMatcherResultItem> itemar;
 			std::vector<MatchItem>::const_iterator mi = result.items.begin(), me = result.items.end();
 			for (; mi != me; ++mi)
