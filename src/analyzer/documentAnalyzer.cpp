@@ -189,7 +189,7 @@ void DocumentAnalyzer::defineSubDocument(
 		m_subdoctypear.push_back( subDocumentTypeName);
 		if (subDocumentType >= MaxNofSubDocuments)
 		{
-			throw strus::runtime_error( "%s", _TXT("too many sub documents defined"));
+			throw std::runtime_error( _TXT("too many sub documents defined"));
 		}
 		defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
 	}
@@ -214,7 +214,7 @@ void DocumentAnalyzer::defineSubContent(
 			opts = m_textproc->getSegmenterOptions( documentClass.scheme());
 		}
 		Reference<SegmenterInstanceInterface> segmenterinst( segmenter_->createInstance( opts));
-		if (!segmenterinst.get()) throw strus::runtime_error( "%s", _TXT("failed to create segmenter instance"));
+		if (!segmenterinst.get()) throw std::runtime_error( _TXT("failed to create segmenter instance"));
 		m_subsegmenterList.push_back( SubSegmenterDef( documentClass, segmenterinst.get(), selectexpr));
 		segmenterinst.release();
 	}
@@ -325,7 +325,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 		analyzerInstance->putInput( content.c_str(), content.size(), true);
 		if (!analyzerInstance->analyzeNext( rt))
 		{
-			throw strus::runtime_error( "%s", _TXT("analyzed content incomplete or empty"));
+			throw std::runtime_error( _TXT("analyzed content incomplete or empty"));
 		}
 		return rt;
 	}

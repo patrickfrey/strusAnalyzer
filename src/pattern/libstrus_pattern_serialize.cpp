@@ -50,13 +50,13 @@ struct SerializerHeader
 
 	SerializerHeader( const char* content, std::size_t contentsize)
 	{
-		if (contentsize < sizeof(*this)) throw strus::runtime_error( "%s", _TXT("failed to parse header: too small"));
+		if (contentsize < sizeof(*this)) throw std::runtime_error( _TXT("failed to parse header: too small"));
 		std::memcpy( this, content, sizeof(*this));
-		if (std::strcmp( ftype, DATA_HEADER_IDSTRING) != 0) throw strus::runtime_error( "%s", _TXT("failed to parse header: unknown header id string"));
+		if (std::strcmp( ftype, DATA_HEADER_IDSTRING) != 0) throw std::runtime_error( _TXT("failed to parse header: unknown header id string"));
 		version_major = ByteOrder<uint32_t>::ntoh( version_major);
 		version_minor = ByteOrder<uint32_t>::ntoh( version_minor);
-		if (version_major != STRUS_ANALYZER_VERSION_MAJOR) throw strus::runtime_error( "%s", _TXT("failed to parse header: incompatible version"));
-		if (version_minor < STRUS_ANALYZER_VERSION_MINOR) throw strus::runtime_error( "%s", _TXT("failed to parse header: version of data newer than reader"));
+		if (version_major != STRUS_ANALYZER_VERSION_MAJOR) throw std::runtime_error( _TXT("failed to parse header: incompatible version"));
+		if (version_minor < STRUS_ANALYZER_VERSION_MINOR) throw std::runtime_error( _TXT("failed to parse header: version of data newer than reader"));
 	}
 
 	static bool checkType( const char* content, std::size_t contentsize)
@@ -183,7 +183,7 @@ public:
 	{
 		if (srcsize < sizeof(SerializerHeader))
 		{
-			throw strus::runtime_error( "%s", _TXT("unexpected end of stream reading header of pattern deserialization from file"));
+			throw std::runtime_error( _TXT("unexpected end of stream reading header of pattern deserialization from file"));
 		}
 		SerializerHeader hdr( m_itr, sizeof(SerializerHeader));
 		m_itr += sizeof(SerializerHeader);
@@ -200,7 +200,7 @@ public:
 		char const* eos = (const char*)std::strchr( m_itr, '\0');
 		if (eos == m_end)
 		{
-			throw strus::runtime_error( "%s", _TXT("unexpected end of stream reading deserialization of patterns from file"));
+			throw std::runtime_error( _TXT("unexpected end of stream reading deserialization of patterns from file"));
 		}
 		rt.append( m_itr, eos - m_itr);
 		m_itr = eos + 1;
@@ -213,7 +213,7 @@ public:
 		uint8_t opinv = readScalar<uint8_t>();
 		if (op != (opinv ^ (uint8_t)0xff))
 		{
-			throw strus::runtime_error( "%s", _TXT("corrupt pattern matcher serialization file: check command header"));
+			throw std::runtime_error( _TXT("corrupt pattern matcher serialization file: check command header"));
 		}
 		return (SerializerData::Operation)op;
 	}
@@ -246,7 +246,7 @@ public:
 		char eolnmark = readScalar<int8_t>();
 		if (eolnmark != '\n')
 		{
-			throw strus::runtime_error( "%s", _TXT("corrupt pattern matcher serialization file: check end of command"));
+			throw std::runtime_error( _TXT("corrupt pattern matcher serialization file: check end of command"));
 		}
 	}
 
@@ -258,7 +258,7 @@ private:
 		net_value_type val_n;
 		if (m_itr + sizeof(val_n) > m_end)
 		{
-			throw strus::runtime_error( "%s", _TXT("unexpected end of stream reading deserialization of patterns"));
+			throw std::runtime_error( _TXT("unexpected end of stream reading deserialization of patterns"));
 		}
 		std::memcpy( &val_n, m_itr, sizeof(val_n));
 		m_itr += sizeof(val_n);
@@ -833,9 +833,9 @@ DLL_PUBLIC PatternSerializer*
 			case PatternMatcherWithLexer:
 			{
 				Reference<PatternLexerInstanceInterface> lexer( new PatternLexerInstance( serializerData, errorhnd));
-				if (!lexer.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern lexer instance for serialization"));
+				if (!lexer.get()) throw std::runtime_error( _TXT("failed to create pattern lexer instance for serialization"));
 				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstance( serializerData, errorhnd));
-				if (!matcher.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher instance for serialization"));
+				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( serializerData.get(), lexer.release(), matcher.release(), errorhnd);
 			}
@@ -843,9 +843,9 @@ DLL_PUBLIC PatternSerializer*
 			case PatternMatcherWithFeeder:
 			{
 				Reference<PatternTermFeederInstanceInterface> feeder( new PatternTermFeederInstance( serializerData, errorhnd));
-				if (!feeder.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern term feeder instance for serialization"));
+				if (!feeder.get()) throw std::runtime_error( _TXT("failed to create pattern term feeder instance for serialization"));
 				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstance( serializerData, errorhnd));
-				if (!matcher.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher instance for serialization"));
+				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( serializerData.get(), feeder.release(), matcher.release(), errorhnd);
 			}
@@ -874,9 +874,9 @@ DLL_PUBLIC PatternSerializer*
 			case PatternMatcherWithLexer:
 			{
 				Reference<PatternLexerInstanceInterface> lexer( new PatternLexerInstanceText( output, errorhnd));
-				if (!lexer.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern lexer instance for serialization"));
+				if (!lexer.get()) throw std::runtime_error( _TXT("failed to create pattern lexer instance for serialization"));
 				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
-				if (!matcher.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher instance for serialization"));
+				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( 0 /*serializerData*/, lexer.release(), matcher.release(), errorhnd);
 			}
@@ -884,9 +884,9 @@ DLL_PUBLIC PatternSerializer*
 			case PatternMatcherWithFeeder:
 			{
 				Reference<PatternTermFeederInstanceInterface> feeder( new PatternTermFeederInstanceText( output, errorhnd));
-				if (!feeder.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern term feeder instance for serialization"));
+				if (!feeder.get()) throw std::runtime_error( _TXT("failed to create pattern term feeder instance for serialization"));
 				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
-				if (!matcher.get()) throw strus::runtime_error( "%s", _TXT("failed to create pattern matcher instance for serialization"));
+				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( 0 /*serializerData*/, feeder.release(), matcher.release(), errorhnd);
 			}
@@ -909,7 +909,7 @@ static void deserializeCommand(
 	{
 		case SerializerData::TermFeeder_defineLexem:
 		{
-			if (!feeder) throw strus::runtime_error( "%s", _TXT("loading term feeder command when no term feeder defined"));
+			if (!feeder) throw std::runtime_error( _TXT("loading term feeder command when no term feeder defined"));
 
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_type = deserializer.readParam_string();
@@ -920,7 +920,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::TermFeeder_defineSymbol:
 		{
-			if (!feeder) throw strus::runtime_error( "%s", _TXT("loading term feeder command when no term feeder defined"));
+			if (!feeder) throw std::runtime_error( _TXT("loading term feeder command when no term feeder defined"));
 
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
@@ -932,7 +932,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternLexer_defineLexemName:
 		{
-			if (!lexer) throw strus::runtime_error( "%s", _TXT("loading pattern lexer command when no pattern lexer defined"));
+			if (!lexer) throw std::runtime_error( _TXT("loading pattern lexer command when no pattern lexer defined"));
 
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_name = deserializer.readParam_string();
@@ -942,7 +942,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternLexer_defineLexem:
 		{
-			if (!lexer) throw strus::runtime_error( "%s", _TXT("loading pattern lexer command when no pattern lexer defined"));
+			if (!lexer) throw std::runtime_error( _TXT("loading pattern lexer command when no pattern lexer defined"));
 
 			unsigned int op_id = deserializer.readParam_uint();
 			std::string op_expression = deserializer.readParam_string();
@@ -956,7 +956,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternLexer_defineSymbol:
 		{
-			if (!lexer) throw strus::runtime_error( "%s", _TXT("loading pattern lexer command when no pattern lexer defined"));
+			if (!lexer) throw std::runtime_error( _TXT("loading pattern lexer command when no pattern lexer defined"));
 
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
@@ -976,7 +976,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternLexer_compile:
 		{
-			if (!lexer) throw strus::runtime_error( "%s", _TXT("loading pattern lexer command when no pattern lexer defined"));
+			if (!lexer) throw std::runtime_error( _TXT("loading pattern lexer command when no pattern lexer defined"));
 			deserializer.endCall();
 			if (!lexer->compile())
 			{
@@ -986,7 +986,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_defineTermFrequency:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			unsigned int op_termid = deserializer.readParam_uint();
 			double op_df = deserializer.readParam_double();
@@ -997,7 +997,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_pushTerm:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 			unsigned int op_termid = deserializer.readParam_uint();
 			deserializer.endCall();
 			matcher->pushTerm( op_termid);
@@ -1005,7 +1005,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_pushExpression:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			PatternMatcherInstanceInterface::JoinOperation
 				op_operation = (PatternMatcherInstanceInterface::JoinOperation)
@@ -1020,7 +1020,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_pushPattern:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 			std::string op_name = deserializer.readParam_string();
 			deserializer.endCall();
 			matcher->pushPattern( op_name);
@@ -1028,7 +1028,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_attachVariable:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			std::string op_name = deserializer.readParam_string();
 			deserializer.endCall();
@@ -1037,7 +1037,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_definePattern:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			std::string op_name = deserializer.readParam_string();
 			bool op_visible = deserializer.readParam_bool();
@@ -1056,7 +1056,7 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_compile:
 		{
-			if (!matcher) throw strus::runtime_error( "%s", _TXT("loading pattern matcher command when no pattern matcher defined"));
+			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 			deserializer.endCall();
 			if (!matcher->compile())
 			{

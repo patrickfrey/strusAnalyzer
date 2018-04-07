@@ -64,7 +64,7 @@ std::string TokenMarkupContext::markupDocument(
 	try
 	{
 		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
-		if (!markupdoc.get()) throw strus::runtime_error( "%s", _TXT("failed to create markup document context"));
+		if (!markupdoc.get()) throw std::runtime_error( _TXT("failed to create markup document context"));
 
 		std::vector<MarkupElement> markupar = m_markupar;
 		std::sort( markupar.begin(), markupar.end());

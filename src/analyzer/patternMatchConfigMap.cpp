@@ -16,7 +16,7 @@ const PreProcPatternMatchConfig& PreProcPatternMatchConfigMap::config( int idx) 
 {
 	if (idx <= 0 || (std::size_t)idx > m_ar.size())
 	{
-		throw strus::runtime_error( "%s", _TXT("internal: unknown index of feature"));
+		throw std::runtime_error( _TXT("internal: unknown index of feature"));
 	}
 	return m_ar[ idx-1];
 }
@@ -31,7 +31,7 @@ unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 	{
 		if (m_ar.size()+1 >= MaxNofPatternMatchSegments)
 		{
-			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
+			throw std::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
 		m_ar.push_back( PreProcPatternMatchConfig( string_conv::tolower(patternTypeName), matcher, lexer, allowCrossSegmentMatches));
@@ -41,7 +41,7 @@ unsigned int PreProcPatternMatchConfigMap::definePatternMatcher(
 	{
 		delete matcher;
 		delete lexer;
-		throw strus::runtime_error( "%s", _TXT("memory allocation error defining pattern matcher"));
+		throw std::runtime_error( _TXT("memory allocation error defining pattern matcher"));
 	}
 	catch (const std::runtime_error& err)
 	{
@@ -57,7 +57,7 @@ const PostProcPatternMatchConfig& PostProcPatternMatchConfigMap::config( int idx
 {
 	if (idx <= 0 || (std::size_t)idx > m_ar.size())
 	{
-		throw strus::runtime_error( "%s", _TXT("internal: unknown index of feature"));
+		throw std::runtime_error( _TXT("internal: unknown index of feature"));
 	}
 	return m_ar[ idx-1];
 }
@@ -72,7 +72,7 @@ unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 	{
 		if (m_ar.size()+1 >= MaxNofPatternMatchSegments)
 		{
-			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
+			throw std::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
 		m_ar.push_back( PostProcPatternMatchConfig( string_conv::tolower(patternTypeName), matcher, feeder, allowCrossSegmentMatches));
@@ -82,7 +82,7 @@ unsigned int PostProcPatternMatchConfigMap::definePatternMatcher(
 	{
 		delete matcher;
 		delete feeder;
-		throw strus::runtime_error( "%s", _TXT("memory allocation error defining pattern matcher"));
+		throw std::runtime_error( _TXT("memory allocation error defining pattern matcher"));
 	}
 	catch (const std::runtime_error& err)
 	{

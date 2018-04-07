@@ -39,7 +39,7 @@ void PatternFeatureConfigMap::defineFeature(
 	catch (const std::bad_alloc&)
 	{
 		freeNormalizers( normalizers);
-		throw strus::runtime_error( "%s", _TXT("memory allocation error defining feature"));
+		throw std::runtime_error( _TXT("memory allocation error defining feature"));
 	}
 	catch (const std::runtime_error& err)
 	{

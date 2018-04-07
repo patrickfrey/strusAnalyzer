@@ -86,7 +86,7 @@ bool HashMap::set( const std::string& key, const std::string& value)
 {
 	uint32_t id = m_symtab.getOrCreate( key);
 	if (!m_symtab.isNew()) throw strus::runtime_error(_TXT("duplicate definition of symbol '%s'"), key.c_str());
-	if (id != m_value_refs.size()+1) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data"));
+	if (id != m_value_refs.size()+1) throw std::runtime_error( _TXT("internal: inconsistency in data"));
 	m_value_strings.push_back('\0');
 	m_value_refs.push_back( m_value_strings.size());
 	m_value_strings.append( value);

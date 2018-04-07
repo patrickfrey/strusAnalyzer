@@ -125,7 +125,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined"));
+				throw std::runtime_error( _TXT("segment with this position not defined"));
 			}
 			else
 			{
@@ -143,7 +143,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined"));
+				throw std::runtime_error( _TXT("segment with this position not defined"));
 			}
 			else
 			{
@@ -182,7 +182,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
+				throw std::runtime_error( _TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
 			}
 			std::size_t pos = getOrigPosition( segpos, ofs);
 			if (m_markups.size() && m_markups.back().pos == pos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
@@ -244,7 +244,7 @@ public:
 						}
 						break;
 					case MarkupElement::AttributeValue:
-						throw strus::runtime_error( "%s", _TXT("logic error: unexpected attribute value"));
+						throw std::runtime_error( _TXT("logic error: unexpected attribute value"));
 					case MarkupElement::CloseTag:
 					{
 						bool foundOpenTag = false;
@@ -375,7 +375,7 @@ private:
 				case MyXMLScanner::CloseTagIm:
 				case MyXMLScanner::CloseTag:
 				{
-					if (stack.empty()) throw strus::runtime_error( "%s", _TXT("tags not balanced in XML"));
+					if (stack.empty()) throw std::runtime_error( _TXT("tags not balanced in XML"));
 					segmentDef = stack.back();
 					stack.pop_back();
 					break;
@@ -399,7 +399,7 @@ private:
 				}
 				case MyXMLScanner::Exit:
 				{
-					if (!stack.empty()) throw strus::runtime_error( "%s", _TXT("tags not balanced in XML"));
+					if (!stack.empty()) throw std::runtime_error( _TXT("tags not balanced in XML"));
 					return;
 				}
 			}
@@ -411,11 +411,11 @@ private:
 		typename SegmentMap::const_iterator segitr = findSegment( segpos);
 		if (segitr == m_segmentmap.end()) 
 		{
-			throw strus::runtime_error( "%s", _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
+			throw std::runtime_error( _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
 		}
 		if (segitr->second.segsize < ofs) 
 		{
-			throw strus::runtime_error( "%s", _TXT("offset in this segment out of range"));
+			throw std::runtime_error( _TXT("offset in this segment out of range"));
 		}
 		typedef textwolf::TextScanner<char*,CharsetEncoding> OrigTextScanner;
 		typedef textwolf::TextScanner<textwolf::CStringIterator,textwolf::charset::UTF8> ConvTextScanner;
