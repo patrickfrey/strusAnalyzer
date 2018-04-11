@@ -2,5 +2,5 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 add_subdirectory(src)
 
-add_test( NormalizerRegex src/testNormalizerRegex )
+add_test( NormalizerRegex ${CMAKE_CURRENT_BINARY_DIR}/src/testNormalizerRegex )
 
