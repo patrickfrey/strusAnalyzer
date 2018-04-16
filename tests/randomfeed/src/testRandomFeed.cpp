@@ -29,8 +29,8 @@
 #include "strus/analyzer/token.hpp"
 #include "strus/base/stdint.h"
 #include "strus/base/local_ptr.hpp"
+#include "strus/base/pseudoRandom.hpp"
 #include "private/internationalization.hpp"
-#include "random.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -44,7 +44,7 @@
 
 #undef STRUS_LOWLEVEL_DEBUG
 
-static strus::test::Random g_random;
+static strus::PseudoRandom g_random;
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 #ifdef STRUS_LOWLEVEL_DEBUG

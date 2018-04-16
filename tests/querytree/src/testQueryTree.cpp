@@ -23,8 +23,8 @@
 #include "strus/base/string_format.hpp"
 #include "strus/base/numstring.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/pseudoRandom.hpp"
 #include "strus/reference.hpp"
-#include "random.hpp"
 #include "tree.hpp"
 #include <limits>
 #include <string>
@@ -88,7 +88,7 @@ std::ostream& operator<<( std::ostream& os, const QueryItem& itm)
 
 typedef strus::test::TreeNode<QueryItem> QueryTree;
 
-static strus::test::Random g_random;
+static strus::PseudoRandom g_random;
 
 static int parseInt( const char* intstr)
 {
