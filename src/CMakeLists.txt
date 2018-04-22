@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 add_subdirectory( utils )
+add_subdirectory( normalizer_trim )
 add_subdirectory( normalizer_snowball )
 add_subdirectory( normalizer_charconv )
 add_subdirectory( normalizer_dictmap )
