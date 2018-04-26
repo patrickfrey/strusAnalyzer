@@ -15,6 +15,8 @@
 /// \brief strus toplevel namespace
 namespace strus
 {
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \class AggregatorFunctionInstanceInterface
 /// \brief Interface for a parameterized aggregator function
@@ -28,6 +30,10 @@ public:
 	/// \param[in] document document to inspect
 	/// \return aggregated value
 	virtual NumericVariant evaluate( const analyzer::Document& document) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

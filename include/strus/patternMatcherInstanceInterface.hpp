@@ -16,6 +16,8 @@ namespace strus
 
 /// \brief Forward declaration
 class PatternMatcherContextInterface;
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Interface for building the automaton for detecting patterns in text
 class PatternMatcherInstanceInterface
@@ -88,6 +90,10 @@ public:
 	/// \return the pattern matcher context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual PatternMatcherContextInterface* createContext() const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

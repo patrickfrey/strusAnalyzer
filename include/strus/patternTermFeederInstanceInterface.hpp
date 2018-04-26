@@ -15,6 +15,8 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Instance interface for defining a mapping of terms of the document analysis outout as lexems used as basic entities by pattern matching
 class PatternTermFeederInstanceInterface
@@ -59,6 +61,10 @@ public:
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

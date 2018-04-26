@@ -8,6 +8,7 @@
 #include "normalizer_trim.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/utf8.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
@@ -46,6 +47,15 @@ public:
 			return std::string( boundaries.first, boundaries.second - boundaries.first);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

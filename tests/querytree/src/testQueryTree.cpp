@@ -239,6 +239,11 @@ public:
 		return normalizeMultiplication( src, srcsize, m_factor);
 	}
 
+	virtual strus::IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
+	}
+
 private:
 	int m_factor;
 };

@@ -15,6 +15,8 @@
 
 /// \brief strus toplevel namespace
 namespace strus {
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Interface for tokenization
 class TokenizerFunctionInstanceInterface
@@ -32,6 +34,10 @@ public:
 	/// \param[in] src pointer to segment to tokenize
 	/// \param[in] srcsize size of the segment to tokenize in bytes
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

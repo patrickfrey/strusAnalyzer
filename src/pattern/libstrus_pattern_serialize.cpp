@@ -20,6 +20,7 @@
 #include "strus/base/hton.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/stdint.h"
+#include "strus/base/introspection.hpp"
 #include "strus/reference.hpp"
 #include "strus/versionAnalyzer.hpp"
 #include "private/internationalization.hpp"
@@ -333,6 +334,11 @@ public:
 		return 0;
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<SerializerData> m_serializerData;
@@ -435,6 +441,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternLexer::createContext not implemented in serializer"));
 		return 0;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
 	}
 
 private:
@@ -551,6 +562,11 @@ public:
 		return 0;
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<SerializerData> m_serializerData;
@@ -607,6 +623,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
 		return 0;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
 	}
 
 private:
@@ -693,6 +714,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternLexer::createContext not implemented in serializer"));
 		return 0;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
 	}
 
 private:
@@ -786,6 +812,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternMatcher::createContext not implemented in serializer"));
 		return 0;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
 	}
 
 private:

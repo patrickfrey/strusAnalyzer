@@ -46,6 +46,8 @@ public:
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const;
 
+	virtual IntrospectionInterface* createIntrospection() const;
+
 private:
 	static void writeOpenMarkup(
 			SegmenterMarkupContextInterface* markupdoc,
@@ -103,6 +105,8 @@ public:
 	virtual ~TokenMarkupInstance(){}
 
 	virtual TokenMarkupContextInterface* createContext() const;
+
+	virtual IntrospectionInterface* createIntrospection() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

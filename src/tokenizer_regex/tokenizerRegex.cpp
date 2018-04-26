@@ -10,6 +10,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/base/regex.hpp"
 #include "strus/base/numstring.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -23,7 +24,7 @@ class RegexTokenizerFunctionInstance
 {
 public:
 	RegexTokenizerFunctionInstance( const std::string& expression, int index, ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_search( expression, index, errorhnd_)
+		:m_errorhnd(errorhnd_),m_expression(expression),m_search( expression, index, errorhnd_)
 	{
 		if (m_errorhnd->hasError())
 		{
@@ -57,8 +58,28 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<RegexTokenizerFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "expression", &RegexTokenizerFunctionInstance::m_expression, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<RegexTokenizerFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
+	std::string m_expression;
 	RegexSearch m_search;
 };
 

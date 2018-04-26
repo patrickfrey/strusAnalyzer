@@ -7,6 +7,7 @@
  */
 #include "normalizer_wordjoin.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
@@ -55,6 +56,25 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<WordJoinNormalizerInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "jointoken", &WordJoinNormalizerInstance::m_jointoken, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<WordJoinNormalizerInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

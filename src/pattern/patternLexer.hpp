@@ -77,6 +77,11 @@ public:
 
 	virtual PatternLexerContextInterface* createContext() const;
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
+	}
+
 private:
 	typedef std::map<std::string,int> SymbolTable;
 

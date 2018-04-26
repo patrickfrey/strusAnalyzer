@@ -207,6 +207,11 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
+IntrospectionInterface* SegmenterInstance::createIntrospection() const
+{
+	return NULL;
+}
+
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try

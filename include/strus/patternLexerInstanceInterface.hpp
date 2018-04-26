@@ -17,6 +17,8 @@ namespace strus
 
 /// \brief Forward declaration
 class PatternLexerContextInterface;
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Interface for building the automaton for detecting lexems used as basic entities by pattern matching in text
 class PatternLexerInstanceInterface
@@ -83,6 +85,10 @@ public:
 	/// \return the lexer context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual PatternLexerContextInterface* createContext() const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

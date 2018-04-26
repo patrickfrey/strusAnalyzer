@@ -8,6 +8,7 @@
 #include "punctuation_en.hpp"
 #include "punctuation_utils.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -1047,6 +1048,7 @@ PunctuationTokenizerInstance_en::PunctuationTokenizerInstance_en(
 		const char* punctuationCharList,
 		ErrorBufferInterface* errorhnd)
 	:m_punctuation_char(punctuationCharList?(punctuationCharList[0]?punctuationCharList:"."):":.;,!?()-")
+	,m_punctuation_charlist(punctuationCharList?(punctuationCharList[0]?punctuationCharList:"."):":.;,!?()-")
 	,m_errorhnd(errorhnd)
 {
 	char const* cc = g_abbrevList;
@@ -1274,4 +1276,24 @@ std::vector<analyzer::Token>
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 }
+
+IntrospectionInterface* PunctuationTokenizerInstance_en::createIntrospection() const
+{
+	class Description :public StructTypeIntrospectionDescription<PunctuationTokenizerInstance_en>{
+	public:
+		Description()
+		{
+			(*this)
+			( "charlist", &PunctuationTokenizerInstance_en::m_punctuation_charlist, AtomicTypeIntrospection<std::string>::constructor)
+			;
+		}
+	};
+	static const Description descr;
+	try
+	{
+		return new StructTypeIntrospection<PunctuationTokenizerInstance_en>( this, &descr, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
+}
+
 

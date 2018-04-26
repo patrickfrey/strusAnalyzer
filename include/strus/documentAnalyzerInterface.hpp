@@ -37,6 +37,8 @@ class PatternTermFeederInstanceInterface;
 class PatternMatcherInstanceInterface;
 /// \brief Forward declaration
 class PatternLexerInstanceInterface;
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
 class DocumentAnalyzerInterface
@@ -206,6 +208,10 @@ public:
 	/// \return the document analyzer context (with ownership)
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return the introspection interface (with ownership)
+//[+]	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

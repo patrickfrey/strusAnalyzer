@@ -8,6 +8,7 @@
 #include "normalizerCharConv.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/introspection.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -15,6 +16,7 @@
 #include <cstring>
 
 using namespace strus;
+///\note The tables in this module have been generated with scripts/printCharTable.py
 
 class CharMap
 {
@@ -62,7 +64,7 @@ class CharMapNormalizerInstance
 {
 public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype_, CharMap::ExceptionsF exceptions_, ErrorBufferInterface* errorhnd_)
-		:m_map(CharMap::getMap(maptype_)),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
+		:m_map(CharMap::getMap(maptype_)),m_maptype(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize(
 			const char* src,
@@ -71,8 +73,18 @@ public:
 		return m_map->rewrite( src, srcsize, m_exceptions, m_errorhnd);
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	const CharMap* m_map;
+	CharMap::ConvType m_maptype;
 	CharMap::ExceptionsF m_exceptions;
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -4628,8 +4640,28 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<CharSelectNormalizerInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "sets", &CharSelectNormalizerInstance::m_setnames, &StringVectorIntrospection::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<CharSelectNormalizerInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	CharSet m_set;
+	std::vector<std::string> m_setnames;
 	ErrorBufferInterface* m_errorhnd;
 };
 

@@ -12,6 +12,7 @@
 #include "strus/analyzer/documentTerm.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <vector>
@@ -23,6 +24,8 @@ using namespace strus;
 using namespace strus::analyzer;
 
 static bool g_intl_initialized = false;
+
+#define MODULE_NAME "VSM aggregator"
 
 // Function types implemented for VSM aggregation
 typedef double (*AggregatorFunctionCall)( const std::vector<double>& input);
@@ -43,7 +46,7 @@ class VsmAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
+	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const std::string& name_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( string_conv::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
@@ -74,13 +77,32 @@ public:
 			}
 			return m_call( tfar);
 		}
-		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, (NumericVariant::IntType)0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name.c_str(), *m_errorhnd, (NumericVariant::IntType)0);
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<VsmAggregatorFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "type", &VsmAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
+				( "name", &VsmAggregatorFunctionInstance::m_name, AtomicTypeIntrospection<std::string>::constructor);
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<VsmAggregatorFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in introspection of '%s': %s"), MODULE_NAME, *m_errorhnd, NULL);
 	}
 
 private:
 	std::string m_featuretype;
 	AggregatorFunctionCall m_call;
-	const char* m_name;
+	std::string m_name;
 	ErrorBufferInterface* m_errorhnd;
 };
 

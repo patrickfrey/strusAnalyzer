@@ -8,6 +8,7 @@
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/introspectionInterface.hpp"
 #include "punctuation_utils.hpp"
 
 namespace strus
@@ -23,6 +24,7 @@ public:
 			const char* punctuationCharList,
 			ErrorBufferInterface* errorhnd)
 		:m_punctuation_char(punctuationCharList?punctuationCharList:":.;,!?()-")
+		,m_punctuation_charlist(punctuationCharList?(punctuationCharList[0]?punctuationCharList:"."):":.;,!?()-")
 		,m_errorhnd(errorhnd){}
 
 	virtual bool concatBeforeTokenize() const
@@ -37,8 +39,11 @@ public:
 
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
 
+	virtual IntrospectionInterface* createIntrospection() const;
+
 private:
 	CharTable m_punctuation_char;
+	std::string m_punctuation_charlist;
 	ErrorBufferInterface* m_errorhnd;
 };
 

@@ -12,6 +12,7 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -144,17 +145,17 @@ class DictMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	DictMapNormalizerInstance( const std::string& filename, const std::string& defaultResult_, bool defaultOrig_, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_defaultOrig(defaultOrig_)
+	DictMapNormalizerInstance( const std::string& filename_, const std::string& defaultResult_, bool defaultOrig_, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_filename(filename_),m_defaultOrig(defaultOrig_)
 	{
 		std::size_t sz;
-		std::string resolvedFilename = textproc->getResourcePath( filename);
+		std::string resolvedFilename = textproc->getResourcePath( m_filename);
 		if (resolvedFilename.empty() && m_errorhnd->hasError())
 		{
-			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), filename.c_str(), m_errorhnd->fetchError());
+			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), m_filename.c_str(), m_errorhnd->fetchError());
 		}
 		unsigned int ec = readFileSize( resolvedFilename, sz);
-		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
+		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), m_filename.c_str(), ::strerror(ec));
 		strus::local_ptr<KeyMap> map;
 		if (sz > 2000000)
 		{
@@ -198,10 +199,32 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<DictMapNormalizerInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "defaultorig", &DictMapNormalizerInstance::m_defaultOrig, AtomicTypeIntrospection<bool>::constructor)
+				( "default", &DictMapNormalizerInstance::m_defaultResult, AtomicTypeIntrospection<std::string>::constructor)
+				( "filename", &DictMapNormalizerInstance::m_filename, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<DictMapNormalizerInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 	KeyMap* m_map;
 	std::string m_defaultResult;
+	std::string m_filename;
 	bool m_defaultOrig;
 };
 

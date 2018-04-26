@@ -62,6 +62,10 @@ public:
 	virtual bool compile();
 
 	virtual PatternMatcherContextInterface* createContext() const;
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		return NULL;
+	}
 
 private:
 	friend class TestPatternMatcherContext;

@@ -10,6 +10,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/base/regex.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -24,8 +25,8 @@ class RegexNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	RegexNormalizerFunctionInstance( const std::string& expr, const std::string& result, ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_subst( expr, result, errorhnd_)
+	RegexNormalizerFunctionInstance( const std::string& expr_, const std::string& result_, ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_),m_expr(expr_),m_result(result_),m_subst( expr_, result_, errorhnd_)
 	{
 		if (m_errorhnd->hasError())
 		{
@@ -49,8 +50,30 @@ public:
 		}
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<RegexNormalizerFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "expr", &RegexNormalizerFunctionInstance::m_expr, AtomicTypeIntrospection<std::string>::constructor)
+				( "result", &RegexNormalizerFunctionInstance::m_result, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<RegexNormalizerFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
+	std::string m_expr;
+	std::string m_result;
 	strus::RegexSubst m_subst; 
 };
 

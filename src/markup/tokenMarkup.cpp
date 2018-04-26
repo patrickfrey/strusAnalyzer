@@ -126,7 +126,6 @@ std::string TokenMarkupContext::markupDocument(
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create document with markups inserted: %s"), *m_errorhnd, std::string());
 }
 
-
 TokenMarkupContextInterface* TokenMarkupInstance::createContext() const
 {
 	try
@@ -134,5 +133,10 @@ TokenMarkupContextInterface* TokenMarkupInstance::createContext() const
 		return new TokenMarkupContext( m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create token markup: %s"), *m_errorhnd, 0);
+}
+
+IntrospectionInterface* TokenMarkupInstance::createIntrospection() const
+{
+	return NULL;
 }
 

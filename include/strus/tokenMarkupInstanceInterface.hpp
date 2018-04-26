@@ -18,6 +18,8 @@ namespace strus
 class TokenMarkupContextInterface;
 /// \brief Forward declaration
 class SegmenterMarkupContextInterface;
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Interface for building the automaton for detecting patterns of tokens in a document stream
 class TokenMarkupInstanceInterface
@@ -30,6 +32,10 @@ public:
 	/// \return the token markup context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual TokenMarkupContextInterface* createContext() const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

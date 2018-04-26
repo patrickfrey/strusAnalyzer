@@ -19,6 +19,8 @@ namespace strus
 class SegmenterContextInterface;
 /// \brief Forward declaration
 class SegmenterMarkupContextInterface;
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \brief Defines a program for splitting a source text it into chunks with an id correspoding to a selecting expression.
 class SegmenterInstanceInterface
@@ -50,6 +52,10 @@ public:
 	virtual SegmenterMarkupContextInterface* createMarkupContext(
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

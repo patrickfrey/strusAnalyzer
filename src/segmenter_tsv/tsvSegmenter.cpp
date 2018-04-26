@@ -376,6 +376,10 @@ strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContex
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
+IntrospectionInterface* TSVSegmenterInstance::createIntrospection() const
+{
+	return NULL;
+}
 
 // TSVSegmenter
 

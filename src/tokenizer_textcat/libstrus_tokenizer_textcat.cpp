@@ -11,6 +11,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 extern "C" {
@@ -59,6 +60,25 @@ public:
 	virtual bool concatBeforeTokenize() const
 	{
 		return true;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<TextcatTokenizerInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "language", &TextcatTokenizerInstance::m_language, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<TextcatTokenizerInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

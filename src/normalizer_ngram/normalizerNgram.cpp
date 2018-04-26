@@ -13,6 +13,7 @@
 #include "private/internationalization.hpp"
 #include "strus/base/numstring.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/introspection.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -84,6 +85,28 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in normalize: %s"), *m_errorhnd, std::string());
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<NgramConfiguration>{
+		public:
+			Description()
+			{
+				(*this)
+				( "width", &NgramConfiguration::width, AtomicTypeIntrospection<unsigned int>::constructor)
+				( "withEnd", &NgramConfiguration::withEnd, AtomicTypeIntrospection<bool>::constructor)
+				( "withStart", &NgramConfiguration::withStart, AtomicTypeIntrospection<bool>::constructor)
+				( "roundRobin", &NgramConfiguration::roundRobin, AtomicTypeIntrospection<bool>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<NgramConfiguration>( &m_config, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

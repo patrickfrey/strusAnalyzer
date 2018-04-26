@@ -11,6 +11,7 @@
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/introspection.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -23,14 +24,14 @@ class StemNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	StemNormalizerFunctionInstance( const std::string& language, ErrorBufferInterface* errorhnd)
+	StemNormalizerFunctionInstance( const std::string& language_, ErrorBufferInterface* errorhnd)
+		:m_language(string_conv::tolower(language_))
 	{
 		m_errorhnd = errorhnd;
-		std::string language_lo = string_conv::tolower( language);
-		m_stemmer = sb_stemmer_new_threadsafe( language_lo.c_str(), 0/*UTF-8 is default*/);
+		m_stemmer = sb_stemmer_new_threadsafe( m_language.c_str(), 0/*UTF-8 is default*/);
 		if (!m_stemmer)
 		{
-			errorhnd->report( ErrorCodeNotImplemented, "language '%s' unknown for snowball stemmer", language.c_str());
+			errorhnd->report( ErrorCodeNotImplemented, "language '%s' unknown for snowball stemmer", m_language.c_str());
 		}
 	}
 
@@ -60,8 +61,28 @@ public:
 		}
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<StemNormalizerFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "language", &StemNormalizerFunctionInstance::m_language, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<StemNormalizerFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	struct sb_stemmer* m_stemmer;
+	std::string m_language;
 	ErrorBufferInterface* m_errorhnd;
 };
 

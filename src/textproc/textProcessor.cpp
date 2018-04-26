@@ -29,6 +29,7 @@
 #include "strus/lib/pattern_termfeeder.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "resourceDirectory.hpp"
@@ -98,6 +99,14 @@ public:
 	{
 		return std::string();
 	}
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -144,6 +153,14 @@ public:
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		return m_value;
+	}
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( m_value.c_str(), m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:
@@ -210,6 +227,14 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
+	}
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:
@@ -289,6 +314,15 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -348,6 +382,15 @@ public:
 		return false;
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		try
+		{
+			return new ConstIntrospection( NULL, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -403,6 +446,25 @@ public:
 			if (si->type() == m_featuretype) ++rt;
 		}
 		return (NumericVariant::IntType)rt;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<CountAggregatorFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "type", &CountAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<CountAggregatorFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), "count aggregator introspection", *m_errorhnd, NULL);
 	}
 
 private:
@@ -467,6 +529,26 @@ public:
 		return (NumericVariant::IntType)(rt + m_incr);
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<MaxPosAggregatorFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "type", &MaxPosAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
+				( "incr", &MaxPosAggregatorFunctionInstance::m_incr, AtomicTypeIntrospection<unsigned int>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<MaxPosAggregatorFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), "maxpos aggregator introspection", *m_errorhnd, NULL);
+	}
+
 private:
 	std::string m_featuretype;
 	unsigned int m_incr;
@@ -529,6 +611,25 @@ public:
 			if (si->type() == m_featuretype && (!rt || rt > si->pos())) rt = si->pos();
 		}
 		return (NumericVariant::IntType)rt;
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<MinPosAggregatorFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "type", &MinPosAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<MinPosAggregatorFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), "minpos aggregator introspection", *m_errorhnd, NULL);
 	}
 
 private:

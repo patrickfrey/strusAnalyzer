@@ -10,6 +10,7 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/base/stdint.h"
+#include "strus/base/introspection.hpp"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -105,12 +106,13 @@ struct DateNumGranularity
 struct Date2IntNormalizerConfig
 {
 	DateNumGranularity granularity;
+	std::string granularitystr;
 	std::vector<std::string> fmtar;
 
-	Date2IntNormalizerConfig( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_)
-		:granularity(granularity_),fmtar(fmtar_){}
+	Date2IntNormalizerConfig( const DateNumGranularity& granularity_, const char* granularitystr_, const std::vector<std::string>& fmtar_)
+		:granularity(granularity_),granularitystr(granularitystr_),fmtar(fmtar_){}
 	Date2IntNormalizerConfig( const Date2IntNormalizerConfig& o)
-		:granularity(o.granularity),fmtar(o.fmtar){}
+		:granularity(o.granularity),granularitystr(o.granularitystr),fmtar(o.fmtar){}
 };
 
 
@@ -118,8 +120,8 @@ class Date2IntNormalizerFunctionInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const std::vector<std::string>& fmtar_, ErrorBufferInterface* errorhnd)
-		:m_config(granularity_,fmtar_),m_errorhnd(errorhnd){}
+	Date2IntNormalizerFunctionInstance( const DateNumGranularity& granularity_, const char* granularitystr_, const std::vector<std::string>& fmtar_, ErrorBufferInterface* errorhnd)
+		:m_config(granularity_,granularitystr_,fmtar_),m_errorhnd(errorhnd){}
 
 	virtual std::string normalize(
 			const char* src,
@@ -154,6 +156,26 @@ public:
 			return out.str();
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
+	}
+
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<Date2IntNormalizerConfig>{
+		public:
+			Description()
+			{
+				(*this)
+				( "granularity", &Date2IntNormalizerConfig::granularitystr, &AtomicTypeIntrospection<std::string>::constructor)
+				( "format", &Date2IntNormalizerConfig::fmtar, &StringVectorIntrospection::constructor)
+				;
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<Date2IntNormalizerConfig>( &m_config, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:
@@ -265,19 +287,21 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 	{
 		if (args.size() == 0)
 		{
-			DateNumGranularity granularity( parseGranularity( "d"));
+			const char* granularitystr = "d";
+			DateNumGranularity granularity( parseGranularity( granularitystr));
 			std::vector<std::string> defaultFacets;
 			defaultFacets.push_back( "%Y/%m/%d");
 			defaultFacets.push_back( "%Y-%m-%d");
 			defaultFacets.push_back( "%d.%m.%Y");
-			return new Date2IntNormalizerFunctionInstance( granularity, defaultFacets, m_errorhnd);
+			return new Date2IntNormalizerFunctionInstance( granularity, granularitystr, defaultFacets, m_errorhnd);
 		}
 		else
 		{
+			const char* granularitystr;
 			std::vector<std::string>::const_iterator ai = args.begin(), ae = args.end();
-			DateNumGranularity granularity( parseGranularity( ai->c_str()));
+			DateNumGranularity granularity( parseGranularity( granularitystr = ai->c_str()));
 			std::vector<std::string> facets( ++ai, ae);
-			return new Date2IntNormalizerFunctionInstance( granularity, facets, m_errorhnd);
+			return new Date2IntNormalizerFunctionInstance( granularity, granularitystr, facets, m_errorhnd);
 		}
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);

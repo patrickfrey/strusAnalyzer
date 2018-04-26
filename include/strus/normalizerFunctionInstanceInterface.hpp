@@ -14,6 +14,8 @@
 /// \brief strus toplevel namespace
 namespace strus
 {
+/// \brief Forward declaration
+class IntrospectionInterface;
 
 /// \class NormalizerFunctionInstanceInterface
 /// \brief Interface for a parameterized normalization function
@@ -28,6 +30,10 @@ public:
 	/// \param[in] srcsize size of the token in bytes
 	/// \return list of normalized tokens
 	virtual std::string normalize( const char* src, std::size_t srcsize) const=0;
+
+	/// \brief Create an interface for introspection
+	/// \return introspection interface (with ownership)
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

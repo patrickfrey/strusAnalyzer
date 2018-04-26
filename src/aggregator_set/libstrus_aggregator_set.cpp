@@ -12,6 +12,7 @@
 #include "strus/analyzer/documentTerm.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <vector>
@@ -87,9 +88,29 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
+	virtual IntrospectionInterface* createIntrospection() const
+	{
+		class Description :public StructTypeIntrospectionDescription<SetAggregatorFunctionInstance>{
+		public:
+			Description()
+			{
+				(*this)
+				( "type", &SetAggregatorFunctionInstance::m_type, AtomicTypeIntrospection<std::string>::constructor)
+				( "items", &SetAggregatorFunctionInstance::m_itemmap, MapTypeIntrospection<ItemMap>::constructor);
+			}
+		};
+		static const Description descr;
+		try
+		{
+			return new StructTypeIntrospection<SetAggregatorFunctionInstance>( this, &descr, m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in introspection of '%s': %s"), MODULE_NAME, *m_errorhnd, NULL);
+	}
+
 private:
 	std::string m_type;
-	std::map<std::string,unsigned int> m_itemmap;
+	typedef std::map<std::string,unsigned int> ItemMap;
+	ItemMap m_itemmap;
 	ErrorBufferInterface* m_errorhnd;
 };
 

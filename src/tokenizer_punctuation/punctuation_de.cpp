@@ -10,6 +10,7 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/introspection.hpp"
 #include <iostream>
 
 using namespace strus;
@@ -175,4 +176,25 @@ std::vector<analyzer::Token>
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 }
+
+
+IntrospectionInterface* PunctuationTokenizerInstance_de::createIntrospection() const
+{
+	class Description :public StructTypeIntrospectionDescription<PunctuationTokenizerInstance_de>{
+	public:
+		Description()
+		{
+			(*this)
+			( "charlist", &PunctuationTokenizerInstance_de::m_punctuation_charlist, AtomicTypeIntrospection<std::string>::constructor)
+			;
+		}
+	};
+	static const Description descr;
+	try
+	{
+		return new StructTypeIntrospection<PunctuationTokenizerInstance_de>( this, &descr, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
+}
+
 

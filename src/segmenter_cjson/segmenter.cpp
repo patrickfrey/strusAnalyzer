@@ -64,6 +64,11 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	return 0;
 }
 
+IntrospectionInterface* SegmenterInstance::createIntrospection() const
+{
+	return NULL;
+}
+
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try

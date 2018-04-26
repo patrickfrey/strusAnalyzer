@@ -36,6 +36,8 @@ public:
 	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const;
 	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
+	virtual IntrospectionInterface* createIntrospection() const;
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 	std::set<int> m_segids;
