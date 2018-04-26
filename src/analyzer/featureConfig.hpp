@@ -53,7 +53,7 @@ public:
 	const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 	FeatureClass featureClass() const				{return m_featureClass;}
-	analyzer::FeatureOptions options() const			{return m_options;}
+	const analyzer::FeatureOptions& options() const			{return m_options;}
 
 	std::string normalize( char const* tok, std::size_t toksize) const;
 	std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;

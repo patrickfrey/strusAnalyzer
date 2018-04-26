@@ -131,6 +131,8 @@ public:
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const;
 
+	virtual IntrospectionInterface* createIntrospection() const;
+
 public:/*DocumentAnalyzerContext*/
 	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
 	typedef std::set<std::string> TermTypeSet;
@@ -178,6 +180,7 @@ public:/*DocumentAnalyzerContext*/
 	const TermTypeSet searchIndexTermTypeSet() const				{return m_searchIndexTermTypeSet;}
 	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
 	const std::vector<StatisticsConfig>& statisticsConfigs() const			{return m_statistics;}
+	const std::vector<SubSegmenterDef>& subsegmenterList() const			{return m_subsegmenterList;}
 
 private:
 	void defineSelectorExpression( unsigned int featdidx, const std::string& selectexpr);

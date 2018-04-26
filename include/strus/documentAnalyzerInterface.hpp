@@ -211,7 +211,7 @@ public:
 
 	/// \brief Create an interface for introspection
 	/// \return the introspection interface (with ownership)
-//[+]	virtual IntrospectionInterface* createIntrospection() const=0;
+	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

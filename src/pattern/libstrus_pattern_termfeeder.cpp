@@ -120,7 +120,7 @@ public:
 			Description()
 			{
 				(*this)
-				( "typemap", &PatternTermFeederInstance::m_typeTable, MapTypeIntrospection<TypeTable>::constructor)
+				( "typemap", &PatternTermFeederInstance::m_typeTable, AtomicMapTypeIntrospection<TypeTable>::constructor)
 				;
 			}
 		};

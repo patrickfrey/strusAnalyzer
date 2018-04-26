@@ -7,6 +7,7 @@
  */
 #include "documentAnalyzer.hpp"
 #include "documentAnalyzerContext.hpp"
+#include "documentAnalyzerIntrospection.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -340,3 +341,13 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyze
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }
+
+IntrospectionInterface* DocumentAnalyzer::createIntrospection() const
+{
+	try
+	{
+		return new DocumentAnalyzerIntrospection( this, m_errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create introspection: %s"), *m_errorhnd, 0);
+}
+

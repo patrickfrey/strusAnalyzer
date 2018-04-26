@@ -96,7 +96,7 @@ public:
 			{
 				(*this)
 				( "type", &SetAggregatorFunctionInstance::m_type, AtomicTypeIntrospection<std::string>::constructor)
-				( "items", &SetAggregatorFunctionInstance::m_itemmap, MapTypeIntrospection<ItemMap>::constructor);
+				( "items", &SetAggregatorFunctionInstance::m_itemmap, AtomicMapTypeIntrospection<ItemMap>::constructor);
 			}
 		};
 		static const Description descr;

@@ -48,8 +48,9 @@ public:
 	const FeatureConfig& featureConfig( int featidx) const;
 
 	typedef std::vector<FeatureConfig>::const_iterator const_iterator;
-	const_iterator begin() const		{return m_ar.begin();}
-	const_iterator end() const		{return m_ar.end();}
+	const_iterator begin() const			{return m_ar.begin();}
+	const_iterator end() const			{return m_ar.end();}
+	const std::vector<FeatureConfig>& list() const	{return m_ar;}
 
 private:
 	std::vector<FeatureConfig> m_ar;

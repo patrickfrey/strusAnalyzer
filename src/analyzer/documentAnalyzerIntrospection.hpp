@@ -10,11 +10,14 @@
 #ifndef _STRUS_ANALYZER_INTROSPECTION_DOCUMENT_ANALYZER_HPP_INCLUDED
 #define _STRUS_ANALYZER_INTROSPECTION_DOCUMENT_ANALYZER_HPP_INCLUDED
 #include "strus/introspectionInterface.hpp"
-#include "documentAnalyzer.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
 {
+/// \brief Forward declaration
+class DocumentAnalyzer;
+/// \brief Forward declaration
+class ErrorBufferInterface;
 
 /// \class DocumentAnalyzerIntrospection
 /// \brief Implementation of the introspection for the document analyzer
@@ -22,11 +25,16 @@ class DocumentAnalyzerIntrospection
 	:public IntrospectionInterface
 {
 public:
-	explicit DocumentAnalyzerIntrospection( const DocumentAnalyzer* analyzer);
+	DocumentAnalyzerIntrospection( const DocumentAnalyzer* analyzer, class ErrorBufferInterface* errorhnd);
+
 	virtual ~DocumentAnalyzerIntrospection();
 	virtual IntrospectionInterface* open( const std::string& name) const;
 	virtual std::string value() const;
 	virtual std::vector<std::string> list() const;
+
+private:
+	const DocumentAnalyzer* m_analyzer;
+	class ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace
