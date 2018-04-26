@@ -46,8 +46,6 @@ public:
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const;
 
-	virtual IntrospectionInterface* createIntrospection() const;
-
 private:
 	static void writeOpenMarkup(
 			SegmenterMarkupContextInterface* markupdoc,
