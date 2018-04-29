@@ -14,6 +14,7 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/featureOptions.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
+#include "strus/analyzer/documentAnalyzerView.hpp"
 #include <vector>
 #include <string>
 
@@ -208,6 +209,10 @@ public:
 	/// \return the document analyzer context (with ownership)
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual analyzer::DocumentAnalyzerView view() const=0;
 
 	/// \brief Create an interface for introspection
 	/// \return the introspection interface (with ownership)

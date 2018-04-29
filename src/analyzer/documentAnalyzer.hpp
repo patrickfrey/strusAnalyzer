@@ -131,6 +131,8 @@ public:
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const;
 
+	virtual analyzer::DocumentAnalyzerView view() const;
+
 	virtual IntrospectionInterface* createIntrospection() const;
 
 public:/*DocumentAnalyzerContext*/

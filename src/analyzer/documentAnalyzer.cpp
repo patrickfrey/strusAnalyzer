@@ -342,6 +342,11 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyze
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }
 
+analyzer::DocumentAnalyzerView DocumentAnalyzer::view() const
+{
+	return analyzer::DocumentAnalyzerView();
+}
+
 IntrospectionInterface* DocumentAnalyzer::createIntrospection() const
 {
 	try
