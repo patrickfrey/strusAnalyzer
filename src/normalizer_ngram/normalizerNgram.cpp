@@ -14,6 +14,7 @@
 #include "strus/base/numstring.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -85,6 +86,20 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in normalize: %s"), *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+				( "width", m_config.width)
+				( "withEnd", m_config.withEnd)
+				( "withStart", m_config.withStart)
+				( "roundRobin", m_config.roundRobin)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

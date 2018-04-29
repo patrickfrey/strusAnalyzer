@@ -376,6 +376,15 @@ strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContex
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
 }
 
+strus::analyzer::FunctionView TSVSegmenterInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( SEGMENTER_NAME)
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errbuf, strus::analyzer::FunctionView());
+}
 IntrospectionInterface* TSVSegmenterInstance::createIntrospection() const
 {
 	return NULL;

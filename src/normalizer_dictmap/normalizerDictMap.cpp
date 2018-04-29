@@ -13,6 +13,7 @@
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -197,6 +198,19 @@ public:
 			}
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+				( "defaultorig", m_defaultOrig)
+				( "default", m_defaultResult)
+				( "filename", m_filename)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

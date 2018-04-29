@@ -151,6 +151,16 @@ PatternLexerContextInterface* TestPatternLexerInstance::createContext() const
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error calling %s: %s"), "TestPatternLexerInstance::defineOption", *m_errorhnd, NULL);
 }
 
+analyzer::FunctionView TestPatternLexerInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "testlexer")
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+}
+
 
 // Match candidate structure
 struct Match

@@ -13,6 +13,7 @@
 #include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 #include <iterator>
 #include <limits>
@@ -48,6 +49,18 @@ public:
 		{
 			return rt;
 		}
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( MODULE_NAME)
+				( "expression", m_expr)
+				( "result", m_result)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

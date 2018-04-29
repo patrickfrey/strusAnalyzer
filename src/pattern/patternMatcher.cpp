@@ -198,6 +198,15 @@ std::vector<unsigned int> TestPatternMatcherInstance::getPatternRefs( const std:
 	return rt;
 }
 
+analyzer::FunctionView TestPatternMatcherInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "testmatcher")
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+}
 
 TestPatternMatcherContext::TestPatternMatcherContext( ErrorBufferInterface* errorhnd_, const TestPatternMatcherInstance* instance_)
 	:m_errorhnd(errorhnd_),m_dbgtrace(0),m_dbgtrace_proc(0),m_instance(instance_)

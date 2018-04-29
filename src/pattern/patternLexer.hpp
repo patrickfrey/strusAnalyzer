@@ -14,6 +14,7 @@
 #include "strus/patternLexerContextInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/positionBind.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/regex.hpp"
 #include <stdexcept>
 #include <map>
@@ -76,6 +77,8 @@ public:
 	virtual bool compile();
 
 	virtual PatternLexerContextInterface* createContext() const;
+
+	virtual analyzer::FunctionView view() const;
 
 	virtual IntrospectionInterface* createIntrospection() const
 	{

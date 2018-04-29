@@ -23,6 +23,7 @@
 #include "strus/base/introspection.hpp"
 #include "strus/reference.hpp"
 #include "strus/versionAnalyzer.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <vector>
@@ -337,6 +338,15 @@ public:
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		return NULL;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "serialize");
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:

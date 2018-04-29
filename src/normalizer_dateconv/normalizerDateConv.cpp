@@ -11,6 +11,7 @@
 #include "private/internationalization.hpp"
 #include "strus/base/stdint.h"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -156,6 +157,18 @@ public:
 			return out.str();
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "date2int")
+				( "granularity", m_config.granularitystr)
+				( "format", m_config.fmtar)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

@@ -12,6 +12,7 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -47,6 +48,16 @@ public:
 			return std::string( boundaries.first, boundaries.second - boundaries.first);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

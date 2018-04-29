@@ -9,6 +9,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -24,9 +25,9 @@ public:
 	enum ConvType {Diacritical, Lowercase, Uppercase};
 	static const CharMap* getMap( ConvType type)
 	{
-		static const CharMap rt_Diacritical( Diacritical);
-		static const CharMap rt_Lowercase( Lowercase);
-		static const CharMap rt_Uppercase( Uppercase);
+		static const CharMap rt_Diacritical( Diacritical, "convdia");
+		static const CharMap rt_Lowercase( Lowercase, "lc");
+		static const CharMap rt_Uppercase( Uppercase, "uc");
 		switch (type)
 		{
 			case Diacritical: return &rt_Diacritical;
@@ -38,10 +39,12 @@ public:
 
 	typedef const char* (*ExceptionsF)( unsigned int chr);
 	std::string rewrite( const char* src, std::size_t srcsize, ExceptionsF exceptions, ErrorBufferInterface* errorhnd) const;
+	const char* name() const	{return m_name;}
 
 private:
 	CharMap(){}
-	explicit CharMap( ConvType type)
+	CharMap( ConvType type, const char* name_)
+		:m_map(),m_name(name_),m_strings()
 	{
 		load( type);
 	}
@@ -56,6 +59,7 @@ private:
 
 private:
 	std::map<unsigned int,std::size_t> m_map;
+	const char* m_name;
 	std::string m_strings;
 };
 
@@ -71,6 +75,15 @@ public:
 			std::size_t srcsize) const
 	{
 		return m_map->rewrite( src, srcsize, m_exceptions, m_errorhnd);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( m_map->name());
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

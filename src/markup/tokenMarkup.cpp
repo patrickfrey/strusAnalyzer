@@ -135,6 +135,15 @@ TokenMarkupContextInterface* TokenMarkupInstance::createContext() const
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create token markup: %s"), *m_errorhnd, 0);
 }
 
+analyzer::FunctionView TokenMarkupInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "std")
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+}
 IntrospectionInterface* TokenMarkupInstance::createIntrospection() const
 {
 	return NULL;

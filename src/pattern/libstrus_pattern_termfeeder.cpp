@@ -15,6 +15,7 @@
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <memory>
@@ -111,6 +112,17 @@ public:
 			}
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to retrieve lexem symbol: %s"), *m_errorhnd, 0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "std")
+				( "type", m_typeTable)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

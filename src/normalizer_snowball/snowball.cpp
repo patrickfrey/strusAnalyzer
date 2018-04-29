@@ -12,6 +12,7 @@
 #include "libstemmer.h"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -59,6 +60,17 @@ public:
 			m_errorhnd->report( ErrorCodeOutOfMem, "memory allocation error in stemmer");
 			return std::string();
 		}
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "stem")
+				( "language", m_language)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

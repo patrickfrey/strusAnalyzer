@@ -64,6 +64,16 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	return 0;
 }
 
+analyzer::FunctionView SegmenterInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "cjson")
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+}
+
 IntrospectionInterface* SegmenterInstance::createIntrospection() const
 {
 	return NULL;

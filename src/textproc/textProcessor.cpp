@@ -23,6 +23,7 @@
 #include "strus/patternMatcherInterface.hpp"
 #include "strus/patternTermFeederInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/lib/detector_std.hpp"
@@ -99,6 +100,15 @@ public:
 	{
 		return std::string();
 	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "empty")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		try
@@ -153,6 +163,16 @@ public:
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		return m_value;
+	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "const")
+				("value",m_value)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
@@ -227,6 +247,15 @@ public:
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
+	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "orig")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
@@ -314,6 +343,15 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "text")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		try
@@ -382,6 +420,15 @@ public:
 		return false;
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "content")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		try
@@ -448,6 +495,16 @@ public:
 		return (NumericVariant::IntType)rt;
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "count")
+				("type",m_featuretype)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		class Description :public StructTypeIntrospectionDescription<CountAggregatorFunctionInstance>{
@@ -530,6 +587,17 @@ public:
 		return (NumericVariant::IntType)(rt + m_incr);
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "maxpos")
+				("type",m_featuretype)
+				("incr",m_incr)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		class Description :public StructTypeIntrospectionDescription<MaxPosAggregatorFunctionInstance>{
@@ -615,6 +683,16 @@ public:
 		return (NumericVariant::IntType)rt;
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "minpos")
+				("type",m_featuretype)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		class Description :public StructTypeIntrospectionDescription<MinPosAggregatorFunctionInstance>{

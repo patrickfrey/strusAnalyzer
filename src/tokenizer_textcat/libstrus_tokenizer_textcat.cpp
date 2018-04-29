@@ -11,6 +11,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
@@ -61,6 +62,17 @@ public:
 	virtual bool concatBeforeTokenize() const
 	{
 		return true;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "textcat")
+				( "language", m_language)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

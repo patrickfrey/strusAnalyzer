@@ -11,6 +11,7 @@
 #include "strus/base/regex.hpp"
 #include "strus/base/numstring.hpp"
 #include "strus/base/introspection.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -58,6 +59,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( TOKENIZER_NAME)
+				( "expression", m_expression)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		class Description :public StructTypeIntrospectionDescription<RegexTokenizerFunctionInstance>{

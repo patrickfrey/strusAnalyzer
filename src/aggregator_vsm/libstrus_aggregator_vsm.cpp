@@ -10,6 +10,7 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/introspection.hpp"
@@ -78,6 +79,24 @@ public:
 			return m_call( tfar);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name.c_str(), *m_errorhnd, (NumericVariant::IntType)0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			const char* function = "";
+			if (m_call == &sumSquareTfAggregatorFunctionCall)
+			{
+				function = "sumsqaretf";
+			}
+			return analyzer::FunctionView( "vsm")
+				( "featuretype", m_featuretype)
+				( "aggregationtype", m_name)
+				( "function", function)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

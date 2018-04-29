@@ -10,6 +10,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
@@ -46,14 +47,13 @@ public:
 		return false;
 	}
 
-	static IntrospectionInterface* introspectionConstructor( const void* self, ErrorBufferInterface* errhnd)
+	virtual analyzer::FunctionView view() const
 	{
 		try
 		{
-			const TokenDelimiter* delim = (const TokenDelimiter*)self;
-			return new ConstIntrospection( delim->name, errhnd);
+			return analyzer::FunctionView( m_delim->name);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *errhnd, NULL);
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const
@@ -64,7 +64,6 @@ public:
 			{
 				(*this)
 				["separate"]
-				( "delimiter", &SeparationTokenizerInstance::m_delim, SeparationTokenizerInstance::introspectionConstructor)
 				;
 			}
 		};
@@ -150,7 +149,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferI
 {
 	try
 	{
-		static const TokenDelimiter delim = {"wordboundary", &wordBoundaryDelimiter};
+		static const TokenDelimiter delim = {"word", &wordBoundaryDelimiter};
 		if (!g_intl_initialized)
 		{
 			strus::initMessageTextDomain();
@@ -165,7 +164,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( ErrorB
 {
 	try
 	{
-		static const TokenDelimiter delim = {"whitespace", &whiteSpaceDelimiter};
+		static const TokenDelimiter delim = {"split", &whiteSpaceDelimiter};
 		if (!g_intl_initialized)
 		{
 			strus::initMessageTextDomain();

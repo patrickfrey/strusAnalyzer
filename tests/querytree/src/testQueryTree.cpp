@@ -13,6 +13,7 @@
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -237,6 +238,12 @@ public:
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		return normalizeMultiplication( src, srcsize, m_factor);
+	}
+
+	virtual strus::analyzer::FunctionView view() const
+	{
+		return strus::analyzer::FunctionView( "multiply")
+		;
 	}
 
 	virtual strus::IntrospectionInterface* createIntrospection() const

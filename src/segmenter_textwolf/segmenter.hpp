@@ -10,6 +10,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/xpathAutomaton.hpp"
 #include <string>
 
@@ -32,6 +33,7 @@ public:
 	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const;
 	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
+	virtual analyzer::FunctionView view() const;
 	virtual IntrospectionInterface* createIntrospection() const;
 
 private:

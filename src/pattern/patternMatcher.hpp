@@ -13,6 +13,7 @@
 #include "strus/patternMatcherInstanceInterface.hpp"
 #include "strus/patternMatcherContextInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -62,6 +63,7 @@ public:
 	virtual bool compile();
 
 	virtual PatternMatcherContextInterface* createContext() const;
+	virtual analyzer::FunctionView view() const;
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		return NULL;
