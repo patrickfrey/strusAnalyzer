@@ -206,6 +206,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "dictmap"]
 				( "defaultorig", &DictMapNormalizerInstance::m_defaultOrig, AtomicTypeIntrospection<bool>::constructor)
 				( "default", &DictMapNormalizerInstance::m_defaultResult, AtomicTypeIntrospection<std::string>::constructor)
 				( "filename", &DictMapNormalizerInstance::m_filename, AtomicTypeIntrospection<std::string>::constructor)

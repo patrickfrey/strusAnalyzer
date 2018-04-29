@@ -455,6 +455,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "count"]
 				( "type", &CountAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
 				;
 			}
@@ -536,6 +537,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "maxpos"]
 				( "type", &MaxPosAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
 				( "incr", &MaxPosAggregatorFunctionInstance::m_incr, AtomicTypeIntrospection<unsigned int>::constructor)
 				;
@@ -620,6 +622,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "minpos"]
 				( "type", &MinPosAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
 				;
 			}

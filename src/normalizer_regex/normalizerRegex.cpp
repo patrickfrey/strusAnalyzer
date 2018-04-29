@@ -57,6 +57,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "regex"]
 				( "expr", &RegexNormalizerFunctionInstance::m_expr, AtomicTypeIntrospection<std::string>::constructor)
 				( "result", &RegexNormalizerFunctionInstance::m_result, AtomicTypeIntrospection<std::string>::constructor)
 				;

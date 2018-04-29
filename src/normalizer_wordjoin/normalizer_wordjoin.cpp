@@ -65,6 +65,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "wordjoin"]
 				( "jointoken", &WordJoinNormalizerInstance::m_jointoken, AtomicTypeIntrospection<std::string>::constructor)
 				;
 			}

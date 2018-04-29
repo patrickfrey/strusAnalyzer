@@ -1284,6 +1284,7 @@ IntrospectionInterface* PunctuationTokenizerInstance_en::createIntrospection() c
 		Description()
 		{
 			(*this)
+			[ "punctuation"]
 			( "charlist", &PunctuationTokenizerInstance_en::m_punctuation_charlist, AtomicTypeIntrospection<std::string>::constructor)
 			;
 		}

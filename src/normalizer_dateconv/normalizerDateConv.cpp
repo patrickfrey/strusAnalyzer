@@ -165,6 +165,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "date2int"]
 				( "granularity", &Date2IntNormalizerConfig::granularitystr, &AtomicTypeIntrospection<std::string>::constructor)
 				( "format", &Date2IntNormalizerConfig::fmtar, &StringVectorIntrospection::constructor)
 				;

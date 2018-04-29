@@ -13,6 +13,7 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "strus/base/fileio.hpp"
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -68,9 +69,18 @@ int main( int argc, const char* argv[])
 		const char* language = argv[4];
 		const char* textFile = argv[5];
 
+		std::string textcatConfigDir;
+		std::string textcatConfigFile;
+
+		int ec = strus::getAncestorPath( textcatConfig, 1, textcatConfigDir);
+		if (ec) throw std::runtime_error( "failed to get path of text cat config file");
+		ec = strus::getFileName( textcatConfig, textcatConfigFile);
+		if (ec) throw std::runtime_error( "failed to get base name of text cat config file");
+
 		strus::local_ptr<strus::TextProcessorInterface>
 			textproc( strus::createTextProcessor( g_errorhnd));
 		textproc->addResourcePath( resourcePath);
+		textproc->addResourcePath( textcatConfigDir);
 		
 		const strus::TokenizerFunctionInterface* tokenizer = textproc->getTokenizer( "textcat");
 		if (!tokenizer)
@@ -79,7 +89,7 @@ int main( int argc, const char* argv[])
 		}
 
 		std::vector<std::string> args;
-		args.push_back( textcatConfig);
+		args.push_back( textcatConfigFile);
 		args.push_back( language);
 		strus::local_ptr<strus::TokenizerFunctionInstanceInterface> instance( tokenizer->createInstance( args, textproc.get()));
 		if (!instance.get())
@@ -87,10 +97,7 @@ int main( int argc, const char* argv[])
 			throw std::runtime_error( std::string("failed to create tokenizer 'textcat' instance: ") + g_errorhnd->fetchError());
 		}	
 
-		std::string s;
-		s.append( workingDir);
-		s.append( "/");
-		s.append( textFile);
+		std::string s = strus::joinFilePath( workingDir, textFile);
 		std::ifstream f( s.c_str());
 		if( !f.good()) {
 			throw std::runtime_error( "failed to open text file");

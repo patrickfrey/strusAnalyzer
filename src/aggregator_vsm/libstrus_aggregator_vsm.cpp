@@ -87,6 +87,7 @@ public:
 			Description()
 			{
 				(*this)
+				["vsm"]
 				( "type", &VsmAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
 				( "name", &VsmAggregatorFunctionInstance::m_name, AtomicTypeIntrospection<std::string>::constructor);
 			}

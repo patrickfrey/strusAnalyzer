@@ -4647,6 +4647,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "charselect"]
 				( "sets", &CharSelectNormalizerInstance::m_setnames, &StringVectorIntrospection::constructor)
 				;
 			}

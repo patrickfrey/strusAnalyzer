@@ -11,4 +11,5 @@ add_subdirectory( posbind )
 add_subdirectory( normalizer_regex )
 add_subdirectory( querytree )
 add_subdirectory( prgload )
+# add_subdirectory( introspection )
 

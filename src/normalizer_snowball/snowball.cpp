@@ -68,6 +68,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "stem"]
 				( "language", &StemNormalizerFunctionInstance::m_language, AtomicTypeIntrospection<std::string>::constructor)
 				;
 			}

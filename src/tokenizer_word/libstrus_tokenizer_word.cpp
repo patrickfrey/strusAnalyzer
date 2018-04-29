@@ -63,6 +63,7 @@ public:
 			Description()
 			{
 				(*this)
+				["separate"]
 				( "delimiter", &SeparationTokenizerInstance::m_delim, SeparationTokenizerInstance::introspectionConstructor)
 				;
 			}

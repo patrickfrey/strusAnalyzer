@@ -50,6 +50,7 @@ enable_testing()
 # Path declarations:
 set( TEXTCAT_INCLUDE_DIRS           "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textcat/src" "${PROJECT_SOURCE_DIR}/3rdParty/textcat/src" )
 set( TEXTCAT_LIBRARY_DIRS           "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textcat" )
+set( TEXTCAT_CONFIG_DIR              "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/textcat/langclass" )
 set( TEXTWOLF_INCLUDE_DIRS       "${PROJECT_SOURCE_DIR}/3rdParty/textwolf/include" )
 set( CJSON_INCLUDE_DIRS              "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/cjson/include"  "${PROJECT_SOURCE_DIR}/3rdParty/cjson/include" )
 set( CJSON_LIBRARY_DIRS               "${CMAKE_CURRENT_BINARY_DIR}/3rdParty/cjson" )

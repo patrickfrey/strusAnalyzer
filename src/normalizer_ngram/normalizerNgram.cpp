@@ -94,6 +94,7 @@ public:
 			Description()
 			{
 				(*this)
+				[ "ngram"]
 				( "width", &NgramConfiguration::width, AtomicTypeIntrospection<unsigned int>::constructor)
 				( "withEnd", &NgramConfiguration::withEnd, AtomicTypeIntrospection<bool>::constructor)
 				( "withStart", &NgramConfiguration::withStart, AtomicTypeIntrospection<bool>::constructor)
