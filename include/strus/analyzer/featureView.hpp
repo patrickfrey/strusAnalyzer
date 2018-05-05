@@ -11,6 +11,7 @@
 #ifndef _STRUS_ANALYZER_DOCUMENT_FEATURE_VIEW_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_FEATURE_VIEW_HPP_INCLUDED
 #include "strus/analyzer/functionView.hpp"
+#include "strus/analyzer/featureOptions.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus {
