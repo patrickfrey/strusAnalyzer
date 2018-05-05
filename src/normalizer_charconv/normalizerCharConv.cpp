@@ -4653,6 +4653,17 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "charselect")
+				( "sets", m_setnames)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		class Description :public StructTypeIntrospectionDescription<CharSelectNormalizerInstance>{

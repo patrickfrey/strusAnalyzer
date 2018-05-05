@@ -27,7 +27,7 @@ void QueryAnalyzer::addElement(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, fieldtype, tokenizer, normalizers, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 		m_searchIndexTermTypeSet.insert( string_conv::tolower( termtype));
 	}
@@ -42,7 +42,7 @@ void QueryAnalyzer::addPatternLexem(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);

@@ -8,6 +8,7 @@
 #include "documentAnalyzer.hpp"
 #include "documentAnalyzerContext.hpp"
 #include "documentAnalyzerIntrospection.hpp"
+#include "strus/analyzer/subDocumentDefinitionView.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -114,7 +115,7 @@ void DocumentAnalyzer::addSearchIndexFeature(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, tokenizer, normalizers, options);
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
 		defineSelectorExpression( featidx, selectexpr);
 		m_searchIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
@@ -130,7 +131,7 @@ void DocumentAnalyzer::addForwardIndexFeature(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, tokenizer, normalizers, options);
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
 		defineSelectorExpression( featidx, selectexpr);
 		m_forwardIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
@@ -145,7 +146,7 @@ void DocumentAnalyzer::defineMetaData(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
 		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining metadata: %s"), *m_errorhnd);
@@ -159,7 +160,7 @@ void DocumentAnalyzer::defineAttribute(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatAttribute, attribname, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
 		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining attribute: %s"), *m_errorhnd);
@@ -188,6 +189,7 @@ void DocumentAnalyzer::defineSubDocument(
 	{
 		unsigned int subDocumentType = m_subdoctypear.size();
 		m_subdoctypear.push_back( subDocumentTypeName);
+		m_subDocumentList.push_back( analyzer::SubDocumentDefinitionView( subDocumentTypeName, selectexpr));
 		if (subDocumentType >= MaxNofSubDocuments)
 		{
 			throw std::runtime_error( _TXT("too many sub documents defined"));
@@ -228,7 +230,7 @@ void DocumentAnalyzer::addPatternLexem(
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
-	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, tokenizer, normalizers, analyzer::FeatureOptions());
+	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
 	defineSelectorExpression( featidx, selectexpr);
 }
 
@@ -342,9 +344,68 @@ DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyze
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }
 
+static analyzer::FeatureView getFeatureView( const FeatureConfig& cfg)
+{
+	typedef Reference<NormalizerFunctionInstanceInterface> NormalizerReference;
+	std::vector<analyzer::FunctionView> normalizerviews;
+	std::vector<NormalizerReference>::const_iterator ni = cfg.normalizerlist().begin(), ne = cfg.normalizerlist().end();
+	for (; ni != ne; ++ni)
+	{
+		normalizerviews.push_back( (*ni)->view());
+	}
+	return analyzer::FeatureView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.options());
+}
+
 analyzer::DocumentAnalyzerView DocumentAnalyzer::view() const
 {
-	return analyzer::DocumentAnalyzerView();
+	try
+	{
+		analyzer::FunctionView segmenterView( m_segmenter->view());
+		std::vector<analyzer::SubContentDefinitionView> subcontents;
+		{
+			std::vector<SubSegmenterDef>::const_iterator si = m_subsegmenterList.begin(), se = m_subsegmenterList.end();
+			for (; si != se; ++si)
+			{
+				subcontents.push_back( analyzer::SubContentDefinitionView( si->selectorPrefix, si->documentClass));
+			}
+		}
+		std::vector<analyzer::FeatureView> attributes;
+		std::vector<analyzer::FeatureView> metadata;
+		std::vector<analyzer::FeatureView> searchindex;
+		std::vector<analyzer::FeatureView> forwardindex;
+		std::vector<analyzer::AggregatorView> aggreators;
+
+		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
+		for (; fi != fe; ++fi)
+		{
+			switch (fi->featureClass())
+			{
+				case FeatMetaData:
+					metadata.push_back( getFeatureView( *fi));
+					break;
+				case FeatAttribute:
+					attributes.push_back( getFeatureView( *fi));
+					break;
+				case FeatSearchIndexTerm:
+					searchindex.push_back( getFeatureView( *fi));
+					break;
+				case FeatForwardIndexTerm:
+					forwardindex.push_back( getFeatureView( *fi));
+					break;
+				case FeatPatternLexem:
+					break;
+			}
+		}
+		std::vector<StatisticsConfig>::const_iterator si = m_statistics.begin(), se = m_statistics.end();
+		for (; si != se; ++si)
+		{
+			aggreators.push_back( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
+		}
+
+		return analyzer::DocumentAnalyzerView( 
+			segmenterView, subcontents, m_subDocumentList, attributes, metadata, searchindex, forwardindex, aggreators);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create view: %s"), *m_errorhnd, analyzer::DocumentAnalyzerView());
 }
 
 IntrospectionInterface* DocumentAnalyzer::createIntrospection() const

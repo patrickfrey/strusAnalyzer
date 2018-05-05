@@ -9,6 +9,7 @@
 /// \file tokenizerFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/functionView.hpp"
 #include "strus/analyzer/token.hpp"
 #include <string>
 #include <vector>
@@ -34,6 +35,10 @@ public:
 	/// \param[in] src pointer to segment to tokenize
 	/// \param[in] srcsize size of the segment to tokenize in bytes
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 
 	/// \brief Create an interface for introspection
 	/// \return introspection interface (with ownership)

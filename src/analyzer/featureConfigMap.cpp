@@ -33,6 +33,7 @@ static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterfa
 unsigned int FeatureConfigMap::defineFeature(
 		FeatureClass featureClass,
 		const std::string& featType,
+		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const analyzer::FeatureOptions& options)
@@ -44,7 +45,7 @@ unsigned int FeatureConfigMap::defineFeature(
 			throw std::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), selectexpr, tokenizer, normalizers, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

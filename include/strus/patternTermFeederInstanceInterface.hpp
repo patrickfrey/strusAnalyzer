@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/patternMatcherResult.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 namespace strus
@@ -61,6 +62,10 @@ public:
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 
 	/// \brief Create an interface for introspection
 	/// \return introspection interface (with ownership)

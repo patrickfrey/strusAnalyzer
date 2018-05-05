@@ -34,6 +34,7 @@ class FeatureConfig
 {
 public:
 	FeatureConfig( const std::string& name_,
+			const std::string& selectexpr_,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			FeatureClass featureClass_,
@@ -41,6 +42,7 @@ public:
 
 	FeatureConfig( const FeatureConfig& o)
 		:m_name(o.m_name)
+		,m_selectexpr(o.m_selectexpr)
 		,m_tokenizer(o.m_tokenizer)
 		,m_normalizerlist(o.m_normalizerlist)
 		,m_featureClass(o.m_featureClass)
@@ -50,6 +52,7 @@ public:
 	typedef Reference<TokenizerFunctionInstanceInterface> TokenizerReference;
 
 	const std::string& name() const					{return m_name;}
+	const std::string& selectexpr() const				{return m_selectexpr;}
 	const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
 	FeatureClass featureClass() const				{return m_featureClass;}
@@ -60,6 +63,7 @@ public:
 
 private:
 	std::string m_name;
+	std::string m_selectexpr;
 	TokenizerReference m_tokenizer;
 	std::vector<NormalizerReference> m_normalizerlist;
 	FeatureClass m_featureClass;

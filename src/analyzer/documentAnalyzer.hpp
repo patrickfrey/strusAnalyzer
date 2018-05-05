@@ -13,6 +13,7 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
+#include "strus/analyzer/subContentDefinitionView.hpp"
 #include "featureConfigMap.hpp"
 #include "patternFeatureConfigMap.hpp"
 #include "patternMatchConfigMap.hpp"
@@ -191,6 +192,7 @@ private:
 private:
 	const TextProcessorInterface* m_textproc;
 	SegmenterInstanceInterface* m_segmenter;
+	std::vector<analyzer::SubDocumentDefinitionView> m_subDocumentList;
 	std::vector<SubSegmenterDef> m_subsegmenterList;
 	FeatureConfigMap m_featureConfigMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;

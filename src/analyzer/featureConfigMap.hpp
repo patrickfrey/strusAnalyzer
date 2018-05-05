@@ -41,6 +41,7 @@ public:
 	unsigned int defineFeature(
 		FeatureClass featureClass,
 		const std::string& name,
+		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const analyzer::FeatureOptions& options);

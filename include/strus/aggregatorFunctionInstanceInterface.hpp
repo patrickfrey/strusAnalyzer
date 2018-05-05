@@ -9,7 +9,8 @@
 /// \file aggregatorFunctionInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
-#include "analyzer/document.hpp"
+#include "strus/analyzer/document.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/numericVariant.hpp"
 
 /// \brief strus toplevel namespace
@@ -30,6 +31,10 @@ public:
 	/// \param[in] document document to inspect
 	/// \return aggregated value
 	virtual NumericVariant evaluate( const analyzer::Document& document) const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 
 	/// \brief Create an interface for introspection
 	/// \return introspection interface (with ownership)

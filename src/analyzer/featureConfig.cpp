@@ -20,11 +20,13 @@ const char* strus::featureClassName( FeatureClass i)
 
 FeatureConfig::FeatureConfig(
 		const std::string& name_,
+		const std::string& selectexpr_,
 		TokenizerFunctionInstanceInterface* tokenizer_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
+	,m_selectexpr(selectexpr_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

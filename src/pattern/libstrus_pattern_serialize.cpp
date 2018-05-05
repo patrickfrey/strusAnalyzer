@@ -453,6 +453,11 @@ public:
 		return 0;
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		return analyzer::FunctionView();
+	}
+	
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		return NULL;
@@ -572,6 +577,12 @@ public:
 		return 0;
 	}
 
+	
+	virtual analyzer::FunctionView view() const
+	{
+		return analyzer::FunctionView();
+	}
+
 	virtual IntrospectionInterface* createIntrospection() const
 	{
 		return NULL;
@@ -633,6 +644,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternTermFeeder::getSymbol not implemented in serializer"));
 		return 0;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		return analyzer::FunctionView();
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const
@@ -718,6 +734,11 @@ public:
 			return true;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternLexer::compile command: %s"), *m_errorhnd, false);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		return analyzer::FunctionView();
 	}
 
 	virtual PatternLexerContextInterface* createContext() const
@@ -822,6 +843,11 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternMatcher::createContext not implemented in serializer"));
 		return 0;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		return analyzer::FunctionView();
 	}
 
 	virtual IntrospectionInterface* createIntrospection() const

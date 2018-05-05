@@ -9,6 +9,7 @@
 /// \file "tokenMarkupInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 namespace strus
@@ -32,6 +33,10 @@ public:
 	/// \return the token markup context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual TokenMarkupContextInterface* createContext() const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 
 	/// \brief Create an interface for introspection
 	/// \return introspection interface (with ownership)
