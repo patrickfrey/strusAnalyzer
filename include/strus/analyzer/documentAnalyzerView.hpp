@@ -37,7 +37,7 @@ public:
 		,m_metadata(o.m_metadata)
 		,m_searchindex(o.m_searchindex)
 		,m_forwardindex(o.m_forwardindex)
-		,m_aggreators(o.m_aggreators)
+		,m_aggregators(o.m_aggregators)
 		{}
 	/// \brief Constructor
 	/// \param[in] segmenter_ segmenter
@@ -47,7 +47,7 @@ public:
 	/// \param[in] metadata_ metadata definitions
 	/// \param[in] searchindex_ search index feature definitions
 	/// \param[in] forwardindex_ forward index feature definitions
-	/// \param[in] aggreators_ aggregator definitions
+	/// \param[in] aggregators_ aggregator definitions
 	DocumentAnalyzerView(
 			const FunctionView& segmenter_,
 			const std::vector<SubContentDefinitionView>& subcontents_,
@@ -56,7 +56,7 @@ public:
 			const std::vector<FeatureView>& metadata_,
 			const std::vector<FeatureView>& searchindex_,
 			const std::vector<FeatureView>& forwardindex_,
-			const std::vector<AggregatorView>& aggreators_)
+			const std::vector<AggregatorView>& aggregators_)
 		:m_segmenter(segmenter_)
 		,m_subcontents(subcontents_)
 		,m_subdocuments(subdocuments_)
@@ -64,7 +64,7 @@ public:
 		,m_metadata(metadata_)
 		,m_searchindex(searchindex_)
 		,m_forwardindex(forwardindex_)
-		,m_aggreators(aggreators_)
+		,m_aggregators(aggregators_)
 		{}
 
 	const FunctionView& segmenter() const					{return m_segmenter;}
@@ -74,7 +74,7 @@ public:
 	const std::vector<FeatureView>& metadata() const			{return m_metadata;}
 	const std::vector<FeatureView>& searchindex() const			{return m_searchindex;}
 	const std::vector<FeatureView>& forwardindex() const			{return m_forwardindex;}
-	const std::vector<AggregatorView>& aggreators() const			{return m_aggreators;}
+	const std::vector<AggregatorView>& aggregators() const			{return m_aggregators;}
 
 private:
 	FunctionView m_segmenter;
@@ -84,7 +84,7 @@ private:
 	std::vector<FeatureView> m_metadata;
 	std::vector<FeatureView> m_searchindex;
 	std::vector<FeatureView> m_forwardindex;
-	std::vector<AggregatorView> m_aggreators;
+	std::vector<AggregatorView> m_aggregators;
 };
 
 }}//namespace

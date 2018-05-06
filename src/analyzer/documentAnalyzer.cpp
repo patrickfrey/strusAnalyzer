@@ -373,7 +373,7 @@ analyzer::DocumentAnalyzerView DocumentAnalyzer::view() const
 		std::vector<analyzer::FeatureView> metadata;
 		std::vector<analyzer::FeatureView> searchindex;
 		std::vector<analyzer::FeatureView> forwardindex;
-		std::vector<analyzer::AggregatorView> aggreators;
+		std::vector<analyzer::AggregatorView> aggregators;
 
 		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
 		for (; fi != fe; ++fi)
@@ -399,11 +399,11 @@ analyzer::DocumentAnalyzerView DocumentAnalyzer::view() const
 		std::vector<StatisticsConfig>::const_iterator si = m_statistics.begin(), se = m_statistics.end();
 		for (; si != se; ++si)
 		{
-			aggreators.push_back( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
+			aggregators.push_back( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
 		}
 
 		return analyzer::DocumentAnalyzerView( 
-			segmenterView, subcontents, m_subDocumentList, attributes, metadata, searchindex, forwardindex, aggreators);
+			segmenterView, subcontents, m_subDocumentList, attributes, metadata, searchindex, forwardindex, aggregators);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create view: %s"), *m_errorhnd, analyzer::DocumentAnalyzerView());
 }

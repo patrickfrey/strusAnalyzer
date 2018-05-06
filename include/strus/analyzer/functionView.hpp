@@ -35,17 +35,17 @@ public:
 	FunctionView(){}
 	/// \brief Copy constructor
 	FunctionView( const FunctionView& o)
-		:m_name(o.m_name),m_params(o.m_params){}
+		:m_name(o.m_name),m_parameter(o.m_parameter){}
 	/// \brief Constructor
 	/// \param[in] name_ name of the function
 	/// \param[in] params_ list of named parameters
 	FunctionView( const std::string& name_, const std::vector<NamedParameter>& params_)
-		:m_name(name_),m_params(params_){}
+		:m_name(name_),m_parameter(params_){}
 	/// \brief Constructor
 	/// \param[in] name_ name of the function
 	/// \param[in] params_ list of named parameters
 	explicit FunctionView( const std::string& name_)
-		:m_name(name_),m_params(){}
+		:m_name(name_),m_parameter(){}
 
 	/// \brief Conditional for atomic type
 	template<typename type>
@@ -68,7 +68,7 @@ public:
 	{
 		std::ostringstream out;
 		out << value_;
-		m_params.push_back( NamedParameter( name_, out.str()));
+		m_parameter.push_back( NamedParameter( name_, out.str()));
 		return *this;
 	}
 
@@ -83,7 +83,7 @@ public:
 		{
 			std::ostringstream out;
 			out << vi->second;
-			m_params.push_back( NamedParameter( std::string(name_)+"::"+vi->first, out.str()));
+			m_parameter.push_back( NamedParameter( std::string(name_)+"::"+vi->first, out.str()));
 		}
 		return *this;
 	}
@@ -99,7 +99,7 @@ public:
 		{
 			std::ostringstream out;
 			out << *vi;
-			m_params.push_back( NamedParameter( std::string("[]")+name_, out.str()));
+			m_parameter.push_back( NamedParameter( std::string("[]")+name_, out.str()));
 		}
 		return *this;
 	}
@@ -112,7 +112,7 @@ public:
 	{
 		std::ostringstream out;
 		out << value_.tostring().c_str();
-		m_params.push_back( NamedParameter( name_, out.str()));
+		m_parameter.push_back( NamedParameter( name_, out.str()));
 		return *this;
 	}
 
@@ -123,11 +123,11 @@ public:
 	/// \brief Get the internal representation of the named parameters of the function
 	/// \note The parameter list is not the list of parameters passed on the construction of the object but a view to the internal representation of the parameters of the function
 	/// \return elements of the function
-	const std::vector<NamedParameter>& params() const	{return m_params;}
+	const std::vector<NamedParameter>& parameter() const	{return m_parameter;}
 
 private:
 	std::string m_name;
-	std::vector<NamedParameter> m_params;
+	std::vector<NamedParameter> m_parameter;
 };
 
 }}//namespace
