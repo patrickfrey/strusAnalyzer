@@ -67,16 +67,34 @@ public:
 	{
 	public:
 		QueryElement( const QueryElement& o)
-			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_pos(o.m_pos){}
-		QueryElement( int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
-			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_pos(pos_){}
+			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_priority(o.m_priority),m_pos(o.m_pos){}
+		QueryElement( int fieldno_, int pos_, const analyzer::QueryTerm& term_)
+			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_priority(0),m_pos(pos_){}
 
 		int fieldno() const		{return m_fieldno;}
-		unsigned int pos() const	{return m_pos;}
+		int priority() const		{return m_priority;}
+		int pos() const			{return m_pos;}
+		int endpos() const		{return m_pos+len();}
+
+		void setPriority( int p)	{m_priority = p;}
+
+		static bool orderPosition( const QueryElement& a, const QueryElement& b)
+		{
+			if (a.m_fieldno == b.m_fieldno)
+			{
+				if (a.m_pos == b.m_pos)
+				{
+					return (a.len() > b.len());
+				}
+				else return (a.m_pos < b.m_pos);
+			}
+			else return (a.m_fieldno < b.m_fieldno);
+		}
 
 	private:
 		int m_fieldno;
-		unsigned int m_pos;
+		int m_priority;
+		int m_pos;
 	};
 
 	/// \brief Fetch the currently processed query

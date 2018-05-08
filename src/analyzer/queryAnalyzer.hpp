@@ -34,6 +34,8 @@ public:
 		:m_featureConfigMap()
 		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 		,m_fieldTypeFeatureMap()
+		,m_fieldTypePatternMap()
+		,m_featureTypePriorityMap()
 		,m_searchIndexTermTypeSet()
 		,m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzer(){}
@@ -66,6 +68,8 @@ public:
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
+	virtual void declareFeaturePriority( const std::string& type, int priority);
+
 	virtual QueryAnalyzerContextInterface* createContext() const;
 
 public:/*QueryAnalyzerContext*/
@@ -73,6 +77,7 @@ public:/*QueryAnalyzerContext*/
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
 	typedef std::multimap<std::string,int> FieldTypePatternMap;
 	typedef std::set<std::string> TermTypeSet;
+	typedef std::map<std::string,int> FeatureTypePriorityMap;
 
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
@@ -80,6 +85,7 @@ public:/*QueryAnalyzerContext*/
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
 	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
+	const FeatureTypePriorityMap& featureTypePriorityMap() const			{return m_featureTypePriorityMap;}
 
 private:
 	FeatureConfigMap m_featureConfigMap;
@@ -88,6 +94,7 @@ private:
 	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
 	FieldTypePatternMap m_fieldTypePatternMap;
+	FeatureTypePriorityMap m_featureTypePriorityMap;
 	TermTypeSet m_searchIndexTermTypeSet;
 	ErrorBufferInterface* m_errorhnd;
 };

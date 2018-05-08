@@ -84,7 +84,12 @@ public:
 			const std::string& type,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
-	
+
+	/// \brief Declare the priority of a feature type, features with higher priority are ousting features with lower priority if they cover them completely with field position and length
+	/// \param[in] type type name of the feature
+	/// \param[in] priority of the feature
+	virtual void declareFeaturePriority( const std::string& type, int priority)=0;
+
 	/// \brief Create the context used for analyzing a query
 	/// \return the query analyzer context (with ownership)
 	virtual QueryAnalyzerContextInterface* createContext() const=0;

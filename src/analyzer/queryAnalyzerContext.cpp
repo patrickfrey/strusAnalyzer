@@ -21,6 +21,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 using namespace strus;
 #undef STRUS_LOWLEVEL_DEBUG
@@ -501,12 +502,68 @@ static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const st
 	}
 }
 
+static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
+		std::vector<SegmentProcessor::QueryElement>& sortedElems,
+		const QueryAnalyzer::FeatureTypePriorityMap& pmap)
+{
+	std::vector<SegmentProcessor::QueryElement> rt;
+	std::vector<SegmentProcessor::QueryElement>::iterator ei = sortedElems.begin(), ee = sortedElems.end();
+	for (; ei != ee; ++ei)
+	{
+		QueryAnalyzer::FeatureTypePriorityMap::const_iterator mi = pmap.find( ei->type());
+		if (mi != pmap.end())
+		{
+			ei->setPriority( mi->second);
+		}
+	}
+	ei = sortedElems.begin(), ee = sortedElems.end();
+	for (; ei != ee; ++ei)
+	{
+		bool covered = false;
+		std::vector<SegmentProcessor::QueryElement>::iterator ep = ei;
+		while (ep != sortedElems.begin())
+		{
+			ep--;
+			if (ep->fieldno() == ei->fieldno()) break;
+			if (ep->endpos() <= ei->pos()) break;
+			if (ep->priority() > ei->priority() && ep->endpos() >= ei->endpos())
+			{
+				covered = true;
+				break;
+			}
+		}
+		if (!covered)
+		{
+			std::vector<SegmentProcessor::QueryElement>::iterator en = ei;
+			for (; en != sortedElems.end() && en->fieldno() == en->fieldno() && en->pos() <= ei->pos(); ++en)
+			{
+				if (en->priority() > ei->priority() && en->endpos() >= ei->endpos())
+				{
+					covered = true;
+					break;
+				}
+			}
+		}
+		if (!covered)
+		{
+			rt.push_back( *ei);
+		}
+	}
+	return rt;
+}
+
 analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 {
 	try
 	{
 		analyzer::QueryTermExpression rt;
 		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
+
+		if (!m_analyzer->featureTypePriorityMap().empty())
+		{
+			std::sort( elems.begin(), elems.end(), &SegmentProcessor::QueryElement::orderPosition);
+			elems = eliminateCoveredElements( elems, m_analyzer->featureTypePriorityMap());
+		}
 		if (m_groups.empty())
 		{
 			// Groups are empty, so we just copy the elements into the instructions
