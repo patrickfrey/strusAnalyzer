@@ -20,6 +20,10 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class ErrorBufferInterface;
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 struct SegPosDef
 {
@@ -38,10 +42,8 @@ class SegmentProcessor
 public:
 	SegmentProcessor(
 			const FeatureConfigMap& featureConfigMap_,
-			const PatternFeatureConfigMap& patternFeatureConfigMap_)
-		:m_featureConfigMap(&featureConfigMap_)
-		,m_patternFeatureConfigMap(&patternFeatureConfigMap_)
-		,m_concatenatedMap(){}
+			const PatternFeatureConfigMap& patternFeatureConfigMap_,
+			ErrorBufferInterface* errorhnd_);
 	~SegmentProcessor(){}
 
 	void clearTermMaps();
@@ -80,11 +82,18 @@ public:
 
 		static bool orderPosition( const QueryElement& a, const QueryElement& b)
 		{
+			// Order in a way that an element can only be covered by an element with a higher priority
+			// if this element is appearing before it. So we have only to look to predecessor elements
+			// when calculating if an element is ousted by a covering element with higher prio.
 			if (a.m_fieldno == b.m_fieldno)
 			{
 				if (a.m_pos == b.m_pos)
 				{
-					return (a.len() > b.len());
+					if (a.m_priority == b.m_priority)
+					{
+						return (a.len() > b.len());
+					}
+					else return (a.m_priority > b.m_priority);
 				}
 				else return (a.m_pos < b.m_pos);
 			}
@@ -140,6 +149,8 @@ private:
 	std::vector<BindTerm> m_metadataTerms;
 	std::vector<BindTerm> m_attributeTerms;
 	std::vector<BindTerm> m_patternLexemTerms;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

@@ -8,14 +8,38 @@
 #include "segmentProcessor.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "private/debugTraceHelpers.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/errorBufferInterface.hpp"
+#include "strus/debugTraceInterface.hpp"
 #include <set>
 #include <iostream>
 
 using namespace strus;
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_DBGTRACE_COMPONENT_NAME "analyzer"
+#define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
+#define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
+#define DEBUG_EVENT1( NAME, FMT, X1)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1);
+#define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
+#define DEBUG_EVENT5( NAME, FMT, X1, X2, X3, X4, X5)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5);
+#define DEBUG_EVENT2_STR( NAME, FMT, ID, VAL)			if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, ID, valstr.c_str());}
+
+
+SegmentProcessor::SegmentProcessor(
+		const FeatureConfigMap& featureConfigMap_,
+		const PatternFeatureConfigMap& patternFeatureConfigMap_,
+		ErrorBufferInterface* errorhnd_)
+	:m_featureConfigMap(&featureConfigMap_)
+	,m_patternFeatureConfigMap(&patternFeatureConfigMap_)
+	,m_concatenatedMap()
+	,m_errorhnd(errorhnd_)
+	,m_debugtrace(0)
+{
+	DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
+	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
+}
 
 void SegmentProcessor::clearTermMaps()
 {
@@ -237,7 +261,6 @@ std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 	return rt;
 }
 
-#ifdef STRUS_LOWLEVEL_DEBUG
 static const char* featureClassType( FeatureClass featclass)
 {
 	switch (featclass)
@@ -250,13 +273,10 @@ static const char* featureClassType( FeatureClass featclass)
 	}
 	return 0;
 }
-#endif
 
 void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, const FeatureConfig& feat, const std::vector<analyzer::Token>& tokens, const char* segsrc, std::size_t segmentpos, const std::vector<SegPosDef>& concatposmap) const
 {
-#ifdef STRUS_LOWLEVEL_DEBUG
-	const char* indextype = featureClassType( feat.featureClass());
-#endif
+	DEBUG_OPEN( featureClassType( feat.featureClass()))
 	std::vector<SegPosDef>::const_iterator
 		ci = concatposmap.begin(), ce = concatposmap.end();
 	std::vector<analyzer::Token>::const_iterator
@@ -278,6 +298,7 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 		if (termval.size() && termval[0] == '\0')
 		{
 			// ... handle normalizers with multiple results
+			DEBUG_OPEN( "terms")
 			char const* vi = termval.c_str();
 			char const* ve = vi + termval.size();
 			for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
@@ -286,11 +307,10 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 					segmentpos, ti->origpos() - str_position/*ofs*/, 1/*len*/,
 					feat.options().positionBind(),
 					feat.name()/*type*/, vi/*value*/);
-#ifdef STRUS_LOWLEVEL_DEBUG
-				std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
+				DEBUG_EVENT4( "term", "[%d %d] %s '%s'", (int)term.seg(), (int)term.ofs(), term.type().c_str(), term.value().c_str());
 				result.push_back( term);
 			}
+			DEBUG_CLOSE()
 		}
 		else
 		{
@@ -298,20 +318,18 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 				segmentpos, ti->origpos() - str_position/*ofs*/, 1/*len*/,
 				feat.options().positionBind(),
 				feat.name()/*type*/, termval/*value*/);
-#ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "add " << indextype << " term " << "[" << term.seg() << ":" << term.ofs() << "] " << term.type() << " " << term.value() << std::endl;
-#endif
+			DEBUG_EVENT4( "term", "[%d %d] %s '%s'", (int)term.seg(), (int)term.ofs(), term.type().c_str(), term.value().c_str());
 			result.push_back( term);
 		}
 	}
+	DEBUG_CLOSE()
 }
 
 void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentpos, const char* segsrc, std::size_t segsrcsize, const std::vector<SegPosDef>& concatposmap)
 {
 	const FeatureConfig& feat = m_featureConfigMap->featureConfig( featidx);
-#ifdef STRUS_LOWLEVEL_DEBUG
-	std::cout << "process document segment '" << feat.name() << "': " << std::string(segsrc,segsrcsize>100?100:segsrcsize) << std::endl;
-#endif
+	DEBUG_EVENT2_STR( "segment", "%s [%s]", feat.name().c_str(), strus::getStringContentStart( std::string( segsrc, segsrcsize), 200));
+
 	std::vector<analyzer::Token> tokens = feat.tokenize( segsrc, segsrcsize);
 	switch (feat.featureClass())
 	{
@@ -354,6 +372,7 @@ void SegmentProcessor::processDocumentSegment(
 
 void SegmentProcessor::processConcatenated()
 {
+	DEBUG_OPEN( "concat")
 	ConcatenatedMap::const_iterator
 		ci = m_concatenatedMap.begin(),
 		ce = m_concatenatedMap.end();
@@ -364,32 +383,42 @@ void SegmentProcessor::processConcatenated()
 			ci->first, ci->second.concatposmap.begin()->segpos,
 			ci->second.content.c_str(), ci->second.content.size(), ci->second.concatposmap);
 	}
+	DEBUG_CLOSE()
 }
 
 void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& result)
 {
+	DEBUG_OPEN( "patterns")
 	std::vector<BindTerm>::const_iterator ri = result.begin(), re = result.end();
 	for (; ri != re; ++ri)
 	{
+		DEBUG_OPEN( ri->type().c_str());
 		const PatternFeatureConfig* cfg = m_patternFeatureConfigMap->getConfig( ri->type());
-		if (cfg) switch (cfg->featureClass())
+		if (cfg)
 		{
-			case FeatMetaData:
-				m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
-				break;
-			case FeatAttribute:
-				m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
-				break;
-			case FeatSearchIndexTerm:
-				m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
-				break;
-			case FeatForwardIndexTerm:
-				m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
-				break;
-			case FeatPatternLexem:
-				throw std::runtime_error( _TXT("internal: illegal feature class for pattern match result"));
+			DEBUG_EVENT5( featureClassType( cfg->featureClass()), "[%d %d %d] %s '%s'", (int)ri->seg(), (int)ri->ofs(), (int)ri->len(), cfg->name().c_str(), ri->value().c_str());
+
+			switch (cfg->featureClass())
+			{
+				case FeatMetaData:
+					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					break;
+				case FeatAttribute:
+					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					break;
+				case FeatSearchIndexTerm:
+					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					break;
+				case FeatForwardIndexTerm:
+					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					break;
+				case FeatPatternLexem:
+					throw std::runtime_error( _TXT("internal: illegal feature class for pattern match result"));
+			}
 		}
+		DEBUG_CLOSE()
 	}
+	DEBUG_CLOSE()
 }
 
 

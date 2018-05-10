@@ -56,6 +56,26 @@ private:
 	std::string m_value;
 };
 
+class BindLexem
+	:public BindTerm
+{
+public:
+	BindLexem( const BindLexem& o)
+		:BindTerm(o),m_id(o.m_id){}
+	BindLexem( unsigned int id_, const BindTerm& term)
+		:BindTerm(term),m_id(id_){}
+
+	unsigned int id() const		{return m_id;}
+
+	bool operator < (const BindLexem& o) const
+	{
+		return BindTerm::operator <(o);
+	}
+
+private:
+	unsigned int m_id;
+};
+
 }//namespace
 #endif
 

@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Some utility helper functions for tokenization/normalization
-/// \file normalizer_ngram.hpp
+/// \file tokenizeHelpers.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_HELPERS_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_HELPERS_HPP_INCLUDED
 #include "strus/base/utf8.hpp"

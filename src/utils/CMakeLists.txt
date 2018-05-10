@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set( source_files
 	${CMAKE_CURRENT_BINARY_DIR}/internationalization.cpp
 	tokenizeHelpers.cpp
+	debugTraceHelpers.cpp
 	textEncoder.cpp
 )
 

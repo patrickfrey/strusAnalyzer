@@ -46,10 +46,10 @@ static std::string contentCut( const char* str, std::size_t size, std::size_t le
 
 using namespace strus;
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd)
-	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap())
-	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap())
-	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap())
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd_)
+	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap(),m_errorhnd)
+	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap(), errorhnd_)
+	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap(), errorhnd_)
 	,m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
 	,m_segmenterstack()
@@ -59,7 +59,7 @@ DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyz
 	,m_start_position(0)
 	,m_nof_segments(0)
 	,m_subdocTypeName()
-	,m_errorhnd(errorhnd)
+	,m_errorhnd(errorhnd_)
 	,m_debugtrace(0)
 {
 	if (!m_segmenter)
@@ -106,6 +106,7 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 	// process concatenated chunks:
 	m_segmentProcessor.processConcatenated();
 
+	DEBUG_OPEN("patternmatch")
 	// fetch pre processing pattern outputs:
 	PreProcPatternMatchContextMap::iterator
 		vi = m_preProcPatternMatchContextMap.begin(),
@@ -138,6 +139,7 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 		pi->process( m_segmentProcessor.patternLexemTerms());
 		m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
+	DEBUG_CLOSE()
 
 	// create output (with real positions):
 	res = m_segmentProcessor.fetchDocument();

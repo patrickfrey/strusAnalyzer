@@ -12,6 +12,7 @@
 #include "segmentProcessor.hpp"
 #include "strus/errorCodes.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/debugTraceInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "strus/base/string_format.hpp"
@@ -23,6 +24,19 @@
 #include <sstream>
 #include <algorithm>
 
+#define STRUS_DBGTRACE_COMPONENT_NAME "analyzer"
+#define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
+#define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
+#define DEBUG_EVENT1( NAME, FMT, ID)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID);
+#define DEBUG_EVENT2( NAME, FMT, ID, VAL)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID, VAL);
+#define DEBUG_EVENT3( NAME, FMT, X1, X2, X3)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3);
+#define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
+#define DEBUG_EVENT5( NAME, FMT, X1, X2, X3, X4, X5)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5);
+#define DEBUG_EVENT2_UIV( NAME, FMT, ID, VAL)			if (m_debugtrace) {std::vector<unsigned int>::const_iterator vi=VAL.begin(), ve=VAL.end(); std::ostringstream out; out<<"{";for (int vidx=0;vi!=ve;++vi,++vidx) {if (vidx)out<<","; out<<*vi;}out<<"}"; std::string valstr(out.str()); m_debugtrace->event( NAME, FMT, ID, valstr.c_str());}
+#define DEBUG_EVENT2_STR( NAME, FMT, ID, VAL)			if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, ID, valstr.c_str());}
+#define DEBUG_EVENT3_STR( NAME, FMT, X1, X2, VAL)		if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, X1, X2, valstr.c_str());}
+#define DEBUG_EVENT4_STR( NAME, FMT, X1, X2, X3, VAL)		if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, X1, X2, X3, valstr.c_str());}
+
 using namespace strus;
 #undef STRUS_LOWLEVEL_DEBUG
 
@@ -30,7 +44,11 @@ QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, Erro
 	:m_analyzer(analyzer_)
 	,m_fields(),m_groups()
 	,m_errorhnd(errorhnd_)
-{}
+	,m_debugtrace(0)
+{
+	DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
+	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
+}
 
 void QueryAnalyzerContext::putField( int fieldNo, const std::string& fieldType, const std::string& content)
 {
@@ -164,7 +182,6 @@ void GroupMemberRelationMap::updateElementRoot( std::map<unsigned int,unsigned i
 
 class ElementNodeMap
 {
-#ifdef STRUS_LOWLEVEL_DEBUG
 private:
 	std::string tostring() const
 	{
@@ -200,15 +217,15 @@ private:
 		out << "}";
 		return out.str();
 	}
-#endif
 public:
+	explicit ElementNodeMap( DebugTraceContextInterface* debugtrace_)
+		:m_elementRootMap(),m_rootElementMap(),m_debugtrace(debugtrace_){}
+
 	void createElementRoot( unsigned int elemidx, unsigned int nodeidx)
 	{
 		m_elementRootMap[ elemidx] = nodeidx;
 		m_rootElementMap.insert( std::pair<unsigned int,unsigned int>( nodeidx, elemidx));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cerr << "CREATE ROOT " << nodeidx << " ELEM " << elemidx << " " << tostring() << std::endl;
-#endif
+		DEBUG_EVENT3_STR( "create root", "nodeidx %u, elemidx %u, content %s", nodeidx, elemidx, tostring());
 	}
 
 	unsigned int elementRoot( unsigned int elemidx) const
@@ -238,24 +255,13 @@ public:
 		m_rootElementMap.erase( range.first, range.second);
 		m_rootElementMap.insert( newRelations.begin(), newRelations.end());
 
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cerr << "NEW ROOT " << nodeidx << " -> " << newroot << " " << tostring() << std::endl;
-#endif
+		DEBUG_EVENT3_STR( "new root", "nodeidx %u, newroot %u, content %s", nodeidx, newroot, tostring());
 	}
 
 	void setNewRoot( const std::vector<unsigned int>& nodear, unsigned int newroot)
 	{
+		DEBUG_EVENT2_UIV( "new root", "%u %s", newroot, nodear);
 		std::vector<unsigned int>::const_iterator ni = nodear.begin(), ne = nodear.end();
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cerr << "SET NEW ROOT {";
-		for (int nidx=0; ni != ne; ++ni,++nidx)
-		{
-			if (nidx) std::cerr << ", ";
-			std::cerr << *ni;
-		}
-		std::cerr << "} -> " << newroot << " " << tostring() << std::endl;
-		ni = nodear.begin();
-#endif
 		for (; ni != ne; ++ni)
 		{
 			setNewRoot( *ni, newroot);
@@ -283,12 +289,14 @@ public:
 private:
 	std::map<unsigned int,unsigned int> m_elementRootMap;		//< assigns each leaf element to its build up root node
 	std::multimap<unsigned int,unsigned int> m_rootElementMap;	//< assigns each root element to its leaves
+	DebugTraceContextInterface* m_debugtrace;			//< debug trace interface
 };
 
 static QueryTree buildQueryTree(
 	const std::vector<QueryAnalyzerContext::Group>& groups,
 	const std::vector<QueryAnalyzerContext::Field>& fields,
-	const std::vector<SegmentProcessor::QueryElement>& elems)
+	const std::vector<SegmentProcessor::QueryElement>& elems,
+	DebugTraceContextInterface* m_debugtrace)
 {
 	QueryTree rt;
 	typedef std::multimap<unsigned int,unsigned int> FieldElementMap;
@@ -296,16 +304,14 @@ static QueryTree buildQueryTree(
 	typedef std::pair<unsigned int,unsigned int> FieldElementRelation;
 	typedef std::pair<FieldElementMapItr,FieldElementMapItr> FieldElementRange;
 
-	FieldElementMap fieldElementMap;	//< map fieldno to its elements (index in elems)
-	ElementNodeMap elementNodeMap;		//< map elements to nodes and nodes to elements
+	FieldElementMap fieldElementMap;		//< map fieldno to its elements (index in elems)
+	ElementNodeMap elementNodeMap(m_debugtrace);	//< map elements to nodes and nodes to elements
 
 	std::vector<SegmentProcessor::QueryElement>::const_iterator
 		ei = elems.begin(), ee = elems.end();
 	for (unsigned int eidx=0; ei != ee; ++ei,++eidx)
 	{
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cerr << "FIELD " << ei->fieldno() << " ELEMENT " << eidx << " TYPE " << ei->type() << " VALUE " << ei->value() << std::endl;
-#endif
+		DEBUG_EVENT4( "field", "%u %u %s '%s'", ei->fieldno(), eidx, ei->type().c_str(), ei->value().c_str());
 		fieldElementMap.insert( FieldElementRelation( ei->fieldno(), eidx));
 		elementNodeMap.createElementRoot( eidx, rt.nodear.size());
 		buildQueryTreeLeaf( rt.nodear, eidx, elems[eidx].pos());
@@ -421,9 +427,9 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 	typedef QueryAnalyzer::FieldTypePatternMap FieldTypePatternMap;
 	typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
 
-	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap());
-	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap());
-	PostProcPatternMatchContextMap postProcPatternMatchContextMap( m_analyzer->postProcPatternMatchConfigMap());
+	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap(),m_errorhnd);
+	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap(),m_errorhnd);
+	PostProcPatternMatchContextMap postProcPatternMatchContextMap( m_analyzer->postProcPatternMatchConfigMap(),m_errorhnd);
 
 	std::vector<Field>::const_iterator fi = m_fields.begin(), fe = m_fields.end();
 	unsigned int fidx=0;
@@ -456,11 +462,14 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		FieldTypePatternMap::const_iterator ti = range.first, te = range.second;
 		for (;ti != te; ++ti)
 		{
+			DEBUG_OPEN("pre-patternmatch")
 			PreProcPatternMatchContext& ppctx
 				= preProcPatternMatchContextMap.context( ti->second);
 			ppctx.process( fi->fieldNo/*segment pos = fieldNo*/, fi->content.c_str(), fi->content.size());
+			DEBUG_CLOSE()
 		}
 	}
+	DEBUG_OPEN("pre-patternmatch")
 	// fetch pre processing pattern outputs:
 	PreProcPatternMatchContextMap::iterator
 		vi = preProcPatternMatchContextMap.begin(),
@@ -469,7 +478,8 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 	{
 		segmentProcessor.processPatternMatchResult( vi->fetchResults());
 	}
-
+	DEBUG_CLOSE()
+	DEBUG_OPEN("post-patternmatch")
 	// process post processing patterns:
 	PostProcPatternMatchContextMap::iterator
 		pi = postProcPatternMatchContextMap.begin(),
@@ -480,6 +490,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		pi->process( segmentProcessor.patternLexemTerms());
 		segmentProcessor.processPatternMatchResult( pi->fetchResults());
 	}
+	DEBUG_CLOSE()
 	return segmentProcessor.fetchQuery();
 }
 
@@ -503,11 +514,11 @@ static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const st
 }
 
 static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
-		std::vector<SegmentProcessor::QueryElement>& sortedElems,
+		std::vector<SegmentProcessor::QueryElement>& elems,
 		const QueryAnalyzer::FeatureTypePriorityMap& pmap)
 {
 	std::vector<SegmentProcessor::QueryElement> rt;
-	std::vector<SegmentProcessor::QueryElement>::iterator ei = sortedElems.begin(), ee = sortedElems.end();
+	std::vector<SegmentProcessor::QueryElement>::iterator ei = elems.begin(), ee = elems.end();
 	for (; ei != ee; ++ei)
 	{
 		QueryAnalyzer::FeatureTypePriorityMap::const_iterator mi = pmap.find( ei->type());
@@ -516,16 +527,16 @@ static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
 			ei->setPriority( mi->second);
 		}
 	}
-	ei = sortedElems.begin(), ee = sortedElems.end();
+	std::sort( elems.begin(), elems.end(), &SegmentProcessor::QueryElement::orderPosition);
+	ei = elems.begin(), ee = elems.end();
 	for (; ei != ee; ++ei)
 	{
 		bool covered = false;
 		std::vector<SegmentProcessor::QueryElement>::iterator ep = ei;
-		while (ep != sortedElems.begin())
+		while (ep != elems.begin())
 		{
-			ep--;
-			if (ep->fieldno() == ei->fieldno()) break;
-			if (ep->endpos() <= ei->pos()) break;
+			--ep;
+			if (ep->fieldno() != ei->fieldno()) break;
 			if (ep->priority() > ei->priority() && ep->endpos() >= ei->endpos())
 			{
 				covered = true;
@@ -534,18 +545,8 @@ static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
 		}
 		if (!covered)
 		{
-			std::vector<SegmentProcessor::QueryElement>::iterator en = ei;
-			for (; en != sortedElems.end() && en->fieldno() == en->fieldno() && en->pos() <= ei->pos(); ++en)
-			{
-				if (en->priority() > ei->priority() && en->endpos() >= ei->endpos())
-				{
-					covered = true;
-					break;
-				}
-			}
-		}
-		if (!covered)
-		{
+			// ... we have only to look at predecessors when seaking covering elements with higher prio
+			// as we sorted before with 'SegmentProcessor::QueryElement::orderPosition'
 			rt.push_back( *ei);
 		}
 	}
@@ -556,12 +557,12 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 {
 	try
 	{
+		DEBUG_OPEN( "analyze");
 		analyzer::QueryTermExpression rt;
 		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
 
 		if (!m_analyzer->featureTypePriorityMap().empty())
 		{
-			std::sort( elems.begin(), elems.end(), &SegmentProcessor::QueryElement::orderPosition);
 			elems = eliminateCoveredElements( elems, m_analyzer->featureTypePriorityMap());
 		}
 		if (m_groups.empty())
@@ -577,47 +578,48 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 		}
 		else
 		{
-#ifdef STRUS_LOWLEVEL_DEBUG
-			std::cerr << "QUERY ELEMENTS:" << std::endl;
-			std::vector<SegmentProcessor::QueryElement>::const_iterator
-				ei = elems.begin(), ee = elems.end();
-			for ( ;ei!=ee; ++ei)
+			if (m_debugtrace)
 			{
-				std::cerr
-					<< strus::string_format( "type='%s' value='%s' len='%d' fieldno=%d pos=%u",
-									ei->type().c_str(), ei->value().c_str(), ei->len(), ei->fieldno(), ei->pos())
-					<< std::endl;
+				DEBUG_OPEN( "elements");
+				std::vector<SegmentProcessor::QueryElement>::const_iterator
+					ei = elems.begin(), ee = elems.end();
+				for ( ;ei!=ee; ++ei)
+				{
+					DEBUG_EVENT5( "elem", "type='%s' value='%s' len='%d' fieldno=%d pos=%u",
+							ei->type().c_str(), ei->value().c_str(), ei->len(), ei->fieldno(), ei->pos());
+				}
+				DEBUG_CLOSE();
 			}
-#endif
-			QueryTree queryTree = buildQueryTree( m_groups, m_fields, elems);
+			QueryTree queryTree = buildQueryTree( m_groups, m_fields, elems, m_debugtrace);
 			std::vector<unsigned int>::const_iterator ri = queryTree.root.begin(), re = queryTree.root.end();
 			for (; ri != re; ++ri)
 			{
 				buildQueryInstructions( rt, elems, queryTree, *ri);
 			}
 		}
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cerr << "QUERY INSTRUCTIONS:" << std::endl;
-		std::vector<analyzer::QueryTermExpression::Instruction>::const_iterator
-			pi = rt.instructions().begin(), pe = rt.instructions().end();
-		for (; pi != pe; ++pi)
+		if (m_debugtrace)
 		{
-			std::cerr << analyzer::QueryTermExpression::Instruction::opCodeName( pi->opCode()) << " " << pi->idx() << " " << pi->nofOperands();
-			switch (pi->opCode())
+			DEBUG_OPEN( "instructions");
+			std::vector<analyzer::QueryTermExpression::Instruction>::const_iterator
+				pi = rt.instructions().begin(), pe = rt.instructions().end();
+			for (; pi != pe; ++pi)
 			{
-				case analyzer::QueryTermExpression::Instruction::Term:
+				switch (pi->opCode())
 				{
-					const analyzer::QueryTerm& term = rt.term( pi->idx());
-					std::cerr << " type " << term.type() << " value " << term.value();
-					break;
+					case analyzer::QueryTermExpression::Instruction::Term:
+					{
+						const analyzer::QueryTerm& term = rt.term( pi->idx());
+						DEBUG_EVENT2( "term", "type='%s' value='%s'", term.type().c_str(), term.value().c_str());
+						break;
+					}
+					case analyzer::QueryTermExpression::Instruction::Operator:
+						DEBUG_EVENT2( "operator", "%d %d", pi->idx(), pi->nofOperands());
+						break;
 				}
-				case analyzer::QueryTermExpression::Instruction::Operator:
-					std::cerr << " operator";
-					break;
 			}
-			std::cerr << std::endl;
+			DEBUG_CLOSE();
 		}
-#endif
+		DEBUG_CLOSE();
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing query: %s"), *m_errorhnd, analyzer::QueryTermExpression());

@@ -21,17 +21,24 @@
 
 namespace strus {
 
+/// \brief Forward declaration
+class ErrorBufferInterface;
+/// \brief Forward declaration
+class DebugTraceContextInterface;
+
 struct PreProcPatternMatchContext
 {
 	typedef Reference<PatternMatcherContextInterface> PatternMatcherContextReference;
 	typedef Reference<PatternLexerContextInterface> PatternLexerContextReference;
 	typedef std::map<std::size_t,std::size_t> SegPosContentPosMap;
 
-	PreProcPatternMatchContext( const PreProcPatternMatchConfig& config);
+	PreProcPatternMatchContext( const PreProcPatternMatchConfig& config, ErrorBufferInterface* errorhnd_);
 	PreProcPatternMatchContext( const PreProcPatternMatchContext& o)
 		:m_config(o.m_config)
 		,m_matcher(o.m_matcher)
-		,m_lexer(o.m_lexer){}
+		,m_lexer(o.m_lexer)
+		,m_errorhnd(o.m_errorhnd)
+		,m_debugtrace(o.m_debugtrace){}
 
 	void process( std::size_t segpos, const char* seg, std::size_t segsize);
 	std::vector<BindTerm> fetchResults();
@@ -42,18 +49,23 @@ struct PreProcPatternMatchContext
 	PatternLexerContextReference m_lexer;
 	std::string m_content;
 	SegPosContentPosMap m_segPosContentPosMap;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 struct PostProcPatternMatchContext
 {
 	typedef Reference<PatternMatcherContextInterface> PatternMatcherContextReference;
 
-	PostProcPatternMatchContext( const PostProcPatternMatchConfig& config);
+	PostProcPatternMatchContext( const PostProcPatternMatchConfig& config, ErrorBufferInterface* errorhnd_);
 	PostProcPatternMatchContext( const PostProcPatternMatchContext& o)
 		:m_config(o.m_config)
 		,m_matcher(o.m_matcher)
 		,m_feeder(o.m_feeder)
-		,m_input(o.m_input){}
+		,m_input(o.m_input)
+		,m_fetchResults_called(o.m_fetchResults_called)
+		,m_errorhnd(o.m_errorhnd)
+		,m_debugtrace(o.m_debugtrace){}
 
 	void process( const std::vector<BindTerm>& input);
 	std::vector<BindTerm> fetchResults();
@@ -62,7 +74,10 @@ struct PostProcPatternMatchContext
 	const PostProcPatternMatchConfig* m_config;
 	PatternMatcherContextReference m_matcher;
 	const PatternTermFeederInstanceInterface* m_feeder;
-	std::vector<BindTerm> m_input;
+	std::vector<BindLexem> m_input;
+	bool m_fetchResults_called;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 
@@ -71,7 +86,7 @@ struct PostProcPatternMatchContext
 class PreProcPatternMatchContextMap
 {
 public:
-	PreProcPatternMatchContextMap( const PreProcPatternMatchConfigMap& config);
+	PreProcPatternMatchContextMap( const PreProcPatternMatchConfigMap& config, ErrorBufferInterface* errorhnd_);
 	PreProcPatternMatchContextMap( const PreProcPatternMatchContextMap& o)
 		:m_ar(o.m_ar){}
 	~PreProcPatternMatchContextMap(){}
@@ -95,6 +110,8 @@ public:
 
 private:
 	std::vector<PreProcPatternMatchContext> m_ar;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 
@@ -102,7 +119,7 @@ private:
 class PostProcPatternMatchContextMap
 {
 public:
-	PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config);
+	PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config, ErrorBufferInterface* errorhnd_);
 	PostProcPatternMatchContextMap( const PostProcPatternMatchContextMap& o)
 		:m_ar(o.m_ar){}
 	~PostProcPatternMatchContextMap(){}
@@ -115,6 +132,8 @@ public:
 
 private:
 	std::vector<PostProcPatternMatchContext> m_ar;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

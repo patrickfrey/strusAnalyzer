@@ -22,6 +22,8 @@ namespace strus
 class QueryAnalyzer;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 /// \brief Implementation of the context for analyzing queries for the strus IR engine
 class QueryAnalyzerContext
@@ -71,6 +73,7 @@ private:
 	std::vector<Field> m_fields;
 	std::vector<Group> m_groups;
 	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace
