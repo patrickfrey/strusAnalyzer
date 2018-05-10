@@ -58,7 +58,7 @@ struct SerializerHeader
 		version_major = ByteOrder<uint32_t>::ntoh( version_major);
 		version_minor = ByteOrder<uint32_t>::ntoh( version_minor);
 		if (version_major != STRUS_ANALYZER_VERSION_MAJOR) throw std::runtime_error( _TXT("failed to parse header: incompatible version"));
-		if (version_minor < STRUS_ANALYZER_VERSION_MINOR) throw std::runtime_error( _TXT("failed to parse header: version of data newer than reader"));
+		if (version_minor > STRUS_ANALYZER_VERSION_MINOR) throw std::runtime_error( _TXT("failed to parse header: version of data newer than reader"));
 	}
 
 	static bool checkType( const char* content, std::size_t contentsize)

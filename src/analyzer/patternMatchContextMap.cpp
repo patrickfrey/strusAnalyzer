@@ -181,31 +181,34 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 
 	// Convert input elements:
 	std::vector<analyzer::PatternLexem> pinput;
-	std::vector<BindLexem>::const_iterator bi = m_input.begin(), be = m_input.end();
-	for (std::size_t bidx=0; bi != be; ++bi,++bidx)
 	{
-		if (bi->ofs() != prev_ofs || bi->seg() != prev_seg)
+		std::vector<BindLexem>::const_iterator bi = m_input.begin(), be = m_input.end();
+		for (std::size_t bidx=0; bi != be; ++bi,++bidx)
 		{
-			// Increment ordinal position:
-			++ordpos;
-			prev_seg = bi->seg();
-			prev_ofs = bi->ofs();
+			if (bi->ofs() != prev_ofs || bi->seg() != prev_seg)
+			{
+				// Increment ordinal position:
+				++ordpos;
+				prev_seg = bi->seg();
+				prev_ofs = bi->ofs();
+			}
+			int virtpos = bidx;
+			pinput.push_back( analyzer::PatternLexem( bi->id(), ordpos, bi->seg(), virtpos, 1));
 		}
-		int virtpos = bidx;
-		pinput.push_back( analyzer::PatternLexem( bi->id(), ordpos, bi->seg(), virtpos, 1));
 	}
-
 	// Feed input to matcher:
 	DEBUG_OPEN( "input")
-	std::vector<analyzer::PatternLexem>::const_iterator pi = pinput.begin(), pe = pinput.end();
-	for (; pi != pe; ++pi)
 	{
-		if (pi->id())
+		std::vector<analyzer::PatternLexem>::const_iterator pi = pinput.begin(), pe = pinput.end();
+		for (; pi != pe; ++pi)
 		{
-			int virtpos = bi->ofs();
-			int origpos = m_input[ virtpos].ofs();
-			DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", pi->id(), pi->ordpos(), pi->origseg(), origpos, pi->origsize());
-			m_matcher->putInput( *pi);
+			if (pi->id())
+			{
+				int virtpos = pi->origpos();
+				int origpos = m_input[ virtpos].ofs();
+				DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", pi->id(), pi->ordpos(), pi->origseg(), origpos, pi->origsize());
+				m_matcher->putInput( *pi);
+			}
 		}
 	}
 	DEBUG_CLOSE()
