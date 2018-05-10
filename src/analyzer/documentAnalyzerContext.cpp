@@ -47,7 +47,7 @@ static std::string contentCut( const char* str, std::size_t size, std::size_t le
 using namespace strus;
 
 DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd_)
-	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap(),m_errorhnd)
+	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap(), errorhnd_)
 	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap(), errorhnd_)
 	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap(), errorhnd_)
 	,m_analyzer(analyzer_)

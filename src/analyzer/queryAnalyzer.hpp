@@ -68,7 +68,7 @@ public:
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
-	virtual void declareFeaturePriority( const std::string& type, int priority);
+	virtual void declareElementPriority( const std::string& type, int priority);
 
 	virtual QueryAnalyzerContextInterface* createContext() const;
 

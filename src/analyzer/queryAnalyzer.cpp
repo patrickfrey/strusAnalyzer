@@ -91,7 +91,7 @@ void QueryAnalyzer::addElementFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::declareFeaturePriority( const std::string& type, int priority)
+void QueryAnalyzer::declareElementPriority( const std::string& type, int priority)
 {
 	try
 	{
