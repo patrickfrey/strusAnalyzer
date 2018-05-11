@@ -144,8 +144,4 @@ analyzer::FunctionView TokenMarkupInstance::view() const
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 }
-IntrospectionInterface* TokenMarkupInstance::createIntrospection() const
-{
-	return NULL;
-}
 

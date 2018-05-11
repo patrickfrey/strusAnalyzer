@@ -8,7 +8,6 @@
 #include "normalizerCharConv.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
@@ -84,15 +83,6 @@ public:
 			return analyzer::FunctionView( m_map->name());
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		try
-		{
-			return new ConstIntrospection( NULL, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:
@@ -4662,26 +4652,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<CharSelectNormalizerInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				[ "charselect"]
-				( "sets", &CharSelectNormalizerInstance::m_setnames, &StringVectorIntrospection::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<CharSelectNormalizerInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

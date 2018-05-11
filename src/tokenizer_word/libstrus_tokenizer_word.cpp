@@ -12,7 +12,6 @@
 #include "strus/analyzer/token.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
-#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/unicodeWordDelimiters.hpp"
@@ -54,25 +53,6 @@ public:
 			return analyzer::FunctionView( m_delim->name);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<SeparationTokenizerInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				["separate"]
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<SeparationTokenizerInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

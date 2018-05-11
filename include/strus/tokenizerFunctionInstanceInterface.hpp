@@ -16,8 +16,6 @@
 
 /// \brief strus toplevel namespace
 namespace strus {
-/// \brief Forward declaration
-class IntrospectionInterface;
 
 /// \brief Interface for tokenization
 class TokenizerFunctionInstanceInterface
@@ -39,10 +37,6 @@ public:
 	/// \brief Get the definition of the function as structure for introspection
 	/// \return structure for introspection
 	virtual analyzer::FunctionView view() const=0;
-
-	/// \brief Create an interface for introspection
-	/// \return introspection interface (with ownership)
-	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 }//namespace

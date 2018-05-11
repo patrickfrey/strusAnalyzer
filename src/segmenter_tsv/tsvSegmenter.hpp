@@ -17,7 +17,6 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "strus/reference.hpp"
-#include "strus/introspectionInterface.hpp"
 #include "private/textEncoder.hpp"
 
 #include <string> 
@@ -117,7 +116,6 @@ class TSVSegmenterInstance : public strus::SegmenterInstanceInterface
 		virtual strus::SegmenterMarkupContextInterface* createMarkupContext( const strus::analyzer::DocumentClass& dclass, const std::string& content) const;
 
 		virtual strus::analyzer::FunctionView view() const;
-		virtual strus::IntrospectionInterface* createIntrospection() const;
 
 	private:
 

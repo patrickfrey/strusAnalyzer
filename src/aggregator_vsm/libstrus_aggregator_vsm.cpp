@@ -13,7 +13,6 @@
 #include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <vector>
@@ -97,26 +96,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<VsmAggregatorFunctionInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				["vsm"]
-				( "type", &VsmAggregatorFunctionInstance::m_featuretype, AtomicTypeIntrospection<std::string>::constructor)
-				( "name", &VsmAggregatorFunctionInstance::m_name, AtomicTypeIntrospection<std::string>::constructor);
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<VsmAggregatorFunctionInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in introspection of '%s': %s"), MODULE_NAME, *m_errorhnd, NULL);
 	}
 
 private:

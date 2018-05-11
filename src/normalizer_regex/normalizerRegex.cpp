@@ -10,7 +10,6 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/base/regex.hpp"
-#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/analyzer/functionView.hpp"
@@ -61,27 +60,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<RegexNormalizerFunctionInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				[ "regex"]
-				( "expr", &RegexNormalizerFunctionInstance::m_expr, AtomicTypeIntrospection<std::string>::constructor)
-				( "result", &RegexNormalizerFunctionInstance::m_result, AtomicTypeIntrospection<std::string>::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<RegexNormalizerFunctionInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

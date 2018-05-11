@@ -14,7 +14,6 @@
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
@@ -123,25 +122,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<PatternTermFeederInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				( "typemap", &PatternTermFeederInstance::m_typeTable, AtomicMapTypeIntrospection<TypeTable>::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<PatternTermFeederInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("failed to create introspection: %s"), *m_errorhnd, 0);
 	}
 
 private:

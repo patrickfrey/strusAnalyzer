@@ -106,7 +106,6 @@ public:
 	virtual TokenMarkupContextInterface* createContext() const;
 
 	virtual analyzer::FunctionView view() const;
-	virtual IntrospectionInterface* createIntrospection() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

@@ -16,9 +16,6 @@
 
 namespace strus
 {
-/// \brief Forward declaration
-class IntrospectionInterface;
-
 /// \brief Instance interface for defining a mapping of terms of the document analysis outout as lexems used as basic entities by pattern matching
 class PatternTermFeederInstanceInterface
 {
@@ -66,10 +63,6 @@ public:
 	/// \brief Get the definition of the function as structure for introspection
 	/// \return structure for introspection
 	virtual analyzer::FunctionView view() const=0;
-
-	/// \brief Create an interface for introspection
-	/// \return introspection interface (with ownership)
-	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

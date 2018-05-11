@@ -246,11 +246,6 @@ public:
 		;
 	}
 
-	virtual strus::IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
-	}
-
 private:
 	int m_factor;
 };

@@ -7,11 +7,6 @@
  */
 /// \brief Implementation of the introspection for the document analyzer
 /// \file documentAnalyzerIntrospection.cpp
-#include "documentAnalyzerIntrospection.hpp"
-#include "documentClassIntrospection.hpp"
-#include "featureConfigIntrospection.hpp"
-#include "strus/introspectionInterface.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "documentAnalyzer.hpp"
 #include "private/internationalization.hpp"

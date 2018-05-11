@@ -10,7 +10,6 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/base/stdint.h"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include <cstring>
 #include <string>
@@ -169,27 +168,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<Date2IntNormalizerConfig>{
-		public:
-			Description()
-			{
-				(*this)
-				[ "date2int"]
-				( "granularity", &Date2IntNormalizerConfig::granularitystr, &AtomicTypeIntrospection<std::string>::constructor)
-				( "format", &Date2IntNormalizerConfig::fmtar, &StringVectorIntrospection::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<Date2IntNormalizerConfig>( &m_config, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

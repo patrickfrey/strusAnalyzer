@@ -20,7 +20,6 @@
 #include "strus/base/hton.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/stdint.h"
-#include "strus/base/introspection.hpp"
 #include "strus/reference.hpp"
 #include "strus/versionAnalyzer.hpp"
 #include "strus/analyzer/functionView.hpp"
@@ -335,11 +334,6 @@ public:
 		return 0;
 	}
 
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
-	}
-
 	virtual analyzer::FunctionView view() const
 	{
 		try
@@ -456,11 +450,6 @@ public:
 	virtual analyzer::FunctionView view() const
 	{
 		return analyzer::FunctionView();
-	}
-	
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
 	}
 
 private:
@@ -583,11 +572,6 @@ public:
 		return analyzer::FunctionView();
 	}
 
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
-	}
-
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<SerializerData> m_serializerData;
@@ -649,11 +633,6 @@ public:
 	virtual analyzer::FunctionView view() const
 	{
 		return analyzer::FunctionView();
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
 	}
 
 private:
@@ -745,11 +724,6 @@ public:
 	{
 		m_errorhnd->report( ErrorCodeNotImplemented, _TXT("command PatternLexer::createContext not implemented in serializer"));
 		return 0;
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
 	}
 
 private:
@@ -848,11 +822,6 @@ public:
 	virtual analyzer::FunctionView view() const
 	{
 		return analyzer::FunctionView();
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
 	}
 
 private:

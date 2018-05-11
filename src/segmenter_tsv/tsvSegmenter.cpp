@@ -385,10 +385,6 @@ strus::analyzer::FunctionView TSVSegmenterInstance::view() const
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errbuf, strus::analyzer::FunctionView());
 }
-IntrospectionInterface* TSVSegmenterInstance::createIntrospection() const
-{
-	return NULL;
-}
 
 // TSVSegmenter
 

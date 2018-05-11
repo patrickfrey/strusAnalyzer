@@ -134,8 +134,6 @@ public:
 
 	virtual analyzer::DocumentAnalyzerView view() const;
 
-	virtual IntrospectionInterface* createIntrospection() const;
-
 public:/*DocumentAnalyzerContext*/
 	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
 	typedef std::set<std::string> TermTypeSet;

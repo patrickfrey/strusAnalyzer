@@ -10,7 +10,6 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/base/regex.hpp"
 #include "strus/base/numstring.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -68,24 +67,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<RegexTokenizerFunctionInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				( "expression", &RegexTokenizerFunctionInstance::m_expression, AtomicTypeIntrospection<std::string>::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<RegexTokenizerFunctionInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error creating introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

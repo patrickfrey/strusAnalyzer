@@ -8,7 +8,6 @@
 #ifndef _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #define _STRUS_TOKENIZER_PUNCTUATION_DE_HPP_INCLUDED
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/introspectionInterface.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "punctuation_utils.hpp"
 
@@ -41,7 +40,6 @@ public:
 	virtual std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
 
 	virtual analyzer::FunctionView view() const;
-	virtual IntrospectionInterface* createIntrospection() const;
 
 private:
 	CharTable m_punctuation_char;

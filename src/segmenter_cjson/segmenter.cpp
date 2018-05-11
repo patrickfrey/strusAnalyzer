@@ -74,11 +74,6 @@ analyzer::FunctionView SegmenterInstance::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 }
 
-IntrospectionInterface* SegmenterInstance::createIntrospection() const
-{
-	return NULL;
-}
-
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try

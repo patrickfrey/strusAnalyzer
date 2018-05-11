@@ -8,7 +8,6 @@
 #include "normalizer_trim.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/utf8.hpp"
-#include "strus/base/introspection.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
@@ -58,15 +57,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		try
-		{
-			return new ConstIntrospection( NULL, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

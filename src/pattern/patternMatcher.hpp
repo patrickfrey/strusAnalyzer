@@ -64,10 +64,6 @@ public:
 
 	virtual PatternMatcherContextInterface* createContext() const;
 	virtual analyzer::FunctionView view() const;
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		return NULL;
-	}
 
 private:
 	friend class TestPatternMatcherContext;

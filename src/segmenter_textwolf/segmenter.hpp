@@ -34,7 +34,6 @@ public:
 	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
 	virtual analyzer::FunctionView view() const;
-	virtual IntrospectionInterface* createIntrospection() const;
 
 private:
 	void addExpression( int id, const std::string& expression);

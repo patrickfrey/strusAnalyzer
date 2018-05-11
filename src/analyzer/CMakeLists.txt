@@ -13,9 +13,6 @@ set(source_files
 	segmentProcessor.cpp
 	documentAnalyzer.cpp
 	documentAnalyzerContext.cpp
-	documentAnalyzerIntrospection.cpp
-	documentClassIntrospection.cpp
-	featureConfigIntrospection.cpp
 	queryAnalyzer.cpp
 	queryAnalyzerContext.cpp
 )

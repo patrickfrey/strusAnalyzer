@@ -1,3 +1,15 @@
+strusAnalyzer (0.16.0)
+  * moved pseudo random number generator to strus base
+  * added priority to features to eliminate features entirely covered by a single feature of higher priority
+  * added trim normalization method
+  * reference test programs with path relative to binary dir
+  * change handling of gettext to avoid warning: return a const char* 
+  * make use of debug interface in strus base instead of low level debug defines
+  * added some introspection capabilities
+  * reimplemented analyzer program loader here, to replace the implementation in strusUtilities
+  * some spec file fixes
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Fri, 11 May 2018 15:00:00 +0100
+
 strusAnalyzer (0.15.7)
   * added make target cppcheck for static code analysis
   * performance improvements of char conversion normalizer

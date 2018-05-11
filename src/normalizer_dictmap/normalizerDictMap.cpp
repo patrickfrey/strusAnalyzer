@@ -12,7 +12,6 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -211,28 +210,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<DictMapNormalizerInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				[ "dictmap"]
-				( "defaultorig", &DictMapNormalizerInstance::m_defaultOrig, AtomicTypeIntrospection<bool>::constructor)
-				( "default", &DictMapNormalizerInstance::m_defaultResult, AtomicTypeIntrospection<std::string>::constructor)
-				( "filename", &DictMapNormalizerInstance::m_filename, AtomicTypeIntrospection<std::string>::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<DictMapNormalizerInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:

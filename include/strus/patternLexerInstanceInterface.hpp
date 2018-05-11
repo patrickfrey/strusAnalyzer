@@ -18,8 +18,6 @@ namespace strus
 
 /// \brief Forward declaration
 class PatternLexerContextInterface;
-/// \brief Forward declaration
-class IntrospectionInterface;
 
 /// \brief Interface for building the automaton for detecting lexems used as basic entities by pattern matching in text
 class PatternLexerInstanceInterface
@@ -90,10 +88,6 @@ public:
 	/// \brief Get the definition of the function as structure for introspection
 	/// \return structure for introspection
 	virtual analyzer::FunctionView view() const=0;
-
-	/// \brief Create an interface for introspection
-	/// \return introspection interface (with ownership)
-	virtual IntrospectionInterface* createIntrospection() const=0;
 };
 
 } //namespace

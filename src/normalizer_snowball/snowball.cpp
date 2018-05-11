@@ -11,7 +11,6 @@
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "strus/base/string_conv.hpp"
-#include "strus/base/introspection.hpp"
 #include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
@@ -71,26 +70,6 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-	}
-
-	virtual IntrospectionInterface* createIntrospection() const
-	{
-		class Description :public StructTypeIntrospectionDescription<StemNormalizerFunctionInstance>{
-		public:
-			Description()
-			{
-				(*this)
-				[ "stem"]
-				( "language", &StemNormalizerFunctionInstance::m_language, AtomicTypeIntrospection<std::string>::constructor)
-				;
-			}
-		};
-		static const Description descr;
-		try
-		{
-			return new StructTypeIntrospection<StemNormalizerFunctionInstance>( this, &descr, m_errorhnd);
-		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, NULL);
 	}
 
 private:
