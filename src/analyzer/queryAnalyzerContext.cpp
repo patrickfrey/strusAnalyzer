@@ -27,7 +27,6 @@
 #define STRUS_DBGTRACE_COMPONENT_NAME "analyzer"
 #define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
 #define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
-#define DEBUG_EVENT1( NAME, FMT, ID)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID);
 #define DEBUG_EVENT2( NAME, FMT, ID, VAL)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID, VAL);
 #define DEBUG_EVENT3( NAME, FMT, X1, X2, X3)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3);
 #define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
@@ -38,7 +37,6 @@
 #define DEBUG_EVENT4_STR( NAME, FMT, X1, X2, X3, VAL)		if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, X1, X2, X3, valstr.c_str());}
 
 using namespace strus;
-#undef STRUS_LOWLEVEL_DEBUG
 
 QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
 	:m_analyzer(analyzer_)
