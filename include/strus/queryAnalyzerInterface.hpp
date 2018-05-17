@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
+#include "strus/analyzer/queryAnalyzerView.hpp"
 #include <vector>
 #include <string>
 
@@ -93,6 +94,10 @@ public:
 	/// \brief Create the context used for analyzing a query
 	/// \return the query analyzer context (with ownership)
 	virtual QueryAnalyzerContextInterface* createContext() const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual analyzer::QueryAnalyzerView view() const=0;
 };
 
 }//namespace

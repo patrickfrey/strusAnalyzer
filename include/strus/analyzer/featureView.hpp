@@ -30,8 +30,12 @@ public:
 		:m_type(o.m_type),m_selectexpr(o.m_selectexpr),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer),m_options(o.m_options){}
 
 	/// \brief Constructor
-	/// \param[in] name_ name of the function
-	/// \param[in] params_ list of named parameters
+	/// \brief Constructor
+	/// \param[in] type_ name of the function
+	/// \param[in] selectexpr_ the segmenter selection expression
+	/// \param[in] tokenizer_ view of tokenizer
+	/// \param[in] normalizer_ list of views of normalizers
+	/// \param[in] options_ set of feature options (e.g. how to build positions)
 	FeatureView( const std::string& type_, const std::string& selectexpr_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_, const FeatureOptions& options_)
 		:m_type(type_),m_selectexpr(selectexpr_),m_tokenizer(tokenizer_),m_normalizer(normalizer_),m_options(options_){}
 

@@ -72,6 +72,8 @@ public:
 
 	virtual QueryAnalyzerContextInterface* createContext() const;
 
+	virtual analyzer::QueryAnalyzerView view() const;
+
 public:/*QueryAnalyzerContext*/
 	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;

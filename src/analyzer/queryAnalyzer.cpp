@@ -109,4 +109,50 @@ QueryAnalyzerContextInterface* QueryAnalyzer::createContext() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in QueryAnalyzer::createContext: %s"), *m_errorhnd, 0);
 }
 
+static analyzer::QueryElementView getQueryElementView( const FeatureConfig& cfg)
+{
+	typedef Reference<NormalizerFunctionInstanceInterface> NormalizerReference;
+	std::vector<analyzer::FunctionView> normalizerviews;
+	std::vector<NormalizerReference>::const_iterator ni = cfg.normalizerlist().begin(), ne = cfg.normalizerlist().end();
+	for (; ni != ne; ++ni)
+	{
+		normalizerviews.push_back( (*ni)->view());
+	}
+	return analyzer::QueryElementView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews);
+}
+
+analyzer::QueryAnalyzerView QueryAnalyzer::view() const
+{
+	try
+	{
+		std::vector<analyzer::QueryElementView> elements;
+		std::vector<analyzer::QueryElementView> patternLexems;
+		std::map<std::string,int> prioritydefs;
+
+		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
+		for (; fi != fe; ++fi)
+		{
+			switch (fi->featureClass())
+			{
+				case FeatMetaData:
+					throw strus::runtime_error(_TXT("internal: illegal %s feature definition in query"), "metadata");
+					break;
+				case FeatAttribute:
+					throw strus::runtime_error(_TXT("internal: illegal %s feature definition in query"), "attribute");
+					break;
+				case FeatForwardIndexTerm:
+					throw strus::runtime_error(_TXT("internal: illegal %s feature definition in query"), "forward index");
+					break;
+				case FeatSearchIndexTerm:
+					elements.push_back( getQueryElementView( *fi));
+					break;
+				case FeatPatternLexem:
+					patternLexems.push_back( getQueryElementView( *fi));
+					break;
+			}
+		}
+		return analyzer::QueryAnalyzerView( elements, patternLexems, m_featureTypePriorityMap);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in query analyzer create view: %s"), *m_errorhnd, analyzer::QueryAnalyzerView());
+}
 
