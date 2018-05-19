@@ -58,7 +58,7 @@ public:
 			JoinOperation operation,
 			std::size_t argc, unsigned int range, unsigned int cardinality);
 	virtual void pushPattern( const std::string& name);
-	virtual void attachVariable( const std::string& name);
+	virtual void attachVariable( const std::string& name, const std::string& formatstring);
 	virtual void definePattern( const std::string& name, bool visible);
 	virtual bool compile();
 

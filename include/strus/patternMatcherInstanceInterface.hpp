@@ -72,8 +72,12 @@ public:
 
 	/// \brief Attaches a variable to the top expression or term on the stack.
 	/// \param[in] name name of the variable attached
+	/// \param[in] formatstring format string for the value attached to the variable (empty if undefined).
+	///		The formatstring contains variable references of the sub expression in curly brackets '{' '}'.
+	///		A variable reference is an identifier optionally followed by an or '|' and a separator value
+	///		used for separate multiple occurrencies of the referenced variable.
 	/// \remark The stack is not changed
-	virtual void attachVariable( const std::string& name)=0;
+	virtual void attachVariable( const std::string& name, const std::string& formatstring="")=0;
 
 	/// \brief Create a pattern that can be referenced by the given name and can be declared as part of the result
 	/// \param[in] name name of the pattern and the result if declared as visible

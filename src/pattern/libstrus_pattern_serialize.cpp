@@ -514,12 +514,13 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name)
+	virtual void attachVariable( const std::string& name, const std::string& formatstring)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_attachVariable);
 			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( formatstring);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
@@ -776,11 +777,11 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name)
+	virtual void attachVariable( const std::string& name, const std::string& formatstring)
 	{
 		try
 		{
-			(*m_output) << "M attachVariable( " << name << ");" << std::endl;
+			(*m_output) << "M attachVariable( " << name << ", " << formatstring << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
 	}
@@ -1067,8 +1068,9 @@ static void deserializeCommand(
 			if (!matcher) throw std::runtime_error( _TXT("loading pattern matcher command when no pattern matcher defined"));
 
 			std::string op_name = deserializer.readParam_string();
+			std::string op_formatstring = deserializer.readParam_string();
 			deserializer.endCall();
-			matcher->attachVariable( op_name);
+			matcher->attachVariable( op_name, op_formatstring);
 			break;
 		}
 		case SerializerData::PatternMatcher_definePattern:

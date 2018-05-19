@@ -117,7 +117,7 @@ void TestPatternMatcherInstance::pushPattern( const std::string& name)
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::pushPattern", *m_errorhnd);
 }
 
-void TestPatternMatcherInstance::attachVariable( const std::string& name)
+void TestPatternMatcherInstance::attachVariable( const std::string& name, const std::string& formatstring)
 {
 	try
 	{
