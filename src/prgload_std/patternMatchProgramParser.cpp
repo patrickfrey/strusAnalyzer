@@ -828,7 +828,28 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 		std::string op = lexer.current().value();
 		lexer.next();
 		loadExpressionNode( lexer, op, exprinfo);
-		m_patternMatcher->attachVariable( name);
+		std::string formatstring;
+		if (lexer.next().isToken(TokOpenSquareBracket))
+		{
+			lexer.next();
+			if (lexer.current().isString())
+			{
+				formatstring = lexer.current().value();
+				if (lexer.next().isToken(TokCloseSquareBracket))
+				{
+					lexer.next();
+				}
+				else
+				{
+					throw strus::runtime_error( _TXT("expected close square brackets ']' after format string"));
+				}
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("expected string (format string) in square brackets '[' ']' after expression"));
+			}
+		}
+		m_patternMatcher->attachVariable( name, formatstring);
 	}
 	else
 	{
