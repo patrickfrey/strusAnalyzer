@@ -99,7 +99,7 @@ private:
 	friend class TestPatternLexerContext;
 
 	ErrorBufferInterface* m_errorhnd;
-	DebugTraceContextInterface* m_dbgtrace;
+	DebugTraceContextInterface* m_debugtrace;
 	std::map<unsigned int,std::string> m_lexemNameMap;
 	std::map<unsigned int,SymbolTable> m_symmap;
 	std::vector<Expression> m_expressions;
@@ -148,8 +148,8 @@ public:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
-	DebugTraceContextInterface* m_dbgtrace;
-	DebugTraceContextInterface* m_dbgtrace_proc;
+	DebugTraceContextInterface* m_debugtrace;
+	DebugTraceContextInterface* m_debugtrace_proc;
 	const TestPatternLexerInstance* m_instance;
 };
 

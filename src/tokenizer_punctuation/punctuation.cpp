@@ -21,8 +21,6 @@
 using namespace strus;
 using namespace strus::analyzer;
 
-#undef STRUS_LOWLEVEL_DEBUG
-
 class PunctuationTokenizerFunction
 	:public TokenizerFunctionInterface
 {

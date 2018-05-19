@@ -78,6 +78,7 @@ DocumentAnalyzerContext::~DocumentAnalyzerContext()
 	{
 		delete si->segmenter;
 	}
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize, bool eof)

@@ -48,6 +48,11 @@ QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, Erro
 	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
 }
 
+QueryAnalyzerContext::~QueryAnalyzerContext()
+{
+	if (m_debugtrace) delete m_debugtrace;
+}
+
 void QueryAnalyzerContext::putField( int fieldNo, const std::string& fieldType, const std::string& content)
 {
 	try

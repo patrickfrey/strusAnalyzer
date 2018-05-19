@@ -29,7 +29,6 @@ public:
 			const DocumentAnalyzer* analyzer_,
 			const analyzer::DocumentClass& dclass,
 			ErrorBufferInterface* errorhnd);
-
 	virtual ~DocumentAnalyzerContext();
 
 	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof);

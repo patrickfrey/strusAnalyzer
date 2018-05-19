@@ -92,7 +92,7 @@ private:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
-	DebugTraceContextInterface* m_dbgtrace;
+	DebugTraceContextInterface* m_debugtrace;
 	PatternMatcherInstanceInterface* m_patternMatcher;
 	PatternLexerInstanceInterface* m_patternLexer;
 	PatternTermFeederInstanceInterface* m_patternTermFeeder;

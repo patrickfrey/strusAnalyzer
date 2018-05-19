@@ -39,6 +39,7 @@ struct PreProcPatternMatchContext
 		,m_lexer(o.m_lexer)
 		,m_errorhnd(o.m_errorhnd)
 		,m_debugtrace(o.m_debugtrace){}
+	~PreProcPatternMatchContext();
 
 	void process( std::size_t segpos, const char* seg, std::size_t segsize);
 	std::vector<BindTerm> fetchResults();
@@ -66,6 +67,7 @@ struct PostProcPatternMatchContext
 		,m_fetchResults_called(o.m_fetchResults_called)
 		,m_errorhnd(o.m_errorhnd)
 		,m_debugtrace(o.m_debugtrace){}
+	~PostProcPatternMatchContext();
 
 	void process( const std::vector<BindTerm>& input);
 	std::vector<BindTerm> fetchResults();
@@ -89,7 +91,7 @@ public:
 	PreProcPatternMatchContextMap( const PreProcPatternMatchConfigMap& config, ErrorBufferInterface* errorhnd_);
 	PreProcPatternMatchContextMap( const PreProcPatternMatchContextMap& o)
 		:m_ar(o.m_ar){}
-	~PreProcPatternMatchContextMap(){}
+	~PreProcPatternMatchContextMap();
 
 	const PreProcPatternMatchContext& context( std::size_t idx) const
 	{
@@ -122,7 +124,7 @@ public:
 	PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config, ErrorBufferInterface* errorhnd_);
 	PostProcPatternMatchContextMap( const PostProcPatternMatchContextMap& o)
 		:m_ar(o.m_ar){}
-	~PostProcPatternMatchContextMap(){}
+	~PostProcPatternMatchContextMap();
 
 	typedef std::vector<PostProcPatternMatchContext>::iterator iterator;
 	iterator begin()		{return m_ar.begin();}

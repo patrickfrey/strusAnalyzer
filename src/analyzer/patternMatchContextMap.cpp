@@ -44,6 +44,11 @@ PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatc
 	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
 }
 
+PreProcPatternMatchContext::~PreProcPatternMatchContext()
+{
+	if (m_debugtrace) delete m_debugtrace;
+}
+
 void PreProcPatternMatchContext::process( std::size_t segpos, const char* seg, std::size_t segsize)
 {
 	SegPosContentPosMap::const_iterator segi = m_segPosContentPosMap.find( segpos);
@@ -145,6 +150,11 @@ PostProcPatternMatchContext::PostProcPatternMatchContext( const PostProcPatternM
 	}
 	DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
 	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
+}
+
+PostProcPatternMatchContext::~PostProcPatternMatchContext()
+{
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 void PostProcPatternMatchContext::process( const std::vector<BindTerm>& input)
@@ -263,6 +273,11 @@ PreProcPatternMatchContextMap::PreProcPatternMatchContextMap( const PreProcPatte
 	}
 }
 
+PreProcPatternMatchContextMap::~PreProcPatternMatchContextMap()
+{
+	if (m_debugtrace) delete m_debugtrace;
+}
+
 PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPatternMatchConfigMap& config, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
 	,m_debugtrace(0)
@@ -275,6 +290,11 @@ PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPa
 	{
 		m_ar.push_back( PostProcPatternMatchContext( *ci, errorhnd_));
 	}
+}
+
+PostProcPatternMatchContextMap::~PostProcPatternMatchContextMap()
+{
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 void PreProcPatternMatchContextMap::clear()

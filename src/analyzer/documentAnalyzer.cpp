@@ -26,8 +26,6 @@
 #include <cstring>
 #include <limits>
 
-#undef STRUS_LOWLEVEL_DEBUG
-
 using namespace strus;
 
 DocumentAnalyzer::DocumentAnalyzer( const TextProcessorInterface* textproc_, const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)

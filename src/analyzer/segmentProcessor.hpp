@@ -44,7 +44,7 @@ public:
 			const FeatureConfigMap& featureConfigMap_,
 			const PatternFeatureConfigMap& patternFeatureConfigMap_,
 			ErrorBufferInterface* errorhnd_);
-	~SegmentProcessor(){}
+	~SegmentProcessor();
 
 	void clearTermMaps();
 	void processDocumentSegment(

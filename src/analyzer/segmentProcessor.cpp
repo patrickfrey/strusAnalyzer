@@ -41,6 +41,11 @@ SegmentProcessor::SegmentProcessor(
 	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
 }
 
+SegmentProcessor::~SegmentProcessor()
+{
+	if (m_debugtrace) delete m_debugtrace;
+}
+
 void SegmentProcessor::clearTermMaps()
 {
 	m_concatenatedMap.clear();

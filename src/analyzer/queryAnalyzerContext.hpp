@@ -32,7 +32,7 @@ class QueryAnalyzerContext
 public:
 	QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_);
 
-	virtual ~QueryAnalyzerContext(){}
+	virtual ~QueryAnalyzerContext();
 
 	virtual void putField( int fieldNo, const std::string& fieldType, const std::string& content);
 

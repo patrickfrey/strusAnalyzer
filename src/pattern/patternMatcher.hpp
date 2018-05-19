@@ -105,7 +105,7 @@ private:
 			:id(o.id),name(o.name){}
 	};
 	ErrorBufferInterface* m_errorhnd;
-	DebugTraceContextInterface* m_dbgtrace;
+	DebugTraceContextInterface* m_debugtrace;
 	std::vector<Pattern> m_patternar;
 	std::vector<std::string> m_patternrefar;
 	std::vector<Expression> m_expressionar;
@@ -205,8 +205,8 @@ private:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
-	DebugTraceContextInterface* m_dbgtrace;
-	DebugTraceContextInterface* m_dbgtrace_proc;
+	DebugTraceContextInterface* m_debugtrace;
+	DebugTraceContextInterface* m_debugtrace_proc;
 	const TestPatternMatcherInstance* m_instance;
 	std::vector<analyzer::PatternLexem> m_inputar;
 };

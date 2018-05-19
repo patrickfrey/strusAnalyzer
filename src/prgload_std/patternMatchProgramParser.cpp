@@ -31,7 +31,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 		PatternMatcherInstanceInterface* tpm,
 		ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
-	,m_dbgtrace(0)
+	,m_debugtrace(0)
 	,m_patternMatcher(tpm)
 	,m_patternLexer(crm)
 	,m_patternTermFeeder(0)
@@ -44,7 +44,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 {
 	if (!m_patternMatcher || !m_patternLexer) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
 	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
-	m_dbgtrace = dbg ? dbg->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_debugtrace = dbg ? dbg->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
 }
 
 PatternMatcherProgramParser::PatternMatcherProgramParser(
@@ -66,7 +66,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 
 PatternMatcherProgramParser::~PatternMatcherProgramParser()
 {
-	if (m_dbgtrace) delete m_dbgtrace;
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 enum Tokens {
@@ -78,8 +78,6 @@ enum Tokens {
 	TokInteger,
 	TokOpenOvalBracket,
 	TokCloseOvalBracket,
-	TokOpenCurlyBracket,
-	TokCloseCurlyBracket,
 	TokOpenSquareBracket,
 	TokCloseSquareBracket,
 	TokOr,
@@ -103,8 +101,6 @@ static const char* g_tokens[] = {
 	"[+-]*[0-9][0-9_]*",
 	"\\(",
 	"\\)",
-	"\\{",
-	"\\}",
 	"\\[",
 	"\\]",
 	"\\|",
@@ -476,7 +472,7 @@ bool PatternMatcherProgramParser::compile()
 				ue = m_unresolvedPatternNameSet.end();
 			for (std::size_t uidx=0; ui != ue && uidx<10; ++ui,++uidx)
 			{
-				if (m_dbgtrace) m_dbgtrace->event( "unresolved", "%s", m_patternNameSymbolTab.key(*ui));
+				if (m_debugtrace) m_debugtrace->event( "unresolved", "%s", m_patternNameSymbolTab.key(*ui));
 			}
 		}
 		bool rt = true;
@@ -530,13 +526,13 @@ uint32_t PatternMatcherProgramParser::getOrCreateSymbol( unsigned int regexid, c
 		}
 		if (m_patternLexer)
 		{
-			if (m_dbgtrace) m_dbgtrace->event( "lexer-symbol", "%d %s", regexid, name.c_str());
+			if (m_debugtrace) m_debugtrace->event( "lexer-symbol", "%d %s", regexid, name.c_str());
 			m_patternLexer->defineSymbol( symid, regexid, name);
 			m_patternLexer->defineLexemName( symid, name);
 		}
 		else if (m_patternTermFeeder)
 		{
-			if (m_dbgtrace) m_dbgtrace->event( "feeder-symbol", "%d %s", regexid, name.c_str());
+			if (m_debugtrace) m_debugtrace->event( "feeder-symbol", "%d %s", regexid, name.c_str());
 			m_patternTermFeeder->defineSymbol( symid, regexid, name);
 		}
 		else
@@ -730,7 +726,7 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 				}
 				break;
 		}
-		if (m_dbgtrace) m_dbgtrace->event( "expression", "op %s card %d range %d args %d", name.c_str(), cardinality, range, nofArguments);
+		if (m_debugtrace) m_debugtrace->event( "expression", "op %s card %d range %d args %d", name.c_str(), cardinality, range, nofArguments);
 		m_patternMatcher->pushExpression( operation, nofArguments, range, cardinality);
 	}
 	else if (lexer.current().isToken( TokAssign))
@@ -824,7 +820,7 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 	}
 	if (lexer.next().isToken(TokAssign))
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "assign", "%s", name.c_str());
+		if (m_debugtrace) m_debugtrace->event( "assign", "%s", name.c_str());
 		if (!lexer.next().isToken(TokIdentifier))
 		{
 			throw strus::runtime_error( _TXT("expected variable after assign '='"));

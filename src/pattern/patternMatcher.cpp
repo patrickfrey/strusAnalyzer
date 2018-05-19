@@ -39,22 +39,22 @@ PatternMatcherInstanceInterface* TestPatternMatcher::createInstance() const
 }
 
 TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_dbgtrace(0),m_patternar(),m_patternrefar(),m_expressionar(),m_variablear(),m_operandsar(),m_stk(),m_done(false)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar(),m_expressionar(),m_variablear(),m_operandsar(),m_stk(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
-	m_dbgtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
 }
 
 TestPatternMatcherInstance::~TestPatternMatcherInstance()
 {
-	if (m_dbgtrace) delete m_dbgtrace;
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 void TestPatternMatcherInstance::defineOption( const std::string& name, double value)
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "option", "%s %f", name.c_str(), value);
+		if (m_debugtrace) m_debugtrace->event( "option", "%s %f", name.c_str(), value);
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "defineOption");
 		throw std::runtime_error("unknonw option passed to pattern lexer");
 	}
@@ -65,7 +65,7 @@ void TestPatternMatcherInstance::defineTermFrequency( unsigned int termid, doubl
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "df", "%d %f", termid, df);
+		if (m_debugtrace) m_debugtrace->event( "df", "%d %f", termid, df);
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "defineTermFrequency");
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::defineTermFrequency", *m_errorhnd);
@@ -75,7 +75,7 @@ void TestPatternMatcherInstance::pushTerm( unsigned int termid)
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "push", "term %d", termid);
+		if (m_debugtrace) m_debugtrace->event( "push", "term %d", termid);
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "pushTerm");
 		if (termid >= MaxId) throw std::runtime_error("illegal term id pushed");
 		m_stk.push_back( termid);
@@ -89,7 +89,7 @@ void TestPatternMatcherInstance::pushExpression(
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "push", "expression %s %d %u %u", joinOperationName(operation), (int)argc, range, cardinality);
+		if (m_debugtrace) m_debugtrace->event( "push", "expression %s %d %u %u", joinOperationName(operation), (int)argc, range, cardinality);
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "pushExpression");
 		if (m_stk.size() < argc) throw std::runtime_error("illegal operation");
 		if (m_expressionar.size() > MaxId) throw std::runtime_error("too many expressions pushed");
@@ -107,7 +107,7 @@ void TestPatternMatcherInstance::pushPattern( const std::string& name)
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "push", "pattern %s", name.c_str());
+		if (m_debugtrace) m_debugtrace->event( "push", "pattern %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "pushPattern");
 		if (m_patternar.size() > MaxId) throw std::runtime_error("too many expressions pushed");
 	
@@ -121,7 +121,7 @@ void TestPatternMatcherInstance::attachVariable( const std::string& name)
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "attach", "variable %s", name.c_str());
+		if (m_debugtrace) m_debugtrace->event( "attach", "variable %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "attachVariable");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
 		m_variablear.push_back( Variable( m_stk.back(), name));
@@ -133,7 +133,7 @@ void TestPatternMatcherInstance::definePattern( const std::string& name, bool vi
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
+		if (m_debugtrace) m_debugtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "definePattern");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
 		m_patternar.push_back( Pattern( m_stk.back(), name));
@@ -146,7 +146,7 @@ bool TestPatternMatcherInstance::compile()
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "compile", "patterns %d expressions %d variables %d patternrefs %d",
+		if (m_debugtrace) m_debugtrace->event( "compile", "patterns %d expressions %d variables %d patternrefs %d",
 							(int)m_patternar.size(), (int)m_expressionar.size(), (int)m_variablear.size(), (int)m_patternrefar.size());
 		if (m_done) throw strus::runtime_error(_TXT("already called %s"), "compile");
 		m_done = true;
@@ -209,17 +209,17 @@ analyzer::FunctionView TestPatternMatcherInstance::view() const
 }
 
 TestPatternMatcherContext::TestPatternMatcherContext( ErrorBufferInterface* errorhnd_, const TestPatternMatcherInstance* instance_)
-	:m_errorhnd(errorhnd_),m_dbgtrace(0),m_dbgtrace_proc(0),m_instance(instance_)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
-	m_dbgtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
-	m_dbgtrace_proc = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME_PROC) : NULL;
+	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_debugtrace_proc = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME_PROC) : NULL;
 }
 
 TestPatternMatcherContext::~TestPatternMatcherContext()
 {
-	if (m_dbgtrace) delete m_dbgtrace;
-	if (m_dbgtrace_proc) delete m_dbgtrace_proc;
+	if (m_debugtrace) delete m_debugtrace;
+	if (m_debugtrace_proc) delete m_debugtrace_proc;
 }
 
 void TestPatternMatcherContext::putInput( const analyzer::PatternLexem& token)
@@ -250,7 +250,7 @@ std::vector<analyzer::PatternMatcherResult> TestPatternMatcherContext::fetchResu
 		std::vector<TestPatternMatcherInstance::Pattern>::const_iterator pi = m_instance->m_patternar.begin(), pe = m_instance->m_patternar.end();
 		for (; pi != pe; ++pi)
 		{
-			if (m_dbgtrace_proc) m_dbgtrace_proc->event( "evalpattern", "name %s id %d", pi->name.c_str(), (int)pi->id);
+			if (m_debugtrace_proc) m_debugtrace_proc->event( "evalpattern", "name %s id %d", pi->name.c_str(), (int)pi->id);
 			evalPattern( rt, *pi);
 		}
 		std::sort( rt.begin(), rt.end(), comparePatternMatcherResult);
@@ -370,7 +370,7 @@ bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int
 	}
 	if (cardinality ? nofMatches >= (int)cardinality : nofMatches == pidx)
 	{
-		if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchcombined", "%s%s%s pos %d len %d nof %d cardinality %d",
+		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchcombined", "%s%s%s pos %d len %d nof %d cardinality %d",
 					(seq?"sequence":"within"), (structid?"_struct":""), (imm?"_imm":""),
 					result.match.ordpos, result.match.ordlen, nofMatches, cardinality ? cardinality : pidx);
 		return true;
@@ -396,7 +396,7 @@ bool TestPatternMatcherContext::matchShortest( MatchResult& result, std::vector<
 	}
 	if (maxordlen < std::numeric_limits<int>::max())
 	{
-		if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchany", "pos %d len %d", result.match.ordpos, result.match.ordlen);
+		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchany", "pos %d len %d", result.match.ordpos, result.match.ordlen);
 		return true;
 	}
 	else
@@ -433,7 +433,7 @@ bool TestPatternMatcherContext::matchAll( MatchResult& result, std::vector<unsig
 	}
 	if (cardinality ? nofMatches >= cardinality : nofMatches == pidx)
 	{
-		if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchall", "nof %d cardinality %d", nofMatches, cardinality ? cardinality : pidx);
+		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchall", "nof %d cardinality %d", nofMatches, cardinality ? cardinality : pidx);
 		return true;
 	}
 	else
@@ -465,12 +465,12 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 				const char* variable = m_instance->getVariableAttached( id);
 				if (variable)
 				{
-					if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchtoken", "id %d pos %d var %s", (int)token.id(), (int)token.ordpos(), variable);
+					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var %s", (int)token.id(), (int)token.ordpos(), variable);
 					result.items.push_back( MatchItem( match, variable));
 				}
 				else
 				{
-					if (m_dbgtrace_proc) m_dbgtrace_proc->event( "matchtoken", "id %d pos %d", (int)token.id(), (int)token.ordpos());
+					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d", (int)token.id(), (int)token.ordpos());
 				}
 				return true;
 			}
@@ -523,21 +523,21 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 	for (int inputiter=0; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
 		MatchResult result;
-		if (m_dbgtrace_proc)
+		if (m_debugtrace_proc)
 		{
 			const analyzer::PatternLexem& lexem = m_inputar[ inputiter];
-			m_dbgtrace_proc->event( "token", "[%d] id %d pos %d", inputiter, (int)lexem.id(), (int)lexem.ordpos());
+			m_debugtrace_proc->event( "token", "[%d] id %d pos %d", inputiter, (int)lexem.id(), (int)lexem.ordpos());
 		}
 		if (matchItem( result, pattern.id, inputiter))
 		{
-			if (m_dbgtrace) m_dbgtrace->event( "pattern", "id %d name %s at %d length %d", (int)pattern.id, pattern.name.c_str(), result.match.ordpos, result.match.ordlen);
+			if (m_debugtrace) m_debugtrace->event( "pattern", "id %d name %s at %d length %d", (int)pattern.id, pattern.name.c_str(), result.match.ordpos, result.match.ordlen);
 
 			std::vector<analyzer::PatternMatcherResultItem> itemar;
 			std::vector<MatchItem>::const_iterator mi = result.items.begin(), me = result.items.end();
 			for (; mi != me; ++mi)
 			{
 				itemar.push_back( analyzer::PatternMatcherResultItem(
-					mi->variable, mi->ordpos, mi->ordpos+mi->ordlen,
+					mi->variable, 0/*value*/, mi->ordpos, mi->ordpos+mi->ordlen,
 					mi->start.seg, mi->start.pos, mi->end.seg, mi->end.pos));
 			}
 			analyzer::PatternMatcherResult elem( 

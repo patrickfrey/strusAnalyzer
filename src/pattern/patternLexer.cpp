@@ -32,10 +32,10 @@ PatternLexerInstanceInterface* TestPatternLexer::createInstance() const
 
 
 TestPatternLexerInstance::TestPatternLexerInstance( ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_dbgtrace(0),m_lexemNameMap(),m_symmap(),m_expressions(),m_done(false)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_lexemNameMap(),m_symmap(),m_expressions(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
-	m_dbgtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
 }
 
 TestPatternLexerInstance::~TestPatternLexerInstance()
@@ -45,14 +45,14 @@ TestPatternLexerInstance::~TestPatternLexerInstance()
 	{
 		delete ei->regex;
 	}
-	if (m_dbgtrace) delete m_dbgtrace;
+	if (m_debugtrace) delete m_debugtrace;
 }
 
 void TestPatternLexerInstance::defineOption( const std::string& name, double value)
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "option", "%s %f", name.c_str(), value);
+		if (m_debugtrace) m_debugtrace->event( "option", "%s %f", name.c_str(), value);
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		throw std::runtime_error(_TXT("unknonw option passed to pattern lexer"));
 	}
@@ -63,7 +63,7 @@ void TestPatternLexerInstance::defineLexemName( unsigned int id, const std::stri
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "name", "%s %u", name.c_str(), id);
+		if (m_debugtrace) m_debugtrace->event( "name", "%s %u", name.c_str(), id);
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		m_lexemNameMap[ id] = name;
 	}
@@ -87,7 +87,7 @@ void TestPatternLexerInstance::defineLexem(
 			case analyzer::BindContent: posbindstr = "content"; break;
 			case analyzer::BindUnique: posbindstr = "unique"; break;
 		}
-		if (m_dbgtrace) m_dbgtrace->event( "lexem", "%u '%s' [%u] %u %s", id, expression.c_str(), resultIndex, level, posbindstr);
+		if (m_debugtrace) m_debugtrace->event( "lexem", "%u '%s' [%u] %u %s", id, expression.c_str(), resultIndex, level, posbindstr);
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		m_expressions.push_back( Expression( id, level, new strus::RegexSearch( expression, resultIndex, m_errorhnd), posbind));
 	}
@@ -101,7 +101,7 @@ void TestPatternLexerInstance::defineSymbol(
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "symbol", "%u %u '%s'", id, lexemid, name.c_str());
+		if (m_debugtrace) m_debugtrace->event( "symbol", "%u %u '%s'", id, lexemid, name.c_str());
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		m_symmap[ lexemid][ name] = id;
 	}
@@ -133,7 +133,7 @@ bool TestPatternLexerInstance::compile()
 {
 	try
 	{
-		if (m_dbgtrace) m_dbgtrace->event( "compile", "lexems %d named %d symbols %d",
+		if (m_debugtrace) m_debugtrace->event( "compile", "lexems %d named %d symbols %d",
 							(int)m_expressions.size(), (int)m_lexemNameMap.size(), (int)m_symmap.size());
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		m_done = true;
@@ -203,16 +203,16 @@ static std::string contentCut( const char* str, std::size_t size, std::size_t le
 }
 
 TestPatternLexerContext::TestPatternLexerContext( ErrorBufferInterface* errorhnd_, const TestPatternLexerInstance* instance_)
-	:m_errorhnd(errorhnd_),m_dbgtrace(0),m_dbgtrace_proc(0),m_instance(instance_)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
-	m_dbgtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
-	m_dbgtrace_proc = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME_PROC) : NULL;
+	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_debugtrace_proc = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME_PROC) : NULL;
 }
 TestPatternLexerContext::~TestPatternLexerContext()
 {
-	if (m_dbgtrace) delete m_dbgtrace;
-	if (m_dbgtrace_proc) delete m_dbgtrace_proc;
+	if (m_debugtrace) delete m_debugtrace;
+	if (m_debugtrace_proc) delete m_debugtrace_proc;
 }
 
 std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* src, std::size_t srclen)
@@ -220,16 +220,16 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 	try
 	{
 		typedef TestPatternLexerInstance::Expression Expression;
-		if (m_dbgtrace || m_dbgtrace_proc)
+		if (m_debugtrace || m_debugtrace_proc)
 		{
 			std::string segstr( contentCut( src, srclen, 100));
-			if (m_dbgtrace)
+			if (m_debugtrace)
 			{
-				m_dbgtrace->event( "input", "[%s] %u", segstr.c_str(), (unsigned int)srclen);
+				m_debugtrace->event( "input", "[%s] %u", segstr.c_str(), (unsigned int)srclen);
 			}
 			else
 			{
-				m_dbgtrace_proc->event( "input", "[%s] %u", segstr.c_str(), (unsigned int)srclen);
+				m_debugtrace_proc->event( "input", "[%s] %u", segstr.c_str(), (unsigned int)srclen);
 			}
 		}
 		// Get matches for every lexem:
@@ -238,10 +238,10 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 		std::vector<Expression>::const_iterator ri = m_instance->m_expressions.begin(), re = m_instance->m_expressions.end();
 		for (int ridx=0; ri != re; ++ri,++ridx)
 		{
-			if (m_dbgtrace_proc)
+			if (m_debugtrace_proc)
 			{
 				std::map<unsigned int,std::string>::const_iterator li = m_instance->m_lexemNameMap.find( ri->id);
-				m_dbgtrace_proc->open( "expression", li == m_instance->m_lexemNameMap.end() ? strus::string_format("%d",ri->id):li->second);
+				m_debugtrace_proc->open( "expression", li == m_instance->m_lexemNameMap.end() ? strus::string_format("%d",ri->id):li->second);
 			}
 			char const* si = src;
 			const char* se = src + srclen;
@@ -256,15 +256,15 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 				si = src + rxmatch.pos;
 				matchar.push_back( Match( ridx, ri->level, rxmatch.pos, rxmatch.len));
 			}
-			if (m_dbgtrace_proc)
+			if (m_debugtrace_proc)
 			{
 				std::vector<Match>::const_iterator mi = matchar.begin()+matcharpos, me = matchar.end();
 				for (; mi != me; ++mi)
 				{
 					std::string content = contentCut( src + mi->pos, mi->len, 40);
-					m_dbgtrace_proc->event( "candidate", "%d %d %s", mi->pos, mi->len, content.c_str());
+					m_debugtrace_proc->event( "candidate", "%d %d %s", mi->pos, mi->len, content.c_str());
 				}
-				m_dbgtrace_proc->close();
+				m_debugtrace_proc->close();
 			}
 			matcharpos = matchar.size();
 		}
@@ -369,7 +369,7 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 				rt.push_back( analyzer::PatternLexem( id, ordpos, 0, mi->pos, mi->len));
 			}
 		}
-		if (m_dbgtrace)
+		if (m_debugtrace)
 		{
 			std::vector<analyzer::PatternLexem>::const_iterator xi = rt.begin(), xe = rt.end();
 			for (; xi != xe; ++xi)
@@ -377,7 +377,7 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 				std::string elem( src+xi->origpos(), xi->origsize());
 				std::map<unsigned int,std::string>::const_iterator li = m_instance->m_lexemNameMap.find( xi->id());
 				std::string elemname( li == m_instance->m_lexemNameMap.end() ? strus::string_format("%d",xi->id()) : li->second);
-				m_dbgtrace->event( "match", "%u %u:%d %s '%s'", xi->ordpos(), xi->origpos(), xi->origsize(), elemname.c_str(), elem.c_str());
+				m_debugtrace->event( "match", "%u %u:%d %s '%s'", xi->ordpos(), xi->origpos(), xi->origsize(), elemname.c_str(), elem.c_str());
 			}
 		}
 		return rt;
