@@ -829,10 +829,9 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 		lexer.next();
 		loadExpressionNode( lexer, op, exprinfo);
 		std::string formatstring;
-		if (lexer.next().isToken(TokOpenSquareBracket))
+		if (lexer.current().isToken(TokOpenSquareBracket))
 		{
-			lexer.next();
-			if (lexer.current().isString())
+			if (lexer.next().isString())
 			{
 				formatstring = lexer.current().value();
 				if (lexer.next().isToken(TokCloseSquareBracket))
