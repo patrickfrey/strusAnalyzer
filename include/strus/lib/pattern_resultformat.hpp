@@ -21,24 +21,24 @@ class ErrorBufferInterface;
 class DebugTraceContextInterface;
 
 /// \brief Result format representation (hidden implementation)
-typedef struct ResultFormat ResultFormat;
+typedef struct PatternResultFormat PatternResultFormat;
 
 /// \brief Context for mapping result format strings (allocator,maps,etc.)
-class ResultFormatContext
+class PatternResultFormatContext
 {
 public:
 	/// \brief Constructor
 	/// \param[in] errorhnd_ error buffer interface
-	explicit ResultFormatContext( ErrorBufferInterface* errorhnd_);
+	explicit PatternResultFormatContext( ErrorBufferInterface* errorhnd_);
 	/// \brief Destructor
-	~ResultFormatContext();
+	~PatternResultFormatContext();
 
 	/// \brief Map a result to a string
 	/// \param[in] fmt result format string
 	/// \param[in] nofItems number of pattern match result elements
 	/// \param[in] items array of pattern match result elements
-	/// \return pattern match result value to use in other result items or finally map with 'ResultFormatChunk::parseNext( ResultChunk& result, char const*& src)'
-	const char* map( const ResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items);
+	/// \return pattern match result value to use in other result items or finally map with 'PatternResultFormatChunk::parseNext( ResultChunk& result, char const*& src)'
+	const char* map( const PatternResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items);
 
 private:
 	ErrorBufferInterface* m_errorhnd;			///< error buffer interface
@@ -49,37 +49,37 @@ private:
 
 /// \brief Interface to map variables to a pointer to string
 /// \note The map is used to max variable names comparable by pointers without sring compare
-class ResultFormatVariableMap
+class PatternResultFormatVariableMap
 {
 public:
-	virtual ~ResultFormatVariableMap(){}
+	virtual ~PatternResultFormatVariableMap(){}
 
 	virtual const char* getVariable( const std::string& name) const=0;
 };
 
 /// \brief Parser for result format strings
-class ResultFormatTable
+class PatternResultFormatTable
 {
 public:
-	ResultFormatTable( ErrorBufferInterface* errorhnd_, const ResultFormatVariableMap* variableMap_);
-	~ResultFormatTable();
+	PatternResultFormatTable( ErrorBufferInterface* errorhnd_, const PatternResultFormatVariableMap* variableMap_);
+	~PatternResultFormatTable();
 
 	/// \brief Create a format string representation out of its source
 	/// \note Substituted elements are addressed as identifiers in curly brackets '{' '}'
 	/// \note Escaping of '{' and '}' is done with backslash '\', e.g. "\{" or "\}"
 	/// \return a {Variable,NULL} terminated array of elements
-	const ResultFormat* createResultFormat( const char* src);
+	const PatternResultFormat* createResultFormat( const char* src);
 
 private:
 	ErrorBufferInterface* m_errorhnd;			///< error buffer interface
-	const ResultFormatVariableMap* m_variableMap;		///< map of variables
+	const PatternResultFormatVariableMap* m_variableMap;	///< map of variables
 	struct Impl;						///< PIMPL internal representatation
 	Impl* m_impl;						///< hidden table implementation
 };
 
 
 /// \brief Single chunk of a result format for iterating ans build the pattern match result
-struct ResultFormatChunk
+struct PatternResultFormatChunk
 {
 	const char* value;		///< pointer to value (not 0-terminated) assigned to the chunk in case of a constant chunk
 	std::size_t valuesize;		///< size of value in bytes
@@ -89,7 +89,7 @@ struct ResultFormatChunk
 	int end_pos;			///< end position in case of a chunk referencing content
 
 	///\ brief Parse the next chunk in a mapped pattern match result value
-	static bool parseNext( ResultFormatChunk& result, char const*& src);
+	static bool parseNext( PatternResultFormatChunk& result, char const*& src);
 };
 
 }//namespace

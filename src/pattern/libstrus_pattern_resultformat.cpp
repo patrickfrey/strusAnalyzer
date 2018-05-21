@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Result format string printer
-/// \file "resultFormat.cpp"
+/// \file "libstrus_pattern_resultformat.cpp"
 #include "strus/lib/pattern_resultformat.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
@@ -22,7 +22,7 @@
 
 using namespace strus;
 
-struct ResultFormatElement
+struct PatternResultFormatElement
 {
 	enum Op {Variable,String};
 	Op op;
@@ -32,9 +32,9 @@ struct ResultFormatElement
 
 namespace strus
 {
-struct ResultFormat
+struct PatternResultFormat
 {
-	const ResultFormatElement* ar;		///< array of elements
+	const PatternResultFormatElement* ar;	///< array of elements
 	std::size_t arsize;			///< number of elements in array 'ar'
 	std::size_t estimated_allocsize;	///< estimated maximum length of the result printed in bytes including 0-byte terminator
 };
@@ -140,7 +140,7 @@ private:
 	std::list<MemBlock> m_memblocks;
 };
 
-struct ResultFormatContext::Impl
+struct PatternResultFormatContext::Impl
 {
 	Impl(){}
 	~Impl(){}
@@ -152,7 +152,7 @@ private:
 	void operator=( const Impl&){}	//< non copyable
 };
 
-ResultFormatContext::ResultFormatContext( ErrorBufferInterface* errorhnd_)
+DLL_PUBLIC PatternResultFormatContext::PatternResultFormatContext( ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_impl(0)
 {
 	try
@@ -161,16 +161,16 @@ ResultFormatContext::ResultFormatContext( ErrorBufferInterface* errorhnd_)
 		DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
 		if (dbgi) m_debugtrace = dbgi->createTraceContext( "pattern");
 	}
-	CATCH_ERROR_ARG1_MAP( _TXT("error creating %s: %s"), "ResultFormatContext", *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error creating %s: %s"), "PatternResultFormatContext", *m_errorhnd);
 }
 
-ResultFormatContext::~ResultFormatContext()
+DLL_PUBLIC PatternResultFormatContext::~PatternResultFormatContext()
 {
 	if (m_impl) delete m_impl;
 	if (m_debugtrace) delete m_debugtrace;
 }
 
-struct ResultFormatTable::Impl
+struct PatternResultFormatTable::Impl
 {
 	Impl(){}
 	~Impl(){}
@@ -183,17 +183,17 @@ private:
 	void operator=( const Impl&){}	//< non copyable
 };
 
-ResultFormatTable::ResultFormatTable( ErrorBufferInterface* errorhnd_, const ResultFormatVariableMap* variableMap_)
+DLL_PUBLIC PatternResultFormatTable::PatternResultFormatTable( ErrorBufferInterface* errorhnd_, const PatternResultFormatVariableMap* variableMap_)
 	:m_errorhnd(errorhnd_),m_variableMap(variableMap_),m_impl(0)
 {
 	try
 	{
 		m_impl = new Impl();
 	}
-	CATCH_ERROR_ARG1_MAP( _TXT("error creating %s: %s"), "ResultFormatTable", *m_errorhnd);
+	CATCH_ERROR_ARG1_MAP( _TXT("error creating %s: %s"), "PatternResultFormatTable", *m_errorhnd);
 }
 
-ResultFormatTable::~ResultFormatTable()
+DLL_PUBLIC PatternResultFormatTable::~PatternResultFormatTable()
 {
 	if (m_impl) delete m_impl;
 }
@@ -236,12 +236,12 @@ static inline char* printValue( char* ri, const char* re, const char* value)
 	return ri < re ? ri : NULL;
 }
 
-const char* ResultFormatContext::map( const ResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items)
+DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items)
 {
 	if (!m_impl) return NULL;
 
-	if (!fmt->ar[0].value) return NULL;
-	if (!fmt->ar[1].value && fmt->ar[0].op == ResultFormatElement::String) return fmt->ar[0].value;
+	if (fmt->arsize == 0) return NULL;
+	if (fmt->arsize == 1 && fmt->ar[0].op == PatternResultFormatElement::String) return fmt->ar[0].value;
 
 	int mm = fmt->estimated_allocsize + (nofItems * Allocator::VariableResultElementSize) + 128/*thumb estimate*/;
 	char* result = (char*)m_impl->allocator.alloc( mm);
@@ -253,19 +253,19 @@ const char* ResultFormatContext::map( const ResultFormat* fmt, std::size_t nofIt
 	char* ri = result;
 	const char* re = result + mm - 1;
 
-	ResultFormatElement const* fi = fmt->ar;
-	const ResultFormatElement* fe = fmt->ar + fmt->arsize;
+	PatternResultFormatElement const* fi = fmt->ar;
+	const PatternResultFormatElement* fe = fmt->ar + fmt->arsize;
 	for (; fi!=fe; ++fi)
 	{
 		char* next_ri = ri;
 		switch (fi->op)
 		{
-			case ResultFormatElement::String:
+			case PatternResultFormatElement::String:
 			{
 				next_ri = printValue( ri, re, fi->value);
 			}
 			break;
-			case ResultFormatElement::Variable:
+			case PatternResultFormatElement::Variable:
 			{
 				int nn = 0;
 				char* loop_ri = ri;
@@ -279,6 +279,7 @@ const char* ResultFormatContext::map( const ResultFormat* fmt, std::size_t nofIt
 						{
 							next_ri = printValue( loop_ri, re, fi->separator);
 							if (!next_ri) break;
+							loop_ri = next_ri;
 						}
 						if (item.value())
 						{
@@ -325,7 +326,7 @@ struct _STDALIGN
 
 static int countNofElements( const char* src)
 {
-	int rt = 1;
+	int rt = 0;
 	char const* si = src;
 	while (*si)
 	{
@@ -337,13 +338,13 @@ static int countNofElements( const char* src)
 				si += 1;
 			}
 		}
-		if (!*si) return rt;
 		if (si > last_si)
 		{
 			rt += 1; //... const string
 		}
+		if (!*si) return rt;
 		rt += 1; //... variable
-		for (; *si && *si != '}'; ++si)
+		for (++si; *si && *si != '}'; ++si)
 		{
 			if (*si == '\\' || *si == '{') return -1;
 		}
@@ -353,58 +354,76 @@ static int countNofElements( const char* src)
 	return rt;
 }
 
-static void copyStringValue( char* dest, char const* si, const char* se)
-{
-	char* vi = dest;
-	for (; si != se; ++si)
-	{
-		if (*si == '\\' && si[1] == '{')
-		{
-			*vi++ = '{';
-			si++;
-		}
-		else
-		{
-			*vi++ = *si;
-		}
-	}
-	*vi = '\0';
-}
-
-const ResultFormat* ResultFormatTable::createResultFormat( const char* src)
+DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultFormat( const char* src)
 {
 	if (!m_impl) return NULL;
+
 	int nofElements = countNofElements( src);
-	if (nofElements <= 0)
+	if (nofElements < 0)
 	{
 		m_errorhnd->report( ErrorCodeSyntax, _TXT("failed to parse pattern result format string '%s'"), src);
 		return NULL;
 	}
-	ResultFormat* rt = (ResultFormat*)m_impl->allocator.alloc( sizeof( ResultFormat) + (nofElements * sizeof(ResultFormatElement)), sizeof(_STDALIGN));
+	if (nofElements == 0)
+	{
+		static const PatternResultFormatElement elem = {PatternResultFormatElement::String,"",""};
+		static const PatternResultFormat rt = {&elem,1,0};
+		return &rt;
+	}
+	PatternResultFormat* rt = (PatternResultFormat*)m_impl->allocator.alloc( sizeof( PatternResultFormat) + (nofElements * sizeof(PatternResultFormatElement)), sizeof(_STDALIGN));
 	if (!rt)
 	{
 		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 		return NULL;
 	}
-	ResultFormatElement* ar = (ResultFormatElement*)(void*)(rt+1);
+	PatternResultFormatElement* ar = (PatternResultFormatElement*)(void*)(rt+1);
 	rt->arsize = nofElements;
 	rt->ar = ar;
 	rt->estimated_allocsize = 0;
-	std::memset( ar, 0, (nofElements * sizeof(ResultFormatElement)));
+	std::memset( ar, 0, (nofElements * sizeof(PatternResultFormatElement)));
 	int ei = 0, ee = nofElements;
 
 	char const* si = src;
 	while (*si)
 	{
-		const char* last_si = si;
+		std::string valuebuf;
 		for (; *si && *si != '{'; ++si)
 		{
-			if (*si == '\\' && si[1] == '{')
+			if (*si == '\\')
 			{
 				++si;
+				if (!*si)
+				{
+					m_errorhnd->report( ErrorCodeSyntax, _TXT("unexpected end of string"));
+					return NULL;
+				}
+				if (*si == 'n')
+				{
+					valuebuf.push_back( '\n');
+				}
+				else if (*si == 'b')
+				{
+					valuebuf.push_back( '\b');
+				}
+				else if (*si == 'r')
+				{
+					valuebuf.push_back( '\r');
+				}
+				else if (*si == 't')
+				{
+					valuebuf.push_back( '\t');
+				}
+				else
+				{
+					valuebuf.push_back( *si);
+				}
+			}
+			else
+			{
+				valuebuf.push_back( *si);
 			}
 		}
-		if (*si && si > last_si)
+		if (!valuebuf.empty())
 		{
 			// Put content element:
 			if (ei == ee)
@@ -412,18 +431,19 @@ const ResultFormat* ResultFormatTable::createResultFormat( const char* src)
 				m_errorhnd->report( ErrorCodeRuntimeError, _TXT("internal: failed to parse format source '%s'"), src);
 				return NULL;
 			}
-			char* value = (char*)m_impl->allocator.alloc( si - last_si + 1);
-			ResultFormatElement& elem = ar[ ei];
-			elem.op = ResultFormatElement::String;
+			char* value = (char*)m_impl->allocator.alloc( valuebuf.size() + 1);
+			PatternResultFormatElement& elem = ar[ ei++];
+			elem.op = PatternResultFormatElement::String;
 			elem.value = value;
 			if (value == NULL)
 			{
 				m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 				return NULL;
 			}
-			copyStringValue( value, last_si, si);
+			std::memcpy( value, valuebuf.c_str(), valuebuf.size());
+			value[ valuebuf.size()] = '\0';
 			elem.separator = NULL;
-			rt->estimated_allocsize += si - last_si;
+			rt->estimated_allocsize += valuebuf.size();
 		}
 		if (*si == '{')
 		{
@@ -462,8 +482,8 @@ const ResultFormat* ResultFormatTable::createResultFormat( const char* src)
 				m_errorhnd->report( ErrorCodeRuntimeError, _TXT("internal: failed to parse format source '%s'"), src);
 				return NULL;
 			}
-			ResultFormatElement& elem = ar[ ei];
-			elem.op = ResultFormatElement::Variable;
+			PatternResultFormatElement& elem = ar[ ei++];
+			elem.op = PatternResultFormatElement::Variable;
 			elem.value = variable;
 			if (separator.empty())
 			{
@@ -510,9 +530,9 @@ const ResultFormat* ResultFormatTable::createResultFormat( const char* src)
 }
 
 
-bool ResultFormatChunk::parseNext( ResultFormatChunk& result, char const*& src)
+DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& result, char const*& src)
 {
-	std::memset( &result, 0, sizeof(ResultFormatChunk));
+	std::memset( &result, 0, sizeof(PatternResultFormatChunk));
 	const char* start = src;
 	int chlen;
 

@@ -12,4 +12,4 @@ add_subdirectory( normalizer_regex )
 add_subdirectory( querytree )
 add_subdirectory( prgload )
 add_subdirectory( queryelemprio )
-
+add_subdirectory( patternresult)

@@ -73,7 +73,7 @@ set_target_properties(
 add_cppcheck( strus_pattern_test libstrus_pattern_test.cpp  ${source_files_pattern_test} )
 
 add_library( strus_pattern_test SHARED libstrus_pattern_test.cpp ${source_files_pattern_test} )
-target_link_libraries( strus_pattern_test  strus_base  strusanalyzer_private_utils  ${Intl_LIBRARIES} )
+target_link_libraries( strus_pattern_test  strus_pattern_resultformat strus_base  strusanalyzer_private_utils  ${Intl_LIBRARIES} )
 
 set_target_properties(
     strus_pattern_test

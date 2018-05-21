@@ -35,15 +35,16 @@
 #include <iostream>
 #include <sstream>
 
-#undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
-	std::cerr << "usage: " << argv[0] << " <inputfile> <expectedfile>" << std::endl;
+	std::cerr << "usage: " << argv[0] << "[options] <inputfile> <expectedfile>" << std::endl;
 	std::cerr << "<inputfile> = file containing documents to analyze" << std::endl;
 	std::cerr << "<expectedfile> = file containing the result expected" << std::endl;
+	std::cerr << "options: -h|--help      :show this usage" << std::endl;
+	std::cerr << "         -V|--verbose   :verbose output" << std::endl;
 }
 
 
@@ -153,18 +154,38 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 
 int main( int argc, const char* argv[])
 {
-	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
+	int argi = 1;
+	bool verbose = false;
+	for (; argi < argc && argv[argi][0] == '-'; ++argi)
 	{
-		printUsage( argc, argv);
-		return 0;
+		if (std::strcmp( argv[argi], "-h") == 0 || std::strcmp( argv[argi], "--help") == 0)
+		{
+			printUsage( argc, argv);
+			return 0;
+		}
+		else if (std::strcmp( argv[argi], "-v") == 0 || std::strcmp( argv[argi], "--verbose") == 0)
+		{
+			verbose = true;
+		}
+		else if (std::strcmp( argv[argi], "--") == 0)
+		{
+			argi++;
+			break;
+		}
+		else
+		{
+			std::cerr << "ERROR unknown option " << argv[argi] << std::endl;
+			printUsage( argc, argv);
+			return 1;
+		}
 	}
-	else if (argc < 3)
+	if (argc-argi < 2)
 	{
 		std::cerr << "ERROR too few parameters" << std::endl;
 		printUsage( argc, argv);
 		return 1;
 	}
-	else if (argc > 3)
+	else if (argc-argi > 2)
 	{
 		std::cerr << "ERROR too many parameters" << std::endl;
 		printUsage( argc, argv);
@@ -172,13 +193,23 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
+		strus::DebugTraceInterface* debugtrace = NULL;
+		if (verbose)
+		{
+			debugtrace = strus::createDebugTrace_standard( 2);
+			if (!debugtrace)
+			{
+				std::cerr << "ERROR failed to create debug trace interface" << std::endl;
+			}
+			debugtrace->enable( "pattern");
+		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, debugtrace);
 		if (!g_errorhnd)
 		{
 			throw std::runtime_error("failed to create error buffer object");
 		}
-		std::string inputfile( argv[1]);
-		std::string expectedfile( argv[2]);
+		std::string inputfile( argv[ argi]);
+		std::string expectedfile( argv[ argi+1]);
 		std::string outputfile;
 		char const* xi = argv[2];
 		char const* xn = std::strchr( xi,'.');
@@ -242,9 +273,10 @@ int main( int argc, const char* argv[])
 				output << "ForwardIndex term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
 		}
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << output.str();
-#endif
+		if (verbose)
+		{
+			std::cout << output.str();
+		}
 		if (g_errorhnd->hasError())
 		{
 			throw std::runtime_error( g_errorhnd->fetchError());

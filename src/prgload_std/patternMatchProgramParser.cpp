@@ -831,6 +831,7 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 		std::string formatstring;
 		if (lexer.current().isToken(TokOpenSquareBracket))
 		{
+			bool keepescopt = lexer.setOption( ProgramLexer::KeepStringEscaping, true);
 			if (lexer.next().isString())
 			{
 				formatstring = lexer.current().value();
@@ -847,6 +848,7 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 			{
 				throw strus::runtime_error( _TXT("expected string (format string) in square brackets '[' ']' after expression"));
 			}
+			lexer.setOption( ProgramLexer::KeepStringEscaping, keepescopt);
 		}
 		m_patternMatcher->attachVariable( name, formatstring);
 	}
