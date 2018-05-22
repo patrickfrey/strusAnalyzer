@@ -91,5 +91,7 @@ install( TARGETS strus_pattern_serialize
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 install( TARGETS strus_pattern_test
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
+install( TARGETS strus_pattern_resultformat
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 
 

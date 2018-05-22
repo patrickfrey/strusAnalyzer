@@ -152,7 +152,7 @@ static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnaly
 			matcherinst->pushTerm( symid);
 		}
 		matcherinst->pushExpression( strus::PatternMatcherInstanceInterface::OpSequenceImm,  eidx, eidx+1, 0);
-		matcherinst->definePattern( ci->name, true);
+		matcherinst->definePattern( ci->name, std::string()/*formatstring*/, true);
 	}
 	if (!matcherinst->compile())
 	{

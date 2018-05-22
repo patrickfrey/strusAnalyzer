@@ -362,7 +362,29 @@ void PatternMatcherProgramParser::loadMatcherRule( ProgramLexer& lexer, const st
 		{
 			m_patternLengthMap[ nameid] = exprinfo.maxrange;
 		}
-		m_patternMatcher->definePattern( name, visible);
+		std::string formatstring;
+		if (lexer.current().isToken(TokOpenSquareBracket))
+		{
+			bool keepescopt = lexer.setOption( ProgramLexer::KeepStringEscaping, true);
+			if (lexer.next().isString())
+			{
+				formatstring = lexer.current().value();
+				if (lexer.next().isToken(TokCloseSquareBracket))
+				{
+					lexer.next();
+				}
+				else
+				{
+					throw strus::runtime_error( _TXT("expected close square brackets ']' after format string"));
+				}
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("expected string (format string) in square brackets '[' ']' after expression"));
+			}
+			lexer.setOption( ProgramLexer::KeepStringEscaping, keepescopt);
+		}
+		m_patternMatcher->definePattern( name, formatstring, visible);
 	}
 	while (lexer.current().isToken( TokOr));
 }
@@ -828,29 +850,7 @@ void PatternMatcherProgramParser::loadExpression( ProgramLexer& lexer, SubExpres
 		std::string op = lexer.current().value();
 		lexer.next();
 		loadExpressionNode( lexer, op, exprinfo);
-		std::string formatstring;
-		if (lexer.current().isToken(TokOpenSquareBracket))
-		{
-			bool keepescopt = lexer.setOption( ProgramLexer::KeepStringEscaping, true);
-			if (lexer.next().isString())
-			{
-				formatstring = lexer.current().value();
-				if (lexer.next().isToken(TokCloseSquareBracket))
-				{
-					lexer.next();
-				}
-				else
-				{
-					throw strus::runtime_error( _TXT("expected close square brackets ']' after format string"));
-				}
-			}
-			else
-			{
-				throw strus::runtime_error( _TXT("expected string (format string) in square brackets '[' ']' after expression"));
-			}
-			lexer.setOption( ProgramLexer::KeepStringEscaping, keepescopt);
-		}
-		m_patternMatcher->attachVariable( name, formatstring);
+		m_patternMatcher->attachVariable( name);
 	}
 	else
 	{

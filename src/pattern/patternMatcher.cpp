@@ -117,26 +117,26 @@ void TestPatternMatcherInstance::pushPattern( const std::string& name)
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::pushPattern", *m_errorhnd);
 }
 
-void TestPatternMatcherInstance::attachVariable( const std::string& name, const std::string& formatstring)
+void TestPatternMatcherInstance::attachVariable( const std::string& name)
 {
 	try
 	{
 		if (m_debugtrace) m_debugtrace->event( "attach", "variable %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "attachVariable");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		m_variablemap[ m_stk.back()] = Variable( name, formatstring);
+		m_variablemap[ m_stk.back()] = name;
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::attachVariable", *m_errorhnd);
 }
 
-void TestPatternMatcherInstance::definePattern( const std::string& name, bool visible)
+void TestPatternMatcherInstance::definePattern( const std::string& name, const std::string& formatstring, bool visible)
 {
 	try
 	{
 		if (m_debugtrace) m_debugtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "definePattern");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		m_patternar.push_back( Pattern( m_stk.back(), name));
+		m_patternar.push_back( Pattern( m_stk.back(), name, formatstring));
 		m_stk.pop_back();
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::definePattern", *m_errorhnd);
@@ -177,12 +177,12 @@ static ItemType getItemType( unsigned int id, unsigned int& idx)
 	return ItemToken;
 }
 
-const TestPatternMatcherInstance::Variable* TestPatternMatcherInstance::getVariableAttached( unsigned int id) const
+const char* TestPatternMatcherInstance::getVariableAttached( unsigned int id) const
 {
 	VariableMap::const_iterator vi = m_variablemap.find( id);
 	if (vi != m_variablemap.end())
 	{
-		return &vi->second;
+		return vi->second.c_str();
 	}
 	return NULL;
 }
@@ -462,11 +462,11 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 				MatchAddress endadr( token.origseg(), token.origpos() + token.origsize());
 				Match match( token.ordpos(), 1/*ordlen*/, startadr, endadr);
 				result = MatchResult( match);
-				const TestPatternMatcherInstance::Variable* variable = m_instance->getVariableAttached( id);
+				const char* variable = m_instance->getVariableAttached( id);
 				if (variable)
 				{
-					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var '%s' format [%s]", (int)token.id(), (int)token.ordpos(), variable->name.c_str(), variable->format.c_str());
-					result.items.push_back( MatchItem( match, variable->name.c_str()));
+					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var '%s'", (int)token.id(), (int)token.ordpos(), variable);
+					result.items.push_back( MatchItem( match, variable));
 				}
 				else
 				{

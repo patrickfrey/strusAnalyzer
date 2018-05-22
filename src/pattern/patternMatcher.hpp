@@ -58,8 +58,8 @@ public:
 			JoinOperation operation,
 			std::size_t argc, unsigned int range, unsigned int cardinality);
 	virtual void pushPattern( const std::string& name);
-	virtual void attachVariable( const std::string& name, const std::string& formatstring);
-	virtual void definePattern( const std::string& name, bool visible);
+	virtual void attachVariable( const std::string& name);
+	virtual void definePattern( const std::string& name, const std::string& formatstring, bool visible);
 	virtual bool compile();
 
 	virtual PatternMatcherContextInterface* createContext() const;
@@ -85,27 +85,16 @@ private:
 	{
 		unsigned int id;
 		std::string name;
+		std::string formatstring;
 
-		Pattern( unsigned int id_, const std::string& name_)
-			:id(id_),name(name_){}
+		Pattern( unsigned int id_, const std::string& name_, const std::string& formatstring_)
+			:id(id_),name(name_),formatstring(formatstring_){}
 		Pattern( const Pattern& o)
-			:id(o.id),name(o.name){}
+			:id(o.id),name(o.name),formatstring(o.formatstring){}
 	};
-	struct Variable
-	{
-		std::string name;
-		std::string format;
+	typedef std::map<unsigned int,std::string> VariableMap;
 
-		Variable()
-			:name(),format(){}
-		Variable( const std::string& name_, const std::string& format_)
-			:name(name_),format(format_){}
-		Variable( const Variable& o)
-			:name(o.name),format(o.format){}
-	};
-	typedef std::map<unsigned int,Variable> VariableMap;
-
-	const Variable* getVariableAttached( unsigned int id) const;
+	const char* getVariableAttached( unsigned int id) const;
 	std::vector<unsigned int> getPatternRefs( const std::string& patternName) const;
 
 private:
