@@ -357,6 +357,15 @@ static int countNofElements( const char* src)
 	return rt;
 }
 
+static const PatternResultFormatElement emptyPatternResultFormatElement()
+{
+	PatternResultFormatElement elem;
+	elem.op = PatternResultFormatElement::String;
+	elem.value.str = "";
+	elem.separator = "";
+	return elem;
+}
+
 DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultFormat( const char* src)
 {
 	if (!m_impl) return NULL;
@@ -369,7 +378,7 @@ DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultForm
 	}
 	if (nofElements == 0)
 	{
-		static const PatternResultFormatElement elem = {PatternResultFormatElement::String,"",""};
+		static const PatternResultFormatElement elem = emptyPatternResultFormatElement();
 		static const PatternResultFormat rt = {&elem,1,0};
 		return &rt;
 	}
