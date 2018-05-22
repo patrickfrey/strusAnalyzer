@@ -39,7 +39,7 @@ PatternMatcherInstanceInterface* TestPatternMatcher::createInstance() const
 }
 
 TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar(),m_expressionar(),m_variablear(),m_operandsar(),m_stk(),m_done(false)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar(),m_expressionar(),m_variablemap(),m_operandsar(),m_stk(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
@@ -124,7 +124,7 @@ void TestPatternMatcherInstance::attachVariable( const std::string& name, const 
 		if (m_debugtrace) m_debugtrace->event( "attach", "variable %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "attachVariable");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		m_variablear.push_back( Variable( m_stk.back(), name));
+		m_variablemap[ m_stk.back()] = Variable( name, formatstring);
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::attachVariable", *m_errorhnd);
 }
@@ -147,7 +147,7 @@ bool TestPatternMatcherInstance::compile()
 	try
 	{
 		if (m_debugtrace) m_debugtrace->event( "compile", "patterns %d expressions %d variables %d patternrefs %d",
-							(int)m_patternar.size(), (int)m_expressionar.size(), (int)m_variablear.size(), (int)m_patternrefar.size());
+							(int)m_patternar.size(), (int)m_expressionar.size(), (int)m_variablemap.size(), (int)m_patternrefar.size());
 		if (m_done) throw strus::runtime_error(_TXT("already called %s"), "compile");
 		m_done = true;
 		return true;
@@ -177,12 +177,12 @@ static ItemType getItemType( unsigned int id, unsigned int& idx)
 	return ItemToken;
 }
 
-const char* TestPatternMatcherInstance::getVariableAttached( unsigned int id) const
+const TestPatternMatcherInstance::Variable* TestPatternMatcherInstance::getVariableAttached( unsigned int id) const
 {
-	std::vector<Variable>::const_iterator vi = m_variablear.begin(), ve = m_variablear.end();
-	for (; vi != ve; ++vi)
+	VariableMap::const_iterator vi = m_variablemap.find( id);
+	if (vi != m_variablemap.end())
 	{
-		if (vi->id == id) return vi->name.c_str();
+		return &vi->second;
 	}
 	return NULL;
 }
@@ -462,11 +462,11 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 				MatchAddress endadr( token.origseg(), token.origpos() + token.origsize());
 				Match match( token.ordpos(), 1/*ordlen*/, startadr, endadr);
 				result = MatchResult( match);
-				const char* variable = m_instance->getVariableAttached( id);
+				const TestPatternMatcherInstance::Variable* variable = m_instance->getVariableAttached( id);
 				if (variable)
 				{
-					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var %s", (int)token.id(), (int)token.ordpos(), variable);
-					result.items.push_back( MatchItem( match, variable));
+					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var '%s' format [%s]", (int)token.id(), (int)token.ordpos(), variable->name.c_str(), variable->format.c_str());
+					result.items.push_back( MatchItem( match, variable->name.c_str()));
 				}
 				else
 				{

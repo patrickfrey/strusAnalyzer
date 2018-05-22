@@ -68,9 +68,6 @@ public:
 private:
 	friend class TestPatternMatcherContext;
 
-	const char* getVariableAttached( unsigned int id) const;
-	std::vector<unsigned int> getPatternRefs( const std::string& patternName) const;
-
 	struct Expression
 	{
 		JoinOperation operation;
@@ -96,20 +93,28 @@ private:
 	};
 	struct Variable
 	{
-		unsigned int id;
 		std::string name;
+		std::string format;
 
-		Variable( unsigned int id_, const std::string& name_)
-			:id(id_),name(name_){}
+		Variable()
+			:name(),format(){}
+		Variable( const std::string& name_, const std::string& format_)
+			:name(name_),format(format_){}
 		Variable( const Variable& o)
-			:id(o.id),name(o.name){}
+			:name(o.name),format(o.format){}
 	};
+	typedef std::map<unsigned int,Variable> VariableMap;
+
+	const Variable* getVariableAttached( unsigned int id) const;
+	std::vector<unsigned int> getPatternRefs( const std::string& patternName) const;
+
+private:
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 	std::vector<Pattern> m_patternar;
 	std::vector<std::string> m_patternrefar;
 	std::vector<Expression> m_expressionar;
-	std::vector<Variable> m_variablear;
+	VariableMap m_variablemap;
 	std::vector<unsigned int> m_operandsar;
 	std::vector<unsigned int> m_stk;
 	bool m_done;
