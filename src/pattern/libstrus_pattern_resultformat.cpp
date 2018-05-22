@@ -26,7 +26,10 @@ struct PatternResultFormatElement
 {
 	enum Op {Variable,String};
 	Op op;
-	const char* value;
+	union {
+		const char* str;
+		int idx;
+	} value;
 	const char* separator;
 };
 
@@ -241,7 +244,7 @@ DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultForma
 	if (!m_impl) return NULL;
 
 	if (fmt->arsize == 0) return NULL;
-	if (fmt->arsize == 1 && fmt->ar[0].op == PatternResultFormatElement::String) return fmt->ar[0].value;
+	if (fmt->arsize == 1 && fmt->ar[0].op == PatternResultFormatElement::String) return fmt->ar[0].value.str;
 
 	int mm = fmt->estimated_allocsize + (nofItems * Allocator::VariableResultElementSize) + 128/*thumb estimate*/;
 	char* result = (char*)m_impl->allocator.alloc( mm);
@@ -262,7 +265,7 @@ DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultForma
 		{
 			case PatternResultFormatElement::String:
 			{
-				next_ri = printValue( ri, re, fi->value);
+				next_ri = printValue( ri, re, fi->value.str);
 			}
 			break;
 			case PatternResultFormatElement::Variable:
@@ -272,7 +275,7 @@ DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultForma
 				for (std::size_t ii=0; ii<nofItems; ++ii)
 				{
 					const analyzer::PatternMatcherResultItem& item = items[ii];
-					if (item.name() == fi->value)
+					if (item.name() == fi->value.str)
 					//... comparing char* is OK here, because variable names point to a uniqe memory location
 					{
 						if (nn++ > 0)
@@ -432,14 +435,14 @@ DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultForm
 				return NULL;
 			}
 			char* value = (char*)m_impl->allocator.alloc( valuebuf.size() + 1);
-			PatternResultFormatElement& elem = ar[ ei++];
-			elem.op = PatternResultFormatElement::String;
-			elem.value = value;
 			if (value == NULL)
 			{
 				m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 				return NULL;
 			}
+			PatternResultFormatElement& elem = ar[ ei++];
+			elem.op = PatternResultFormatElement::String;
+			elem.value.str = value;
 			std::memcpy( value, valuebuf.c_str(), valuebuf.size());
 			value[ valuebuf.size()] = '\0';
 			elem.separator = NULL;
@@ -484,7 +487,7 @@ DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultForm
 			}
 			PatternResultFormatElement& elem = ar[ ei++];
 			elem.op = PatternResultFormatElement::Variable;
-			elem.value = variable;
+			elem.value.str = variable;
 			if (separator.empty())
 			{
 				elem.separator = " ";
@@ -530,11 +533,19 @@ DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultForm
 }
 
 
+static int decodeInt( char const*& src)
+{
+	if (*src == '\0') return 0;
+	int chlen = strus::utf8charlen( *src);
+	int rt = strus::utf8decode( src, chlen);
+	src += chlen;
+	return rt;
+}
+
 DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& result, char const*& src)
 {
 	std::memset( &result, 0, sizeof(PatternResultFormatChunk));
 	const char* start = src;
-	int chlen;
 
 	while ((unsigned char)*src > 2) ++src;
 	if (start == src)
@@ -546,26 +557,19 @@ DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& r
 		if (*src == '\1')
 		{
 			++src;
-			chlen = strus::utf8charlen( *src);
-			result.start_seg = strus::utf8decode( src, chlen);
-			chlen = strus::utf8charlen( *src);
-			result.start_pos = strus::utf8decode( src, chlen);
-			chlen = strus::utf8charlen( *src);
-			int len = strus::utf8decode( src, chlen);
+			result.start_seg = decodeInt( src);
+			result.start_pos = decodeInt( src);
+			int len = decodeInt( src);
 			result.end_seg = result.start_seg;
 			result.end_pos = result.start_pos + len;
 		}
 		else//if (*src == '\2')
 		{
 			++src;
-			chlen = strus::utf8charlen( *src);
-			result.start_seg = strus::utf8decode( src, chlen);
-			chlen = strus::utf8charlen( *src);
-			result.start_pos = strus::utf8decode( src, chlen);
-			chlen = strus::utf8charlen( *src);
-			result.end_seg = strus::utf8decode( src, chlen);
-			chlen = strus::utf8charlen( *src);
-			result.end_pos = strus::utf8decode( src, chlen);
+			result.start_seg = decodeInt( src);
+			result.start_pos = decodeInt( src);
+			result.end_seg = decodeInt( src);
+			result.end_pos = decodeInt( src);
 		}
 		return true;
 	}
@@ -576,4 +580,266 @@ DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& r
 		return true;
 	}
 }
+
+
+std::string parsePatternResultFormatMapStringElement( char const*& si)
+{
+	std::string rt;
+	int lv = 0;
+	for (; *si; ++si)
+	{
+		if (lv == 0 && *si == '|')
+		{
+			++si;
+			break;
+		}
+		else if (*si == '\\')
+		{
+			rt.push_back( *si);
+			++si;
+			if (!*si) throw std::runtime_error(_TXT("unexpected end of format string"));
+			rt.push_back( *si);
+		}
+		else
+		{
+			if (*si == '{')
+			{
+				++lv;
+			}
+			else if (*si == '}')
+			{
+				--lv;
+			}
+			rt.push_back( *si);
+		}
+	}
+	return rt;
+}
+
+static const char* g_patternMatcherResult_VariableMap_names[] = {"ordpos","ordlen","ordend","startseg","startpos","endseg","endpos","name","value",0};
+enum PatternMatcherResult_Variable {VAR_ordpos,VAR_ordlen,VAR_ordend,VAR_startseg,VAR_startpos,VAR_endseg,VAR_endpos,VAR_name,VAR_value};
+
+class PatternMatcherResult_VariableMap
+	:public PatternResultFormatVariableMap
+{
+public:
+	PatternMatcherResult_VariableMap(){}
+	virtual ~PatternMatcherResult_VariableMap(){}
+
+	virtual const char* getVariable( const std::string& name) const
+	{
+		char const* const* mi = g_patternMatcherResult_VariableMap_names;
+		for (; *mi; ++mi) if (name == *mi) return *mi;
+		return NULL;
+	}
+
+	void formatRewrite( const PatternResultFormat* fmt)
+	{
+		PatternResultFormatElement* ar = const_cast<PatternResultFormatElement*>( fmt->ar);
+		int ai=0, ae=fmt->arsize;
+		for (; ai != ae; ++ai)
+		{
+			char const* const* mi = g_patternMatcherResult_VariableMap_names;
+			if (ar[ai].op == PatternResultFormatElement::Variable)
+			{
+				int midx = 0;
+				for (; *mi; ++mi,++midx)
+				{
+					if (*mi == ar[ai].value.str)
+					{
+						ar[ai].value.idx = midx;
+						break;
+					}
+				}
+				if (!*mi)
+				{
+					throw std::runtime_error(_TXT("internal: unknown result item variable"));
+				}
+			}
+		}
+	}
+};
+
+static PatternMatcherResult_VariableMap g_patternResultFormatVariableMap;
+
+
+struct PatternResultFormatMap::Impl
+{
+	PatternResultFormatTable table;
+	const PatternResultFormat* fmt_result;
+	const PatternResultFormat* fmt_resultItem;
+	std::string sep_resultItem;
+
+	Impl( ErrorBufferInterface* errorhnd_, const std::string& resultFmtStr, const std::string& resultItemFmtStr, const std::string& resultItemSep_)
+		:table(errorhnd_,&g_patternResultFormatVariableMap),fmt_result(0),fmt_resultItem(0),sep_resultItem(resultItemSep_)
+	{
+		fmt_result = table.createResultFormat( resultFmtStr.c_str());
+		fmt_resultItem = table.createResultFormat( resultItemFmtStr.c_str());
+
+		if (!fmt_result || !fmt_resultItem) throw std::runtime_error( errorhnd_->fetchError());
+		g_patternResultFormatVariableMap.formatRewrite( fmt_result);
+		g_patternResultFormatVariableMap.formatRewrite( fmt_resultItem);
+	}
+};
+
+DLL_PUBLIC PatternResultFormatMap::PatternResultFormatMap( ErrorBufferInterface* errorhnd_, const char* src_)
+	:m_errorhnd(errorhnd_)
+{
+	try
+	{
+		char const* si = src_;
+		std::string resultFormat = parsePatternResultFormatMapStringElement(si);
+		std::string resultItemFormat = parsePatternResultFormatMapStringElement(si);
+		std::string resultItemSeparator( si);
+
+		m_impl = new Impl( errorhnd_, resultFormat, resultItemFormat, resultItemSeparator);
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error creating %s: %s"), "PatternResultFormatMap", *m_errorhnd);
+}
+
+DLL_PUBLIC PatternResultFormatMap::~PatternResultFormatMap()
+{
+	if (m_impl) delete m_impl;
+}
+
+static void printNumber( std::string& dest, int num)
+{
+	char numbuf[ 128];
+	std::snprintf( numbuf, sizeof(numbuf), "%d", num);
+	dest.append( numbuf);
+}
+
+std::string PatternResultFormatMap::mapItem( const analyzer::PatternMatcherResultItem& res) const
+{
+	std::string rt;
+
+	PatternResultFormatElement const* ei = m_impl->fmt_resultItem->ar;
+	const PatternResultFormatElement* ee = ei + m_impl->fmt_resultItem->arsize;
+	for (; ei != ee; ++ei)
+	{
+		switch (ei->op)
+		{
+			case PatternResultFormatElement::String:
+				rt.append( ei->value.str);
+				break;
+			case PatternResultFormatElement::Variable:
+				switch ((PatternMatcherResult_Variable)ei->value.idx)
+				{
+					case VAR_ordpos:
+						printNumber( rt, res.start_ordpos());
+						break;
+					case VAR_ordlen:
+						printNumber( rt, res.end_ordpos() - res.start_ordpos());
+						break;
+					case VAR_ordend:
+						printNumber( rt, res.end_ordpos());
+						break;
+					case VAR_startseg:
+						printNumber( rt, res.start_origseg());
+						break;
+					case VAR_startpos:
+						printNumber( rt, res.start_origpos());
+						break;
+					case VAR_endseg:
+						printNumber( rt, res.end_origseg());
+						break;
+					case VAR_endpos:
+						printNumber( rt, res.end_origpos());
+						break;
+					case VAR_name:
+						rt.append( res.name());
+						break;
+					case VAR_value:
+						if (res.value())
+						{
+							rt.append( res.value());
+						}
+						else
+						{
+							char buf[ 128];
+							char* bi = buf;
+							char* be = bi + sizeof(buf);
+							bi = printResultItemReference( bi, be, res);
+							rt.append( buf, bi-buf);
+						}
+						break;
+					default:
+						std::runtime_error(_TXT("data corruption in format list"));
+						break;
+				}
+				break;
+		}
+	}
+	return rt;
+}
+
+DLL_PUBLIC std::string PatternResultFormatMap::map( const analyzer::PatternMatcherResult& res) const
+{
+	try
+	{
+		if (!m_impl) return std::string();
+
+		std::string rt;
+		PatternResultFormatElement const* ei = m_impl->fmt_result->ar;
+		const PatternResultFormatElement* ee = ei + m_impl->fmt_result->arsize;
+		for (; ei != ee; ++ei)
+		{
+			switch (ei->op)
+			{
+				case PatternResultFormatElement::String:
+					rt.append( ei->value.str);
+					break;
+				case PatternResultFormatElement::Variable:
+					switch ((PatternMatcherResult_Variable)ei->value.idx)
+					{
+						case VAR_ordpos:
+							printNumber( rt, res.start_ordpos());
+							break;
+						case VAR_ordlen:
+							printNumber( rt, res.end_ordpos() - res.start_ordpos());
+							break;
+						case VAR_ordend:
+							printNumber( rt, res.end_ordpos());
+							break;
+						case VAR_startseg:
+							printNumber( rt, res.start_origseg());
+							break;
+						case VAR_startpos:
+							printNumber( rt, res.start_origpos());
+							break;
+						case VAR_endseg:
+							printNumber( rt, res.end_origseg());
+							break;
+						case VAR_endpos:
+							printNumber( rt, res.end_origpos());
+							break;
+						case VAR_name:
+							rt.append( res.name());
+							break;
+						case VAR_value:
+						{
+							std::vector<analyzer::PatternMatcherResultItem>::const_iterator
+								ri = res.items().begin(), re = res.items().end();
+							for (int ridx=0; ri != re; ++ri,++ridx)
+							{
+								if (ridx)
+								{
+									rt.append( m_impl->sep_resultItem);
+								}
+								rt.append( mapItem( *ri));
+							}
+							break;
+						}
+						default:
+							std::runtime_error(_TXT("data corruption in format list"));
+							break;
+					}
+					break;
+			}
+		}
+		return rt;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error mapping pattern matcher result: %s"), *m_errorhnd, std::string());
+}
+
 

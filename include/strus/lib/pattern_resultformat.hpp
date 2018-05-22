@@ -9,7 +9,7 @@
 /// \file "pattern_resultformat.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_RESULTFORMAT_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_RESULTFORMAT_LIB_HPP_INCLUDED
-#include "strus/analyzer/patternMatcherResultItem.hpp"
+#include "strus/analyzer/patternMatcherResult.hpp"
 #include <utility>
 
 /// \brief strus toplevel namespace
@@ -90,6 +90,24 @@ struct PatternResultFormatChunk
 
 	///\ brief Parse the next chunk in a mapped pattern match result value
 	static bool parseNext( PatternResultFormatChunk& result, char const*& src);
+};
+
+
+class PatternResultFormatMap
+{
+public:
+	PatternResultFormatMap( ErrorBufferInterface* errorhnd_, const char* src_);
+	~PatternResultFormatMap();
+
+	std::string map( const analyzer::PatternMatcherResult& res) const;
+
+private:
+	std::string mapItem( const analyzer::PatternMatcherResultItem& res) const;
+
+private:
+	ErrorBufferInterface* m_errorhnd;			///< error buffer interface
+	struct Impl;						///< PIMPL internal representatation
+	Impl* m_impl;						///< hidden table implementation
 };
 
 }//namespace
