@@ -35,19 +35,42 @@ enum {
 
 PatternMatcherInstanceInterface* TestPatternMatcher::createInstance() const
 {
-	return new TestPatternMatcherInstance( m_errorhnd);
+	try
+	{
+		return new TestPatternMatcherInstance( m_errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating %s: %s"), "TestPatternMatcherInstance", *m_errorhnd, NULL);
 }
 
+
 TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar(),m_expressionar(),m_variablemap(),m_operandsar(),m_stk(),m_done(false)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar()
+	,m_expressionar(),m_exprvarmap(),m_varmap(),m_resultFormatTable(0)
+	,m_operandsar(),m_stk(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
+	m_resultFormatTable = new PatternResultFormatTable( m_errorhnd, &m_varmap);
 }
 
 TestPatternMatcherInstance::~TestPatternMatcherInstance()
 {
 	if (m_debugtrace) delete m_debugtrace;
+	if (m_resultFormatTable) delete m_resultFormatTable;
+}
+
+const char* TestPatternMatcherInstance::VariableMap::getVariable( const std::string& name) const
+{
+	int symid = m_map.get( name);
+	if (!symid) return NULL;
+	return m_map.key( symid);
+}
+
+const char* TestPatternMatcherInstance::VariableMap::getOrCreateVariable( const std::string& name)
+{
+	int symid = m_map.getOrCreate( name);
+	if (!symid) return NULL;
+	return m_map.key( symid);
 }
 
 void TestPatternMatcherInstance::defineOption( const std::string& name, double value)
@@ -124,7 +147,9 @@ void TestPatternMatcherInstance::attachVariable( const std::string& name)
 		if (m_debugtrace) m_debugtrace->event( "attach", "variable %s", name.c_str());
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "attachVariable");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		m_variablemap[ m_stk.back()] = name;
+		const char* variable = m_varmap.getOrCreateVariable( name);
+		if (!variable) throw std::bad_alloc();
+		m_exprvarmap[ m_stk.back()] = variable;
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::attachVariable", *m_errorhnd);
 }
@@ -136,7 +161,9 @@ void TestPatternMatcherInstance::definePattern( const std::string& name, const s
 		if (m_debugtrace) m_debugtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "definePattern");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		m_patternar.push_back( Pattern( m_stk.back(), name, formatstring));
+		const PatternResultFormat* fmt = m_resultFormatTable->createResultFormat( formatstring.c_str());
+		if (!fmt) throw std::runtime_error( m_errorhnd->fetchError());
+		m_patternar.push_back( Pattern( m_stk.back(), name, fmt));
 		m_stk.pop_back();
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::definePattern", *m_errorhnd);
@@ -147,7 +174,7 @@ bool TestPatternMatcherInstance::compile()
 	try
 	{
 		if (m_debugtrace) m_debugtrace->event( "compile", "patterns %d expressions %d variables %d patternrefs %d",
-							(int)m_patternar.size(), (int)m_expressionar.size(), (int)m_variablemap.size(), (int)m_patternrefar.size());
+							(int)m_patternar.size(), (int)m_expressionar.size(), (int)m_varmap.size(), (int)m_patternrefar.size());
 		if (m_done) throw strus::runtime_error(_TXT("already called %s"), "compile");
 		m_done = true;
 		return true;
@@ -179,10 +206,10 @@ static ItemType getItemType( unsigned int id, unsigned int& idx)
 
 const char* TestPatternMatcherInstance::getVariableAttached( unsigned int id) const
 {
-	VariableMap::const_iterator vi = m_variablemap.find( id);
-	if (vi != m_variablemap.end())
+	ExpressionVariableMap::const_iterator vi = m_exprvarmap.find( id);
+	if (vi != m_exprvarmap.end())
 	{
-		return vi->second.c_str();
+		return vi->second;
 	}
 	return NULL;
 }

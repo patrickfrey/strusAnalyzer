@@ -14,6 +14,8 @@
 #include "strus/patternMatcherContextInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/functionView.hpp"
+#include "strus/lib/pattern_resultformat.hpp"
+#include "strus/base/symbolTable.hpp"
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -85,14 +87,29 @@ private:
 	{
 		unsigned int id;
 		std::string name;
-		std::string formatstring;
+		const PatternResultFormat* fmt;
 
-		Pattern( unsigned int id_, const std::string& name_, const std::string& formatstring_)
-			:id(id_),name(name_),formatstring(formatstring_){}
+		Pattern( unsigned int id_, const std::string& name_, const PatternResultFormat* fmt_)
+			:id(id_),name(name_),fmt(fmt_){}
 		Pattern( const Pattern& o)
-			:id(o.id),name(o.name),formatstring(o.formatstring){}
+			:id(o.id),name(o.name),fmt(o.fmt){}
 	};
-	typedef std::map<unsigned int,std::string> VariableMap;
+	typedef std::map<unsigned int,const char*> ExpressionVariableMap;
+
+	class VariableMap
+		:public PatternResultFormatVariableMap
+	{
+	public:
+		VariableMap(){}
+		virtual ~VariableMap(){}
+	
+		virtual const char* getVariable( const std::string& name) const;
+		const char* getOrCreateVariable( const std::string& name);
+		std::size_t size() const	{return m_map.size();}
+
+	private:
+		SymbolTable m_map;
+	};
 
 	const char* getVariableAttached( unsigned int id) const;
 	std::vector<unsigned int> getPatternRefs( const std::string& patternName) const;
@@ -103,7 +120,9 @@ private:
 	std::vector<Pattern> m_patternar;
 	std::vector<std::string> m_patternrefar;
 	std::vector<Expression> m_expressionar;
-	VariableMap m_variablemap;
+	ExpressionVariableMap m_exprvarmap;
+	VariableMap m_varmap;
+	PatternResultFormatTable* m_resultFormatTable;
 	std::vector<unsigned int> m_operandsar;
 	std::vector<unsigned int> m_stk;
 	bool m_done;
