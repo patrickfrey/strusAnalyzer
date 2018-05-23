@@ -57,7 +57,7 @@ void QueryAnalyzerContext::putField( int fieldNo, const std::string& fieldType, 
 {
 	try
 	{
-		if (fieldNo <= 0) throw strus::runtime_error(_TXT("invalid field number %d, must be a positive integer"), fieldNo);
+		if (fieldNo <= 0) throw strus::runtime_error( _TXT("invalid field number %d, must be a positive integer"), fieldNo);
 		m_fields.push_back( Field( fieldNo, fieldType, content));
 	}
 	CATCH_ERROR_MAP( _TXT("error defining query field: %s"), *m_errorhnd);
@@ -69,7 +69,7 @@ void QueryAnalyzerContext::groupElements( int groupId, const std::vector<int>& f
 	{
 		if (groupId <= 0)
 		{
-			throw strus::runtime_error(_TXT("invalid group identifier %d, must be a positive integer"), groupId);
+			throw strus::runtime_error( _TXT("invalid group identifier %d, must be a positive integer"), groupId);
 		}
 		m_groups.push_back( Group( groupId, fieldNoList, groupBy, groupSingle));
 	}
@@ -192,14 +192,14 @@ private:
 		std::multimap<unsigned int,unsigned int>::const_iterator ri = m_rootElementMap.begin(), re = m_rootElementMap.end();
 		if (m_rootElementMap.size() != m_elementRootMap.size())
 		{
-			throw strus::runtime_error("internal: element node map size mismatch");
+			throw strus::runtime_error( _TXT("internal: element node map size mismatch"));
 		}
 		for (; ri != re; ++ri)
 		{
 			std::map<unsigned int,unsigned int>::const_iterator inv = m_elementRootMap.find( ri->second);
 			if (inv == m_elementRootMap.end() || inv->second != ri->first)
 			{
-				throw strus::runtime_error("internal: element node map content mismatch");
+				throw strus::runtime_error( _TXT("internal: element node map content mismatch"));
 			}
 		}
 		out << "{";
@@ -329,7 +329,7 @@ static QueryTree buildQueryTree(
 		std::vector<int>::const_iterator fi = gi->fieldNoList.begin(), fe = gi->fieldNoList.end();
 		for (; fi != fe; ++fi)
 		{
-			if (*fi <= 0) throw strus::runtime_error(_TXT("invalid fieldno %d passed to group elements operation, must be a positive integer"), *fi);
+			if (*fi <= 0) throw strus::runtime_error( _TXT("invalid fieldno %d passed to group elements operation, must be a positive integer"), *fi);
 
 			FieldElementRange range = fieldElementMap.equal_range( *fi);
 			FieldElementMapItr ri = range.first, re = range.second;
@@ -445,7 +445,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		{
 			if (m_analyzer->fieldTypePatternMap().find( fi->fieldType) == m_analyzer->fieldTypePatternMap().end())
 			{
-				throw strus::runtime_error( ErrorCodeUnknownIdentifier, _TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
+				throw strus::runtime_error_ec( ErrorCodeUnknownIdentifier, _TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
 			}
 		}
 		else
