@@ -31,7 +31,7 @@ public:
 
 	/// \brief Get the list of matches detected in the current document
 	/// \return the list of matches
-	virtual std::vector<analyzer::PatternMatcherResult> fetchResults() const=0;
+	virtual std::vector<analyzer::PatternMatcherResult> fetchResults()=0;
 
 	/// \brief Get the statistics for global analysis
 	/// \return the statistics data gathered during processing

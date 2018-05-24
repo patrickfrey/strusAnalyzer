@@ -137,7 +137,7 @@ public:
 
 	virtual ~TestPatternMatcherContext();
 	virtual void putInput( const analyzer::PatternLexem& token);
-	virtual std::vector<analyzer::PatternMatcherResult> fetchResults() const;
+	virtual std::vector<analyzer::PatternMatcherResult> fetchResults();
 	virtual analyzer::PatternMatcherStatistics getStatistics() const;
 	virtual void reset();
 

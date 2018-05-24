@@ -269,7 +269,7 @@ static bool comparePatternMatcherResult( const analyzer::PatternMatcherResult& a
 	return std::strcmp( aa.name(), bb.name()) < 0;
 }
 
-std::vector<analyzer::PatternMatcherResult> TestPatternMatcherContext::fetchResults() const
+std::vector<analyzer::PatternMatcherResult> TestPatternMatcherContext::fetchResults()
 {
 	try
 	{
