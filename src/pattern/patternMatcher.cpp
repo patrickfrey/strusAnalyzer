@@ -12,6 +12,7 @@
 #include "strus/debugTraceInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/patternMatcherResult.hpp"
+#include "strus/lib/pattern_resultformat.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <stdexcept>
@@ -236,7 +237,7 @@ analyzer::FunctionView TestPatternMatcherInstance::view() const
 }
 
 TestPatternMatcherContext::TestPatternMatcherContext( ErrorBufferInterface* errorhnd_, const TestPatternMatcherInstance* instance_)
-	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_),m_resultFormatContext(errorhnd_),m_inputar()
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
@@ -493,7 +494,7 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 				if (variable)
 				{
 					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var '%s'", (int)token.id(), (int)token.ordpos(), variable);
-					result.items.push_back( MatchItem( match, variable));
+					result.items.push_back( MatchItem( match, variable, 0/*value*/));
 				}
 				else
 				{
@@ -564,12 +565,18 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 			for (; mi != me; ++mi)
 			{
 				itemar.push_back( analyzer::PatternMatcherResultItem(
-					mi->variable, 0/*value*/,
+					mi->variable, mi->value,
 					mi->ordpos, mi->ordpos+mi->ordlen,
 					mi->start.seg, mi->start.pos, mi->end.seg, mi->end.pos));
 			}
+			const char* itemValue = 0;
+			if (pattern.fmt)
+			{
+				itemValue = m_resultFormatContext.map( pattern.fmt, itemar.size(), itemar.data());
+				itemar.clear();
+			}
 			analyzer::PatternMatcherResult elem( 
-				pattern.name.c_str(), 0/*value*/,
+				pattern.name.c_str(), itemValue,
 				result.match.ordpos, result.match.ordpos + result.match.ordlen,
 				result.match.start.seg, result.match.start.pos,
 				result.match.end.seg, result.match.end.pos, itemar);

@@ -184,12 +184,14 @@ private:
 		:public Match
 	{
 		const char* variable;
+		const char* value;
 
-		MatchItem( const Match& match_, const char* variable_)
-			:Match(match_),variable(variable_){}
+		MatchItem( const Match& match_, const char* variable_, const char* value_)
+			:Match(match_),variable(variable_),value(value_){}
 		MatchItem( const MatchItem& o)
-			:Match(o),variable(o.variable){}
-		MatchItem& operator = (const MatchItem& o) {Match::operator=(o); variable=o.variable; return *this;}
+			:Match(o),variable(o.variable),value(o.value){}
+
+		MatchItem& operator = (const MatchItem& o) {Match::operator=(o); variable=o.variable; value=o.value; return *this;}
 	};
 
 	struct MatchResult
@@ -221,6 +223,7 @@ private:
 	DebugTraceContextInterface* m_debugtrace;
 	DebugTraceContextInterface* m_debugtrace_proc;
 	const TestPatternMatcherInstance* m_instance;
+	PatternResultFormatContext m_resultFormatContext;
 	std::vector<analyzer::PatternLexem> m_inputar;
 };
 
