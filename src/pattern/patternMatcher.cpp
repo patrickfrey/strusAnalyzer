@@ -564,11 +564,13 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 			for (; mi != me; ++mi)
 			{
 				itemar.push_back( analyzer::PatternMatcherResultItem(
-					mi->variable, 0/*value*/, mi->ordpos, mi->ordpos+mi->ordlen,
+					mi->variable, 0/*value*/,
+					mi->ordpos, mi->ordpos+mi->ordlen,
 					mi->start.seg, mi->start.pos, mi->end.seg, mi->end.pos));
 			}
 			analyzer::PatternMatcherResult elem( 
-				pattern.name.c_str(), result.match.ordpos, result.match.ordpos + result.match.ordlen,
+				pattern.name.c_str(), 0/*value*/,
+				result.match.ordpos, result.match.ordpos + result.match.ordlen,
 				result.match.start.seg, result.match.start.pos,
 				result.match.end.seg, result.match.end.pos, itemar);
 			res.push_back( elem);

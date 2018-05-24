@@ -24,18 +24,21 @@ public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
 	PatternMatcherResult()
-		:m_name(0),m_start_ordpos(0),m_end_ordpos(0),m_start_origseg(0),m_end_origseg(0),m_start_origpos(0),m_end_origpos(0),m_itemlist(){}
+		:m_name(0),m_value(0),m_start_ordpos(0),m_end_ordpos(0),m_start_origseg(0),m_end_origseg(0),m_start_origpos(0),m_end_origpos(0),m_itemlist(){}
 	/// \brief Constructor
-	PatternMatcherResult( const char* name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
-		:m_name(name_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
+	PatternMatcherResult( const char* name_, const char* value_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
+		:m_name(name_),m_value(value_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:m_name(o.m_name),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
+		:m_name(o.m_name),m_value(o.m_value),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
 	/// \brief Destructor
 	~PatternMatcherResult(){}
 
 	/// \brief Name of the result, defined by the name of the pattern of the match
 	const char* name() const			{return m_name;}
+	/// \brief Pointer to value of the result
+	/// \note The value is a null terminated string containing a constructed value of the result string or NULL if not such construction (format string) is defined.
+	const char* value() const			{return m_value;}
 	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
 	uint32_t start_ordpos() const			{return m_start_ordpos;}
 	/// \brief Ordinal (counting) end position of the match
@@ -53,6 +56,7 @@ public:
 
 private:
 	const char* m_name;
+	const char* m_value;
 	uint32_t m_start_ordpos;
 	uint32_t m_end_ordpos;
 	uint32_t m_start_origseg;

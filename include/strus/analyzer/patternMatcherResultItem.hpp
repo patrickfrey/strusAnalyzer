@@ -31,7 +31,7 @@ public:
 	/// \brief Name of the item, defined by the variable assigned to the match
 	const char* name() const			{return m_name;}
 	/// \brief Pointer to value of the item
-	/// \note The value is either a pointer to the first character of the input string or a null terminated string starting with the prefix "\1", containing a constructed value of the result string.
+	/// \note The value is a null terminated string containing a constructed value of the result string or NULL if not such construction (format string) is defined.
 	const char* value() const			{return m_value;}
 	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
 	uint32_t start_ordpos() const			{return m_start_ordpos;}

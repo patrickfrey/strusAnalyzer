@@ -257,7 +257,7 @@ static strus::analyzer::PatternMatcherResult
 		const ResultDef& result)
 {
 	std::vector<strus::analyzer::PatternMatcherResultItem> items = getResultItemsFromDef( varmap, result.items);
-	return strus::analyzer::PatternMatcherResult( result.name, result.ordstart, result.ordend, result.origstart.seg, result.origstart.ofs, result.origend.seg, result.origend.ofs, items);
+	return strus::analyzer::PatternMatcherResult( result.name, 0/*value*/, result.ordstart, result.ordend, result.origstart.seg, result.origstart.ofs, result.origend.seg, result.origend.ofs, items);
 }
 
 static void runResultTests()
