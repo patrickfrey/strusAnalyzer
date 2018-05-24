@@ -216,7 +216,7 @@ private:
 	bool matchAll( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter, int cardinality) const;
 	bool matchAll( MatchResult& result, unsigned int const* begin, const unsigned int* end, int inputiter, int cardinality) const;
 	bool matchItem( MatchResult& result, unsigned int id, int inputiter) const;
-	void evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern) const;
+	void evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern);
 
 private:
 	ErrorBufferInterface* m_errorhnd;

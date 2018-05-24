@@ -546,7 +546,7 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 	throw strus::runtime_error(_TXT("internal: unknown item type"));
 }
 
-void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern) const
+void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern)
 {
 	for (int inputiter=0; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
