@@ -219,7 +219,7 @@ static void runItemTests()
 			throw std::runtime_error( g_errorhnd->fetchError());
 		}
 		std::vector<strus::analyzer::PatternMatcherResultItem> items = getResultItemsFromDef( varmap, ti->items);
-		const char* res = context.map( fmt, items.size(), items.data());
+		const char* res = context.map( fmt, items.data(), items.size());
 
 		checkPatternMatchResult( res, ti->expected);
 	}

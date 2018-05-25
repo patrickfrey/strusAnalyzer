@@ -38,7 +38,7 @@ public:
 	/// \param[in] nofItems number of pattern match result elements
 	/// \param[in] items array of pattern match result elements
 	/// \return pattern match result value to use in other result items or finally map with 'PatternResultFormatChunk::parseNext( ResultChunk& result, char const*& src)'
-	const char* map( const PatternResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items);
+	const char* map( const PatternResultFormat* fmt, const analyzer::PatternMatcherResultItem* items, std::size_t nofItems);
 
 private:
 	ErrorBufferInterface* m_errorhnd;			///< error buffer interface

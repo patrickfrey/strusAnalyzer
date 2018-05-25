@@ -16,6 +16,7 @@
 #include "strus/analyzer/functionView.hpp"
 #include "strus/lib/pattern_resultformat.hpp"
 #include "strus/base/symbolTable.hpp"
+#include "strus/reference.hpp"
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -87,14 +88,14 @@ private:
 	{
 		unsigned int id;
 		std::string name;
-		const PatternResultFormat* fmt;
 
-		Pattern( unsigned int id_, const std::string& name_, const PatternResultFormat* fmt_)
-			:id(id_),name(name_),fmt(fmt_){}
+		Pattern( unsigned int id_, const std::string& name_)
+			:id(id_),name(name_){}
 		Pattern( const Pattern& o)
-			:id(o.id),name(o.name),fmt(o.fmt){}
+			:id(o.id),name(o.name){}
 	};
 	typedef std::map<unsigned int,const char*> ExpressionVariableMap;
+	typedef std::map<unsigned int,const PatternResultFormat*> ExpressionResultFormatMap;
 
 	class VariableMap
 		:public PatternResultFormatVariableMap
@@ -111,7 +112,9 @@ private:
 		SymbolTable m_map;
 	};
 
+	const PatternResultFormat* getResultFormat( unsigned int id) const;
 	const char* getVariableAttached( unsigned int id) const;
+	const char* getVariableId( const std::string& name) const;
 	std::vector<unsigned int> getPatternRefs( const std::string& patternName) const;
 
 private:
@@ -125,6 +128,7 @@ private:
 	PatternResultFormatTable* m_resultFormatTable;
 	std::vector<unsigned int> m_operandsar;
 	std::vector<unsigned int> m_stk;
+	ExpressionResultFormatMap m_exprfmtmap;
 	bool m_done;
 };
 
@@ -153,6 +157,8 @@ private:
 			:seg(seg_),pos(pos_){}
 		MatchAddress( const MatchAddress& o)
 			:seg(o.seg),pos(o.pos){}
+		MatchAddress& operator=( const MatchAddress& o)
+			{seg=o.seg;pos=o.pos; return *this;}
 
 		bool operator < (const MatchAddress& o) const
 		{
@@ -164,58 +170,43 @@ private:
 		}
 	};
 
-	struct Match
+	struct MatchResult
 	{
+		std::string name;
+		std::string value;
 		int ordpos;
 		int ordlen;
 		MatchAddress start;
 		MatchAddress end;
-
-		Match()
-			:ordpos(-1),ordlen(-1),start(),end(){}
-		Match( int ordpos_, int ordlen_, const MatchAddress& start_, const MatchAddress& end_)
-			:ordpos(ordpos_),ordlen(ordlen_),start(start_),end(end_){}
-		Match( const Match& o)
-			:ordpos(o.ordpos),ordlen(o.ordlen),start(o.start),end(o.end){}
-		Match& operator = (const Match& o) {ordpos=o.ordpos;ordlen=o.ordlen;start=o.start;end=o.end; return *this;}
-	};
-
-	struct MatchItem
-		:public Match
-	{
-		const char* variable;
-		const char* value;
-
-		MatchItem( const Match& match_, const char* variable_, const char* value_)
-			:Match(match_),variable(variable_),value(value_){}
-		MatchItem( const MatchItem& o)
-			:Match(o),variable(o.variable),value(o.value){}
-
-		MatchItem& operator = (const MatchItem& o) {Match::operator=(o); variable=o.variable; value=o.value; return *this;}
-	};
-
-	struct MatchResult
-	{
-		Match match;
-		std::vector<MatchItem> items;
+		std::vector<strus::Reference<MatchResult> > items;
 
 		MatchResult()
-			:match(),items(){}
-		MatchResult( const Match& match_, const std::vector<MatchItem>& items_=std::vector<MatchItem>())
-			:match(match_),items(items_){}
+			:name(),value(),ordpos(-1),ordlen(-1),start(),end(),items(){}
+		MatchResult( const std::string& name_, const std::string& value_, int ordpos_, int ordlen_, const MatchAddress& start_, const MatchAddress& end_, std::vector<strus::Reference<MatchResult> > items_)
+			:name(),value(),ordpos(ordpos_),ordlen(ordlen_),start(start_),end(end_),items(items_){}
+		MatchResult( const std::string& name_, const std::string& value_, int ordpos_, int ordlen_, const MatchAddress& start_, const MatchAddress& end_)
+			:name(),value(),ordpos(ordpos_),ordlen(ordlen_),start(start_),end(end_),items(){}
 		MatchResult( const MatchResult& o)
-			:match(o.match),items(o.items){}
-		MatchResult& operator = (const MatchResult& o) {match=o.match; items=o.items; return *this;}
+			:name(o.name),value(o.value),ordpos(o.ordpos),ordlen(o.ordlen),start(o.start),end(o.end),items(o.items){}
+		MatchResult& operator = (const MatchResult& o) {name=o.name;value=o.value;ordpos=o.ordpos;ordlen=o.ordlen;start=o.start;end=o.end;items=o.items; return *this;}
+
+		bool defined() const	{return ordpos > 0;}
 	};
 
-	static void joinResult( MatchResult& result, const MatchResult& aresult);
-	bool findFirstMatch( MatchResult& result, unsigned int id, int inputiter, unsigned int maxordlen, bool imm, bool seq) const;
-	bool matchCombined( MatchResult& result, unsigned int structid, const unsigned int* idar, int size, int inputiter, unsigned int maxordlen, bool imm, bool seq, unsigned int cardinality) const;
-	bool matchShortest( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter) const;
-	bool matchShortest( MatchResult& result, unsigned int const* begin, const unsigned int* end, int inputiter) const;
-	bool matchAll( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter, int cardinality) const;
-	bool matchAll( MatchResult& result, unsigned int const* begin, const unsigned int* end, int inputiter, int cardinality) const;
-	bool matchItem( MatchResult& result, unsigned int id, int inputiter) const;
+	typedef const TestPatternMatcherInstance::Pattern* PatternPtr;
+
+	std::string mapResultValue( unsigned int id, const MatchResult& result);
+	const char* allocCharp( const std::string& value);
+
+	void joinResult( MatchResult& result, unsigned int id, const MatchResult& aresult);
+	bool findFirstMatch( MatchResult& result, unsigned int id, int inputiter, unsigned int maxordlen, bool imm, bool seq);
+	bool matchCombined( MatchResult& result, unsigned int structid, const unsigned int* idar, int idarsize, int inputiter, unsigned int maxordlen, bool imm, bool seq, unsigned int cardinality);
+	bool matchShortest( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter);
+	bool matchShortest( MatchResult& result, const unsigned int* begin, const unsigned int* end, int inputiter);
+	bool matchAll( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter, int cardinality);
+	bool matchAll( MatchResult& result, const unsigned int* begin, const unsigned int* end, int inputiter, int cardinality);
+	bool matchItem( MatchResult& result, unsigned int pattern, int inputiter);
+
 	void evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern);
 
 private:
@@ -225,6 +216,7 @@ private:
 	const TestPatternMatcherInstance* m_instance;
 	PatternResultFormatContext m_resultFormatContext;
 	std::vector<analyzer::PatternLexem> m_inputar;
+	std::list<std::string> m_values;
 };
 
 }//namespace

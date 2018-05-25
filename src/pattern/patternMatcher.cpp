@@ -47,7 +47,7 @@ PatternMatcherInstanceInterface* TestPatternMatcher::createInstance() const
 TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar()
 	,m_expressionar(),m_exprvarmap(),m_varmap(),m_resultFormatTable(0)
-	,m_operandsar(),m_stk(),m_done(false)
+	,m_operandsar(),m_stk(),m_exprfmtmap(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
@@ -72,6 +72,11 @@ const char* TestPatternMatcherInstance::VariableMap::getOrCreateVariable( const 
 	int symid = m_map.getOrCreate( name);
 	if (!symid) return NULL;
 	return m_map.key( symid);
+}
+
+const char* TestPatternMatcherInstance::getVariableId( const std::string& name) const
+{
+	return m_varmap.getVariable( name);
 }
 
 void TestPatternMatcherInstance::defineOption( const std::string& name, double value)
@@ -162,9 +167,13 @@ void TestPatternMatcherInstance::definePattern( const std::string& name, const s
 		if (m_debugtrace) m_debugtrace->event( "pattern", "%s %s", name.c_str(), visible?"public":"private");
 		if (m_done) throw strus::runtime_error(_TXT("illegal call of %s"), "definePattern");
 		if (m_stk.empty()) throw std::runtime_error("illegal operation");
-		const PatternResultFormat* fmt = m_resultFormatTable->createResultFormat( formatstring.c_str());
-		if (!fmt) throw std::runtime_error( m_errorhnd->fetchError());
-		m_patternar.push_back( Pattern( m_stk.back(), name, fmt));
+		m_patternar.push_back( Pattern( m_stk.back(), name));
+		if (!formatstring.empty())
+		{
+			const PatternResultFormat* fmt = m_resultFormatTable->createResultFormat( formatstring.c_str());
+			if (!fmt) throw std::runtime_error( m_errorhnd->fetchError());
+			m_exprfmtmap[ m_stk.back()] = fmt;
+		}
 		m_stk.pop_back();
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternMatcherInstance::definePattern", *m_errorhnd);
@@ -215,6 +224,16 @@ const char* TestPatternMatcherInstance::getVariableAttached( unsigned int id) co
 	return NULL;
 }
 
+const PatternResultFormat* TestPatternMatcherInstance::getResultFormat( unsigned int id) const
+{
+	ExpressionResultFormatMap::const_iterator vi = m_exprfmtmap.find( id);
+	if (vi != m_exprfmtmap.end())
+	{
+		return vi->second;
+	}
+	return NULL;
+}
+
 std::vector<unsigned int> TestPatternMatcherInstance::getPatternRefs( const std::string& patternName) const
 {
 	std::vector<unsigned int> rt;
@@ -237,7 +256,7 @@ analyzer::FunctionView TestPatternMatcherInstance::view() const
 }
 
 TestPatternMatcherContext::TestPatternMatcherContext( ErrorBufferInterface* errorhnd_, const TestPatternMatcherInstance* instance_)
-	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_),m_resultFormatContext(errorhnd_),m_inputar()
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_debugtrace_proc(0),m_instance(instance_),m_resultFormatContext(errorhnd_),m_inputar(),m_values()
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
@@ -297,32 +316,82 @@ void TestPatternMatcherContext::reset()
 	m_inputar.clear();
 }
 
-
-void TestPatternMatcherContext::joinResult( MatchResult& result, const MatchResult& aresult)
+const char* TestPatternMatcherContext::allocCharp( const std::string& value)
 {
-	if (aresult.match.ordpos + aresult.match.ordlen >  result.match.ordpos + result.match.ordlen)
-	{
-		result.match.ordlen = aresult.match.ordpos + aresult.match.ordlen - result.match.ordpos;
-	}
-	if (aresult.match.start < result.match.start)
-	{
-		result.match.start = aresult.match.start;
-	}
-	if (aresult.match.end > result.match.end)
-	{
-		result.match.end = aresult.match.end;
-	}
-	result.items.insert( result.items.end(), aresult.items.begin(), aresult.items.end());
+	m_values.push_back( value);
+	return m_values.back().c_str();
 }
 
-bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned int id, int inputiter, unsigned int maxordlen, bool imm, bool seq) const
+std::string TestPatternMatcherContext::mapResultValue( unsigned int id, const MatchResult& result)
+{
+	const PatternResultFormat* fmt = m_instance->getResultFormat( id);
+	if (fmt)
+	{
+		std::vector<analyzer::PatternMatcherResultItem> ar;
+		std::vector<strus::Reference<MatchResult> >::const_iterator ii = result.items.begin(), ie = result.items.end();
+		for (; ii != ie; ++ii)
+		{
+			const char* variable = m_instance->getVariableId( (*ii)->name);
+			if (variable)
+			{
+				analyzer::PatternMatcherResultItem translated( variable, (*ii)->value.c_str(), (*ii)->ordpos, (*ii)->ordpos+(*ii)->ordlen, (*ii)->start.seg, (*ii)->start.pos, (*ii)->end.seg, (*ii)->end.pos);
+				ar.push_back( translated);
+			}
+		}
+		const char* valptr = m_resultFormatContext.map( fmt, ar.data(), ar.size());
+		if (!valptr) throw std::runtime_error( m_errorhnd->fetchError());
+		return std::string( valptr);
+	}
+	else
+	{
+		return std::string();
+	}
+}
+
+void TestPatternMatcherContext::joinResult( MatchResult& result, unsigned int id, const MatchResult& aresult)
+{
+	if (!result.defined())
+	{
+		result.ordpos = aresult.ordpos;
+		result.ordlen = aresult.ordlen;
+		result.start = aresult.start;
+		result.end = aresult.end;
+	}
+	else
+	{
+		if (aresult.ordpos + aresult.ordlen >  result.ordpos + result.ordlen)
+		{
+			result.ordlen = aresult.ordpos + aresult.ordlen - result.ordpos;
+		}
+		if (aresult.start < result.start)
+		{
+			result.start = aresult.start;
+		}
+		if (aresult.end > result.end)
+		{
+			result.end = aresult.end;
+		}
+	}
+	const char* variable = m_instance->getVariableAttached( id);
+	if (variable)
+	{
+		std::string value = mapResultValue( id, aresult);
+		result.items.push_back( new MatchResult( variable, value, aresult.ordpos, aresult.ordlen, aresult.start, aresult.end));
+	}
+	else
+	{
+		result.items.insert( result.items.end(), aresult.items.begin(), aresult.items.end());
+	}
+}
+
+bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned int id, int inputiter, unsigned int maxordlen, bool imm, bool seq)
 {
 	for (; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
 		if (maxordlen)
 		{
 			const analyzer::PatternLexem& token = m_inputar[ inputiter];
-			if (token.ordpos() - result.match.ordpos > maxordlen) return false;
+			if (token.ordpos() - result.ordpos > maxordlen) return false;
 		}
 		MatchResult aresult;
 		if (!matchItem( aresult, id, inputiter)) continue;
@@ -330,18 +399,18 @@ bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned in
 		{
 			if (imm)
 			{
-				if (aresult.match.ordpos != result.match.ordpos + result.match.ordlen) continue;
+				if (aresult.ordpos != result.ordpos + result.ordlen) continue;
 			}
 			else
 			{
-				if (aresult.match.ordpos < result.match.ordpos + result.match.ordlen) continue;
+				if (aresult.ordpos < result.ordpos + result.ordlen) continue;
 			}
 			if (maxordlen)
 			{
-				int endordpos = std::max( aresult.match.ordpos + aresult.match.ordlen, result.match.ordpos + result.match.ordlen);
-				if (endordpos > result.match.ordpos + (int)maxordlen) continue;
+				int endordpos = std::max( aresult.ordpos + aresult.ordlen, result.ordpos + result.ordlen);
+				if (endordpos > result.ordpos + (int)maxordlen) continue;
 			}
-			joinResult( result, aresult);
+			joinResult( result, id, aresult);
 			return true;
 		}
 		else
@@ -352,28 +421,23 @@ bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned in
 			}
 			if (maxordlen)
 			{
-				int endordpos = std::max( aresult.match.ordpos + aresult.match.ordlen, result.match.ordpos + result.match.ordlen);
-				if (endordpos > result.match.ordpos + (int)maxordlen) continue;
+				int endordpos = std::max( aresult.ordpos + aresult.ordlen, result.ordpos + result.ordlen);
+				if (endordpos > result.ordpos + (int)maxordlen) continue;
 			}
-			joinResult( result, aresult);
+			joinResult( result, id, aresult);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int structid, const unsigned int* idar, int size, int inputiter, unsigned int maxordlen, bool imm, bool seq, unsigned int cardinality) const
+bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int structid, const unsigned int* idar, int idarsize, int inputiter, unsigned int maxordlen, bool imm, bool seq, unsigned int cardinality)
 {
 	int nofMatches = 0;
 	if (seq && cardinality) throw std::runtime_error( "cardinality not implemented for sequence");
 
 	unsigned int const* pi = idar;
-	const unsigned int* pe = pi + size;
-	if (structid)
-	{
-		if (!size) return false;
-		++pi;
-	}
+	const unsigned int* pe = pi + idarsize;
 	int pidx = 0;
 	for (; pi < pe; ++pi,++pidx)
 	{
@@ -390,17 +454,17 @@ bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int
 			}
 		}
 	}
-	if (maxordlen && result.match.ordlen > (int)maxordlen) return false;
+	if (maxordlen && result.ordlen > (int)maxordlen) return false;
 	if (structid)
 	{
 		MatchResult aresult = result;
-		if (findFirstMatch( aresult, *pi, inputiter, result.match.ordlen, false, false)) return false;
+		if (findFirstMatch( aresult, *pi, inputiter, result.ordlen, false, false)) return false;
 	}
 	if (cardinality ? nofMatches >= (int)cardinality : nofMatches == pidx)
 	{
 		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchcombined", "%s%s%s pos %d len %d nof %d cardinality %d",
 					(seq?"sequence":"within"), (structid?"_struct":""), (imm?"_imm":""),
-					result.match.ordpos, result.match.ordlen, nofMatches, cardinality ? cardinality : pidx);
+					result.ordpos, result.ordlen, nofMatches, cardinality ? cardinality : pidx);
 		return true;
 	}
 	else
@@ -409,22 +473,26 @@ bool TestPatternMatcherContext::matchCombined( MatchResult& result, unsigned int
 	}
 }
 
-bool TestPatternMatcherContext::matchShortest( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter) const
+bool TestPatternMatcherContext::matchShortest( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter)
 {
+	MatchResult bestresult;
+	int bestpt = -1;
 	int maxordlen = std::numeric_limits<int>::max();
 	std::vector<unsigned int>::const_iterator pi = begin;
 	for (; pi != end; ++pi)
 	{
 		MatchResult aresult;
-		if (matchItem( aresult, *pi, inputiter) && aresult.match.ordlen < maxordlen)
+		if (matchItem( aresult, *pi, inputiter) && aresult.ordlen < maxordlen)
 		{
-			result = aresult;
-			maxordlen = aresult.match.ordlen;
+			bestresult = aresult;
+			bestpt = *pi;
+			maxordlen = aresult.ordlen;
 		}
 	}
 	if (maxordlen < std::numeric_limits<int>::max())
 	{
-		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchany", "pos %d len %d", result.match.ordpos, result.match.ordlen);
+		joinResult( result, bestpt, bestresult);
+		if (m_debugtrace_proc) m_debugtrace_proc->event( "matchany", "pos %d len %d", result.ordpos, result.ordlen);
 		return true;
 	}
 	else
@@ -433,13 +501,13 @@ bool TestPatternMatcherContext::matchShortest( MatchResult& result, std::vector<
 	}
 }
 
-bool TestPatternMatcherContext::matchShortest( MatchResult& result, unsigned int const* begin, const unsigned int* end, int inputiter) const
+bool TestPatternMatcherContext::matchShortest( MatchResult& result, const unsigned int* begin, const unsigned int* end, int inputiter)
 {
 	std::vector<unsigned int> ar( begin, end);
 	return matchShortest( result, ar.begin(), ar.end(), inputiter);
 }
 
-bool TestPatternMatcherContext::matchAll( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter, int cardinality) const
+bool TestPatternMatcherContext::matchAll( MatchResult& result, std::vector<unsigned int>::const_iterator begin, const std::vector<unsigned int>::const_iterator& end, int inputiter, int cardinality)
 {
 	int pidx = 0;
 	int nofMatches = 0;
@@ -450,12 +518,12 @@ bool TestPatternMatcherContext::matchAll( MatchResult& result, std::vector<unsig
 		if (!matchItem( aresult, *pi, inputiter)) continue;
 		if (pidx == 0)
 		{
-			result = aresult;
+			joinResult( result, *pi, aresult);
 		}
 		else
 		{
-			if (aresult.match.ordpos != result.match.ordpos) continue;
-			joinResult( result, aresult);
+			if (aresult.ordpos != result.ordpos) continue;
+			joinResult( result, *pi, aresult);
 			++nofMatches;
 		}
 	}
@@ -470,13 +538,13 @@ bool TestPatternMatcherContext::matchAll( MatchResult& result, std::vector<unsig
 	}
 }
 
-bool TestPatternMatcherContext::matchAll( MatchResult& result, unsigned int const* begin, const unsigned int* end, int inputiter, int cardinality) const
+bool TestPatternMatcherContext::matchAll( MatchResult& result, const unsigned int* begin, const unsigned int* end, int inputiter, int cardinality)
 {
 	std::vector<unsigned int> ar( begin, end);
 	return matchAll( result, ar.begin(), ar.end(), inputiter, cardinality);
 }
 
-bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id, int inputiter) const
+bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id, int inputiter)
 {
 	unsigned int itemidx = 0;
 	switch (getItemType( id, itemidx))
@@ -488,65 +556,64 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 			{
 				MatchAddress startadr( token.origseg(), token.origpos());
 				MatchAddress endadr( token.origseg(), token.origpos() + token.origsize());
-				Match match( token.ordpos(), 1/*ordlen*/, startadr, endadr);
-				result = MatchResult( match);
-				const char* variable = m_instance->getVariableAttached( id);
-				if (variable)
-				{
-					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d var '%s'", (int)token.id(), (int)token.ordpos(), variable);
-					result.items.push_back( MatchItem( match, variable, 0/*value*/));
-				}
-				else
-				{
-					if (m_debugtrace_proc) m_debugtrace_proc->event( "matchtoken", "id %d pos %d", (int)token.id(), (int)token.ordpos());
-				}
+				result = MatchResult( "", "", token.ordpos(), 1/*ordlen*/, startadr, endadr);
 				return true;
 			}
 			return false;
 		}
 		case ItemPatternRef:
 		{
+			bool rt = false;
 			std::vector<unsigned int> patterns = m_instance->getPatternRefs( m_instance->m_patternrefar[ itemidx]);
 			if (patterns.size() == 1)
 			{
-				return matchItem( result, patterns[0], inputiter);
+				rt = (matchItem( result, patterns[0], inputiter));
 			}
 			else if (!patterns.empty())
 			{
-				return matchShortest( result, patterns.begin(), patterns.end(), inputiter);
+				rt = matchShortest( result, patterns.begin(), patterns.end(), inputiter);
 			}
-			return false;
+			return rt;
 		}
 		case ItemExpression:
 		{
+			bool rt = false;
 			const TestPatternMatcherInstance::Expression& expression = m_instance->m_expressionar[ itemidx];
-			const unsigned int* idar = m_instance->m_operandsar.data() + expression.operandsidx;
+			unsigned int const* idar = m_instance->m_operandsar.data() + expression.operandsidx;
 			if (expression.argc == 0) return false;
 
 			switch (expression.operation)
 			{
 				case PatternMatcherInstanceInterface::OpSequence:
-					return matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, false/*imm*/, true/*seq*/, expression.cardinality);
+					rt = matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, false/*imm*/, true/*seq*/, expression.cardinality);
+					break;
 				case PatternMatcherInstanceInterface::OpSequenceImm:
-					return matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, true/*imm*/, true/*seq*/, expression.cardinality);
+					rt = matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, true/*imm*/, true/*seq*/, expression.cardinality);
+					break;
 				case PatternMatcherInstanceInterface::OpSequenceStruct:
-					return matchCombined( result, idar[0]/*structid*/, idar+1, expression.argc-1, inputiter, expression.range, false/*imm*/, true/*seq*/, expression.cardinality);
+					rt = matchCombined( result, idar[0]/*structid*/, idar+1, expression.argc-1, inputiter, expression.range, false/*imm*/, true/*seq*/, expression.cardinality);
+					break;
 				case PatternMatcherInstanceInterface::OpWithin:
-					return matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, false/*imm*/, false/*seq*/, expression.cardinality);
+					rt = matchCombined( result, 0/*structid*/, idar, expression.argc, inputiter, expression.range, false/*imm*/, false/*seq*/, expression.cardinality);
+					break;
 				case PatternMatcherInstanceInterface::OpWithinStruct:
-					return matchCombined( result, idar[0]/*structid*/, idar+1, expression.argc-1, inputiter, expression.range, false/*imm*/, false/*seq*/, expression.cardinality);
+					rt = matchCombined( result, idar[0]/*structid*/, idar+1, expression.argc-1, inputiter, expression.range, false/*imm*/, false/*seq*/, expression.cardinality);
+					break;
 				case PatternMatcherInstanceInterface::OpAny:
-					return matchShortest( result, idar, idar + expression.argc, inputiter);
+					rt = matchShortest( result, idar, idar + expression.argc, inputiter);
+					break;
 				case PatternMatcherInstanceInterface::OpAnd:
-					return matchAll( result, idar, idar + expression.argc, expression.cardinality, inputiter);
+					rt = matchAll( result, idar, idar + expression.argc, expression.cardinality, inputiter);
+					break;
 			}
-			return false;
+			return rt;
 		}
 	}
 	throw strus::runtime_error(_TXT("internal: unknown item type"));
 }
 
-void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatcherResult>& res, const TestPatternMatcherInstance::Pattern& pattern)
+void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatcherResult>& res,
+						const TestPatternMatcherInstance::Pattern& pattern)
 {
 	for (int inputiter=0; inputiter < (int)m_inputar.size(); ++inputiter)
 	{
@@ -558,28 +625,31 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 		}
 		if (matchItem( result, pattern.id, inputiter))
 		{
-			if (m_debugtrace) m_debugtrace->event( "pattern", "id %d name %s at %d length %d", (int)pattern.id, pattern.name.c_str(), result.match.ordpos, result.match.ordlen);
+			if (m_debugtrace) m_debugtrace->event( "pattern", "id %d name %s at %d length %d", (int)pattern.id, pattern.name.c_str(), result.ordpos, result.ordlen);
 
 			std::vector<analyzer::PatternMatcherResultItem> itemar;
-			std::vector<MatchItem>::const_iterator mi = result.items.begin(), me = result.items.end();
+			std::vector<strus::Reference<MatchResult> >::const_iterator mi = result.items.begin(), me = result.items.end();
 			for (; mi != me; ++mi)
 			{
+				const char* variable = m_instance->getVariableId( mi->get()->name);
+				const char* name = variable ? variable : allocCharp( mi->get()->name);
 				itemar.push_back( analyzer::PatternMatcherResultItem(
-					mi->variable, mi->value,
-					mi->ordpos, mi->ordpos+mi->ordlen,
-					mi->start.seg, mi->start.pos, mi->end.seg, mi->end.pos));
+					name, allocCharp( (*mi)->value),
+					(*mi)->ordpos, (*mi)->ordpos+(*mi)->ordlen,
+					(*mi)->start.seg, (*mi)->start.pos, (*mi)->end.seg, (*mi)->end.pos));
 			}
 			const char* itemValue = 0;
-			if (pattern.fmt)
+			const PatternResultFormat* fmt = m_instance->getResultFormat( pattern.id);
+			if (fmt)
 			{
-				itemValue = m_resultFormatContext.map( pattern.fmt, itemar.size(), itemar.data());
+				itemValue = m_resultFormatContext.map( fmt, itemar.data(), itemar.size());
 				itemar.clear();
 			}
 			analyzer::PatternMatcherResult elem( 
 				pattern.name.c_str(), itemValue,
-				result.match.ordpos, result.match.ordpos + result.match.ordlen,
-				result.match.start.seg, result.match.start.pos,
-				result.match.end.seg, result.match.end.pos, itemar);
+				result.ordpos, result.ordpos + result.ordlen,
+				result.start.seg, result.start.pos,
+				result.end.seg, result.end.pos, itemar);
 			res.push_back( elem);
 		}
 	}

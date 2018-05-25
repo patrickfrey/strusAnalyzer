@@ -239,7 +239,7 @@ static inline char* printValue( char* ri, const char* re, const char* value)
 	return ri < re ? ri : NULL;
 }
 
-DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultFormat* fmt, std::size_t nofItems, const analyzer::PatternMatcherResultItem* items)
+DLL_PUBLIC const char* PatternResultFormatContext::map( const PatternResultFormat* fmt, const analyzer::PatternMatcherResultItem* items, std::size_t nofItems)
 {
 	if (!m_impl) return NULL;
 
