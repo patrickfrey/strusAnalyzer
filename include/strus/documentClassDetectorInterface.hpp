@@ -24,6 +24,17 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentClassDetectorInterface(){}
 
+	/// \brief Define a detector for a document scheme
+	/// \param[in] scheme document scheme assigned
+	/// \param[in] mimeType mime type where this scheme applies
+	/// \param[in] select_expressions select expressions that must all match for this scheme
+	/// \param[in] reject_expressions select expressions of which no one must match for this scheme
+	virtual void defineDocumentSchemeDetector(
+			const std::string& scheme,
+			const std::string& mimeType,
+			const std::vector<std::string>& select_expressions,
+			const std::vector<std::string>& reject_expressions)=0;
+
 	/// \brief Scans the start of a document to detect its classification attributes (mime type, etc.)
 	/// \param[in,out] dclass document class to edit
 	/// \param[in] contentBegin start of content begin chunk

@@ -18,10 +18,12 @@ namespace strus
 class DocumentClassDetectorInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
 
 /// \brief Get the standard content detector
 /// \return the content detector class
-DocumentClassDetectorInterface* createDetector_std( ErrorBufferInterface* errorhnd);
+DocumentClassDetectorInterface* createDetector_std( TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd);
 
 }
 #endif

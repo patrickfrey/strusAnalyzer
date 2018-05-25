@@ -659,7 +659,7 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 {
 	if (!m_patterntermfeeder) throw std::runtime_error( _TXT("error creating default pattern term feeder interface for text processor"));
 	DocumentClassDetectorInterface* dtc;
-	if (0==(dtc = createDetector_std( errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
+	if (0==(dtc = createDetector_std( this, errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
 
 	SegmenterInterface* segref = strus::createSegmenter_textwolf( m_errorhnd);

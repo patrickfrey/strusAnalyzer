@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -26,7 +26,7 @@ DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( ErrorBuffe
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new StandardDocumentClassDetector( errorhnd);
+		return new StandardDocumentClassDetector( textproc, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query standard document detector: %s"), *errorhnd, 0);
 }

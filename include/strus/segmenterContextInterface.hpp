@@ -53,7 +53,6 @@ public:
 	/// \param[out] segment pointer to the start of the segment.
 	/// \param[out] segmentsize size of segment in bytes
 	/// \return true, if a valid segment could be returned, false in case of no segments left or more required to be fed
-	/// \remark throws on error
 	/// \remark the segments must be delivered in ascending order of positions. Segments with same position can be returned in any order
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)=0;
 };

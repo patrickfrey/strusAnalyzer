@@ -9,6 +9,7 @@
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/error.hpp"
+#include "strus/lib/textproc.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -178,6 +179,8 @@ int main( int argc, const char* argv[])
 		std::string outfile( argv[3]);
 		std::string expfile( argv[4]);
 
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
+		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
 		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
@@ -192,7 +195,7 @@ int main( int argc, const char* argv[])
 		std::string inpsrc;
 		ec = strus::readFile( inpfile, inpsrc);
 		if (ec) throw std::runtime_error( std::string("error reading markup file ") + inpfile + ": " + ::strerror(ec));
-		strus::local_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( g_errorhnd));
+		strus::local_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( textproc.get(), g_errorhnd));
 		if (!detector.get()) throw std::runtime_error("failed to create document class detector");
 		strus::analyzer::DocumentClass dclass;
 		if (!detector->detect( dclass, inpsrc.c_str(), inpsrc.size(), true)) throw std::runtime_error("failed to detect document class of input source");
