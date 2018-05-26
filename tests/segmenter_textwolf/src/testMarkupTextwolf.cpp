@@ -15,6 +15,7 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/segmenterMarkupContextInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/base/fileio.hpp"
