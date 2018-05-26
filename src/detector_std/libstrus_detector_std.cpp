@@ -28,6 +28,6 @@ DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( TextProces
 		}
 		return new StandardDocumentClassDetector( textproc, errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query standard document detector: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create standard document detector: %s"), *errorhnd, 0);
 }
 

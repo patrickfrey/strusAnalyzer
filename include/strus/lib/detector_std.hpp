@@ -21,7 +21,7 @@ class ErrorBufferInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
-/// \brief Get the standard content detector
+/// \brief Get the standard content detector (with ownership)
 /// \return the content detector class
 DocumentClassDetectorInterface* createDetector_std( TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd);
 
