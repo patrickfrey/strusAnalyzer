@@ -8,6 +8,7 @@
 #ifndef _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #define _STRUS_SEGMENTER_TEXTWOLF_HPP_INCLUDED
 #include "strus/segmenterInterface.hpp"
+#include "strus/contentIteratorInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/functionView.hpp"
@@ -58,6 +59,13 @@ public:
 	}
 
 	virtual SegmenterInstanceInterface* createInstance( const analyzer::SegmenterOptions& opts) const;
+
+	virtual ContentIteratorInterface* createContentIterator(
+			const char* content,
+			std::size_t contentsize,
+			const analyzer::DocumentClass& dclass,
+			const analyzer::SegmenterOptions &opts=analyzer::SegmenterOptions()) const;
+
 	virtual const char* getDescription() const;
 
 private:

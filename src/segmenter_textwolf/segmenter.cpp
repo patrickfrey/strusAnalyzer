@@ -7,6 +7,7 @@
  */
 #include "segmenter.hpp"
 #include "segmenterContext.hpp"
+#include "contentIterator.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/base/string_conv.hpp"
 #include "textwolf/charset.hpp"
@@ -225,6 +226,95 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 		return new SegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+}
+
+ContentIteratorInterface* Segmenter::createContentIterator(
+		const char* content,
+		std::size_t contentsize,
+		const analyzer::DocumentClass& dclass,
+		const analyzer::SegmenterOptions &opts) const
+{
+	try
+	{
+		typedef textwolf::charset::UTF8 UTF8;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
+		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
+		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
+		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
+		typedef textwolf::charset::IsoLatin IsoLatin;
+		unsigned char codepage = 1;
+
+		if (!opts.items().empty())
+		{
+			throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
+		}
+		if (dclass.encoding().empty())
+		{
+			return new ContentIterator<UTF8>( content, contentsize, UTF8(), m_errorhnd);
+		}
+		else
+		{
+			if (strus::caseInsensitiveStartsWith( dclass.encoding(), "IsoLatin")
+			||  strus::caseInsensitiveStartsWith( dclass.encoding(), "ISO-8859"))
+			{
+				char const* cc = dclass.encoding().c_str() + 8;
+				if (*cc == '-')
+				{
+					++cc;
+					if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
+					{
+						codepage = *cc - '0';
+					}
+					else
+					{
+						throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), dclass.encoding().c_str());
+					}
+				}
+				return new ContentIterator<IsoLatin>( content, contentsize, IsoLatin(codepage), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
+			{
+				return new ContentIterator<UTF8>( content, contentsize, UTF8(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
+			{
+				return new ContentIterator<UTF16BE>( content, contentsize, UTF16BE(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
+			{
+				return new ContentIterator<UTF16LE>( content, contentsize, UTF16LE(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
+			{
+				return new ContentIterator<UCS2BE>( content, contentsize, UCS2BE(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
+			{
+				return new ContentIterator<UCS2LE>( content, contentsize, UCS2LE(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
+			{
+				return new ContentIterator<UCS4BE>( content, contentsize, UCS4BE(), m_errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
+			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
+			{
+				return new ContentIterator<UCS4LE>( content, contentsize, UCS4LE(), m_errorhnd);
+			}
+			else
+			{
+				throw strus::runtime_error( "%s",  _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
+			}
+		}
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter creating content iterator: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 const char* Segmenter::getDescription() const

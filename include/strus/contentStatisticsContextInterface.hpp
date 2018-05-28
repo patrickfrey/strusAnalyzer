@@ -28,7 +28,7 @@ public:
 	/// \brief Put content to collect statistics
 	/// \param[in] docid document identifier as appearing in the result
 	/// \param[in] content document content
-	/// \param[in] doctype document type if defined, otherwise guessed
+	/// \param[in] doctype document class (schema ignored) if defined, otherwise guessed
 	virtual void putContent(
 			const std::string& docid,
 			const std::string& content,

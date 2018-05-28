@@ -62,6 +62,13 @@ public:
 	}
 
 	virtual SegmenterInstanceInterface* createInstance( const analyzer::SegmenterOptions& opts) const;
+
+	virtual ContentIteratorInterface* createContentIterator(
+			const char* content,
+			std::size_t contentsize,
+			const analyzer::DocumentClass& dclass,
+			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const;
+
 	virtual const char* getDescription() const;
 
 private:

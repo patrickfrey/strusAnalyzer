@@ -11,6 +11,9 @@
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/functionView.hpp"
+#include "strus/contentIteratorInterface.hpp"
+#include "strus/reference.hpp"
+#include "private/textEncoder.hpp"
 #include <string>
 #include <set>
 
@@ -45,6 +48,39 @@ private:
 };
 
 
+class ContentIterator
+	:public strus::ContentIteratorInterface
+{
+public:
+	ContentIterator( 
+			const char* content_,
+			std::size_t contentsize_,
+			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+			strus::ErrorBufferInterface* errorhnd_);
+
+	virtual ~ContentIterator(){}
+
+	virtual bool getNext(
+			const char*& expression, std::size_t& expressionsize,
+			const char*& segment, std::size_t& segmentsize)
+	{
+		if (m_eof) return false;
+		expression = "";
+		expressionsize = 0;
+		segment = m_content.c_str();
+		segmentsize = m_content.size();
+		m_eof = true;
+		return true;
+	}
+
+private:
+	strus::ErrorBufferInterface* m_errorhnd;
+	std::string m_content;
+	bool m_eof;
+	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+};
+
+
 class Segmenter
 	:public SegmenterInterface
 {
@@ -59,6 +95,13 @@ public:
 	}
 
 	virtual SegmenterInstanceInterface* createInstance( const analyzer::SegmenterOptions& opts) const;
+
+	virtual strus::ContentIteratorInterface* createContentIterator(
+			const char* content,
+			std::size_t contentsize,
+			const strus::analyzer::DocumentClass& dclass,
+			const strus::analyzer::SegmenterOptions& opts) const;
+
 	virtual const char* getDescription() const;
 
 private:

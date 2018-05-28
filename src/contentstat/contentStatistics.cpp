@@ -57,4 +57,32 @@ ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibra
 	:m_errorhnd(errorhnd_),m_textproc(textproc_),m_library(library_),m_data()
 {}
 
+ContentStatisticsContext::~ContentStatisticsContext()
+{}
+
+void ContentStatisticsContext::putContent(
+		const std::string& docid,
+		const std::string& content,
+		const analyzer::DocumentClass& doctype)
+{
+	try
+	{
+	}
+	CATCH_ERROR_MAP( _TXT("error collecting content statistics: %s"), *m_errorhnd);
+}
+
+
+std::vector<analyzer::ContentStatisticsItem> ContentStatisticsContext::statistics()
+{
+	try
+	{
+		return m_data.getGlobalStatistics();
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error collecting content statistics: %s"), *m_errorhnd, std::vector<analyzer::ContentStatisticsItem>());
+}
+
+int ContentStatisticsContext::nofDocuments() const
+{
+	return m_data.nofDocuments();
+}
 

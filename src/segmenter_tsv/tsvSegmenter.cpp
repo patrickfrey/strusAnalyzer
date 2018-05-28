@@ -115,15 +115,63 @@ bool TSVParserDefinition::moreOftheSame( )
 // TSVSegmenterContext
 
 TSVSegmenterContext::TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
-	: m_errbuf( errbuf ), m_errorReporting( errorReporting), m_buf( ),
-	m_eof( false ), m_is( m_buf ), m_currentLine( ),
-	m_parserDefinition( parserDefinition ), m_data( ), m_pos( -3 ), m_linepos( 0 ),
-	m_parseState( TSV_PARSE_STATE_HEADER ), m_headers( ), m_encoder(encoder_)
-{
-}
+	: m_errorhnd( errbuf ), m_errorReporting( errorReporting), m_parser( ),
+	m_parserDefinition( parserDefinition ), m_pos( -3 ),
+	m_encoder(encoder_), m_eof(false), m_buf()
+{}
 
 TSVSegmenterContext::~TSVSegmenterContext( )
 {
+}
+
+std::vector<std::string> TSVParser::splitLine( const std::string& line)
+{
+	std::vector<std::string> rt;
+	char const* si = line.c_str();
+	char const* sn = std::strchr( si, '\t');
+	if (!*si) return std::vector<std::string>();
+
+	for (; sn; sn = std::strchr( si=sn+1, '\t'))
+	{
+		rt.push_back( std::string( si, sn-si));
+	}
+	rt.push_back( si);
+	return rt;
+}
+
+void TSVParser::parseHeader()
+{
+	std::string line;
+	std::getline( m_is, line);
+	if(m_is.eof())
+	{
+		m_eof = true;
+		return;
+	}
+	m_header = splitLine( line);
+}
+
+bool TSVParser::nextLine()
+{
+	if (m_eof) return false;
+
+	std::string line;
+	std::getline( m_is, line);
+	if(m_is.eof())
+	{
+		m_eof = true;
+		return false;
+	}
+	m_data = splitLine( line);
+	m_data.resize( m_header.size());
+	++m_lineno;
+	return true;
+}
+
+const char* TSVParser::linenostr()
+{
+	snprintf( m_linenostr, sizeof(m_linenostr)-1, "%d", lineno());
+	return m_linenostr;
 }
 
 void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bool eof )
@@ -135,58 +183,30 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 #endif
 	
 	if( m_eof ) {
-		m_errbuf->report( ErrorCodeOperationOrder, _TXT("fed chunk after declared end of input" ));
+		m_errorhnd->report( ErrorCodeOperationOrder, _TXT("fed chunk after declared end of input" ));
 		return;
 	}
-	if (m_encoder.get())
+	m_buf.append( chunk, chunksize );
+	if (eof)
 	{
-		m_buf.append( m_encoder->convert( chunk, chunksize, eof ));
-	}
-	else
-	{
-		m_buf.append( chunk, chunksize );
-	}
-	m_eof |= eof;
-	
-	m_is.str( m_buf );
-	}
-	CATCH_ERROR_ARG1_MAP( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
-}
-
-static std::vector<std::string> splitLine( const std::string &s, const std::string &delimiter, bool keepEmpty )
-{
-	std::vector<std::string> result; 
-
-	if( delimiter.empty( ) ) { 
-		result.push_back( s );
-		return result;
-	}
-
-	std::string::const_iterator b = s.begin( ), e;
-	while( true ) {
-		e = std::search( b, s.end( ), delimiter.begin( ), delimiter.end( ) );
-		std::string tmp( b, e );
-		if( keepEmpty || !tmp.empty( ) ) {
-			result.push_back( tmp );
+		if (m_encoder.get())
+		{
+			m_buf = m_encoder->convert( m_buf.c_str(), m_buf.size(), true );
 		}
-		if( e == s.end( ) ) {
-			break;
-		}
-		b = e + delimiter.size( );
+		m_eof = true;
+		m_parser.init( m_buf );
 	}
-
-	return result;
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error in put input of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
-bool TSVSegmenterContext::parseHeader( )
-{
-	m_headers = splitLine( m_currentLine, "\t", true );
-	return true;
-}
 
 bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, const char *&segment, std::size_t &segmentsize )
 {
 	// start of line, emit start of section
+	segment = 0;
+	segmentsize = 0;
+
 	if( m_pos == -2 ) {
 		id = m_parserDefinition.getStartId( );
 		if( id != 0 ) {
@@ -205,10 +225,8 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 			if( !m_parserDefinition.moreOftheSame( ) ) {
 				m_pos++;
 			}
-			pos = m_linepos * m_headers.size( );
-			snprintf( m_lineposStr, 11, "%d", m_linepos );
-			segment = m_lineposStr;
-			segmentsize = strlen( m_lineposStr );
+			segment = m_parser.linenostr();
+			segmentsize = strlen( segment );
 			return true;
 		}
 
@@ -217,33 +235,30 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		}
 	}
 
-	if( m_pos == 0 ) {
-		m_data = splitLine( m_currentLine, "\t", true );
-	}
-		
-	do {
-		std::string headerName = m_headers[m_pos];
+	while (m_pos < m_parser.cols()) {
+		std::string headerName = m_parser.header( m_pos);
 #ifdef STRUS_LOWLEVEL_DEBUG	
-		std::cout << "DEBUG: field " << m_linepos << ":" << m_pos << "'" << headerName << "': '" << m_data[m_pos] << "'" << std::endl;
+		std::cout << "DEBUG: field " << m_linepos << ":" << m_pos << "'" << headerName << "': '" << m_parser.col( m_pos) << "'" << std::endl;
 #endif
-		
 		id = m_parserDefinition.getNextId( headerName );
-		
 		if( id == 0 ) {
 			m_pos++;
 		}
+		else
+		{
+			break;
+		}
 		
-	} while( id == 0 && (size_t)m_pos < m_headers.size( ) );
-
+	}
 	if( id != 0 ) {
 		// TODO: think whether we should not return the character position into the TSV here
-		pos = m_linepos * m_headers.size( ) + m_pos;
-		segment = m_data[m_pos].c_str( );
-		segmentsize = m_data[m_pos].size( );
+		pos = m_parser.lineno() * m_parser.cols() + m_pos;
+		segment = m_parser.col( m_pos).c_str( );
+		segmentsize = m_parser.col( m_pos).size( );
 		if( !m_parserDefinition.moreOftheSame( ) ) {
 			m_pos++;
 		}
-		if( (size_t)m_pos >= m_headers.size( ) ) {
+		if(m_pos >= m_parser.cols()) {
 			m_pos = -3;
 			id = m_parserDefinition.getEndId( );
 			if( id != 0 ) {
@@ -252,16 +267,14 @@ bool TSVSegmenterContext::parseData( int &id, strus::SegmenterPosition &pos, con
 		}
 		return true;
 	}
-
 	m_pos++;
-	if( (size_t)m_pos >= m_headers.size( ) ) {
+	if( m_pos >= m_parser.cols() ) {
 		m_pos = -3;
 		id = m_parserDefinition.getEndId( );
 		if( id != 0 ) {
 			return true;
 		}
 	}
-	
 	return false;
 }
 
@@ -269,68 +282,27 @@ bool TSVSegmenterContext::getNext( int &id, strus::SegmenterPosition &pos, const
 {
 	try
 	{
-NEXTLINE:
+	for (;;)
+	{
+		if (m_parser.eof()) return false;
 	
-	bool hasNext = false;
-	switch( m_parseState ) {
-		case TSV_PARSE_STATE_HEADER:
-			std::getline( m_is, m_currentLine );
-			if( m_is.eof( ) ) {
-				// we don't have a complete line to work with, so wait for more data
-				return false;
-			}
-			if( !( hasNext = parseHeader( ) ) ) {
-				m_parseState = TSV_PARSE_STATE_EOF;
-				return false;
-			}
-			m_parseState = TSV_PARSE_STATE_DATA;
-			goto NEXTLINE;
-			
-		case TSV_PARSE_STATE_DATA:
-			if( m_pos < -2 ) {
-				std::getline( m_is, m_currentLine );
-				if( m_is.eof( ) ) {
-					if( m_eof ) {
-						m_parseState = TSV_PARSE_STATE_EOF;
-						return false;
-					}
-					// we don't have a complete line to work with, so wait for more data
-#ifdef STRUS_LOWLEVEL_DEBUG	
-					std::cout << "DEBUG: buffer reset, rest: " << m_currentLine << std::endl;
-#endif
-					m_data.clear( );
-					m_buf.clear( );
-					m_buf.append( m_currentLine );
-					m_is.clear( );
-					m_is.str( m_buf );
-					return false;
-				}
-				m_linepos++;
-				m_pos = -2;
-			}
-				
-			if( ( hasNext = parseData( id, pos, segment, segmentsize ) ) ) {
-				return hasNext;
-			} else {
-				goto NEXTLINE;
-			}
-			break;
-
-		case TSV_PARSE_STATE_EOF:
-#ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "DEBUG: end of data" << std::endl;
-#endif
-			return false;
+		if (m_pos < -2)
+		{
+			if (!m_parser.nextLine()) return false;
+			m_pos = -2;
+		}
+		if ( parseData( id, pos, segment, segmentsize ) ) {
+			return true;
+		}
 	}
-	return false;
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, false);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, false);
 }
 
 // TSVSegmenterInstance
 
 TSVSegmenterInstance::TSVSegmenterInstance( strus::ErrorBufferInterface *errbuf, bool errorReporting )
-	: m_errbuf( errbuf ), m_errorReporting( errorReporting ), m_parserDefinition( )
+	: m_errorhnd( errbuf ), m_errorReporting( errorReporting ), m_parserDefinition( )
 {
 }
 
@@ -340,7 +312,7 @@ void TSVSegmenterInstance::defineSelectorExpression( int id, const std::string &
 	{
 	m_parserDefinition.defineSelectorExpression( id, expression );
 	}
-	CATCH_ERROR_ARG1_MAP( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
+	CATCH_ERROR_ARG1_MAP( _TXT("error defining selector expression of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 		
 void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::string &expression )
@@ -349,7 +321,7 @@ void TSVSegmenterInstance::defineSubSection( int startId, int endId, const std::
 	{
 		m_parserDefinition.defineSubSection( startId, endId, expression );
 	}
-	CATCH_ERROR_ARG1_MAP( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf);
+	CATCH_ERROR_ARG1_MAP( _TXT("error definint subsection of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
 strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const strus::analyzer::DocumentClass &dclass ) const
@@ -361,35 +333,35 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	{
 		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 	}
-	return new TSVSegmenterContext( m_parserDefinition, encoder, m_errbuf, m_errorReporting );
+	return new TSVSegmenterContext( m_parserDefinition, encoder, m_errorhnd, m_errorReporting );
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContext( const strus::analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
 	{
-	m_errbuf->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
+	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 strus::analyzer::FunctionView TSVSegmenterInstance::view() const
 {
 	try
 	{
-		return analyzer::FunctionView( SEGMENTER_NAME)
+		return strus::analyzer::FunctionView( SEGMENTER_NAME)
 		;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errbuf, strus::analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, strus::analyzer::FunctionView());
 }
 
 // TSVSegmenter
 
 TSVSegmenter::TSVSegmenter( strus::ErrorBufferInterface *errbuf, bool errorReporting )
-	: m_errbuf( errbuf ), m_errorReporting( errorReporting )
+	: m_errorhnd( errbuf ), m_errorReporting( errorReporting )
 {
 }
 
@@ -403,14 +375,88 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 	try
 	{
 	if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-	return new TSVSegmenterInstance( m_errbuf, m_errorReporting );
+	return new TSVSegmenterInstance( m_errorhnd, m_errorReporting );
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errbuf, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
+}
+
+strus::ContentIteratorInterface* TSVSegmenter::createContentIterator(
+		const char* content,
+		std::size_t contentsize,
+		const strus::analyzer::DocumentClass& dclass,
+		const strus::analyzer::SegmenterOptions& opts) const
+{
+	try
+	{
+		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
+		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+		{
+			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+		}
+		return new TSVContentIterator( content, contentsize, encoder, m_errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
 const char* TSVSegmenter::getDescription() const
 {
 	return _TXT("Segmenter for TSV (text/tab-separated-values)");
 }
+
+TSVContentIterator::TSVContentIterator( 
+		const char* content_,
+		std::size_t contentsize_,
+		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+		ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_content(),m_parser(),m_pos(-3),m_encoder(encoder_)
+{
+	try
+	{
+		if (m_encoder.get())
+		{
+			m_content = m_encoder->convert( content_, contentsize_, true);
+		}
+		else
+		{
+			m_content = std::string( content_, contentsize_);
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error fetching next element of content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+}
+
+bool TSVContentIterator::getNext(
+		const char*& expression, std::size_t& expressionsize,
+		const char*& segment, std::size_t& segmentsize)
+{
+	try
+	{
+		if (m_parser.eof()) return false;
+
+		if (m_pos >= m_parser.cols())
+		{
+			m_pos = -3;
+		}
+		if (m_pos < 0)
+		{
+			m_pos = 0;
+			expression = "lineno";
+			expressionsize = 6;
+			segment = m_parser.linenostr();
+			segmentsize = std::strlen( segment);
+		}
+		else
+		{
+			expression = m_parser.header( m_pos).c_str();
+			expressionsize = m_parser.header( m_pos).size();
+			segment = m_parser.col( m_pos).c_str();
+			segmentsize = m_parser.col( m_pos).size();
+			++m_pos;
+		}
+		return true;
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error fetching next element of content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, false);
+}
+
 
 

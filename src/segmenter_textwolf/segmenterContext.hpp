@@ -14,6 +14,7 @@
 #include "segmenter.hpp"
 #include "private/xpathAutomaton.hpp"
 #include "private/textEncoder.hpp"
+#include "private/contentIteratorStm.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include <cstdlib>
@@ -30,16 +31,16 @@ class SegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
+	SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_automaton(automaton_)
 		,m_xpathselect(automaton_->createContext())
+		,m_srciter()
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_eof(false)
 		,m_initialized(false)
 		,m_chunkbuf()
 		,m_errorhnd(errorhnd)
-	{
-	}
+	{}
 
 	virtual ~SegmenterContext()
 	{}

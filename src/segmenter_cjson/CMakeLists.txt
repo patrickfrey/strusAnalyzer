@@ -3,9 +3,11 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # --------------------------------------
 # SOURCES AND INCLUDES
 # --------------------------------------
-set(source_files
+set( source_files
+	cjson2textwolf.cpp
 	segmenter.cpp
 	segmenterContext.cpp
+	contentIterator.cpp
 	libstrus_segmenter_cjson.cpp
 )
 

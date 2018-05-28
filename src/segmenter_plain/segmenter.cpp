@@ -82,5 +82,43 @@ const char* Segmenter::getDescription() const
 	return _TXT("Segmenter for plain text (in one segment)");
 }
 
+ContentIterator::ContentIterator( 
+		const char* content_,
+		std::size_t contentsize_,
+		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+		ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_content(),m_eof(false),m_encoder(encoder_)
+{
+	try
+	{
+		if (m_encoder.get())
+		{
+			m_content = m_encoder->convert( content_, contentsize_, true);
+		}
+		else
+		{
+			m_content = std::string( content_, contentsize_);
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
+}
+
+strus::ContentIteratorInterface* Segmenter::createContentIterator(
+		const char* content,
+		std::size_t contentsize,
+		const strus::analyzer::DocumentClass& dclass,
+		const strus::analyzer::SegmenterOptions& opts) const
+{
+	try
+	{
+		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+		{
+			encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
+		}
+		return new ContentIterator( content, contentsize, encoder, m_errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, NULL);
+}
 
 

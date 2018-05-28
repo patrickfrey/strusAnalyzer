@@ -20,6 +20,8 @@ namespace analyzer {
 /// \class SegmenterOptions
 /// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
 /// \note Available options defined as key value pairs depend on the segmenter implementation
+/// \note Options should not be needed and many facets of content analysis and document type detection are not possible with parts of the document content type defined outside of the segmenter. 
+///		They are used as hack to handle some TSV formats with a structure definition that is not part of the document.
 class SegmenterOptions
 {
 public:
