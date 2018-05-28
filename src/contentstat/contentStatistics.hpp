@@ -62,7 +62,7 @@ class ContentStatisticsContext
 {
 public:
 	/// \brief Constructor
-	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_);
+	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_);
 	/// \brief Destructor
 	virtual ~ContentStatisticsContext();
 
@@ -81,6 +81,7 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 	const TextProcessorInterface* m_textproc;
 	const ContentStatisticsLibrary* m_library;
+	const DocumentClassDetectorInterface* m_detector;
 	ContentStatisticsData m_data;
 };
 
