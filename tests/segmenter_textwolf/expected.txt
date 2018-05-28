@@ -1,3 +1,85 @@
+iter /Order@Number = [12345]
+iter /Order@Date = [2016/02/03]
+iter /Order[@Number="12345",@Date="2016/02/03"] = [
+  ]
+iter /Order/Address@Type = [Shipping]
+iter /Order/Address[@Type="Shipping"] = [
+    ]
+iter /Order/Address/Name = [Hugo Largo]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Street = [Heinrichstr. 7]
+iter /Order/Address = [
+    ]
+iter /Order/Address/City = [München]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Zip = [80331]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Country = [Deutschland]
+iter /Order/Address = [
+  ]
+iter /Order = [
+  ]
+iter /Order/Address@Type = [Billing]
+iter /Order/Address[@Type="Billing"] = [
+    ]
+iter /Order/Address/Name = [Konrad Toenz]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Street = [Bahnhofstr. 7]
+iter /Order/Address = [
+    ]
+iter /Order/Address/City = [Zürich]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Zip = [8001]
+iter /Order/Address = [
+    ]
+iter /Order/Address/Country = [Schweiz]
+iter /Order/Address = [
+  ]
+iter /Order = [
+  ]
+iter /Order/DeliveryNotes = [Bitte das Packet im Treppenhaus abstellen.]
+iter /Order = [
+  ]
+iter /Order/Items = [
+    ]
+iter /Order/Items/Item@Number = [XY-123.123]
+iter /Order/Items/Item[@Number="XY-123.123"] = [
+      ]
+iter /Order/Items/Item/ProductName = [Staubsauger]
+iter /Order/Items/Item = [
+      ]
+iter /Order/Items/Item/Quantity = [1]
+iter /Order/Items/Item = [
+      ]
+iter /Order/Items/Item/Price = [312.70]
+iter /Order/Items/Item = [
+      ]
+iter /Order/Items/Item/Comment = [Gebraucht]
+iter /Order/Items/Item = [
+    ]
+iter /Order/Items = [
+    ]
+iter /Order/Items/Item@PartNumber = [XY-456.456]
+iter /Order/Items/Item[@PartNumber="XY-456.456"] = [
+      ]
+iter /Order/Items/Item/ProductName = [Verlängerungskabel]
+iter /Order/Items/Item = [
+      ]
+iter /Order/Items/Item/Quantity = [2]
+iter /Order/Items/Item = [
+      ]
+iter /Order/Items/Item/Price = [9.70]
+iter /Order/Items/Item = [
+    ]
+iter /Order/Items = [
+  ]
+iter /Order = [
+]
 [3] Shipping
 [2] Hugo Largo
 [1] München

@@ -76,24 +76,31 @@ bool ContentIterator::getNext(
 	{
 		for (;;)
 		{
-			if (m_elemitr == m_ar.end()) return false;
-	
+			if (m_eof || m_elemitr == m_ar.end()) return false;
+
 			if (m_elemitr->type == textwolf::XMLScannerBase::Exit)
 			{
+				++m_elemitr;
 				m_eof = true;
 				return false;
 			}
 			else if (m_elemitr->type == textwolf::XMLScannerBase::ErrorOccurred)
 			{
-				throw strus::runtime_error( _TXT("error in document: %s"), m_elemitr->value);
+				const char* val = m_elemitr->value;
+				++m_elemitr;
+				throw strus::runtime_error( _TXT("error in document: %s"), val);
 			}
 			else if (m_stm.textwolfItem(
 					m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0,
 					expression, expressionsize, segment, segmentsize))
 			{
+				++m_elemitr;
 				return true;
 			}
-			++m_elemitr;
+			else
+			{
+				++m_elemitr;
+			}
 		}
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, false);
