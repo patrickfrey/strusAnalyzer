@@ -68,19 +68,19 @@ public:
 private:
 	typedef std::map<std::string,int> Map;
 
-	bool addMapItem( Map& map, std::vector<Item>& itemar, const std::string& key, const Item& item)
+	static bool addMapItem( Map& map, std::vector<Item>& itemar, const std::string& key, const Item& item)
 	{
-		Map::const_iterator di = m_docselectmap.find( key);
-		if (di == m_docselectmap.end())
+		Map::const_iterator di = map.find( key);
+		if (di == map.end())
 		{
-			m_docselectmap[ key] = m_itemar.size();
-			m_itemar.push_back( item);
+			map[ key] = itemar.size();
+			itemar.push_back( item);
 			return true;
 		}
 		else
 		{
-			m_itemar[ di->second].incr_df( item.df());
-			m_itemar[ di->second].incr_tf( 1);
+			itemar[ di->second].incr_df( item.df());
+			itemar[ di->second].incr_tf( 1);
 			return false;
 		}
 	}
