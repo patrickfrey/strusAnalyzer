@@ -12,6 +12,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
+#include "strus/contentIteratorInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/local_ptr.hpp"
@@ -22,7 +23,7 @@
 #include <iostream>
 #include <sstream>
 
-#undef STRUS_LOWLEVEL_DEBUG
+#define STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 
@@ -151,12 +152,36 @@ int main( int argc, const char* argv[])
 
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_tsv( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
-		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
-		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
 		strus::analyzer::DocumentClass dclass( segmenter->mimeType(), "UTF-8");
 
+		std::string inputsrc;
+		int ec = strus::readFile( inputfile, inputsrc);
+		if (ec) throw std::runtime_error( std::string("error reading input file ") + inputfile + ": " + ::strerror(ec));
+#ifdef STRUS_LOWLEVEL_DEBUG
+		std::cout << "INPUT" << std::endl << inputsrc << std::endl;
+#endif
+		// [1] Test content iterator:
+		strus::local_ptr<strus::ContentIteratorInterface> contentiter(
+				segmenter->createContentIterator(
+					inputsrc.c_str(), inputsrc.size(), dclass, strus::analyzer::SegmenterOptions()));
+		if (!contentiter.get()) throw std::runtime_error("failed to create content iterator");
+		std::ostringstream out;
+		const char* exprstr; std::size_t exprsize;
+		const char* segstr; std::size_t segsize;
+		while (contentiter->getNext( exprstr, exprsize, segstr, segsize))
+		{
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cout << "ITER " << std::string(exprstr,exprsize) << " ["
+					<< std::string(segstr,segsize) << "]" << std::endl;
+#endif
+			out << "iter " << std::string(exprstr,exprsize) << " = [" << std::string(segstr,segsize) << "]" << std::endl;
+		}
+		// [2] Test segmenter:
+		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());
+		if (!segmenterInstance.get()) throw std::runtime_error("failed to create segmenter instance");
+
 		std::string rulesrc;
-		unsigned int ec = strus::readFile( rulefile, rulesrc);
+		ec = strus::readFile( rulefile, rulesrc);
 		if (ec) throw std::runtime_error( std::string("error reading rule file ") + rulefile + ": " + ::strerror(ec));
 		std::vector<RuleDescription> rulear = parseRuleDescriptions( rulesrc);
 		std::vector<RuleDescription>::const_iterator ri = rulear.begin(), re = rulear.end();
@@ -180,12 +205,6 @@ int main( int argc, const char* argv[])
 		strus::local_ptr<strus::SegmenterContextInterface> segmenterContext( segmenterInstance->createContext( dclass));
 		if (!segmenterContext.get()) throw std::runtime_error("failed to create segmenter context");
 
-		std::string inputsrc;
-		ec = strus::readFile( inputfile, inputsrc);
-		if (ec) throw std::runtime_error( std::string("error reading input file ") + inputfile + ": " + ::strerror(ec));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "INPUT" << std::endl << inputsrc << std::endl;
-#endif
 		std::size_t chunksize = 100;
 		std::size_t chunkpos = 0;
 		for (; chunkpos + chunksize < inputsrc.size(); chunkpos += chunksize)
@@ -204,7 +223,6 @@ int main( int argc, const char* argv[])
 		strus::SegmenterPosition pos;
 		const char* segment;
 		std::size_t segmentsize;
-		std::ostringstream out;
 		while (segmenterContext->getNext( id, pos, segment, segmentsize))
 		{
 			out << "[" << id << "] " << std::string(segment,segmentsize) << std::endl;

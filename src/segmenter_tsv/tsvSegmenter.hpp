@@ -71,7 +71,7 @@ public:
 
 	void init( const std::string& content)	{m_is.str(content); m_eof=false; m_lineno=0; parseHeader();}
 	bool eof() const			{return m_eof;}
-	int cols() const			{return m_data.size();}
+	int cols() const			{return m_header.size();}
 	const std::string& col( int id)		{return m_data[id];}
 	const std::string& header( int id)	{return m_header[id];}
 	bool nextLine();

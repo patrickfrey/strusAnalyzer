@@ -421,6 +421,7 @@ TSVContentIterator::TSVContentIterator(
 		{
 			m_content = std::string( content_, contentsize_);
 		}
+		m_parser.init( m_content);
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error fetching next element of content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
@@ -439,6 +440,7 @@ bool TSVContentIterator::getNext(
 		}
 		if (m_pos < 0)
 		{
+			if (!m_parser.nextLine()) return false;
 			m_pos = 0;
 			expression = "lineno";
 			expressionsize = 6;
