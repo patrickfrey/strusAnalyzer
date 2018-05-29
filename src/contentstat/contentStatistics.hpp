@@ -40,6 +40,7 @@ public:
 	virtual void addLibraryElement(
 			const std::string& type,
 			const std::string& regex,
+			int priority,
 			int minLength,
 			int maxLength,
 			TokenizerFunctionInstanceInterface* tokenizer,

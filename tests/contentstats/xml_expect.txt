@@ -1,10 +1,7 @@
-item select='/doc', type='', example=[
-] df=4 tf=12
-item select='/doc/header', type='', example=[
-] df=4 tf=16
-item select='/doc/header/date', type='', example=[2001-07-11] df=4 tf=4
-item select='/doc/header/id', type='', example=[320498732] df=4 tf=4
-item select='/doc/header/title', type='', example=[This is an example title] df=4 tf=4
-item select='/doc/text', type='', example=[
+item select='/doc/header/date', type='date', example=[2001-07-11] df=4 tf=4
+item select='/doc/header/id', type='id', example=[78917312344] df=4 tf=4
+item select='/doc/header/title', type='text', example=[This is an example title] df=4 tf=4
+item select='/doc/header/title', type='title', example=[This is an example title] df=4 tf=4
+item select='/doc/text', type='text', example=[
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 ] df=4 tf=4

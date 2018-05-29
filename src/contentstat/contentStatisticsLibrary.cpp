@@ -19,6 +19,7 @@ using namespace strus;
 void ContentStatisticsLibrary::addElement(
 		const std::string& type,
 		const std::string& regexstr,
+		int priority,
 		int minLength,
 		int maxLength,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -28,6 +29,8 @@ void ContentStatisticsLibrary::addElement(
 	std::vector<NormalizerFunctionReference> na;
 	try
 	{
+		if (priority < 0) throw std::runtime_error(_TXT("priority must be non-negative"));
+
 		RegexSearchReference regex( new RegexSearch( regexstr, 0, m_errorhnd));
 		tk.reset( tokenizer);
 
@@ -37,7 +40,7 @@ void ContentStatisticsLibrary::addElement(
 			NormalizerFunctionReference nf( *ni);
 			na.push_back( nf);
 		}
-		Element element( type, regexstr, regex, minLength, maxLength, tk, na);
+		Element element( type, regexstr, regex, priority, minLength, maxLength, tk, na);
 		m_ar.push_back( element);
 		return;/*done*/
 	}
@@ -47,7 +50,6 @@ void ContentStatisticsLibrary::addElement(
 	}
 	catch (const std::runtime_error& err)
 	{
-		delete tokenizer;
 		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("error building content statistics library: %s"), err.what());
 	}
 	// Cleanup garbagge:
@@ -66,16 +68,18 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 		std::vector<std::string> rt;
 		if (m_errorhnd->hasError()) return std::vector<std::string>();
 
+		int priority = -1;
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)
 		{
-			if (ai->minLength >= 0 && (int)inputsize < ai->minLength) continue;
-			if (ai->maxLength >= 0 && (int)inputsize > ai->maxLength) continue;
-
 			int len = ai->regex->match_start( input, input + inputsize);
 			if (len == (int)inputsize)
 			{
 				std::vector<analyzer::Token> tokens = ai->tokenizer->tokenize( input, inputsize);
+				if (ai->minLength >= 0 && (int)tokens.size() < ai->minLength) continue;
+				if (ai->maxLength >= 0 && (int)tokens.size() > ai->maxLength) continue;
+				if (ai->priority < priority) continue;
+
 				std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 				for (; ti != te; ++ti)
 				{
@@ -88,14 +92,23 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 						if (m_errorhnd->hasError()) break;
 					}
 				}
+				if (m_errorhnd->hasError())
+				{
+					(void)m_errorhnd->fetchError();
+				}
+				else
+				{
+					if (ai->priority > priority)
+					{
+						rt.clear();
+						priority = ai->priority;
+					}
+					rt.push_back( ai->type);
+				}
 			}
 			if (m_errorhnd->hasError())
 			{
 				(void)m_errorhnd->fetchError();
-			}
-			else
-			{
-				rt.push_back( ai->type);
 			}
 		}
 		return rt;

@@ -61,18 +61,25 @@ struct LibraryElement
 {
 	const char* type;
 	const char* regex;
+	int priority;
 	int minLength;
 	int maxLength;
 	TokenizerDef tokenizer;
 	NormalizerDef normalizers[ 8];
 };
-struct LibraryElement g_testLibrary[32] = {
-	{NULL,NULL,-1,-1,{NULL},{{NULL}}}
+static const LibraryElement g_testLibrary[32] =
+{
+	{"title",".*",1,1,16,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"text",".*",1,1,-1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"id","[0-9]+",2,1,1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"date","[0-9\\-\\/\\.]*",2,1,1,{"regex",{"[0-9]{2,4}[\\-\\/]{0,1}[0-9]{1,2}[\\-\\/]{0,1}[0-9]{1,2}",NULL}},{{"date2int",{NULL}},{NULL}}},
+	{NULL,NULL,-1,-1,-1,{NULL,{NULL}},{{NULL,{NULL}}}}
 };
+
 static void defineTestLibrary( strus::ContentStatisticsInterface* contentstats, strus::TextProcessorInterface* textproc)
 {
 	LibraryElement const* li = g_testLibrary;
-	while (li->type)
+	for (; li->type; ++li)
 	{
 		strus::TokenizerFunctionInstanceInterface* tokenizerinst;
 		std::vector<strus::NormalizerFunctionInstanceInterface*> normalizers;
@@ -104,7 +111,7 @@ static void defineTestLibrary( strus::ContentStatisticsInterface* contentstats, 
 			if (!normalizerinst) throw std::runtime_error("failed to create normalizer instance");
 			normalizers.push_back( normalizerinst);
 		}
-		contentstats->addLibraryElement( li->type, li->regex, li->minLength, li->maxLength, tokenizerinst, normalizers);
+		contentstats->addLibraryElement( li->type, li->regex, li->priority, li->minLength, li->maxLength, tokenizerinst, normalizers);
 	}
 }
 

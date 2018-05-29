@@ -31,12 +31,13 @@ ContentStatistics::~ContentStatistics(){}
 void ContentStatistics::addLibraryElement(
 	const std::string& type,
 	const std::string& regex,
+	int priority,
 	int minLength,
 	int maxLength,
 	TokenizerFunctionInstanceInterface* tokenizer,
 	const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
-	m_library.addElement( type, regex, minLength, maxLength, tokenizer, normalizers);
+	m_library.addElement( type, regex, priority, minLength, maxLength, tokenizer, normalizers);
 }
 
 ContentStatisticsContextInterface* ContentStatistics::createContext() const
@@ -63,6 +64,13 @@ ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibra
 
 ContentStatisticsContext::~ContentStatisticsContext()
 {}
+
+static bool isEmptyContent( const std::string& value)
+{
+	char const* vi = value.c_str();
+	for (; *vi && (unsigned char)*vi < 32; ++vi){}
+	return !*vi;
+}
 
 void ContentStatisticsContext::putContent(
 		const std::string& docid,
@@ -101,7 +109,10 @@ void ContentStatisticsContext::putContent(
 			std::vector<std::string> types = m_library->matches( valuestr, valuesize);
 			if (types.empty())
 			{
-				m_data.addItem( docid, std::string( selectstr, selectsize), "", value);
+				if (!isEmptyContent( value))
+				{
+					m_data.addItem( docid, std::string( selectstr, selectsize), "", value);
+				}
 			}
 			else
 			{

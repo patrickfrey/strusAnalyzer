@@ -42,6 +42,7 @@ public:
 	/// \brief Declare an element of the library used to categorize features
 	/// \param[in] type type name of the feature
 	/// \param[in] regex regular expression that has to match on the whole segment in order to consider it as candidate
+	/// \param[in] priority priority given to matches, for multiple matches only the ones with highest priority are selected
 	/// \param[in] minLength minimum length of the chunk or -1 if no restriction
 	/// \param[in] maxLength maximum length of the chunk or -1 if no restriction
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
@@ -49,11 +50,11 @@ public:
 	void addElement(
 			const std::string& type,
 			const std::string& regex,
+			int priority,
 			int minLength,
 			int maxLength,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
-
 
 	/// \brief Get the list of matches for an input
 	/// \param[in] input input chunk to match
@@ -74,6 +75,7 @@ private:
 		std::string type;
 		std::string regexstr;
 		RegexSearchReference regex;
+		int priority;
 		int minLength;
 		int maxLength;
 		TokenizerFunctionReference tokenizer;
@@ -81,12 +83,12 @@ private:
 
 		Element( const std::string& type_,
 				const std::string& regexstr_, const RegexSearchReference& regex_,
-				int minLength_, int maxLength_,
+				int priority_, int minLength_, int maxLength_,
 				const TokenizerFunctionReference& tokenizer_,
 				const std::vector<NormalizerFunctionReference>& normalizers_)
-			:type(type_),regexstr(regexstr_),regex(regex_),minLength(minLength_),maxLength(maxLength_),tokenizer(tokenizer_),normalizers(normalizers_){}
+			:type(type_),regexstr(regexstr_),regex(regex_),priority(priority_),minLength(minLength_),maxLength(maxLength_),tokenizer(tokenizer_),normalizers(normalizers_){}
 		Element( const Element& o)
-			:type(o.type),regexstr(o.regexstr),regex(o.regex),minLength(o.minLength),maxLength(o.maxLength),tokenizer(o.tokenizer),normalizers(o.normalizers){}
+			:type(o.type),regexstr(o.regexstr),regex(o.regex),priority(o.priority),minLength(o.minLength),maxLength(o.maxLength),tokenizer(o.tokenizer),normalizers(o.normalizers){}
 	};
 
 private:
