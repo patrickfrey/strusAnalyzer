@@ -115,6 +115,20 @@ static void defineTestLibrary( strus::ContentStatisticsInterface* contentstats, 
 	}
 }
 
+static bool compareContent( const std::string& one, const std::string& two)
+{
+	char const* si = one.c_str();
+	char const* oi = two.c_str();
+	while (*si && *oi)
+	{
+		bool eoln_si = false; for (;*si == '\r' || *si == '\n'; ++si,eoln_si=true){}
+		bool eoln_oi = false; for (;*oi == '\r' || *oi == '\n'; ++oi,eoln_oi=true){}
+		if (eoln_si != eoln_oi || *si != *oi) return false;
+		if (*si && *oi) {++si;++oi;}
+	}
+	return *si == '\0' && *oi == '\0';
+}
+
 int main( int argc, const char* argv[])
 {
 	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
@@ -204,7 +218,7 @@ int main( int argc, const char* argv[])
 		{
 			out << "item select='" << si->select() << "', type='" << si->type() << "', example=[" << si->example() << "] df=" << si->df() << " tf=" << si->tf() << std::endl;
 		}
-		if (out.str() != expected)
+		if (!compareContent( out.str(), expected))
 		{
 			std::cerr << "[OUTPUT]" << std::endl << out.str() << std::endl;
 			std::cerr << "[EXPECTED]" << std::endl << expected << std::endl;
