@@ -72,10 +72,8 @@ public:
 			const std::string& content,
 			const analyzer::DocumentClass& doctype);
 
-	/// \brief Do return the overall statistics of the sample documents
-	virtual std::vector<analyzer::ContentStatisticsItem> statistics();
+	virtual analyzer::ContentStatisticsResult statistics();
 
-	/// \brief Get the number of sample documents
 	virtual int nofDocuments() const;
 
 private:

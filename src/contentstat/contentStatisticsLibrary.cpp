@@ -131,7 +131,7 @@ std::vector<analyzer::ContentStatisticsElementView> ContentStatisticsLibrary::vi
 			{
 				normalizerviews.push_back( (*ni)->view());
 			}
-			analyzer::ContentStatisticsElementView elem( ai->type, ai->regexstr, ai->tokenizer->view(), normalizerviews);
+			analyzer::ContentStatisticsElementView elem( ai->type, ai->regexstr, ai->priority, ai->minLength, ai->maxLength, ai->tokenizer->view(), normalizerviews);
 			rt.push_back( elem);
 		}
 		return rt;

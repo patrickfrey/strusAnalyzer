@@ -131,18 +131,18 @@ void ContentStatisticsContext::putContent(
 	CATCH_ERROR_MAP( _TXT("error collecting content statistics: %s"), *m_errorhnd);
 }
 
-
-std::vector<analyzer::ContentStatisticsItem> ContentStatisticsContext::statistics()
+analyzer::ContentStatisticsResult ContentStatisticsContext::statistics()
 {
 	try
 	{
-		return m_data.getGlobalStatistics();
+		return ContentStatisticsResult( m_data.nofDocuments(), m_data.getGlobalStatistics());
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error collecting content statistics: %s"), *m_errorhnd, std::vector<analyzer::ContentStatisticsItem>());
+	CATCH_ERROR_MAP_RETURN( _TXT("error collecting content statistics: %s"), *m_errorhnd, ContentStatisticsResult());
 }
 
 int ContentStatisticsContext::nofDocuments() const
 {
 	return m_data.nofDocuments();
 }
+
 

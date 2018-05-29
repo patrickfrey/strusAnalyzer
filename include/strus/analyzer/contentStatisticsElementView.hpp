@@ -26,7 +26,7 @@ public:
 	ContentStatisticsElementView(){}
 	/// \brief Copy constructor
 	ContentStatisticsElementView( const ContentStatisticsElementView& o)
-		:m_type(o.m_type),m_regex(o.m_regex),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer){}
+		:m_type(o.m_type),m_regex(o.m_regex),m_priority(o.m_priority),m_minLen(o.m_minLen),m_maxLen(o.m_maxLen),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer){}
 
 	/// \brief Constructor
 	/// \brief Constructor
@@ -34,13 +34,19 @@ public:
 	/// \param[in] regex_ the segmenter selection expression
 	/// \param[in] tokenizer_ view of tokenizer
 	/// \param[in] normalizer_ list of views of normalizers
-	ContentStatisticsElementView( const std::string& type_, const std::string& regex_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_)
-		:m_type(type_),m_regex(regex_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
+	ContentStatisticsElementView( const std::string& type_, const std::string& regex_, int priority_, int minLen_, int maxLen_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_)
+		:m_type(type_),m_regex(regex_),m_priority(priority_),m_minLen(minLen_),m_maxLen(maxLen_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
 
 	/// \brief Get the type
 	const std::string& type() const				{return m_type;}
 	/// \brief Get the segmenter selection expression
 	const std::string& regex() const			{return m_regex;}
+	/// \brief Get the priority
+	int priority() const					{return m_priority;}
+	/// \brief Get the priority
+	int minLen() const					{return m_minLen;}
+	/// \brief Get the priority
+	int maxLen() const					{return m_maxLen;}
 	/// \brief Get the tokenizer
 	const FunctionView& tokenizer() const			{return m_tokenizer;}
 	/// \brief Get the list of normalizers
@@ -49,6 +55,9 @@ public:
 private:
 	std::string m_type;
 	std::string m_regex;
+	int m_priority;
+	int m_minLen;
+	int m_maxLen;
 	FunctionView m_tokenizer;
 	std::vector<FunctionView> m_normalizer;
 };

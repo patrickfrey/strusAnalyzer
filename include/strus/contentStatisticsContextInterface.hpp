@@ -10,7 +10,7 @@
 #ifndef _STRUS_ANALYZER_CONTENT_STATISTICS_CONTEXT_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_CONTENT_STATISTICS_CONTEXT_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/contentStatisticsItem.hpp"
+#include "strus/analyzer/contentStatisticsResult.hpp"
 #include <vector>
 #include <string>
 
@@ -35,9 +35,11 @@ public:
 			const analyzer::DocumentClass& doctype)=0;
 
 	/// \brief Do return the overall statistics of the sample documents
-	virtual std::vector<analyzer::ContentStatisticsItem> statistics()=0;
+	/// \return the statistics structure
+	virtual analyzer::ContentStatisticsResult statistics()=0;
 
-	/// \brief Get the number of sample documents
+	/// \brief Get the number of sample documents only
+	/// \return the number of sample documents put
 	virtual int nofDocuments() const=0;
 };
 

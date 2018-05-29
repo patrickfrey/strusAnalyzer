@@ -38,9 +38,9 @@ public:
 	/// \brief Declare an element of the library used to categorize features
 	/// \param[in] type type name of the feature
 	/// \param[in] regex regular expression that has to match on the whole segment in order to consider it as candidate
-	/// \param[in] priority priority given to matches, for multiple matches only the ones with highest priority are selected
-	/// \param[in] minLength minimum length of the chunk or -1 if no restriction
-	/// \param[in] maxLength maximum length of the chunk or -1 if no restriction
+	/// \param[in] priority non negative number specifying the priority given to matches, for multiple matches only the ones with the highest priority are selected
+	/// \param[in] minLength minimum number of tokens or -1 for no restriction
+	/// \param[in] maxLength maximum number of tokens or -1 for no restriction
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
 	virtual void addLibraryElement(

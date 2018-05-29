@@ -189,17 +189,17 @@ int main( int argc, const char* argv[])
 			std::string docid = *fi;
 			context->putContent( docid, content, doctype);
 		}
-		if (context->nofDocuments() != (int)files.size())
-		{
-			throw std::runtime_error("number of documents does not match");
-		}
 		std::string expected;
 		ec = strus::readFile( strus::joinFilePath( dataDir, expectfile), expected);
 		if (ec) throw std::runtime_error(std::string("unable to read expected file: ") + std::strerror(ec));
 
 		std::ostringstream out;
-		std::vector<strus::analyzer::ContentStatisticsItem> statistics = context->statistics();
-		std::vector<strus::analyzer::ContentStatisticsItem>::const_iterator si = statistics.begin(), se = statistics.end();
+		strus::analyzer::ContentStatisticsResult statistics = context->statistics();
+		if (context->nofDocuments() != (int)files.size() || context->nofDocuments() != statistics.nofDocuments())
+		{
+			throw std::runtime_error("number of documents does not match");
+		}
+		std::vector<strus::analyzer::ContentStatisticsItem>::const_iterator si = statistics.items().begin(), se = statistics.items().end();
 		for (; si != se; ++si)
 		{
 			out << "item select='" << si->select() << "', type='" << si->type() << "', example=[" << si->example() << "] df=" << si->df() << " tf=" << si->tf() << std::endl;
