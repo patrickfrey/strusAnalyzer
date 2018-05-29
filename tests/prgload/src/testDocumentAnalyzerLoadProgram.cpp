@@ -55,6 +55,20 @@ static std::string getFilePath( const std::string& resourcedir, const std::strin
 	return (strus::isRelativePath( filename) && filename[0] != '.') ? strus::joinFilePath( resourcedir, filename) : filename;
 }
 
+static bool compareContent( const std::string& one, const std::string& two)
+{
+	char const* si = one.c_str();
+	char const* oi = two.c_str();
+	while (*si && *oi)
+	{
+		bool eoln_si = false; for (;*si == '\r' || *si == '\n'; ++si,eoln_si=true){}
+		bool eoln_oi = false; for (;*oi == '\r' || *oi == '\n'; ++oi,eoln_oi=true){}
+		if (eoln_si != eoln_oi || *si != *oi) return false;
+		if (*si && *oi) {++si;++oi;}
+	}
+	return *si == '\0' && *oi == '\0';
+}
+
 int main( int argc, const char* argv[])
 {
 	try
@@ -217,7 +231,7 @@ int main( int argc, const char* argv[])
 		// Verify output:
 		if (g_errorhnd->hasError()) throw std::runtime_error( "document analysis failed");
 		std::string output = out.str();
-		if (strus::string_conv::trim( expectContent) != strus::string_conv::trim( output))
+		if (!compareContent( strus::string_conv::trim( expectContent), strus::string_conv::trim( output)))
 		{
 			std::cout << output << std::endl;
 			throw std::runtime_error("test output differs");
