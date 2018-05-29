@@ -95,9 +95,17 @@ void ContentStatisticsContext::putContent(
 			{
 				segmenter = m_textproc->getSegmenterByMimeType( dclass.mimeType());
 				if (!segmenter) throw strus::runtime_error(_TXT("can't process the MIME type '%s'"), doctype.mimeType().c_str());
+				itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), dclass));
+				if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), dclass.mimeType().c_str());
 			}
-			itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), dclass));
-			if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), dclass.mimeType().c_str());
+			else if (m_errorhnd->hasError())
+			{
+				throw strus::runtime_error(_TXT("document class detection failed: %s"), m_errorhnd->fetchError());
+			}
+			else
+			{
+				throw strus::runtime_error(_TXT("cannot determine document class"));
+			}
 		}
 		const char* selectstr;
 		std::size_t selectsize;
