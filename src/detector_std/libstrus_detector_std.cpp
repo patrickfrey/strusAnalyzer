@@ -17,7 +17,7 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC DocumentClassDetectorInterface* strus::createDetector_std( const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	try
 	{

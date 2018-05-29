@@ -30,7 +30,7 @@ class StandardDocumentClassDetector
 	:public DocumentClassDetectorInterface
 {
 public:
-	StandardDocumentClassDetector( TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_);
+	StandardDocumentClassDetector( const TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_);
 	virtual ~StandardDocumentClassDetector(){}
 
 	virtual void defineDocumentSchemeDetector(
@@ -65,7 +65,7 @@ private:
 
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
-	TextProcessorInterface* m_textproc;
+	const TextProcessorInterface* m_textproc;
 	std::vector<SchemeDef> m_schemes;
 	strus::Reference<SegmenterInstanceInterface> m_xmlSegmenter;
 	strus::Reference<SegmenterInstanceInterface> m_jsonSegmenter;

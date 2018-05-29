@@ -27,7 +27,7 @@ using namespace strus;
 
 #define STRUS_DBGTRACE_COMPONENT_NAME "doctype"
 
-StandardDocumentClassDetector::StandardDocumentClassDetector( TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_)
+StandardDocumentClassDetector::StandardDocumentClassDetector( const TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_textproc(textproc_)
 	,m_schemes(),m_xmlSegmenter(),m_jsonSegmenter(),m_tsvSegmenter()
 {
