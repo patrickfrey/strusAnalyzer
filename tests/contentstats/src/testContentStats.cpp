@@ -216,12 +216,12 @@ int main( int argc, const char* argv[])
 		std::vector<strus::analyzer::ContentStatisticsItem>::const_iterator si = statistics.items().begin(), se = statistics.items().end();
 		for (; si != se; ++si)
 		{
-			out << "item select='" << si->select() << "', type='" << si->type() << "', example=[" << si->example() << "] df=" << si->df() << " tf=" << si->tf() << std::endl;
+			out << "item select='" << si->select() << "', type='" << si->type() << "', example=[" << si->example() << "] df=" << si->df() << " tf=" << si->tf() << "\n";
 		}
 		if (!compareContent( out.str(), expected))
 		{
-			std::cerr << "[OUTPUT]" << std::endl << out.str() << std::endl;
-			std::cerr << "[EXPECTED]" << std::endl << expected << std::endl;
+			std::cerr << "[OUTPUT]" << std::endl << out.str() << "\n";
+			std::cerr << "[EXPECTED]" << "\n" << expected << std::endl;
 			throw std::runtime_error( "test output does not match");
 		}
 		const char* err = g_errorhnd->fetchError();
