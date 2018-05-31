@@ -40,6 +40,27 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
+class SubStringMapNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit SubStringMapNormalizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Normalizer mapping the sub strings defined by the arguments to their indices starting from 0.");
+	}
+
+public:
+	enum {MaxSubStringLength=256};
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
 }//namespace
 #endif
 

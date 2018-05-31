@@ -22,6 +22,7 @@ class ErrorBufferInterface;
 /// \brief Get the normalizer that returns the input trimmed as result
 /// \return the normalization function
 NormalizerFunctionInterface* createNormalizer_substrindex( ErrorBufferInterface* errorhnd);
+NormalizerFunctionInterface* createNormalizer_substrmap( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

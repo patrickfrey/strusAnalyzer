@@ -16,7 +16,6 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-#define NORMALIZER_NAME "substrindex"
 
 DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_substrindex( ErrorBufferInterface* errorhnd)
 {
@@ -29,6 +28,21 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_substrindex( Err
 		}
 		return new SubStringIndexNormalizerFunction( errorhnd);
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), NORMALIZER_NAME, *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), "substrindex", *errorhnd, 0);
 }
+
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_substrmap( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new SubStringMapNormalizerFunction( errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), "substrmap", *errorhnd, 0);
+}
+
 

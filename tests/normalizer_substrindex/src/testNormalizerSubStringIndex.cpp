@@ -13,6 +13,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "strus/base/string_format.hpp"
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -28,6 +29,7 @@ static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 struct Test
 {
+	const char* normalizer;
 	const char* input;
 	const char* substr[ 16];
 	const char* output;
@@ -35,16 +37,17 @@ struct Test
 
 static const Test g_test[] =
 {
-	{"2011-November-17", {"","January","February","March","April","May","June","July","August","September","October","November","December",0}, "2011-11-17"},
-	{"2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","November","Novemberr","December",0}, "2011-12-17"},
-	{"2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","Novemberr","November","December",0}, "2011-11-17"},
-	{"2013-Apr-1", {"","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",0}, "2013-4-1"},
-	{"1999-C-1", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1999-2-1"},
-	{"1997-F-114234412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-114234412"},
-	{"1997-F-11423A4412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-1142304412"},
-	{"ABCDEFGHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "123456789"},
-	{"ABCDEF5GHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1234565789"},
-	{0,0,0,0}
+	{"substrindex","2011-November-17", {"","January","February","March","April","May","June","July","August","September","October","November","December",0}, "2011-11-17"},
+	{"substrindex","2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","November","Novemberr","December",0}, "2011-12-17"},
+	{"substrindex","2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","Novemberr","November","December",0}, "2011-11-17"},
+	{"substrindex","2013-Apr-1", {"","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",0}, "2013-4-1"},
+	{"substrindex","1999-C-1", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1999-2-1"},
+	{"substrindex","1997-F-114234412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-114234412"},
+	{"substrindex","1997-F-11423A4412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-1142304412"},
+	{"substrindex","ABCDEFGHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "123456789"},
+	{"substrindex","ABCDEF5GHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1234565789"},
+	{"substrmap","ABCDEF5GHI", {"A=B,B=C,C=D,D=E,E=F,F=G", 0}, "BCDEFG5GHI"},
+	{0,0,{0},0}
 };
 
 int main( int argc, const char* argv[])
@@ -58,17 +61,16 @@ int main( int argc, const char* argv[])
 		}
 
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
-		
-		const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( "substrindex");
-		if (!normalizer)
-		{
-			throw std::runtime_error( "normalizer 'substrindex' not defined");
-		}
 
 		Test const* ti = g_test;
-		for (int tidx=1; ti->input; ++ti,++tidx)
+		for (int tidx=1; ti->normalizer; ++ti,++tidx)
 		{
-			std::cerr << "[" << tidx << "] matching " << ti->input << std::endl;
+			const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( ti->normalizer);
+			if (!normalizer)
+			{
+				throw std::runtime_error( strus::string_format("normalizer '%s' not defined", ti->normalizer));
+			}
+			std::cerr << "[" << tidx << "] " << ti->normalizer << " matching " << ti->input << std::endl;
 			std::vector<std::string> args;
 			char const* const* si = ti->substr;
 			for (; *si; ++si)

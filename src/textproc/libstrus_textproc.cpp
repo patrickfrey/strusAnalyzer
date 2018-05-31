@@ -112,6 +112,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "substrindex", nrm);
+	if (0==(nrm = createNormalizer_substrmap( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "substrmap", nrm);
 
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{
