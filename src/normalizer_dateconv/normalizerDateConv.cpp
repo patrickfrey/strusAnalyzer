@@ -151,6 +151,11 @@ public:
 			}
 			std::mktime( &result);
 			int64_t rtnum = m_config.granularity.getValue( result);
+			if (rtnum < 0)
+			{
+				std::string inputstr( src, srcsize);
+				throw strus::runtime_error(_TXT("date out of range: '%s'"), inputstr.c_str());
+			}
 			std::ostringstream out;
 			out << rtnum;
 			return out.str();

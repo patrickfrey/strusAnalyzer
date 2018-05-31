@@ -5,9 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-#include "strus/lib/normalizer_trim.hpp"
+#include "strus/lib/normalizer_substrindex.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "normalizer_trim.hpp"
+#include "normalizer_substrindex.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
@@ -16,9 +16,9 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
-#define NORMALIZER_NAME "trim"
+#define NORMALIZER_NAME "substrindex"
 
-DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_trim( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_substrindex( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -27,7 +27,7 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_trim( ErrorBuffe
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new TrimNormalizerFunction( errorhnd);
+		return new SubStringIndexNormalizerFunction( errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), NORMALIZER_NAME, *errorhnd, 0);
 }

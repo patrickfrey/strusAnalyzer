@@ -14,6 +14,7 @@
 #include "strus/lib/normalizer_regex.hpp"
 #include "strus/lib/normalizer_wordjoin.hpp"
 #include "strus/lib/normalizer_trim.hpp"
+#include "strus/lib/normalizer_substrindex.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/tokenizer_regex.hpp"
@@ -105,6 +106,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "trim", nrm);
+	if (0==(nrm = createNormalizer_substrindex( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "substrindex", nrm);
 
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{

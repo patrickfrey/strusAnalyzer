@@ -13,6 +13,7 @@
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/analyzer/functionView.hpp"
+#include "compactNodeTrie.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>

@@ -28,26 +28,22 @@ static strus::ErrorBufferInterface* g_errorhnd = 0;
 
 struct Test
 {
-	const char* regex;
-	const char* format;
 	const char* input;
+	const char* substr[ 16];
 	const char* output;
 };
 
 static const Test g_test[] =
 {
-	{"[Aa]", "$0", "A", "A"},
-	{"Aa", "$0", "Aa", "Aa"},
-	{"[Aa]a", "$0", "Aa", "Aa"},
-	{"[Aa]+", "$0", "Aa", "Aa"},
-	{"[a-c]", "$0", "b", "b"},
-	{"[a-c]+", "$0", "ba", "ba"},
-	{"[Aa]+([0123456789]+)[az]*", "$1", "A17az", "17"},
-	{"[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]+([0123456789]+)[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ]*", "$1", "Abracadabra17 is a bad password", "17"},
-	{"[a-zA-Z]+([0-9]+)", "$1", "Abracadabra17", "17"},
-	{"[a-zA-Z]+([0-9]+)a", "$1", "Abracadabra17a", "17"},
-	{"[a-zA-Z]+([0-9]+)[a-z ]+", "$1", "Abracadabra17 is a bad password", "17"},
-	{"[a-zA-Z]+([0-9]+)[a-z ]+([0-9]+)[a-z ]+", "$1", "Abracadabra17 or 18 is a bad password", "17"},
+	{"2011-November-17", {"","January","February","March","April","May","June","July","August","September","October","November","December",0}, "2011-11-17"},
+	{"2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","November","Novemberr","December",0}, "2011-12-17"},
+	{"2011-Novemberr-17", {"","January","February","March","April","May","June","July","August","September","October","Novemberr","November","December",0}, "2011-11-17"},
+	{"2013-Apr-1", {"","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",0}, "2013-4-1"},
+	{"1999-C-1", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1999-2-1"},
+	{"1997-F-114234412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-114234412"},
+	{"1997-F-11423A4412", {"A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1997-5-1142304412"},
+	{"ABCDEFGHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "123456789"},
+	{"ABCDEF5GHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1234565789"},
 	{0,0,0,0}
 };
 
@@ -63,23 +59,27 @@ int main( int argc, const char* argv[])
 
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
 		
-		const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( "regex");
+		const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( "substrindex");
 		if (!normalizer)
 		{
-			throw std::runtime_error( "normalizer 'regex' not defined");
+			throw std::runtime_error( "normalizer 'substrindex' not defined");
 		}
 
 		Test const* ti = g_test;
-		for (int tidx=1; ti->regex; ++ti,++tidx)
+		for (int tidx=1; ti->input; ++ti,++tidx)
 		{
-			std::cerr << "[" << tidx << "] matching " << ti->regex << " write " << ti->format << " on " << ti->input;
+			std::cerr << "[" << tidx << "] matching " << ti->input << std::endl;
 			std::vector<std::string> args;
-			args.push_back( ti->regex);
-			args.push_back( ti->format);
+			char const* const* si = ti->substr;
+			for (; *si; ++si)
+			{
+				args.push_back( *si);
+			}
 			strus::local_ptr<strus::NormalizerFunctionInstanceInterface> inst( normalizer->createInstance( args, textproc.get()));
 			if (!inst.get()) throw std::runtime_error( "failed to create normalizer");
 
-			std::string result( inst->normalize( ti->input, std::strlen(ti->input)));
+			int inputlen = std::strlen(ti->input);
+			std::string result( inst->normalize( ti->input, inputlen));
 			if (result.empty())
 			{
 				std::cerr << std::endl;
