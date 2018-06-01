@@ -86,7 +86,7 @@ static ItemTestDef g_itemTests[ 32] =
 	{"single variable substitution content 1","bla{Variable}blu", {{"Variable",NULL,101,102,{11,1},{11,7}},END_ResultItem}, "bla[start=(11,1) end=(11,7)]blu"},
 	{"double variable substitution 1","bla{Var1}{Var2}blu", {{"Var1","(Var1:AssignedValue1)"},{"Var2","(Var2:AssignedValue2)"},END_ResultItem}, "bla(Var1:AssignedValue1)(Var2:AssignedValue2)blu"},
 	{"double variable substitution 2","bla{Var2}{Var1}blu", {{"Var1","(Var1:AssignedValue1)"},{"Var2","(Var2:AssignedValue2)"},END_ResultItem}, "bla(Var2:AssignedValue2)(Var1:AssignedValue1)blu"},
-	{"double variable substitution content 1","bla{Var1}{Var2}blu", {{"Var1",NULL,17,23,113,18,114,21},{"Var2",NULL,71,75,1,18,1,53},END_ResultItem}, "bla[start=(113,18) end=(114,21)][start=(1,18) end=(1,53)]blu"},
+	{"double variable substitution content 1","bla{Var1}{Var2}blu", {{"Var1",NULL,17,23,{113,18},{114,21}},{"Var2",NULL,71,75,{1,18},{1,53}},END_ResultItem}, "bla[start=(113,18) end=(114,21)][start=(1,18) end=(1,53)]blu"},
 	{"array variable substitution 1","bla{Variable|,}blu", {{"Variable","(Var1:AssignedValue1)"},{"Variable","(Var2:AssignedValue2)"},END_ResultItem}, "bla(Var1:AssignedValue1),(Var2:AssignedValue2)blu"},
 	{"array variable substitution 2","{Variable|,}blu", {{"Variable","(Var1:AssignedValue1)"},{"Variable","(Var2:AssignedValue2)"},{"Variable","(Var3:AssignedValue3)"},END_ResultItem}, "(Var1:AssignedValue1),(Var2:AssignedValue2),(Var3:AssignedValue3)blu"},
 	{"array variable substitution content 1","bla{Variable|; }blu", {{"Variable",NULL,13,45,{1,13},{1,23}},{"Variable",NULL,112,123,{7098,113},{7109,1023}},END_ResultItem}, "bla[start=(1,13) end=(1,23)]; [start=(7098,113) end=(7109,1023)]blu"},
