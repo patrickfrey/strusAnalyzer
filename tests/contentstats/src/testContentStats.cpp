@@ -69,10 +69,10 @@ struct LibraryElement
 };
 static const LibraryElement g_testLibrary[32] =
 {
-	{"title",".*",1,1,16,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
-	{"text",".*",1,1,-1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
-	{"id","[0-9]+",2,1,1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
-	{"date","[0-9\\-\\/\\.]*",2,1,1,{"regex",{"[0-9]{2,4}[\\-\\/]{0,1}[0-9]{1,2}[\\-\\/]{0,1}[0-9]{1,2}",NULL}},{{"date2int",{NULL}},{NULL}}},
+	{"title",""/*match all*/,1,1,16,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"text","(\\s|\\S)*$",1,1,-1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"id","[0-9]*$",2,1,1,{"word",{NULL}},{{"orig",{NULL}},{NULL}}},
+	{"date","[0-9\\-\\/\\.]*$",2,1,1,{"regex",{"[0-9]{2,4}[\\-\\/]{0,1}[0-9]{1,2}[\\-\\/]{0,1}[0-9]{1,2}",NULL}},{{"date2int",{NULL}},{NULL}}},
 	{NULL,NULL,-1,-1,-1,{NULL,{NULL}},{{NULL,{NULL}}}}
 };
 

@@ -31,7 +31,11 @@ void ContentStatisticsLibrary::addElement(
 	{
 		if (priority < 0) throw std::runtime_error(_TXT("priority must be non-negative"));
 
-		RegexSearchReference regex( new RegexSearch( regexstr, 0, m_errorhnd));
+		RegexSearchReference regex;
+		if (!regexstr.empty())
+		{
+			regex.reset( new RegexSearch( regexstr, 0, m_errorhnd));
+		}
 		tk.reset( tokenizer);
 
 		std::vector<NormalizerFunctionInstanceInterface*>::const_iterator ni = normalizers.begin(), ne = normalizers.end();
@@ -72,7 +76,7 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)
 		{
-			int len = ai->regex->match_start( input, input + inputsize);
+			int len = ai->regex.get() ? ai->regex->match_start( input, input + inputsize) : inputsize;
 			if (len == (int)inputsize)
 			{
 				std::vector<analyzer::Token> tokens = ai->tokenizer->tokenize( input, inputsize);
