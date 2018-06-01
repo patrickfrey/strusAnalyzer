@@ -311,8 +311,8 @@ int main( int argc, const char* argv[])
 		{
 			throw std::runtime_error( g_errorhnd->fetchError());
 		}
-		//[+]runTest( &test1, textproc.get());
-		//[+]runTest( &test2, textproc.get());
+		runTest( &test1, textproc.get());
+		runTest( &test2, textproc.get());
 		runTest( &test3, textproc.get());
 		std::cerr << "OK" << std::endl;
 
