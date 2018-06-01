@@ -117,9 +117,9 @@ int main( int argc, const char* argv[])
 			return -2;
 		}
 		const char* resourceDir = argv[argi+0];
-		std::string programFile = getFilePath( resourceDir, argv[ argi+1]);
-		std::string docFile = getFilePath( resourceDir, argv[ argi+2]);
-		std::string expectFile = getFilePath( resourceDir, argv[ argi+3]);
+		std::string programFile = argv[ argi+1];
+		std::string docFileName = argv[ argi+2];
+		std::string expectFileName = argv[ argi+3];
 
 		// Select configured debug traces:
 		strus::DebugTraceInterface* dbgtrace = NULL;
@@ -146,6 +146,10 @@ int main( int argc, const char* argv[])
 		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( "failed to create textprocessor");
 
+		textproc->addResourcePath( resourceDir);
+		std::string docFilePath = getFilePath( resourceDir, docFileName);
+		std::string expectFilePath = getFilePath( resourceDir, expectFileName);
+
 		strus::PatternLexerInterface* patternLexer = strus::createPatternLexer_test( g_errorhnd);
 		if (!patternLexer) throw std::runtime_error( "failed to create pattern lexer");
 		textproc->definePatternLexer( "test", patternLexer);
@@ -154,7 +158,6 @@ int main( int argc, const char* argv[])
 		if (!patternMatcher) throw std::runtime_error( "failed to create pattern matcher");
 		textproc->definePatternMatcher( "test", patternMatcher);
 
-		textproc->addResourcePath( resourceDir);
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error( "failed to create XML segmenter");
 
@@ -162,18 +165,15 @@ int main( int argc, const char* argv[])
 		if (!analyzer.get()) throw std::runtime_error( "failed to create document analyzer");
 
 		// Read input:
-		std::string programContent;
 		std::string docContent;
 		std::string expectContent;
 
 		int ec;
-		ec = strus::readFile( programFile, programContent);
-		if (ec) throw std::runtime_error( strus::string_format("error reading analyzer program file '%s': %s", programFile.c_str(), std::strerror(ec)));
-		ec = strus::readFile( docFile, docContent);
-		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with document to process: %s", docFile.c_str(), std::strerror(ec)));
-		ec = strus::readFile( expectFile, expectContent);
-		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with expected test output: %s", expectFile.c_str(), std::strerror(ec)));
-		if (!strus::load_DocumentAnalyzer_program_std( analyzer.get(), textproc.get(), programContent, g_errorhnd))
+		ec = strus::readFile( docFilePath, docContent);
+		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with document to process: %s", docFilePath.c_str(), std::strerror(ec)));
+		ec = strus::readFile( expectFilePath, expectContent);
+		if (ec) throw std::runtime_error( strus::string_format("error reading file '%s' with expected test output: %s", expectFilePath.c_str(), std::strerror(ec)));
+		if (!strus::load_DocumentAnalyzer_programfile_std( analyzer.get(), textproc.get(), programFile, g_errorhnd))
 		{
 			throw std::runtime_error( strus::string_format("failed to load analyzer program in file '%s'", programFile.c_str()));
 		}

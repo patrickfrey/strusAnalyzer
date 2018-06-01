@@ -1014,6 +1014,53 @@ static void loadFeatureSection( ProgramLexer& lexer, const FeatureClass& featcla
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
+bool strus::isDocumentAnalyzerProgram(
+		const TextProcessorInterface* textproc,
+		const std::string& source,
+		ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		// Skip includes:
+		char const* src = source.c_str();
+		while ((unsigned char)*src < 32) ++src;
+		while (*src == '#' && std::memcmp( src, "#include", 8) == 0 && ((unsigned char)src[8] <= 32))
+		{
+			while (*src != '\n') ++src;
+			while ((unsigned char)*src < 32) ++src;
+		}
+		// Check first tokens:
+		ProgramLexer lexer( src, g_eolncomment, g_tokens, g_errtokens, errorhnd);
+		if (lexer.next().isToken( TokOpenSquareBracket))
+		{
+			lexer.next();
+			SectionHeader header = parseSectionHeader( lexer);
+			return true;
+		}
+		else if (lexer.current().isToken(TokIdentifier) && lexer.next().isToken(TokAssign))
+		{
+			return true;
+		}
+		else if (!*src)
+		{
+			 return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	catch (const std::bad_alloc&)
+	{
+		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in check for analyzer map source"));
+		return false;
+	}
+	catch (const std::runtime_error& e)
+	{
+		return false;
+	}
+}
+
 bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
 {
 	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
@@ -1083,6 +1130,4 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 		return false;
 	}
 }
-
-
 

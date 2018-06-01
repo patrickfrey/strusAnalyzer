@@ -78,6 +78,11 @@ bool loadDocumentAnalyzerProgram(
 		bool allowIncludes,
 		ErrorBufferInterface* errorhnd);
 
+bool isDocumentAnalyzerProgram(
+		const TextProcessorInterface* textproc,
+		const std::string& source,
+		ErrorBufferInterface* errorhnd);
+
 }//namespace
 #endif
 
