@@ -18,6 +18,8 @@ namespace strus {
 /// \brief Forward declaration
 class DocumentAnalyzerInterface;
 /// \brief Forward declaration
+class DocumentAnalyzerMapInterface;
+/// \brief Forward declaration
 class QueryAnalyzerInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
@@ -28,12 +30,22 @@ class ErrorBufferInterface;
 
 /// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter segmenter type to be used by the created analyzer.
+/// \param[in] textproc text processor for creating functions and resources needed for analysis
+/// \param[in] segmenter segmenter type
+/// \param[in] opts options for the segmenter
+/// \param[in] errorhnd error buffer interface
 /// \return the analyzer program (with ownership)
 DocumentAnalyzerInterface* createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
 
 /// \brief Creates a parameterizable analyzer instance for analyzing queries
+/// \param[in] errorhnd error buffer interface
 /// \return the analyzer program (with ownership)
 QueryAnalyzerInterface* createQueryAnalyzer( ErrorBufferInterface* errorhnd);
+
+/// \brief Creates a analyzer map for bundling different instances of analyzers for different classes of documents
+/// \param[in] errorhnd error buffer interface
+/// \return the analyzer program (with ownership)
+DocumentAnalyzerMapInterface* createDocumentAnalyzerMap( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

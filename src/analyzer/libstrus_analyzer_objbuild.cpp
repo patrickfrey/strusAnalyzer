@@ -13,12 +13,16 @@
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/segmenter_cjson.hpp"
 #include "strus/lib/segmenter_tsv.hpp"
+#include "strus/lib/detector_std.hpp"
+#include "strus/lib/contentstats_std.hpp"
 #include "strus/reference.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
+#include "strus/contentStatisticsInterface.hpp"
+#include "strus/documentClassDetectorInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
@@ -42,7 +46,20 @@ public:
 		,m_segmenter_textwolf(createSegmenter_textwolf(errorhnd_))
 		,m_segmenter_cjson(createSegmenter_cjson(errorhnd_))
 		,m_segmenter_tsv(createSegmenter_tsv(errorhnd_))
-	{}
+	{
+		if (!m_textproc.get())
+		{
+			throw std::runtime_error(m_errorhnd->fetchError());
+		}
+		m_documentClassDetector.reset( strus::createDetector_std( m_textproc.get(), m_errorhnd));
+		if (!m_segmenter_textwolf.get()
+		||  !m_segmenter_cjson.get()
+		||  !m_segmenter_tsv.get()
+		||  !m_documentClassDetector.get())
+		{
+			throw std::runtime_error(m_errorhnd->fetchError());
+		}
+	}
 
 	/// \brief Destructor
 	virtual ~AnalyzerObjectBuilder(){}
@@ -110,12 +127,28 @@ public:
 		return strus::createQueryAnalyzer( m_errorhnd);
 	}
 
+	virtual DocumentAnalyzerMapInterface* createDocumentAnalyzerMap() const
+	{
+		return strus::createDocumentAnalyzerMap( m_errorhnd);
+	}
+
+	virtual DocumentClassDetectorInterface* createDocumentClassDetector() const
+	{
+		return strus::createDetector_std( m_textproc.get(), m_errorhnd);
+	}
+
+	virtual ContentStatisticsInterface* createContentStatistics() const
+	{
+		return strus::createContentStatistics_std( m_textproc.get(), m_documentClassDetector.get(), m_errorhnd);
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 	Reference<TextProcessorInterface> m_textproc;
 	Reference<SegmenterInterface> m_segmenter_textwolf;
 	Reference<SegmenterInterface> m_segmenter_cjson;
 	Reference<SegmenterInterface> m_segmenter_tsv;
+	Reference<DocumentClassDetectorInterface> m_documentClassDetector;
 };
 
 

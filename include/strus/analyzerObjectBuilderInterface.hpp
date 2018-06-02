@@ -17,7 +17,13 @@ namespace strus
 {
 
 /// \brief Forward declaration
+class ContentStatisticsInterface;
+/// \brief Forward declaration
 class DocumentAnalyzerInterface;
+/// \brief Forward declaration
+class DocumentAnalyzerMapInterface;
+/// \brief Forward declaration
+class DocumentClassDetectorInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
@@ -47,6 +53,18 @@ public:
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)
 	virtual QueryAnalyzerInterface* createQueryAnalyzer() const=0;
+
+	/// \brief Creates a document analyzer map object
+	/// \return the document analyzer map (ownership returned)
+	virtual DocumentAnalyzerMapInterface* createDocumentAnalyzerMap() const=0;
+
+	/// \brief Creates a document class detector object
+	/// \return the document class detector (ownership returned)
+	virtual DocumentClassDetectorInterface* createDocumentClassDetector() const=0;
+
+	/// \brief Creates an object for content statistics analyzer
+	/// \return the content statistics analyzer (ownership returned)
+	virtual ContentStatisticsInterface* createContentStatistics() const=0;
 };
 
 }//namespace

@@ -15,7 +15,6 @@
 #include "strus/analyzer/featureOptions.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "strus/analyzer/documentAnalyzerView.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include <vector>
 #include <string>
 

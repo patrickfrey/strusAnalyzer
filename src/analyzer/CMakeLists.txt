@@ -13,6 +13,7 @@ set(source_files
 	segmentProcessor.cpp
 	documentAnalyzer.cpp
 	documentAnalyzerContext.cpp
+	documentAnalyzerMap.cpp
 	queryAnalyzer.cpp
 	queryAnalyzerContext.cpp
 )
@@ -49,7 +50,7 @@ set_target_properties(
 )
 
 add_library( strus_analyzer_objbuild SHARED libstrus_analyzer_objbuild.cpp )
-target_link_libraries( strus_analyzer_objbuild strus_analyzer strus_segmenter_textwolf strus_segmenter_cjson strus_segmenter_tsv strus_textproc strusanalyzer_private_utils )
+target_link_libraries( strus_analyzer_objbuild strus_analyzer strus_segmenter_textwolf strus_segmenter_cjson strus_segmenter_tsv strus_textproc strus_contentstats_std strus_detector_std strusanalyzer_private_utils )
 set_target_properties(
     strus_analyzer_objbuild
     PROPERTIES

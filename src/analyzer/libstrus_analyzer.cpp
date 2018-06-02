@@ -7,6 +7,7 @@
  */
 #include "strus/lib/analyzer.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerMapInterface.hpp"
 #include "strus/queryAnalyzerInterface.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "strus/segmenterInterface.hpp"
@@ -14,6 +15,7 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "documentAnalyzer.hpp"
+#include "documentAnalyzerMap.hpp"
 #include "queryAnalyzer.hpp"
 #include "strus/base/dll_tags.hpp"
 
@@ -52,6 +54,19 @@ DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( ErrorBufferInterf
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query analyzer: %s"), *errorhnd, 0);
 }
 
+DLL_PUBLIC DocumentAnalyzerMapInterface* strus::createDocumentAnalyzerMap( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new DocumentAnalyzerMap( errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer map: %s"), *errorhnd, 0);
+}
 
 
 
