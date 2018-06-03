@@ -11,9 +11,11 @@
 #include "strus/lib/pattern_serialize.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerMapInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/base/programLexer.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/string_format.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/reference.hpp"
@@ -29,6 +31,7 @@
 #include "strus/patternMatcherInterface.hpp"
 #include "strus/patternMatcherInstanceInterface.hpp"
 #include "private/internationalization.hpp"
+#include "private/errorUtils.hpp"
 #include <vector>
 #include <string>
 
@@ -349,6 +352,21 @@ static std::string parseSelectorExpression( ProgramLexer& lexer)
 	}
 }
 
+static std::string parseFileName( ProgramLexer& lexer)
+{
+	ProgramLexem cur = lexer.current();
+	if (cur.isString() || cur.isToken( TokPath))
+	{
+		std::string rt = cur.value();
+		lexer.next();
+		return rt;
+	}
+	else
+	{
+		throw strus::runtime_error( _TXT("expected string or path instead of %s as file name"), tokenName( lexer.current()));
+	}
+}
+
 struct FeatureDef
 {
 	strus::local_ptr<TokenizerFunctionInstanceInterface> tokenizer;
@@ -593,16 +611,7 @@ static bool loadPatternMatcherProgramWithFeeder(
 		}
 		return true;
 	}
-	catch (const std::runtime_error& e)
-	{
-		errorhnd->report( ErrorCodeOutOfMem, _TXT("failed to load pattern match program (for analyzer output): %s"), e.what());
-		return false;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( ErrorCodeRuntimeError, _TXT("out of memory loading pattern match program (for analyzer output)"));
-		return false;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern match program with feeder: %s"), *errorhnd, false);
 }
 
 static bool loadPatternMatcherProgramWithLexer(
@@ -633,16 +642,7 @@ static bool loadPatternMatcherProgramWithLexer(
 		}
 		return true;
 	}
-	catch (const std::runtime_error& e)
-	{
-		errorhnd->report( ErrorCodeOutOfMem, _TXT("failed to load pattern match program: %s"), e.what());
-		return false;
-	}
-	catch (const std::bad_alloc&)
-	{
-		errorhnd->report( ErrorCodeRuntimeError, _TXT("out of memory loading pattern match program"));
-		return false;
-	}
+	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern match program with lexer: %s"), *errorhnd, false);
 }
 
 template <class AnalyzerInterface>
@@ -822,7 +822,7 @@ static void loadIncludes( DocumentAnalyzerInterface* analyzer, const TextProcess
 		ci = include_contents.begin(), ce = include_contents.end();
 	for (; ci != ce; ++ci)
 	{
-		if (!strus::loadDocumentAnalyzerProgram(
+		if (!strus::loadDocumentAnalyzerProgramSource(
 				analyzer, textproc, ci->second,
 				false/*!allowIncludes*/, errorhnd))
 		{
@@ -1014,8 +1014,7 @@ static void loadFeatureSection( ProgramLexer& lexer, const FeatureClass& featcla
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-bool strus::isDocumentAnalyzerProgram(
-		const TextProcessorInterface* textproc,
+bool strus::isDocumentAnalyzerProgramSource(
 		const std::string& source,
 		ErrorBufferInterface* errorhnd)
 {
@@ -1050,18 +1049,49 @@ bool strus::isDocumentAnalyzerProgram(
 			return false;
 		}
 	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error checking if program is a document analyzer source: %s"), *errorhnd, false);
+}
+
+bool strus::isDocumentAnalyzerProgramFile(
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		std::string filepath = textproc->getResourcePath( filename);
+		if (filepath.empty() && errorhnd->hasError())
+		{
+			throw strus::runtime_error(_TXT( "failed to evaluate file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
+		}
+		std::string source;
+		unsigned int ec = strus::readFile( filepath, source);
+		if (ec)
+		{
+			throw strus::runtime_error(_TXT( "failed to read file '%s': %s"), filepath.c_str(), ::strerror(ec));
+		}
+		return isDocumentAnalyzerProgramSource( source, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error determining the type of an analyzer program file: %s"), *errorhnd, false);
+}
+
+static void reportErrorWithLocation( ErrorBufferInterface* errorhnd, ProgramLexer& lexer, const char* msg)
+{
+	try
+	{
+		std::string errorlocation = lexer.currentLocationString( -30, 80, "<!>");
+		std::string errormsg = strus::string_format(
+			_TXT("error in source on line %d (at %s): %s"),
+			(int)lexer.lineno(), errorlocation.c_str(), msg);
+		errorhnd->report( ErrorCodeSyntax, "%s", errormsg.c_str());
+	}
 	catch (const std::bad_alloc&)
 	{
-		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in check for analyzer map source"));
-		return false;
-	}
-	catch (const std::runtime_error& e)
-	{
-		return false;
+		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory handling error"));
 	}
 }
 
-bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
+bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
 {
 	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
 	try
@@ -1119,15 +1149,109 @@ bool strus::loadDocumentAnalyzerProgram( DocumentAnalyzerInterface* analyzer, co
 		}
 		return true;
 	}
-	catch (const std::bad_alloc&)
+	catch (const std::bad_alloc& err)
 	{
-		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory parsing document analyzer program"));
+		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory loading analyzer program source"));
 		return false;
 	}
-	catch (const std::runtime_error& e)
+	catch (const std::runtime_error& err)
 	{
-		errorhnd->report( ErrorCodeRuntimeError, _TXT("error in document analyzer program on line %d: %s"), lexer.lineno(), e.what());
+		reportErrorWithLocation( errorhnd, lexer, err.what());
 		return false;
 	}
 }
+
+bool strus::loadDocumentAnalyzerProgramFile( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (filename.empty()) throw strus::runtime_error( _TXT("program file name is empty"));
+		std::string filepath = textproc->getResourcePath( filename);
+		if (filepath.empty()) throw std::runtime_error(_TXT("failed to find program path"));
+		std::string content;
+		int ec = strus::readFile( filepath, content);
+		if (ec) throw strus::runtime_error(_TXT("failed to read program file: %s"), ::strerror(ec));
+		return strus::loadDocumentAnalyzerProgramSource( analyzer, textproc, content, true/*allowIncludes*/, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error loading document analyzer program file: %s"), *errorhnd, false);
+}
+
+bool strus::loadDocumentAnalyzerMapSource(
+		DocumentAnalyzerMapInterface* analyzermap,
+		const TextProcessorInterface* textproc,
+		const std::string& source,
+		ErrorBufferInterface* errorhnd)
+{
+	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
+	try
+	{
+		if (errorhnd->hasError()) return false;
+		while (!lexer.next().isEof())
+		{
+			analyzer::DocumentClass doctype;
+			std::string programName;
+
+			while (lexer.current().isToken( TokIdentifier))
+			{
+				std::string cmd = lexer.current().value();
+				lexer.next();
+				if (strus::caseInsensitiveEquals( cmd, "analyze"))
+				{
+					doctype = parseDocumentClass( lexer);
+				}
+				else if (strus::caseInsensitiveEquals( cmd, "program"))
+				{
+					programName = parseFileName( lexer);
+				}
+				else
+				{
+					throw std::runtime_error( _TXT("unexpected token, 'analyze' or 'program' expected"));
+				}
+			}
+			if (!lexer.current().isToken( TokSemiColon))
+			{
+				throw std::runtime_error( _TXT("unexpected token, semicolon expected after analyzer map declaration"));
+			}
+			strus::Reference<DocumentAnalyzerInterface> analyzer( analyzermap->createAnalyzer( doctype.mimeType(), doctype.scheme()));
+			if (!analyzer.get()) throw std::runtime_error( errorhnd->fetchError());
+			if (!loadDocumentAnalyzerProgramFile( analyzer.get(), textproc, programName, errorhnd))
+			{
+				throw std::runtime_error( errorhnd->fetchError());
+			}
+			analyzermap->addAnalyzer( doctype.mimeType(), doctype.scheme(), analyzer.get());
+			if (errorhnd->hasError())
+			{
+				throw std::runtime_error( errorhnd->fetchError());
+			}
+			analyzer.release();
+		}
+		return true;
+	}
+	catch (const std::bad_alloc& err)
+	{
+		errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory loading analyzer map source"));
+		return false;
+	}
+	catch (const std::runtime_error& err)
+	{
+		reportErrorWithLocation( errorhnd, lexer, err.what());
+		return false;
+	}
+}
+
+bool strus::loadDocumentAnalyzerMapFile( DocumentAnalyzerMapInterface* analyzermap, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (filename.empty()) throw strus::runtime_error( _TXT("program file name is empty"));
+		std::string filepath = textproc->getResourcePath( filename);
+		if (filepath.empty()) throw std::runtime_error(_TXT("failed to find program path"));
+		std::string content;
+		int ec = strus::readFile( filepath, content);
+		if (ec) throw strus::runtime_error(_TXT("failed to read program file: %s"), ::strerror(ec));
+		return strus::loadDocumentAnalyzerMapSource( analyzermap, textproc, content, errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error loading document analyzer map file '%s': %s"), filename.c_str(), *errorhnd, false);
+}
+
 

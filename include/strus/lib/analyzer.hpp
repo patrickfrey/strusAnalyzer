@@ -27,6 +27,8 @@ class SegmenterInterface;
 class TextProcessorInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class AnalyzerObjectBuilderInterface;
 
 /// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter segmenter type to be used by the created analyzer.
@@ -43,9 +45,10 @@ DocumentAnalyzerInterface* createDocumentAnalyzer( const TextProcessorInterface*
 QueryAnalyzerInterface* createQueryAnalyzer( ErrorBufferInterface* errorhnd);
 
 /// \brief Creates a analyzer map for bundling different instances of analyzers for different classes of documents
+/// \param[in] objbuilder analyzer object builder interface
 /// \param[in] errorhnd error buffer interface
 /// \return the analyzer program (with ownership)
-DocumentAnalyzerMapInterface* createDocumentAnalyzerMap( ErrorBufferInterface* errorhnd);
+DocumentAnalyzerMapInterface* createDocumentAnalyzerMap( const AnalyzerObjectBuilderInterface* objbuilder, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

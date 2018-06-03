@@ -54,7 +54,7 @@ DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( ErrorBufferInterf
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query analyzer: %s"), *errorhnd, 0);
 }
 
-DLL_PUBLIC DocumentAnalyzerMapInterface* strus::createDocumentAnalyzerMap( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC DocumentAnalyzerMapInterface* strus::createDocumentAnalyzerMap( const AnalyzerObjectBuilderInterface* objbuilder, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -63,7 +63,7 @@ DLL_PUBLIC DocumentAnalyzerMapInterface* strus::createDocumentAnalyzerMap( Error
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new DocumentAnalyzerMap( errorhnd);
+		return new DocumentAnalyzerMap( objbuilder, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer map: %s"), *errorhnd, 0);
 }

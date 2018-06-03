@@ -20,11 +20,13 @@ class ErrorBufferInterface;
 class DocumentAnalyzerInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
+/// \brief Forward declaration
+class DocumentAnalyzerMapInterface;
 
 /* \brief Load a document analyzer program defined with a domain specific language
- * \param[in] analyzer analyzer to fill with the definitions in the source file
+ * \param[in] analyzer analyzer to fill with the definitions in the source
  * \param[in] textproc textprocessor interface providing the builders for the objects defined
- * \param[in] source the source to parse (content and NOT a file name)
+ * \param[in] source the source to parse (content and NOT a file name) in a domain specific language
  * \param[in] allowIncludes true, if include directives are allowed at the beginning of the content to parse
  * \note Include directives have the syntax:
             IncludeDecl      :- "#include" FileName
@@ -71,16 +73,71 @@ class TextProcessorInterface;
 	TokenizerDef         :- FunctionDecl
 	SelectionDef         :- # Abbrev XPath expression: Selection of the content that is used as input for the building of this feature
 */
-bool loadDocumentAnalyzerProgram(
+bool loadDocumentAnalyzerProgramSource(
 		DocumentAnalyzerInterface* analyzer,
 		const TextProcessorInterface* textproc,
 		const std::string& source,
 		bool allowIncludes,
 		ErrorBufferInterface* errorhnd);
 
-bool isDocumentAnalyzerProgram(
+/// \brief Load a document analyzer program defined with a domain specific language
+/// \param[in] analyzer analyzer to fill with the definitions in the source
+/// \param[in] textproc textprocessor interface providing the builders for the objects defined
+/// \param[in] filename the name of the file to parse in a domain specific language (see the syntax description for 'loadDocumentAnalyzerProgramSource')
+/// \param[in,out] errorhnd interface for reporting errors and exceptions occurred
+bool loadDocumentAnalyzerProgramFile(
+		DocumentAnalyzerInterface* analyzer,
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Test if a content is a document analyzer program source
+/// \param[in] textproc text processor interface to determine the path of the filename
+/// \param[in] filename name of the file to load
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true if yes, false if not or in case of an error
+bool isDocumentAnalyzerProgramFile(
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Test if a content is a document analyzer program source
+/// \param[in] textproc text processor interface to access functions needed
+/// \param[in] source source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true if yes, false if not or in case of an error
+bool isDocumentAnalyzerProgramSource(
+		const std::string& source,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a document analyzer map defined with a domain specific language
+/// \param[in] analyzermap analyzer map to fill with the definitions in the source
+/// \param[in] textproc textprocessor interface providing the builders for the objects defined
+/// \param[in] source the source to parse (content and NOT a file name) in a domain specific language
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/*
+*   \note Comments in the domain specific language are end of line comments starting with '#'
+*   \note The domain specific language has the following grammar:
+*        AnalyzerMap           : {MapDefinition ';'}
+*        MapDefinition         : { "analyze" DocumentClass "program" AnalyzerProgramName
+*        DocumentClass         :- # String: MIME Content Type Declaration
+*        AnalyzerProgramName   :  # String or path identifying the program file to load for this document class
+*/
+bool loadDocumentAnalyzerMapSource(
+		DocumentAnalyzerMapInterface* analyzermap,
 		const TextProcessorInterface* textproc,
 		const std::string& source,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a document analyzer map defined with a domain specific language
+/// \param[in] analyzermap analyzer map to fill with the definitions in the source
+/// \param[in] textproc textprocessor interface providing the builders for the objects defined
+/// \param[in] filename the name of the file to parse in a domain specific language (see the syntax description for 'loadDocumentAnalyzerProgramSource')
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+bool loadDocumentAnalyzerMapFile(
+		DocumentAnalyzerMapInterface* analyzermap,
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
 		ErrorBufferInterface* errorhnd);
 
 }//namespace

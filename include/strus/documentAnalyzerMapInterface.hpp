@@ -31,6 +31,14 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentAnalyzerMapInterface(){}
 
+	/// \brief Declare a an analyzer interface to instrument and and add with addAnalyzer
+	/// \param[in] mimetype of the document for this analyzer, determines the document segmenter
+	/// \param[in] scheme scheme of the document to determine the segmenter options (can be empty meaning not defined)
+	/// \return the analyzer (with ownership)
+	virtual DocumentAnalyzerInterface* createAnalyzer(
+			const std::string& mimeType,
+			const std::string& scheme) const=0;
+
 	/// \brief Declare a an analyzer to be used for the analysis of a specific document class
 	/// \param[in] mimetype_ of the document to process with this analyzer (must be defined)
 	/// \param[in] scheme_ scheme of the document to process with this analyzer (can be empty meaning not defined)

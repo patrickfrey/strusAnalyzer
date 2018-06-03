@@ -129,7 +129,7 @@ public:
 
 	virtual DocumentAnalyzerMapInterface* createDocumentAnalyzerMap() const
 	{
-		return strus::createDocumentAnalyzerMap( m_errorhnd);
+		return strus::createDocumentAnalyzerMap( this, m_errorhnd);
 	}
 
 	virtual DocumentClassDetectorInterface* createDocumentClassDetector() const

@@ -25,6 +25,8 @@ namespace strus
 class ErrorBufferInterface;
 /// \brief Forward declaration
 class DebugTraceInterface;
+/// \brief Forward declaration
+class AnalyzerObjectBuilderInterface;
 
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
@@ -32,9 +34,13 @@ class DocumentAnalyzerMap
 	:public DocumentAnalyzerMapInterface
 {
 public:
-	explicit DocumentAnalyzerMap( ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_){}
+	DocumentAnalyzerMap( const AnalyzerObjectBuilderInterface* objbuilder_, ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_),m_objbuilder(objbuilder_),m_mimeTypeAnalyzerMap(),m_schemeAnalyzerMap(),m_analyzers(){}
 	virtual ~DocumentAnalyzerMap(){}
+
+	virtual DocumentAnalyzerInterface* createAnalyzer(
+			const std::string& mimeType,
+			const std::string& scheme) const;
 
 	virtual void addAnalyzer(
 			const std::string& mimeType_,
@@ -59,6 +65,7 @@ private:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
+	const AnalyzerObjectBuilderInterface* m_objbuilder;
 	Map m_mimeTypeAnalyzerMap;
 	Map m_schemeAnalyzerMap;
 	std::vector<DocumentAnalyzerReference> m_analyzers;

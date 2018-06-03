@@ -12,6 +12,8 @@
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
+#include "strus/analyzerObjectBuilderInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
@@ -31,6 +33,23 @@ static std::pair<std::string,std::string> getMimeSchemeKeyParts( const std::stri
 	char const* ki = std::strchr( key.c_str(), ';');
 	if (ki == NULL) throw strus::runtime_error(_TXT("currupt key in map: %s"), key.c_str());
 	return std::pair<std::string,std::string>( std::string(key.c_str(),ki-key.c_str()), ki+1);
+}
+
+DocumentAnalyzerInterface* DocumentAnalyzerMap::createAnalyzer(
+		const std::string& mimeType,
+		const std::string& scheme) const
+{
+	try
+	{
+		const TextProcessorInterface* textproc = m_objbuilder->getTextProcessor();
+		if (!textproc) throw std::runtime_error( m_errorhnd->fetchError());
+		const SegmenterInterface* segmenter = textproc->getSegmenterByMimeType( mimeType);
+		if (!segmenter) throw std::runtime_error( m_errorhnd->fetchError());
+		analyzer::SegmenterOptions segmenteropts = textproc->getSegmenterOptions( scheme);
+		if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());
+		return m_objbuilder->createDocumentAnalyzer( segmenter, segmenteropts);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating document analyzer instance: %s"), *m_errorhnd, NULL);
 }
 
 void DocumentAnalyzerMap::addAnalyzer(
