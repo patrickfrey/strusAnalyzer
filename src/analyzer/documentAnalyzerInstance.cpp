@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-#include "documentAnalyzer.hpp"
+#include "documentAnalyzerInstance.hpp"
 #include "documentAnalyzerContext.hpp"
 #include "strus/analyzer/subDocumentDefinitionView.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -28,7 +28,7 @@
 
 using namespace strus;
 
-DocumentAnalyzer::DocumentAnalyzer( const TextProcessorInterface* textproc_, const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
+DocumentAnalyzerInstance::DocumentAnalyzerInstance( const TextProcessorInterface* textproc_, const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_textproc(textproc_)
 	,m_segmenter(segmenter_->createInstance( opts))
 	,m_subsegmenterList()
@@ -48,7 +48,7 @@ DocumentAnalyzer::DocumentAnalyzer( const TextProcessorInterface* textproc_, con
 	}
 }
 
-DocumentAnalyzer::~DocumentAnalyzer()
+DocumentAnalyzerInstance::~DocumentAnalyzerInstance()
 {
 	delete m_segmenter;
 	std::vector<SubSegmenterDef>::iterator si = m_subsegmenterList.begin(), se = m_subsegmenterList.end();
@@ -58,12 +58,12 @@ DocumentAnalyzer::~DocumentAnalyzer()
 	}
 }
 
-static int getSubSegmenterIndex( const std::vector<DocumentAnalyzer::SubSegmenterDef>& segmenterList, const std::string& selectexpr)
+static int getSubSegmenterIndex( const std::vector<DocumentAnalyzerInstance::SubSegmenterDef>& segmenterList, const std::string& selectexpr)
 {
 	int rt = -1;
 	std::size_t maxlen = 0;
 
-	std::vector<DocumentAnalyzer::SubSegmenterDef>::const_iterator si = segmenterList.begin(), se = segmenterList.end();
+	std::vector<DocumentAnalyzerInstance::SubSegmenterDef>::const_iterator si = segmenterList.begin(), se = segmenterList.end();
 	for (int sidx=0; si != se; ++si,++sidx)
 	{
 		if (si->selectorPrefix.size() <= selectexpr.size()
@@ -77,7 +77,7 @@ static int getSubSegmenterIndex( const std::vector<DocumentAnalyzer::SubSegmente
 	return rt;
 }
 
-void DocumentAnalyzer::defineSelectorExpression( unsigned int featidx, const std::string& selectexpr)
+void DocumentAnalyzerInstance::defineSelectorExpression( unsigned int featidx, const std::string& selectexpr)
 {
 	int sidx = getSubSegmenterIndex( m_subsegmenterList, selectexpr);
 	if (sidx >= 0)
@@ -90,7 +90,7 @@ void DocumentAnalyzer::defineSelectorExpression( unsigned int featidx, const std
 	}
 }
 
-void DocumentAnalyzer::defineSubSection( int startId, int endId, const std::string& selectexpr)
+void DocumentAnalyzerInstance::defineSubSection( int startId, int endId, const std::string& selectexpr)
 {
 	int sidx = getSubSegmenterIndex( m_subsegmenterList, selectexpr);
 	if (sidx >= 0)
@@ -103,7 +103,7 @@ void DocumentAnalyzer::defineSubSection( int startId, int endId, const std::stri
 	}
 }
 
-void DocumentAnalyzer::addSearchIndexFeature(
+void DocumentAnalyzerInstance::addSearchIndexFeature(
 		const std::string& type,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -119,7 +119,7 @@ void DocumentAnalyzer::addSearchIndexFeature(
 	CATCH_ERROR_MAP( _TXT("error adding search index feature: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::addForwardIndexFeature(
+void DocumentAnalyzerInstance::addForwardIndexFeature(
 		const std::string& type,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -135,7 +135,7 @@ void DocumentAnalyzer::addForwardIndexFeature(
 	CATCH_ERROR_MAP( _TXT("error adding forward index feature: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineMetaData(
+void DocumentAnalyzerInstance::defineMetaData(
 		const std::string& metaname,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -149,7 +149,7 @@ void DocumentAnalyzer::defineMetaData(
 	CATCH_ERROR_MAP( _TXT("error defining metadata: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineAttribute(
+void DocumentAnalyzerInstance::defineAttribute(
 		const std::string& attribname,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -163,7 +163,7 @@ void DocumentAnalyzer::defineAttribute(
 	CATCH_ERROR_MAP( _TXT("error defining attribute: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineAggregatedMetaData(
+void DocumentAnalyzerInstance::defineAggregatedMetaData(
 		const std::string& metaname,
 		AggregatorFunctionInstanceInterface* statfunc)
 {
@@ -178,7 +178,7 @@ void DocumentAnalyzer::defineAggregatedMetaData(
 	}
 }
 
-void DocumentAnalyzer::defineSubDocument(
+void DocumentAnalyzerInstance::defineSubDocument(
 		const std::string& subDocumentTypeName,
 		const std::string& selectexpr)
 {
@@ -193,10 +193,10 @@ void DocumentAnalyzer::defineSubDocument(
 		}
 		defineSubSection( subDocumentType+OfsSubDocument, SubDocumentEnd, selectexpr);
 	}
-	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubDocument: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzerInstance::defineSubDocument: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineSubContent(
+void DocumentAnalyzerInstance::defineSubContent(
 		const std::string& selectexpr,
 		const analyzer::DocumentClass& documentClass)
 {
@@ -218,10 +218,10 @@ void DocumentAnalyzer::defineSubContent(
 		m_subsegmenterList.push_back( SubSegmenterDef( documentClass, segmenterinst.get(), selectexpr));
 		segmenterinst.release();
 	}
-	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzer::defineSubContentSegmenter: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzerInstance::defineSubContentSegmenter: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::addPatternLexem(
+void DocumentAnalyzerInstance::addPatternLexem(
 		const std::string& termtype,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -231,7 +231,7 @@ void DocumentAnalyzer::addPatternLexem(
 	defineSelectorExpression( featidx, selectexpr);
 }
 
-void DocumentAnalyzer::definePatternMatcherPostProc(
+void DocumentAnalyzerInstance::definePatternMatcherPostProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternTermFeederInstanceInterface* feeder)
@@ -243,7 +243,7 @@ void DocumentAnalyzer::definePatternMatcherPostProc(
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::definePatternMatcherPreProc(
+void DocumentAnalyzerInstance::definePatternMatcherPreProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternLexerInstanceInterface* lexer,
@@ -263,7 +263,7 @@ void DocumentAnalyzer::definePatternMatcherPreProc(
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::addSearchIndexFeatureFromPatternMatch(
+void DocumentAnalyzerInstance::addSearchIndexFeatureFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
@@ -276,7 +276,7 @@ void DocumentAnalyzer::addSearchIndexFeatureFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error defining search index feature from pattern matching result: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::addForwardIndexFeatureFromPatternMatch(
+void DocumentAnalyzerInstance::addForwardIndexFeatureFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
@@ -289,7 +289,7 @@ void DocumentAnalyzer::addForwardIndexFeatureFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error defining forward index feature from pattern matching result: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineMetaDataFromPatternMatch(
+void DocumentAnalyzerInstance::defineMetaDataFromPatternMatch(
 		const std::string& metaname,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
@@ -301,7 +301,7 @@ void DocumentAnalyzer::defineMetaDataFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error defining document meta data from pattern matching result: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzer::defineAttributeFromPatternMatch(
+void DocumentAnalyzerInstance::defineAttributeFromPatternMatch(
 		const std::string& attribname,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
@@ -313,7 +313,7 @@ void DocumentAnalyzer::defineAttributeFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error defining document attribute from pattern matching result: %s"), *m_errorhnd);
 }
 
-analyzer::Document DocumentAnalyzer::analyze(
+analyzer::Document DocumentAnalyzerInstance::analyze(
 		const std::string& content,
 		const analyzer::DocumentClass& dclass) const
 {
@@ -332,7 +332,7 @@ analyzer::Document DocumentAnalyzer::analyze(
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyze: %s"), *m_errorhnd, analyzer::Document());
 }
 
-DocumentAnalyzerContextInterface* DocumentAnalyzer::createContext( const analyzer::DocumentClass& dclass) const
+DocumentAnalyzerContextInterface* DocumentAnalyzerInstance::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -353,7 +353,7 @@ static analyzer::FeatureView getFeatureView( const FeatureConfig& cfg)
 	return analyzer::FeatureView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.options());
 }
 
-analyzer::DocumentAnalyzerView DocumentAnalyzer::view() const
+analyzer::DocumentAnalyzerView DocumentAnalyzerInstance::view() const
 {
 	try
 	{

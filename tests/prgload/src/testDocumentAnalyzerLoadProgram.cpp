@@ -16,7 +16,7 @@
 #include "strus/lib/pattern_test.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "private/internationalization.hpp"
 #include "strus/base/fileio.hpp"
@@ -161,7 +161,7 @@ int main( int argc, const char* argv[])
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error( "failed to create XML segmenter");
 
-		strus::local_ptr<strus::DocumentAnalyzerInterface> analyzer( createDocumentAnalyzer( textproc.get(), segmenter.get(), strus::analyzer::SegmenterOptions(), g_errorhnd));
+		strus::local_ptr<strus::DocumentAnalyzerInstanceInterface> analyzer( createDocumentAnalyzer( textproc.get(), segmenter.get(), strus::analyzer::SegmenterOptions(), g_errorhnd));
 		if (!analyzer.get()) throw std::runtime_error( "failed to create document analyzer");
 
 		// Read input:

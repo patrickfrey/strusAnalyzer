@@ -19,7 +19,7 @@ namespace strus
 /// \brief Forward declaration
 class ContentStatisticsInterface;
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class DocumentAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class DocumentAnalyzerMapInterface;
 /// \brief Forward declaration
@@ -27,7 +27,7 @@ class DocumentClassDetectorInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
-class QueryAnalyzerInterface;
+class QueryAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
@@ -46,13 +46,13 @@ public:
 	/// \param[in] segmenter the document segmenter to use (ownership passed)
 	/// \param[in] opts (optional) options for the creation of the segmenter instance
 	/// \return the document analyzer (ownership returned)
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer(
+	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzer(
 			const SegmenterInterface* segmenter,
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)
-	virtual QueryAnalyzerInterface* createQueryAnalyzer() const=0;
+	virtual QueryAnalyzerInstanceInterface* createQueryAnalyzer() const=0;
 
 	/// \brief Creates a document analyzer map object
 	/// \return the document analyzer map (ownership returned)

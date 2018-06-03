@@ -10,7 +10,7 @@
 #include "patternMatchProgramParser.hpp"
 #include "strus/lib/pattern_serialize.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerMapInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/base/programLexer.hpp"
@@ -416,7 +416,7 @@ struct FeatureDef
 
 static void parseDocumentPatternFeatureDef(
 	ProgramLexer& lexer,
-	DocumentAnalyzerInterface& analyzer,
+	DocumentAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
 	const std::string& featureName,
 	FeatureClass featureClass)
@@ -478,7 +478,7 @@ static void parseDocumentPatternFeatureDef(
 
 static void parseDocumentFeatureDef(
 	ProgramLexer& lexer,
-	DocumentAnalyzerInterface& analyzer,
+	DocumentAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
 	const std::string& featureName,
 	FeatureClass featureClass)
@@ -645,10 +645,10 @@ static bool loadPatternMatcherProgramWithLexer(
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern match program with lexer: %s"), *errorhnd, false);
 }
 
-template <class AnalyzerInterface>
+template <class AnalyzerInstanceInterface>
 static void parseAnalyzerPatternMatchProgramDef(
 		ProgramLexer& lexer,
-		AnalyzerInterface& analyzer,
+		AnalyzerInstanceInterface& analyzer,
 		const TextProcessorInterface* textproc,
 		const std::string& patternModuleName,
 		const std::string& patternTypeName,
@@ -812,7 +812,7 @@ static std::string getContentTypeElem( const char* key, const std::string& val)
 	return std::string();
 }
 
-static void loadIncludes( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, ErrorBufferInterface* errorhnd)
+static void loadIncludes( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, ErrorBufferInterface* errorhnd)
 {
 	std::set<std::string> visited;
 	std::vector<std::pair<std::string,std::string> > include_contents;
@@ -866,7 +866,7 @@ static analyzer::DocumentClass parseDocumentClass( ProgramLexer& lexer)
 	return analyzer::DocumentClass( mimeType, encoding, scheme);
 }
 
-static void loadContentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, ErrorBufferInterface* errorhnd)
+static void loadContentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, ErrorBufferInterface* errorhnd)
 {
 	ProgramLexem cur;
 	if (!header.arg.empty())
@@ -890,7 +890,7 @@ static void loadContentSection( ProgramLexer& lexer, const SectionHeader& header
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-static void loadDocumentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, ErrorBufferInterface* errorhnd)
+static void loadDocumentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, ErrorBufferInterface* errorhnd)
 {
 	if (!header.arg.empty())
 	{
@@ -918,7 +918,7 @@ static void loadDocumentSection( ProgramLexer& lexer, const SectionHeader& heade
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-static void loadAggregatorSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+static void loadAggregatorSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	if (!header.arg.empty())
 	{
@@ -954,7 +954,7 @@ static void loadAggregatorSection( ProgramLexer& lexer, const SectionHeader& hea
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-static void loadPatternMatchSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+static void loadPatternMatchSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	std::string patternModuleName = header.arg.empty() ? std::string() : header.arg[0];
 	if (header.arg.size() > 2)
@@ -980,7 +980,7 @@ static void loadPatternMatchSection( ProgramLexer& lexer, const SectionHeader& h
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-static void loadFeatureSection( ProgramLexer& lexer, const FeatureClass& featclass, DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+static void loadFeatureSection( ProgramLexer& lexer, const FeatureClass& featclass, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	do
 	{
@@ -1091,7 +1091,7 @@ static void reportErrorWithLocation( ErrorBufferInterface* errorhnd, ProgramLexe
 	}
 }
 
-bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
+bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& source, bool allowIncludes, ErrorBufferInterface* errorhnd)
 {
 	ProgramLexer lexer( source.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
 	try
@@ -1161,7 +1161,7 @@ bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInterface* analyz
 	}
 }
 
-bool strus::loadDocumentAnalyzerProgramFile( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
+bool strus::loadDocumentAnalyzerProgramFile( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -1212,7 +1212,7 @@ bool strus::loadDocumentAnalyzerMapSource(
 			{
 				throw std::runtime_error( _TXT("unexpected token, semicolon expected after analyzer map declaration"));
 			}
-			strus::Reference<DocumentAnalyzerInterface> analyzer( analyzermap->createAnalyzer( doctype.mimeType(), doctype.scheme()));
+			strus::Reference<DocumentAnalyzerInstanceInterface> analyzer( analyzermap->createAnalyzer( doctype.mimeType(), doctype.scheme()));
 			if (!analyzer.get()) throw std::runtime_error( errorhnd->fetchError());
 			if (!loadDocumentAnalyzerProgramFile( analyzer.get(), textproc, programName, errorhnd))
 			{

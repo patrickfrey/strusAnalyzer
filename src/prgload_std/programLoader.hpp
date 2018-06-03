@@ -17,7 +17,7 @@ namespace strus {
 /// \brief Forward declaration
 class ErrorBufferInterface;
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class DocumentAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 /// \brief Forward declaration
@@ -74,7 +74,7 @@ class DocumentAnalyzerMapInterface;
 	SelectionDef         :- # Abbrev XPath expression: Selection of the content that is used as input for the building of this feature
 */
 bool loadDocumentAnalyzerProgramSource(
-		DocumentAnalyzerInterface* analyzer,
+		DocumentAnalyzerInstanceInterface* analyzer,
 		const TextProcessorInterface* textproc,
 		const std::string& source,
 		bool allowIncludes,
@@ -86,7 +86,7 @@ bool loadDocumentAnalyzerProgramSource(
 /// \param[in] filename the name of the file to parse in a domain specific language (see the syntax description for 'loadDocumentAnalyzerProgramSource')
 /// \param[in,out] errorhnd interface for reporting errors and exceptions occurred
 bool loadDocumentAnalyzerProgramFile(
-		DocumentAnalyzerInterface* analyzer,
+		DocumentAnalyzerInstanceInterface* analyzer,
 		const TextProcessorInterface* textproc,
 		const std::string& filename,
 		ErrorBufferInterface* errorhnd);

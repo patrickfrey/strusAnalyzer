@@ -35,7 +35,7 @@ static std::pair<std::string,std::string> getMimeSchemeKeyParts( const std::stri
 	return std::pair<std::string,std::string>( std::string(key.c_str(),ki-key.c_str()), ki+1);
 }
 
-DocumentAnalyzerInterface* DocumentAnalyzerMap::createAnalyzer(
+DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::createAnalyzer(
 		const std::string& mimeType,
 		const std::string& scheme) const
 {
@@ -55,7 +55,7 @@ DocumentAnalyzerInterface* DocumentAnalyzerMap::createAnalyzer(
 void DocumentAnalyzerMap::addAnalyzer(
 		const std::string& mimeType_,
 		const std::string& scheme_,
-		DocumentAnalyzerInterface* analyzer_)
+		DocumentAnalyzerInstanceInterface* analyzer_)
 {
 	try
 	{
@@ -73,7 +73,7 @@ void DocumentAnalyzerMap::addAnalyzer(
 	CATCH_ERROR_MAP( _TXT("error adding analyzer to map: %s"), *m_errorhnd);
 }
 
-const DocumentAnalyzerInterface* DocumentAnalyzerMap::getAnalyzer( const analyzer::DocumentClass& dclass) const
+const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const analyzer::DocumentClass& dclass) const
 {
 	Map::const_iterator ai;
 	if (dclass.scheme().empty())
@@ -101,7 +101,7 @@ analyzer::Document DocumentAnalyzerMap::analyze(
 {
 	try
 	{
-		const DocumentAnalyzerInterface* analyzer = getAnalyzer( dclass);
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
 		if (!analyzer)
 		{
 			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
@@ -117,7 +117,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerMap::createContext(
 {
 	try
 	{
-		const DocumentAnalyzerInterface* analyzer = getAnalyzer( dclass);
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
 		if (!analyzer)
 		{
 			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),

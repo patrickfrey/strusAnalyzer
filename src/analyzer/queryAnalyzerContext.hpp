@@ -19,7 +19,7 @@
 namespace strus
 {
 /// \brief Forward declaration
-class QueryAnalyzer;
+class QueryAnalyzerInstance;
 /// \brief Forward declaration
 class ErrorBufferInterface;
 /// \brief Forward declaration
@@ -30,7 +30,7 @@ class QueryAnalyzerContext
 	:public QueryAnalyzerContextInterface
 {
 public:
-	QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_);
+	QueryAnalyzerContext( const QueryAnalyzerInstance* analyzer_, ErrorBufferInterface* errorhnd_);
 
 	virtual ~QueryAnalyzerContext();
 
@@ -69,7 +69,7 @@ public:
 	};
 
 private:
-	const QueryAnalyzer* m_analyzer;
+	const QueryAnalyzerInstance* m_analyzer;
 	std::vector<Field> m_fields;
 	std::vector<Group> m_groups;
 	ErrorBufferInterface* m_errorhnd;

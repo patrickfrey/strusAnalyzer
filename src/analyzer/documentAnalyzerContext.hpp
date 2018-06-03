@@ -7,7 +7,7 @@
  */
 #ifndef _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
-#include "documentAnalyzer.hpp"
+#include "documentAnalyzerInstance.hpp"
 #include "segmentProcessor.hpp"
 #include "patternMatchContextMap.hpp"
 #include "patternFeatureConfigMap.hpp"
@@ -26,7 +26,7 @@ class DocumentAnalyzerContext
 {
 public:
 	DocumentAnalyzerContext(
-			const DocumentAnalyzer* analyzer_,
+			const DocumentAnalyzerInstance* analyzer_,
 			const analyzer::DocumentClass& dclass,
 			ErrorBufferInterface* errorhnd);
 	virtual ~DocumentAnalyzerContext();
@@ -56,7 +56,7 @@ private:
 	SegmentProcessor m_segmentProcessor;
 	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
 	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
-	const DocumentAnalyzer* m_analyzer;
+	const DocumentAnalyzerInstance* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
 	std::vector<SegmenterStackElement> m_segmenterstack;
 	bool m_eof;

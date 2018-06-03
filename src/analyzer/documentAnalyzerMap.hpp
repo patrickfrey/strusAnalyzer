@@ -10,7 +10,7 @@
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_MAP_IMPLEMENTATION_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_MAP_IMPLEMENTATION_HPP_INCLUDED
 #include "strus/documentAnalyzerMapInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/reference.hpp"
 #include "strus/analyzer/documentClass.hpp"
@@ -38,14 +38,14 @@ public:
 		:m_errorhnd(errorhnd_),m_objbuilder(objbuilder_),m_mimeTypeAnalyzerMap(),m_schemeAnalyzerMap(),m_analyzers(){}
 	virtual ~DocumentAnalyzerMap(){}
 
-	virtual DocumentAnalyzerInterface* createAnalyzer(
+	virtual DocumentAnalyzerInstanceInterface* createAnalyzer(
 			const std::string& mimeType,
 			const std::string& scheme) const;
 
 	virtual void addAnalyzer(
 			const std::string& mimeType_,
 			const std::string& scheme_,
-			DocumentAnalyzerInterface* analyzer_);
+			DocumentAnalyzerInstanceInterface* analyzer_);
 
 	virtual analyzer::Document analyze(
 			const std::string& content,
@@ -57,11 +57,11 @@ public:
 	virtual analyzer::DocumentAnalyzerMapView view() const;
 
 private:
-	const DocumentAnalyzerInterface* getAnalyzer( const analyzer::DocumentClass& dclass) const;
+	const DocumentAnalyzerInstanceInterface* getAnalyzer( const analyzer::DocumentClass& dclass) const;
 
 private:
-	typedef strus::Reference<DocumentAnalyzerInterface> DocumentAnalyzerReference;
-	typedef std::map<std::string,const DocumentAnalyzerInterface*> Map;
+	typedef strus::Reference<DocumentAnalyzerInstanceInterface> DocumentAnalyzerReference;
+	typedef std::map<std::string,const DocumentAnalyzerInstanceInterface*> Map;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

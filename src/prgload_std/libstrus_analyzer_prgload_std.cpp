@@ -48,7 +48,7 @@ bool strus::is_DocumentAnalyzer_program( const std::string& source, ErrorBufferI
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot determine if file is an analyzer DSL program: %s"), *errorhnd, false);
 }
 
-DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -63,7 +63,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInterf
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot load analyzer from DSL program: %s"), *errorhnd, false);
 }
 
-DLL_PUBLIC bool strus::load_DocumentAnalyzer_programfile_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC bool strus::load_DocumentAnalyzer_programfile_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
 {
 	try
 	{

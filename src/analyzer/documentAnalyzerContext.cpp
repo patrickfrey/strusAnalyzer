@@ -46,7 +46,7 @@ static std::string contentCut( const char* str, std::size_t size, std::size_t le
 
 using namespace strus;
 
-DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzer* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd_)
+DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzerInstance* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd_)
 	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap(), errorhnd_)
 	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap(), errorhnd_)
 	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap(), errorhnd_)
@@ -89,7 +89,7 @@ void DocumentAnalyzerContext::putInput( const char* chunk, std::size_t chunksize
 
 void DocumentAnalyzerContext::processAggregatedMetadata( analyzer::Document& res) const
 {
-	std::vector<DocumentAnalyzer::StatisticsConfig>::const_iterator
+	std::vector<DocumentAnalyzerInstance::StatisticsConfig>::const_iterator
 		si = m_analyzer->statisticsConfigs().begin(), se = m_analyzer->statisticsConfigs().end();
 	DEBUG_OPEN( "metadata");
 	for (; si != se; ++si)
@@ -186,7 +186,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					{
 						if (featidx >= OfsSubContent)
 						{
-							const DocumentAnalyzer::SubSegmenterDef* subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
+							const DocumentAnalyzerInstance::SubSegmenterDef* subsegmenterdef = m_analyzer->subsegmenter( featidx - OfsSubContent);
 							if (subsegmenterdef)
 							{
 								DEBUG_EVENT2( "subcontent", "%s; charset=%s", subsegmenterdef->documentClass.mimeType().c_str(), subsegmenterdef->documentClass.encoding().c_str());

@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Interface for a parametrizable document analyzer instance
-/// \file documentAnalyzerInterface.hpp
+/// \file documentAnalyzerInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/document.hpp"
@@ -40,11 +40,11 @@ class PatternMatcherInstanceInterface;
 class PatternLexerInstanceInterface;
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
-class DocumentAnalyzerInterface
+class DocumentAnalyzerInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~DocumentAnalyzerInterface(){}
+	virtual ~DocumentAnalyzerInstanceInterface(){}
 
 	/// \brief Declare a feature to be put into the search index
 	/// \param[in] type type name of the feature

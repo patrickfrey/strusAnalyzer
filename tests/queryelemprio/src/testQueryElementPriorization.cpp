@@ -13,7 +13,7 @@
 #include "strus/lib/error.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
+#include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/functionView.hpp"
@@ -98,7 +98,7 @@ static std::vector<ConceptLexem> getConceptLexems( const TestDescription* descr)
 	return rt;
 }
 
-static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnalyzerInterface* analyzer, strus::TextProcessorInterface* textproc)
+static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnalyzerInstanceInterface* analyzer, strus::TextProcessorInterface* textproc)
 {
 	// Define BaseFeature:
 	const strus::TokenizerFunctionInterface* tokenizer( textproc->getTokenizer( descr->basefeat.tokenizer));
@@ -206,7 +206,7 @@ static void printDebugTraceMessages( std::ostream& out)
 static void runTest( const TestDescription* descr, strus::TextProcessorInterface* textproc)
 {
 	std::cerr << "run test " << descr->name << std::endl;
-	strus::local_ptr<strus::QueryAnalyzerInterface> analyzer( strus::createQueryAnalyzer( g_errorhnd));
+	strus::local_ptr<strus::QueryAnalyzerInstanceInterface> analyzer( strus::createQueryAnalyzer( g_errorhnd));
 	if (!analyzer.get()) throw std::runtime_error( g_errorhnd->fetchError());
 	defineQueryAnalysis( descr, analyzer.get(), textproc);
 	strus::local_ptr<strus::QueryAnalyzerContextInterface> ctx( analyzer->createContext());

@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Parameterizable query analyzer interface
-/// \file queryAnalyzerInterface.hpp
+/// \file queryAnalyzerInstanceInterface.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_INTERFACE_HPP_INCLUDED
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -28,11 +28,11 @@ class PatternMatcherInstanceInterface;
 class PatternLexerInstanceInterface;
 
 /// \brief Defines a program for analyzing chunks of a query
-class QueryAnalyzerInterface
+class QueryAnalyzerInstanceInterface
 {
 public:
 	/// \brief Destructor
-	virtual ~QueryAnalyzerInterface(){}
+	virtual ~QueryAnalyzerInstanceInterface(){}
 
 	/// \brief Declare an element to be retrieved from the search index
 	/// \param[in] termtype term type name of the feature

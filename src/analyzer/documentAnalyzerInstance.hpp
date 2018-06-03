@@ -5,9 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-#ifndef _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
-#define _STRUS_DOCUMENT_ANALYZER_HPP_INCLUDED
-#include "strus/documentAnalyzerInterface.hpp"
+#ifndef _STRUS_DOCUMENT_ANALYZER_INSTANCE_HPP_INCLUDED
+#define _STRUS_DOCUMENT_ANALYZER_INSTANCE_HPP_INCLUDED
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
@@ -36,17 +36,17 @@ class SegmenterInstanceInterface;
 class TextProcessorInterface;
 
 /// \brief Document analyzer implementation
-class DocumentAnalyzer
-	:public DocumentAnalyzerInterface
+class DocumentAnalyzerInstance
+	:public DocumentAnalyzerInstanceInterface
 {
 public:
-	DocumentAnalyzer(
+	DocumentAnalyzerInstance(
 			const TextProcessorInterface* textproc_,
 			const SegmenterInterface* segmenter_,
 			const analyzer::SegmenterOptions& opts,
 			ErrorBufferInterface* errorhnd);
 
-	virtual ~DocumentAnalyzer();
+	virtual ~DocumentAnalyzerInstance();
 
 	virtual void addSearchIndexFeature(
 			const std::string& type,

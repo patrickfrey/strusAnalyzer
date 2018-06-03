@@ -7,7 +7,7 @@
  */
 #ifndef _STRUS_QUERY_ANALYZER_HPP_INCLUDED
 #define _STRUS_QUERY_ANALYZER_HPP_INCLUDED
-#include "strus/queryAnalyzerInterface.hpp"
+#include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
@@ -26,11 +26,11 @@ namespace strus
 class ErrorBufferInterface;
 
 /// \brief Query analyzer implementation
-class QueryAnalyzer
-	:public QueryAnalyzerInterface
+class QueryAnalyzerInstance
+	:public QueryAnalyzerInstanceInterface
 {
 public:
-	explicit QueryAnalyzer( ErrorBufferInterface* errorhnd)
+	explicit QueryAnalyzerInstance( ErrorBufferInterface* errorhnd)
 		:m_featureConfigMap()
 		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 		,m_fieldTypeFeatureMap()
@@ -38,7 +38,7 @@ public:
 		,m_featureTypePriorityMap()
 		,m_searchIndexTermTypeSet()
 		,m_errorhnd(errorhnd){}
-	virtual ~QueryAnalyzer(){}
+	virtual ~QueryAnalyzerInstance(){}
 
 	virtual void addElement(
 			const std::string& termtype,

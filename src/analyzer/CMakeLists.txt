@@ -11,10 +11,10 @@ set(source_files
 	patternMatchConfigMap.cpp
 	patternMatchContextMap.cpp
 	segmentProcessor.cpp
-	documentAnalyzer.cpp
+	documentAnalyzerInstance.cpp
 	documentAnalyzerContext.cpp
 	documentAnalyzerMap.cpp
-	queryAnalyzer.cpp
+	queryAnalyzerInstance.cpp
 	queryAnalyzerContext.cpp
 )
 

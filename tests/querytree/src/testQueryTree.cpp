@@ -10,7 +10,7 @@
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
+#include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/functionView.hpp"
@@ -258,7 +258,7 @@ static int charArrayLength( const char** ar)
 	return aidx;
 }
 
-static void defineQueryAnalysis( strus::QueryAnalyzerInterface* qana, strus::TextProcessorInterface* textproc, int typemax, const char** desttypes)
+static void defineQueryAnalysis( strus::QueryAnalyzerInstanceInterface* qana, strus::TextProcessorInterface* textproc, int typemax, const char** desttypes)
 {
 	int didx = charArrayLength( desttypes);
 	if (!didx) throw std::runtime_error("empty feature type definitions");
@@ -450,7 +450,7 @@ static void printInstructions( std::ostream& out, const strus::analyzer::QueryTe
 }
 #endif
 
-static QueryTree analyzeQueryTree( const strus::QueryAnalyzerInterface* qana, const QueryTree& qt)
+static QueryTree analyzeQueryTree( const strus::QueryAnalyzerInstanceInterface* qana, const QueryTree& qt)
 {
 	strus::local_ptr<strus::QueryAnalyzerContextInterface> ctx( qana->createContext());
 	if (!ctx.get()) throw std::runtime_error( g_errorhnd->fetchError());
@@ -593,7 +593,7 @@ int main( int argc, const char* argv[])
 
 		strus::local_ptr<strus::TextProcessorInterface> textproc( createTextProcessor( g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( g_errorhnd->fetchError());
-		strus::local_ptr<strus::QueryAnalyzerInterface> analyzer( strus::createQueryAnalyzer( g_errorhnd));
+		strus::local_ptr<strus::QueryAnalyzerInstanceInterface> analyzer( strus::createQueryAnalyzer( g_errorhnd));
 		if (!analyzer.get()) throw std::runtime_error( g_errorhnd->fetchError());
 		defineQueryAnalysis( analyzer.get(), textproc.get(), typemax, desttypes);
 

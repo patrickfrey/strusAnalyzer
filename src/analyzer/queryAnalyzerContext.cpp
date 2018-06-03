@@ -8,7 +8,7 @@
 /// \brief Implementation of the execution context of a query analyzer
 /// \file queryAnalyzerContext.hpp
 #include "queryAnalyzerContext.hpp"
-#include "queryAnalyzer.hpp"
+#include "queryAnalyzerInstance.hpp"
 #include "segmentProcessor.hpp"
 #include "strus/errorCodes.hpp"
 #include "strus/errorBufferInterface.hpp"
@@ -38,7 +38,7 @@
 
 using namespace strus;
 
-QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_)
+QueryAnalyzerContext::QueryAnalyzerContext( const QueryAnalyzerInstance* analyzer_, ErrorBufferInterface* errorhnd_)
 	:m_analyzer(analyzer_)
 	,m_fields(),m_groups()
 	,m_errorhnd(errorhnd_)
@@ -427,8 +427,8 @@ static QueryTree buildQueryTree(
 
 std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFields() const
 {
-	typedef QueryAnalyzer::FieldTypePatternMap FieldTypePatternMap;
-	typedef QueryAnalyzer::FieldTypeFeatureMap FieldTypeFeatureMap;
+	typedef QueryAnalyzerInstance::FieldTypePatternMap FieldTypePatternMap;
+	typedef QueryAnalyzerInstance::FieldTypeFeatureMap FieldTypeFeatureMap;
 
 	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap(),m_errorhnd);
 	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap(),m_errorhnd);
@@ -518,13 +518,13 @@ static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const st
 
 static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
 		std::vector<SegmentProcessor::QueryElement>& elems,
-		const QueryAnalyzer::FeatureTypePriorityMap& pmap)
+		const QueryAnalyzerInstance::FeatureTypePriorityMap& pmap)
 {
 	std::vector<SegmentProcessor::QueryElement> rt;
 	std::vector<SegmentProcessor::QueryElement>::iterator ei = elems.begin(), ee = elems.end();
 	for (; ei != ee; ++ei)
 	{
-		QueryAnalyzer::FeatureTypePriorityMap::const_iterator mi = pmap.find( ei->type());
+		QueryAnalyzerInstance::FeatureTypePriorityMap::const_iterator mi = pmap.find( ei->type());
 		if (mi != pmap.end())
 		{
 			ei->setPriority( mi->second);

@@ -20,10 +20,10 @@
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/segmenterInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/contentStatisticsInterface.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
+#include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
 #include "private/internationalization.hpp"
@@ -117,12 +117,12 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
 	}
 
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const
+	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const
 	{
 		return strus::createDocumentAnalyzer( m_textproc.get(), segmenter, opts, m_errorhnd);
 	}
 
-	virtual QueryAnalyzerInterface* createQueryAnalyzer() const
+	virtual QueryAnalyzerInstanceInterface* createQueryAnalyzer() const
 	{
 		return strus::createQueryAnalyzer( m_errorhnd);
 	}

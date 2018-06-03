@@ -17,7 +17,7 @@ namespace strus {
 /// \brief Forward declaration
 class ErrorBufferInterface;
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class DocumentAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 /// \brief Forward declaration
@@ -28,14 +28,14 @@ class DocumentAnalyzerMapInterface;
 /// \param[in] source source with definitions
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool load_DocumentAnalyzer_program_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd);
+bool load_DocumentAnalyzer_program_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd);
 
 /// \brief Load a program given as source file name to an analyzer, recursively expanding include directives (C preprocessor style) at the beginning of the source to load
 /// \param[in,out] analyzer analyzer object to instrument
 /// \param[in] filename name of the file to load
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool load_DocumentAnalyzer_programfile_std( DocumentAnalyzerInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd);
+bool load_DocumentAnalyzer_programfile_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd);
 
 /// \brief Test if a file is an analyzer program file
 /// \param[in] textproc text processor interface to determine the path of the filename

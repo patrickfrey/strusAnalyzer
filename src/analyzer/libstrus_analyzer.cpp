@@ -6,17 +6,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "strus/lib/analyzer.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerMapInterface.hpp"
-#include "strus/queryAnalyzerInterface.hpp"
+#include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "documentAnalyzer.hpp"
+#include "documentAnalyzerInstance.hpp"
 #include "documentAnalyzerMap.hpp"
-#include "queryAnalyzer.hpp"
+#include "queryAnalyzerInstance.hpp"
 #include "strus/base/dll_tags.hpp"
 
 static bool g_intl_initialized = false;
@@ -24,7 +24,7 @@ static bool g_intl_initialized = false;
 using namespace strus;
 
 
-DLL_PUBLIC DocumentAnalyzerInterface*
+DLL_PUBLIC DocumentAnalyzerInstanceInterface*
 	strus::createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 {
 	try
@@ -34,13 +34,13 @@ DLL_PUBLIC DocumentAnalyzerInterface*
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new DocumentAnalyzer( textproc, segmenter, opts, errorhnd);
+		return new DocumentAnalyzerInstance( textproc, segmenter, opts, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create document analyzer: %s"), *errorhnd, 0);
 }
 
 
-DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC QueryAnalyzerInstanceInterface* strus::createQueryAnalyzer( ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -49,7 +49,7 @@ DLL_PUBLIC QueryAnalyzerInterface* strus::createQueryAnalyzer( ErrorBufferInterf
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new QueryAnalyzer( errorhnd);
+		return new QueryAnalyzerInstance( errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create query analyzer: %s"), *errorhnd, 0);
 }

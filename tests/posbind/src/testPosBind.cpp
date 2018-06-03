@@ -12,7 +12,7 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/textProcessorInterface.hpp"
@@ -81,7 +81,7 @@ struct FuncDef
 	}
 };
 
-static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, const strus::TextProcessorInterface* textproc)
+static void loadAnalyzerConfig( strus::DocumentAnalyzerInstanceInterface* analyzer, const strus::TextProcessorInterface* textproc)
 {
 	static const ConfigItem config[32] =
 	{
@@ -226,7 +226,7 @@ int main( int argc, const char* argv[])
 			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
 		const strus::TextProcessorInterface* textproc = objbuild->getTextProcessor();
 		const strus::SegmenterInterface* segmenter = textproc->getSegmenterByName( "textwolf");
-		strus::local_ptr<strus::DocumentAnalyzerInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
+		strus::local_ptr<strus::DocumentAnalyzerInstanceInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
 		loadAnalyzerConfig( analyzer.get(), textproc);
 
 		std::string inputsrc;

@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-#include "queryAnalyzer.hpp"
+#include "queryAnalyzerInstance.hpp"
 #include "queryAnalyzerContext.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
@@ -19,7 +19,7 @@
 
 using namespace strus;
 
-void QueryAnalyzer::addElement(
+void QueryAnalyzerInstance::addElement(
 		const std::string& termtype,
 		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -34,7 +34,7 @@ void QueryAnalyzer::addElement(
 	CATCH_ERROR_MAP( _TXT("error adding feature: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::addPatternLexem(
+void QueryAnalyzerInstance::addPatternLexem(
 		const std::string& termtype,
 		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
@@ -48,7 +48,7 @@ void QueryAnalyzer::addPatternLexem(
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::definePatternMatcherPostProc(
+void QueryAnalyzerInstance::definePatternMatcherPostProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternTermFeederInstanceInterface* feeder)
@@ -60,7 +60,7 @@ void QueryAnalyzer::definePatternMatcherPostProc(
 	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::definePatternMatcherPreProc(
+void QueryAnalyzerInstance::definePatternMatcherPreProc(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternLexerInstanceInterface* lexer,
@@ -79,7 +79,7 @@ void QueryAnalyzer::definePatternMatcherPreProc(
 	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::addElementFromPatternMatch(
+void QueryAnalyzerInstance::addElementFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
@@ -91,7 +91,7 @@ void QueryAnalyzer::addElementFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzer::declareElementPriority( const std::string& type, int priority)
+void QueryAnalyzerInstance::declareElementPriority( const std::string& type, int priority)
 {
 	try
 	{
@@ -100,13 +100,13 @@ void QueryAnalyzer::declareElementPriority( const std::string& type, int priorit
 	CATCH_ERROR_MAP( _TXT("error defining feature priority: %s"), *m_errorhnd);
 }
 
-QueryAnalyzerContextInterface* QueryAnalyzer::createContext() const
+QueryAnalyzerContextInterface* QueryAnalyzerInstance::createContext() const
 {
 	try
 	{
 		return new QueryAnalyzerContext( this, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in QueryAnalyzer::createContext: %s"), *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in QueryAnalyzerInstance::createContext: %s"), *m_errorhnd, 0);
 }
 
 static analyzer::QueryElementView getQueryElementView( const FeatureConfig& cfg)
@@ -121,7 +121,7 @@ static analyzer::QueryElementView getQueryElementView( const FeatureConfig& cfg)
 	return analyzer::QueryElementView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews);
 }
 
-analyzer::QueryAnalyzerView QueryAnalyzer::view() const
+analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const
 {
 	try
 	{

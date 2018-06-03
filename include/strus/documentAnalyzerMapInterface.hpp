@@ -22,7 +22,7 @@ namespace strus
 /// \brief Forward declaration
 class DocumentAnalyzerContextInterface;
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class DocumentAnalyzerInstanceInterface;
 
 /// \brief Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the strus IR engine
 class DocumentAnalyzerMapInterface
@@ -35,7 +35,7 @@ public:
 	/// \param[in] mimetype of the document for this analyzer, determines the document segmenter
 	/// \param[in] scheme scheme of the document to determine the segmenter options (can be empty meaning not defined)
 	/// \return the analyzer (with ownership)
-	virtual DocumentAnalyzerInterface* createAnalyzer(
+	virtual DocumentAnalyzerInstanceInterface* createAnalyzer(
 			const std::string& mimeType,
 			const std::string& scheme) const=0;
 
@@ -46,7 +46,7 @@ public:
 	virtual void addAnalyzer(
 			const std::string& mimeType_,
 			const std::string& scheme_,
-			DocumentAnalyzerInterface* analyzer_)=0;
+			DocumentAnalyzerInstanceInterface* analyzer_)=0;
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
