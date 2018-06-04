@@ -73,27 +73,27 @@ void DocumentAnalyzerMap::addAnalyzer(
 	CATCH_ERROR_MAP( _TXT("error adding analyzer to map: %s"), *m_errorhnd);
 }
 
-const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const analyzer::DocumentClass& dclass) const
+const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const std::string& mimeType, const std::string& scheme) const
 {
 	try
 	{
 		Map::const_iterator ai;
-		if (dclass.scheme().empty())
+		if (scheme.empty())
 		{
-			ai = m_mimeTypeAnalyzerMap.find( dclass.mimeType());
+			ai = m_mimeTypeAnalyzerMap.find( mimeType);
 		}
 		else
 		{
-			ai = m_schemeAnalyzerMap.find( getMimeSchemeKey( dclass.mimeType(), dclass.scheme()));
+			ai = m_schemeAnalyzerMap.find( getMimeSchemeKey( mimeType, scheme));
 			if (ai == m_schemeAnalyzerMap.end())
 			{
-				ai = m_mimeTypeAnalyzerMap.find( dclass.mimeType());
+				ai = m_mimeTypeAnalyzerMap.find( mimeType);
 			}
 		}
 		if (ai == m_mimeTypeAnalyzerMap.end())
 		{
 			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
-							dclass.mimeType().c_str(), dclass.scheme().c_str());
+							mimeType.c_str(), scheme.c_str());
 		}
 		return ai->second;
 	}
@@ -106,7 +106,7 @@ analyzer::Document DocumentAnalyzerMap::analyze(
 {
 	try
 	{
-		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.scheme());
 		if (!analyzer) return analyzer::Document();
 		return analyzer->analyze( content, dclass);
 	}
@@ -118,7 +118,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerMap::createContext(
 {
 	try
 	{
-		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.scheme());
 		if (!analyzer) return NULL;
 		return analyzer->createContext( dclass);
 	}

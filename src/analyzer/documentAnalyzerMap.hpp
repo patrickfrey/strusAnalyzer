@@ -43,12 +43,13 @@ public:
 			const std::string& scheme) const;
 
 	virtual void addAnalyzer(
-			const std::string& mimeType_,
-			const std::string& scheme_,
+			const std::string& mimeType,
+			const std::string& scheme,
 			DocumentAnalyzerInstanceInterface* analyzer_);
 
 	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
-			const analyzer::DocumentClass& dclass) const;
+			const std::string& mimeType,
+			const std::string& scheme) const;
 
 	virtual analyzer::Document analyze(
 			const std::string& content,

@@ -40,19 +40,20 @@ public:
 			const std::string& scheme) const=0;
 
 	/// \brief Declare a an analyzer to be used for the analysis of a specific document class
-	/// \param[in] mimetype_ of the document to process with this analyzer (must be defined)
-	/// \param[in] scheme_ scheme of the document to process with this analyzer (can be empty meaning not defined)
-	/// \param[in] analyzer_ analyzer to use for the defined class of documents (with ownership)
+	/// \param[in] mimetype of the document to process with this analyzer (must be defined)
+	/// \param[in] scheme scheme of the document to process with this analyzer (can be empty meaning not defined)
+	/// \param[in] analyzer analyzer to use for the defined class of documents (with ownership)
 	virtual void addAnalyzer(
-			const std::string& mimeType_,
-			const std::string& scheme_,
-			DocumentAnalyzerInstanceInterface* analyzer_)=0;
+			const std::string& mimeType,
+			const std::string& scheme,
+			DocumentAnalyzerInstanceInterface* analyzer)=0;
 
 	/// \brief Get the analyzer interface assigned to a document class
 	/// \param[in] dclass description of the content type and encoding to process
 	/// \return a reference to the analyzer interface
 	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
-			const analyzer::DocumentClass& dclass) const=0;
+			const std::string& mimeType,
+			const std::string& scheme) const=0;
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
