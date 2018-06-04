@@ -22,6 +22,13 @@ class DocumentAnalyzerInstanceInterface;
 class TextProcessorInterface;
 /// \brief Forward declaration
 class DocumentAnalyzerMapInterface;
+/// \brief Forward declaration
+class PatternLexerInstanceInterface;
+/// \brief Forward declaration
+class PatternMatcherInstanceInterface;
+/// \brief Forward declaration
+class PatternTermFeederInstanceInterface;
+
 
 /// \brief Load a program given as source without includes to an analyzer
 /// \param[in,out] analyzer analyzer object to instrument
@@ -71,6 +78,62 @@ bool load_DocumentAnalyzerMap_program(
 bool load_DocumentAnalyzerMap_programfile(
 		DocumentAnalyzerMapInterface* analyzermap,
 		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a pattern matcher program with a term feeder from source
+/// \param[in] textproc text processor interface to determine the path of filenames
+/// \param[in,out] feeder term feeder to instrument
+/// \param[in,out] matcher pattern matcher to instrument
+/// \param[in] content source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure
+bool load_PatternMatcher_program(
+		const TextProcessorInterface* textproc,
+		PatternTermFeederInstanceInterface* feeder,
+		PatternMatcherInstanceInterface* matcher,
+		const std::string& content,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a pattern matcher program with a term feeder from a resource file
+/// \param[in] textproc text processor interface to determine the path of filenames
+/// \param[in,out] feeder term feeder to instrument
+/// \param[in,out] matcher pattern matcher to instrument
+/// \param[in] filename file name of source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure
+bool load_PatternMatcher_programfile(
+		const TextProcessorInterface* textproc,
+		PatternTermFeederInstanceInterface* feeder,
+		PatternMatcherInstanceInterface* matcher,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a pattern matcher program with a lexer from source
+/// \param[in] textproc text processor interface to determine the path of filenames
+/// \param[in,out] lexer tokenization for the pattern matcher
+/// \param[in,out] matcher pattern matcher to instrument
+/// \param[in] content source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure
+bool load_PatternMatcher_program(
+		const TextProcessorInterface* textproc,
+		PatternLexerInstanceInterface* lexer,
+		PatternMatcherInstanceInterface* matcher,
+		const std::string& content,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a pattern matcher program with a lexer from a resource file
+/// \param[in] textproc text processor interface to determine the path of filenames
+/// \param[in,out] lexer tokenization for the pattern matcher
+/// \param[in,out] matcher pattern matcher to instrument
+/// \param[in] filename file name of source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure
+bool load_PatternMatcher_programfile(
+		const TextProcessorInterface* textproc,
+		PatternLexerInstanceInterface* lexer,
+		PatternMatcherInstanceInterface* matcher,
 		const std::string& filename,
 		ErrorBufferInterface* errorhnd);
 

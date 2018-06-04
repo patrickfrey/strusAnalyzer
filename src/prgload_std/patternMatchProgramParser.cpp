@@ -288,7 +288,7 @@ void PatternMatcherProgramParser::loadLexerRule( ProgramLexer& lexer, const std:
 			regex = parse_REGEX( rxptr);
 			lexer.skipto( rxptr);
 
-			if (lexer.next().isToken(TokEditDistance))
+			if (lexer.current().isToken(TokEditDistance))
 			{
 				//... edit distance operator "~1","~2",....
 				regex.append( lexer.current().value());

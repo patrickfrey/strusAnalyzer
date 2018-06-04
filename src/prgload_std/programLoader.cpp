@@ -340,7 +340,7 @@ static analyzer::FeatureOptions parseFeatureOptions( ProgramLexer& lexer)
 static std::string parseSelectorExpression( ProgramLexer& lexer)
 {
 	ProgramLexem cur = lexer.current();
-	if (cur.isString() || cur.isToken( TokPath))
+	if (cur.isString() || cur.isToken( TokPath) || cur.isToken( TokIdentifier))
 	{
 		std::string rt = cur.value();
 		lexer.next();
@@ -352,13 +352,34 @@ static std::string parseSelectorExpression( ProgramLexer& lexer)
 	}
 }
 
+static bool isFileNameChar( char ch)
+{
+	if ((ch|32) >= 'a' && (ch|32) <= 'z') return true;
+	if (ch >= '0' && ch <= '9') return true;
+	if (ch == '.') return true;
+	if (ch == '_') return true;
+	if (ch == '-') return true;
+	if (ch == '/') return true;
+	if (ch == '\\') return true;
+	return false;
+}
+
 static std::string parseFileName( ProgramLexer& lexer)
 {
 	ProgramLexem cur = lexer.current();
-	if (cur.isString() || cur.isToken( TokPath))
+	if (cur.isString() || cur.isToken( TokPath) || cur.isToken( TokIdentifier))
 	{
-		std::string rt = cur.value();
-		lexer.next();
+		const char* si = lexer.currentpos();
+		std::string rt;
+		for (; *si && isFileNameChar(*si) ; ++si)
+		{
+			rt.push_back( *si);
+		}
+		if (*si && (unsigned char)*si > 32)
+		{
+			throw strus::runtime_error(_TXT("illegal character in filename: ASCII %d"), (int)(unsigned int)(unsigned char)*si);
+		}
+		lexer.skipto( si);
 		return rt;
 	}
 	else
@@ -1109,6 +1130,8 @@ bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInstanceInterface
 		{
 			lexer.next();
 			SectionHeader header = parseSectionHeader( lexer);
+			if (lexer.current().isToken( TokOpenSquareBracket) || lexer.current().isEof()) continue;
+
 			if (isEqual( header.name, "Content"))
 			{
 				loadContentSection( lexer, header, analyzer, errorhnd);
@@ -1197,10 +1220,12 @@ bool strus::loadDocumentAnalyzerMapSource(
 				lexer.next();
 				if (strus::caseInsensitiveEquals( cmd, "analyze"))
 				{
+					if (doctype.defined()) throw std::runtime_error(_TXT("analyze <document class> defined twice (missing semicolon ';'?)"));
 					doctype = parseDocumentClass( lexer);
 				}
 				else if (strus::caseInsensitiveEquals( cmd, "program"))
 				{
+					if (!programName.empty()) throw std::runtime_error(_TXT("analyze <document class> defined twice (missing semicolon ';'?)"));
 					programName = parseFileName( lexer);
 				}
 				else
