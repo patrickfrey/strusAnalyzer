@@ -47,6 +47,9 @@ public:
 			const std::string& scheme_,
 			DocumentAnalyzerInstanceInterface* analyzer_);
 
+	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
+			const analyzer::DocumentClass& dclass) const;
+
 	virtual analyzer::Document analyze(
 			const std::string& content,
 			const analyzer::DocumentClass& dclass) const;
@@ -55,9 +58,6 @@ public:
 			const analyzer::DocumentClass& dclass) const;
 
 	virtual analyzer::DocumentAnalyzerMapView view() const;
-
-private:
-	const DocumentAnalyzerInstanceInterface* getAnalyzer( const analyzer::DocumentClass& dclass) const;
 
 private:
 	typedef strus::Reference<DocumentAnalyzerInstanceInterface> DocumentAnalyzerReference;

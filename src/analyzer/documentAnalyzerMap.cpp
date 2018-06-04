@@ -75,24 +75,29 @@ void DocumentAnalyzerMap::addAnalyzer(
 
 const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const analyzer::DocumentClass& dclass) const
 {
-	Map::const_iterator ai;
-	if (dclass.scheme().empty())
+	try
 	{
-		ai = m_mimeTypeAnalyzerMap.find( dclass.mimeType());
-	}
-	else
-	{
-		ai = m_schemeAnalyzerMap.find( getMimeSchemeKey( dclass.mimeType(), dclass.scheme()));
-		if (ai == m_schemeAnalyzerMap.end())
+		Map::const_iterator ai;
+		if (dclass.scheme().empty())
 		{
 			ai = m_mimeTypeAnalyzerMap.find( dclass.mimeType());
 		}
+		else
+		{
+			ai = m_schemeAnalyzerMap.find( getMimeSchemeKey( dclass.mimeType(), dclass.scheme()));
+			if (ai == m_schemeAnalyzerMap.end())
+			{
+				ai = m_mimeTypeAnalyzerMap.find( dclass.mimeType());
+			}
+		}
+		if (ai == m_mimeTypeAnalyzerMap.end())
+		{
+			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
+							dclass.mimeType().c_str(), dclass.scheme().c_str());
+		}
+		return ai->second;
 	}
-	if (ai == m_mimeTypeAnalyzerMap.end())
-	{
-		return NULL;
-	}
-	return ai->second;
+	CATCH_ERROR_MAP_RETURN( _TXT("error getting the analyzer for a document class: %s"), *m_errorhnd, NULL);
 }
 
 analyzer::Document DocumentAnalyzerMap::analyze(
@@ -102,11 +107,7 @@ analyzer::Document DocumentAnalyzerMap::analyze(
 	try
 	{
 		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
-		if (!analyzer)
-		{
-			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
-							dclass.mimeType().c_str(), dclass.scheme().c_str());
-		}
+		if (!analyzer) return analyzer::Document();
 		return analyzer->analyze( content, dclass);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error analyzing document: %s"), *m_errorhnd, analyzer::Document());
@@ -118,11 +119,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerMap::createContext(
 	try
 	{
 		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass);
-		if (!analyzer)
-		{
-			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
-							dclass.mimeType().c_str(), dclass.scheme().c_str());
-		}
+		if (!analyzer) return NULL;
 		return analyzer->createContext( dclass);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating analyzer context: %s"), *m_errorhnd, NULL);

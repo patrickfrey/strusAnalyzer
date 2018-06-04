@@ -48,6 +48,12 @@ public:
 			const std::string& scheme_,
 			DocumentAnalyzerInstanceInterface* analyzer_)=0;
 
+	/// \brief Get the analyzer interface assigned to a document class
+	/// \param[in] dclass description of the content type and encoding to process
+	/// \return a reference to the analyzer interface
+	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
+			const analyzer::DocumentClass& dclass) const=0;
+
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze
 	/// \param[in] dclass description of the content type and encoding to process
