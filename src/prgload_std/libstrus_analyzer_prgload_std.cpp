@@ -59,7 +59,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzer_program_std( DocumentAnalyzerInstan
 			g_intl_initialized = true;
 		}
 		bool allowIncludes = false;
-		return loadDocumentAnalyzerProgramSource( analyzer, textproc, content, allowIncludes, errorhnd);
+		return loadDocumentAnalyzerProgramSource( analyzer, textproc, content, allowIncludes, errorhnd) && !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot load analyzer from DSL program: %s"), *errorhnd, false);
 }
@@ -73,7 +73,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzer_programfile_std( DocumentAnalyzerIn
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return loadDocumentAnalyzerProgramFile( analyzer, textproc, filename, errorhnd);
+		return loadDocumentAnalyzerProgramFile( analyzer, textproc, filename, errorhnd) && !errorhnd->hasError();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot load analyzer program file %s: %s"), filename.c_str(), *errorhnd, false);
 }
@@ -91,7 +91,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzerMap_program(
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return loadDocumentAnalyzerMapSource( analyzermap, textproc, source, errorhnd);
+		return loadDocumentAnalyzerMapSource( analyzermap, textproc, source, errorhnd) && !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load analyzer map source: %s"), *errorhnd, 0);
 }
@@ -109,7 +109,7 @@ DLL_PUBLIC bool strus::load_DocumentAnalyzerMap_programfile(
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return loadDocumentAnalyzerMapFile( analyzermap, textproc, filename, errorhnd);
+		return loadDocumentAnalyzerMapFile( analyzermap, textproc, filename, errorhnd) && !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load analyzer map file: %s"), *errorhnd, 0);
 }
@@ -125,7 +125,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_program(
 	{
 		PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
 		if (!parser.load( content)) return false;
-		return true;
+		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern matcher program source: %s"), *errorhnd, 0);
 }
@@ -146,7 +146,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
 		PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
 		if (!parser.load( source)) return false;
-		return true;
+		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to load pattern matcher program file '%s': %s"), filename.c_str(), *errorhnd, 0);
 }
@@ -162,7 +162,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_program(
 	{
 		PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
 		if (!parser.load( content)) return false;
-		return true;
+		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern matcher program source: %s"), *errorhnd, 0);
 }
@@ -183,7 +183,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
 		PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
 		if (!parser.load( source)) return false;
-		return true;
+		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to load pattern matcher program file '%s': %s"), filename.c_str(), *errorhnd, 0);
 }
