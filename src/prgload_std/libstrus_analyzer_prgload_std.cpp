@@ -7,6 +7,7 @@
  */
 /// \brief Exported functions for the program loader of the analyzer (load program in a domain specific language)
 #include "strus/lib/analyzer_prgload_std.hpp"
+#include "strus/lib/pattern_serialize.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "private/internationalization.hpp"
@@ -123,8 +124,18 @@ DLL_PUBLIC bool strus::load_PatternMatcher_program(
 {
 	try
 	{
-		PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
-		if (!parser.load( content)) return false;
+		if (strus::isPatternSerializerContent( content, errorhnd))
+		{
+			if (!strus::loadPatternMatcherFromSerialization( content, feeder, matcher, errorhnd))
+			{
+				throw strus::runtime_error(_TXT("failed to load pattern matcher from serialization: %s"), errorhnd->fetchError());
+			}
+		}
+		else
+		{
+			PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
+			if (!parser.load( content)) return false;
+		}
 		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern matcher program source: %s"), *errorhnd, 0);
@@ -144,8 +155,18 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 		if (filepath.empty() && errorhnd->hasError()) throw std::runtime_error( errorhnd->fetchError());
 		int ec = strus::readFile( filepath, source);
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
-		PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
-		if (!parser.load( source)) return false;
+		if (strus::isPatternSerializerContent( source, errorhnd))
+		{
+			if (!strus::loadPatternMatcherFromSerialization( source, feeder, matcher, errorhnd))
+			{
+				throw strus::runtime_error(_TXT("failed to load pattern matcher from serialization: %s"), errorhnd->fetchError());
+			}
+		}
+		else
+		{
+			PatternMatcherProgramParser parser( feeder, matcher, errorhnd);
+			if (!parser.load( source)) return false;
+		}
 		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to load pattern matcher program file '%s': %s"), filename.c_str(), *errorhnd, 0);
@@ -160,8 +181,18 @@ DLL_PUBLIC bool strus::load_PatternMatcher_program(
 {
 	try
 	{
-		PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
-		if (!parser.load( content)) return false;
+		if (strus::isPatternSerializerContent( content, errorhnd))
+		{
+			if (!strus::loadPatternMatcherFromSerialization( content, lexer, matcher, errorhnd))
+			{
+				throw strus::runtime_error(_TXT("failed to load pattern matcher from serialization: %s"), errorhnd->fetchError());
+			}
+		}
+		else
+		{
+			PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
+			if (!parser.load( content)) return false;
+		}
 		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern matcher program source: %s"), *errorhnd, 0);
@@ -181,8 +212,18 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 		if (filepath.empty() && errorhnd->hasError()) throw std::runtime_error( errorhnd->fetchError());
 		int ec = strus::readFile( filepath, source);
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
-		PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
-		if (!parser.load( source)) return false;
+		if (strus::isPatternSerializerContent( source, errorhnd))
+		{
+			if (!strus::loadPatternMatcherFromSerialization( source, lexer, matcher, errorhnd))
+			{
+				throw strus::runtime_error(_TXT("failed to load pattern matcher from serialization: %s"), errorhnd->fetchError());
+			}
+		}
+		else
+		{
+			PatternMatcherProgramParser parser( lexer, matcher, errorhnd);
+			if (!parser.load( source)) return false;
+		}
 		return !errorhnd->hasError();
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to load pattern matcher program file '%s': %s"), filename.c_str(), *errorhnd, 0);
