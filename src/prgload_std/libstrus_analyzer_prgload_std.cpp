@@ -22,6 +22,22 @@ static bool g_intl_initialized = false;
 
 using namespace strus;
 
+DLL_PUBLIC analyzer::DocumentClass strus::parse_DocumentClass(
+		const std::string& src,
+		ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return parseDocumentClass( src, errorhnd);
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("failed to parse document class: %s"), *errorhnd, analyzer::DocumentClass());
+}
+
 DLL_PUBLIC bool strus::is_DocumentAnalyzer_programfile( const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
 {
 	try
@@ -229,4 +245,32 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to load pattern matcher program file '%s': %s"), filename.c_str(), *errorhnd, 0);
 }
 
+DLL_PUBLIC bool strus::load_QueryAnalyzer_program_std( QueryAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		bool allowIncludes = false;
+		return loadQueryAnalyzerProgramSource( analyzer, textproc, content, allowIncludes, errorhnd) && !errorhnd->hasError();
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("cannot load analyzer from DSL program: %s"), *errorhnd, false);
+}
+
+DLL_PUBLIC bool strus::load_QueryAnalyzer_programfile_std( QueryAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return loadQueryAnalyzerProgramFile( analyzer, textproc, filename, errorhnd) && !errorhnd->hasError();
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot load analyzer program file %s: %s"), filename.c_str(), *errorhnd, false);
+}
 

@@ -89,7 +89,15 @@ public:
 	/// \brief Declare the priority of a query element, features with higher priority are ousting features with lower priority if they cover them completely with field position and length
 	/// \param[in] type type name of the feature
 	/// \param[in] priority of the feature
-	virtual void declareElementPriority( const std::string& type, int priority)=0;
+	virtual void declareTermPriority( const std::string& type, int priority)=0;
+
+	/// \brief Get the query term types declared in order of appearance in declarations
+	/// return the query field types
+	virtual std::vector<std::string> queryTermTypes() const=0;
+
+	/// \brief Get the query field types declared in order of appearance in declarations
+	/// return the query field types
+	virtual std::vector<std::string> queryFieldTypes() const=0;
 
 	/// \brief Create the context used for analyzing a query
 	/// \return the query analyzer context (with ownership)

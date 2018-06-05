@@ -163,7 +163,7 @@ static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnaly
 	termfeederinst.release();
 
 	analyzer->addElementFromPatternMatch( "pattern", "pattern", std::vector<strus::NormalizerFunctionInstanceInterface*>());
-	analyzer->declareElementPriority( "pattern", 1);
+	analyzer->declareTermPriority( "pattern", 1);
 }
 
 static std::string queryTermExpression_tostring( const strus::analyzer::QueryTermExpression* res)

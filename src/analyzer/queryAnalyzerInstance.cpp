@@ -91,13 +91,43 @@ void QueryAnalyzerInstance::addElementFromPatternMatch(
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerInstance::declareElementPriority( const std::string& type, int priority)
+void QueryAnalyzerInstance::declareTermPriority( const std::string& type, int priority)
 {
 	try
 	{
 		m_featureTypePriorityMap[ type] = priority;
 	}
 	CATCH_ERROR_MAP( _TXT("error defining feature priority: %s"), *m_errorhnd);
+}
+
+std::vector<std::string> QueryAnalyzerInstance::queryTermTypes() const
+{
+	try
+	{
+		std::vector<std::string> rt;
+		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
+		for (; fi != fe; ++fi)
+		{
+			rt.push_back( fi->name());
+		}
+		return rt;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error getting list of query term types: %s"), *m_errorhnd, std::vector<std::string>());
+}
+
+std::vector<std::string> QueryAnalyzerInstance::queryFieldTypes() const
+{
+	try
+	{
+		std::vector<std::string> rt;
+		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
+		for (; fi != fe; ++fi)
+		{
+			rt.push_back( fi->selectexpr());
+		}
+		return rt;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error getting list of query field types: %s"), *m_errorhnd, std::vector<std::string>());
 }
 
 QueryAnalyzerContextInterface* QueryAnalyzerInstance::createContext() const

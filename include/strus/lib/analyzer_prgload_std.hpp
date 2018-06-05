@@ -19,6 +19,8 @@ class ErrorBufferInterface;
 /// \brief Forward declaration
 class DocumentAnalyzerInstanceInterface;
 /// \brief Forward declaration
+class QueryAnalyzerInstanceInterface;
+/// \brief Forward declaration
 class TextProcessorInterface;
 /// \brief Forward declaration
 class DocumentAnalyzerMapInterface;
@@ -29,33 +31,75 @@ class PatternMatcherInstanceInterface;
 /// \brief Forward declaration
 class PatternTermFeederInstanceInterface;
 
+/// \brief parse the document class from source
+/// \param[in] src document class definition as string
+/// \param[in,out] errorhnd interface for reporting errors and exceptions occurred
+/// \return the document class structure
+analyzer::DocumentClass parse_DocumentClass(
+		const std::string& src,
+		ErrorBufferInterface* errorhnd);
 
-/// \brief Load a program given as source without includes to an analyzer
+/// \brief Load a program given as source without includes to a document analyzer
 /// \param[in,out] analyzer analyzer object to instrument
 /// \param[in] source source with definitions
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool load_DocumentAnalyzer_program_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& content, ErrorBufferInterface* errorhnd);
+bool load_DocumentAnalyzer_program_std(
+		DocumentAnalyzerInstanceInterface* analyzer,
+		const TextProcessorInterface* textproc,
+		const std::string& content,
+		ErrorBufferInterface* errorhnd);
 
-/// \brief Load a program given as source file name to an analyzer, recursively expanding include directives (C preprocessor style) at the beginning of the source to load
+/// \brief Load a program given as source file name to a document analyzer, recursively expanding include directives (C preprocessor style) at the beginning of the source to load
 /// \param[in,out] analyzer analyzer object to instrument
 /// \param[in] filename name of the file to load
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool load_DocumentAnalyzer_programfile_std( DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd);
+bool load_DocumentAnalyzer_programfile_std(
+		DocumentAnalyzerInstanceInterface* analyzer,
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a program given as source without includes to a document analyzer
+/// \param[in,out] analyzer analyzer object to instrument
+/// \param[in] source source with definitions
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure (inspect errorhnd for errors)
+bool load_QueryAnalyzer_program_std(
+		QueryAnalyzerInstanceInterface* analyzer,
+		const TextProcessorInterface* textproc,
+		const std::string& content,
+		ErrorBufferInterface* errorhnd);
+
+/// \brief Load a program given as source file name to a query analyzer, recursively expanding include directives (C preprocessor style) at the beginning of the source to load
+/// \param[in,out] analyzer analyzer object to instrument
+/// \param[in] filename name of the file to load
+/// \param[in,out] errorhnd buffer for reporting errors (exceptions)
+/// \return true on success, false on failure (inspect errorhnd for errors)
+bool load_QueryAnalyzer_programfile_std(
+		QueryAnalyzerInstanceInterface* analyzer,
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
 
 /// \brief Test if a file is an analyzer program file
 /// \param[in] textproc text processor interface to determine the path of the filename
 /// \param[in] filename name of the file to load
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool is_DocumentAnalyzer_programfile( const TextProcessorInterface* textproc, const std::string& filename, ErrorBufferInterface* errorhnd);
+bool is_DocumentAnalyzer_programfile(
+		const TextProcessorInterface* textproc,
+		const std::string& filename,
+		ErrorBufferInterface* errorhnd);
 
 /// \brief Test if a file is an analyzer program file
 /// \param[in] filename name of the file to load
 /// \param[in,out] errorhnd buffer for reporting errors (exceptions)
 /// \return true on success, false on failure (inspect errorhnd for errors)
-bool is_DocumentAnalyzer_program( const std::string& source, ErrorBufferInterface* errorhnd);
+bool is_DocumentAnalyzer_program(
+		const std::string& source,
+		ErrorBufferInterface* errorhnd);
 
 /// \brief Load a map of definitions describing how different document types are mapped to an analyzer program from its source
 /// \param[in,out] analyzermap map of analyzers to instrument
