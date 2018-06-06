@@ -16,6 +16,6 @@ link_directories(
 add_cppcheck( testPatternResultFormat testPatternResultFormat.cpp )
 
 add_executable( testPatternResultFormat testPatternResultFormat.cpp)
-target_link_libraries( testPatternResultFormat strus_pattern_resultformat strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testPatternResultFormat strus_pattern_resultformat strus_error strus_filelocator strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

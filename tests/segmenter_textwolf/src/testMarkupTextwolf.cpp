@@ -10,6 +10,8 @@
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/lib/textproc.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -30,6 +32,7 @@
 #undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -170,18 +173,18 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
+		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
+
 		std::string inpfile( argv[1]);
 		std::string tagfile( argv[2]);
 		std::string outfile( argv[3]);
 		std::string expfile( argv[4]);
 
-		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
-		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
 		strus::local_ptr<strus::SegmenterInterface> segmenter( strus::createSegmenter_textwolf( g_errorhnd));
 		if (!segmenter.get()) throw std::runtime_error("failed to create segmenter");
 		strus::local_ptr<strus::SegmenterInstanceInterface> segmenterInstance( segmenter->createInstance());

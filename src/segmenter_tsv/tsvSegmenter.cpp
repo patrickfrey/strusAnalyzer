@@ -329,7 +329,7 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 	try
 	{
 	strus::Reference<strus::utils::TextEncoderBase> encoder;
-	if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
+	if (!dclass.encoding().empty() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 	{
 		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 	}

@@ -17,6 +17,8 @@
 #include "strus/lib/error.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
@@ -46,6 +48,7 @@
 
 static strus::PseudoRandom g_random;
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 #ifdef STRUS_LOWLEVEL_DEBUG
 static void print( std::ostream& out, const std::string& val)
@@ -237,18 +240,18 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/ );
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
+		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
+
 		unsigned int nofRuns = getUintValue( argv[1]);
 		unsigned int maxSize = getUintValue( argv[2]);
 		const char* resourcePath = argv[3];
 
-		strus::local_ptr<strus::TextProcessorInterface>
-			textproc( strus::createTextProcessor( g_errorhnd));
-		textproc->addResourcePath( resourcePath);
+		g_fileLocator->addResourcePath( resourcePath);
 
 		unsigned int ri = 0;
 		for (; ri < nofRuns; ++ri)

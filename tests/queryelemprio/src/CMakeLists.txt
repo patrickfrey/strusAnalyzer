@@ -22,7 +22,7 @@ add_cppcheck( testQueryElementPriorization testQueryElementPriorization.cpp )
 add_executable( testQueryElementPriorization testQueryElementPriorization.cpp)
 target_link_libraries(
 	testQueryElementPriorization
-	strus_error strus_base strus_analyzer_objbuild  strus_analyzer strus_textproc  strusanalyzer_private_utils strus_pattern_test strus_pattern_termfeeder
+	strus_error strus_filelocator strus_base strus_analyzer_objbuild  strus_analyzer strus_textproc  strusanalyzer_private_utils strus_pattern_test strus_pattern_termfeeder
 	${Boost_LIBRARIES} ${Intl_LIBRARIES}
 )
 

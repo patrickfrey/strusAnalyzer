@@ -19,6 +19,6 @@ link_directories(
 add_cppcheck( testTokenizerRegex testTokenizerRegex.cpp )
 
 add_executable( testTokenizerRegex testTokenizerRegex.cpp)
-target_link_libraries( testTokenizerRegex strus_error strus_textproc ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testTokenizerRegex strus_error strus_filelocator strus_textproc ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

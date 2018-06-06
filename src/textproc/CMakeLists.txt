@@ -73,6 +73,7 @@ target_link_libraries(
 	strus_aggregator_set
 	strus_pattern_termfeeder
 	strusanalyzer_private_utils
+	strus_filelocator
 	strus_base )
 
 set_target_properties(

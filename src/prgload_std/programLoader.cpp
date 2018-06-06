@@ -630,7 +630,7 @@ static void parseQueryElementDef(
 	featuredef.parseTokenizer( lexer, textproc);
 
 	// [4] Parse selection expression:
-	if (!lexer.current().isString() || !lexer.current().isToken(TokIdentifier))
+	if (!lexer.current().isString() && !lexer.current().isToken(TokIdentifier))
 	{
 		throw strus::runtime_error( _TXT("string or identifier expected as field name in query element definition"));
 	}
@@ -650,6 +650,7 @@ static void parseQueryElementDef(
 			break;
 	}
 	featuredef.release();
+	lexer.next();
 }
 
 struct SectionHeader
@@ -958,24 +959,19 @@ static void loadIncludes( QueryAnalyzerInstanceInterface* analyzer, const TextPr
 	}
 }
 
-static analyzer::DocumentClass parseDocumentClass_( ProgramLexer& lexer)
+static analyzer::DocumentClass parseDocumentClass_( const std::string& value)
 {
-	ProgramLexem cur = lexer.current();
-	if (!cur.isString())
-	{
-		throw strus::runtime_error( _TXT("expected document class as string instead of %s at start of sub content definition"), tokenName( lexer.current()));
-	}
-	std::string mimeType = getContentTypeElem( 0, cur.value());
+	std::string mimeType = getContentTypeElem( 0, value);
 	if (mimeType.empty())
 	{
-		mimeType = getContentTypeElem( "content", cur.value());
+		mimeType = getContentTypeElem( "content", value);
 	}
-	std::string encoding = getContentTypeElem( "charset", cur.value());
+	std::string encoding = getContentTypeElem( "charset", value);
 	if (encoding.empty())
 	{
-		encoding = getContentTypeElem( "encoding", cur.value());
+		encoding = getContentTypeElem( "encoding", value);
 	}
-	std::string scheme = getContentTypeElem( "scheme", cur.value());
+	std::string scheme = getContentTypeElem( "scheme", value);
 
 	if (isEqual( mimeType,"xml") || isEqual( mimeType,"text/xml"))
 	{
@@ -989,8 +985,19 @@ static analyzer::DocumentClass parseDocumentClass_( ProgramLexer& lexer)
 	{
 		mimeType = "text/tab-separated-values";
 	}
-	lexer.next();
 	return analyzer::DocumentClass( mimeType, encoding, scheme);
+}
+
+static analyzer::DocumentClass parseDocumentClass_( ProgramLexer& lexer)
+{
+	ProgramLexem cur = lexer.current();
+	if (!cur.isString())
+	{
+		throw strus::runtime_error( _TXT("expected document class as string instead of %s at start of sub content definition"), tokenName( lexer.current()));
+	}
+	analyzer::DocumentClass rt = parseDocumentClass_( cur.value());
+	lexer.next();
+	return rt;
 }
 
 static void loadContentSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, ErrorBufferInterface* errorhnd)
@@ -1538,11 +1545,10 @@ analyzer::DocumentClass strus::parseDocumentClass(
 		const std::string& src,
 		ErrorBufferInterface* errorhnd)
 {
-	ProgramLexer lexer( src.c_str(), g_eolncomment, g_tokens, g_errtokens, errorhnd);
 	try
 	{
 		if (errorhnd->hasError()) return analyzer::DocumentClass();
-		return parseDocumentClass_( lexer);
+		return parseDocumentClass_( src);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error parsing document class '%s': %s"), src.c_str(), *errorhnd, analyzer::DocumentClass());
 }

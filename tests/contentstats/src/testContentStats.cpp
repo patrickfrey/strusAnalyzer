@@ -11,6 +11,8 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/contentstats_std.hpp"
 #include "strus/lib/detector_std.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/contentStatisticsInterface.hpp"
 #include "strus/contentStatisticsContextInterface.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
@@ -35,9 +37,8 @@
 #include <string>
 #include <stdexcept>
 
-#undef STRUS_LOWLEVEL_DEBUG
-
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -150,18 +151,18 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/ );
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+
 		const char* dataDir = argv[1];
 		std::string mimeType = argv[2];
 		const char* charset = argv[3];
 
-		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error("unable to create text processor");
-		textproc->addResourcePath( dataDir);
+		g_fileLocator->addResourcePath( dataDir);
 
 		strus::local_ptr<strus::DocumentClassDetectorInterface> detector( strus::createDetector_std( textproc.get(), g_errorhnd));
 		if (!detector.get()) throw std::runtime_error("unable to create document class detector");

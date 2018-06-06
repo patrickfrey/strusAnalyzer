@@ -9,6 +9,8 @@
 #include "strus/lib/textproc.hpp"
 #include "strus/lib/analyzer.hpp"
 #include "strus/lib/error.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
@@ -39,6 +41,7 @@
 #undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -579,11 +582,13 @@ int main( int argc, const char* argv[])
 		int ec = strus::createDir( outputdir, false);
 		if (ec) throw std::runtime_error( strus::string_format( "failed to create output directory '%s'", outputdir.c_str()));
 
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
+		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
+
 		int nofTests = parseInt( argv[2]);
 		int maxTreeSize = parseInt( argv[3]);
 		int typemax = (int)(std::sqrt(maxTreeSize+1));
@@ -591,8 +596,6 @@ int main( int argc, const char* argv[])
 		int valuemax = maxTreeSize+1;
 		static const char* desttypes[] = { "even", "odd", 0 };
 
-		strus::local_ptr<strus::TextProcessorInterface> textproc( createTextProcessor( g_errorhnd));
-		if (!textproc.get()) throw std::runtime_error( g_errorhnd->fetchError());
 		strus::local_ptr<strus::QueryAnalyzerInstanceInterface> analyzer( strus::createQueryAnalyzer( g_errorhnd));
 		if (!analyzer.get()) throw std::runtime_error( g_errorhnd->fetchError());
 		defineQueryAnalysis( analyzer.get(), textproc.get(), typemax, desttypes);

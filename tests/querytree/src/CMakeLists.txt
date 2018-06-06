@@ -22,7 +22,7 @@ add_cppcheck( testQueryTree testQueryTree.cpp )
 add_executable( testQueryTree testQueryTree.cpp)
 target_link_libraries(
 	testQueryTree
-	strus_error strus_base strus_analyzer_objbuild  strus_analyzer strus_textproc  strusanalyzer_private_utils 
+	strus_error strus_base strus_filelocator strus_analyzer_objbuild  strus_analyzer strus_textproc  strusanalyzer_private_utils 
 	${Boost_LIBRARIES} ${Intl_LIBRARIES}
 )
 

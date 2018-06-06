@@ -8,7 +8,9 @@
 /// \brief Test of document analysis with a focus of binding terms to ordinal positions
 #include "strus/lib/analyzer_objbuild.hpp"
 #include "strus/lib/error.hpp"
+#include "strus/lib/filelocator.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
@@ -37,6 +39,7 @@
 
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -204,10 +207,10 @@ int main( int argc, const char* argv[])
 			debugtrace->enable( "pattern");
 		}
 		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, debugtrace);
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+
 		std::string inputfile( argv[ argi]);
 		std::string expectedfile( argv[ argi+1]);
 		std::string outputfile;
@@ -223,7 +226,7 @@ int main( int argc, const char* argv[])
 			outputfile.append( std::string( argv[2]) + ".out");
 		}
 		strus::local_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
-			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
+			strus::createAnalyzerObjectBuilder_default( g_fileLocator, g_errorhnd));
 		const strus::TextProcessorInterface* textproc = objbuild->getTextProcessor();
 		const strus::SegmenterInterface* segmenter = textproc->getSegmenterByName( "textwolf");
 		strus::local_ptr<strus::DocumentAnalyzerInstanceInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));

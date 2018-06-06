@@ -17,11 +17,15 @@ namespace strus {
 class AnalyzerObjectBuilderInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class FileLocatorInterface;
 
 ///\brief Create a storage object builder with the builders from the standard strus core libraries (without module support)
+///\param[in] filelocator resources and file locator interface
 ///\param[in] errorhnd error buffer interface
 AnalyzerObjectBuilderInterface*
 	createAnalyzerObjectBuilder_default(
+		const FileLocatorInterface* filelocator,
 		ErrorBufferInterface* errorhnd);
 
 }//namespace

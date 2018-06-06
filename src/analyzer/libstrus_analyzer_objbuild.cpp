@@ -40,9 +40,10 @@ class AnalyzerObjectBuilder
 	:public AnalyzerObjectBuilderInterface
 {
 public:
-	explicit AnalyzerObjectBuilder( ErrorBufferInterface* errorhnd_)
+	AnalyzerObjectBuilder( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
-		,m_textproc(strus::createTextProcessor(errorhnd_))
+		,m_filelocator(filelocator_)
+		,m_textproc(strus::createTextProcessor(filelocator_,errorhnd_))
 		,m_segmenter_textwolf(createSegmenter_textwolf(errorhnd_))
 		,m_segmenter_cjson(createSegmenter_cjson(errorhnd_))
 		,m_segmenter_tsv(createSegmenter_tsv(errorhnd_))
@@ -144,6 +145,7 @@ public:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
+	const FileLocatorInterface* m_filelocator;
 	Reference<TextProcessorInterface> m_textproc;
 	Reference<SegmenterInterface> m_segmenter_textwolf;
 	Reference<SegmenterInterface> m_segmenter_cjson;
@@ -154,6 +156,7 @@ private:
 
 DLL_PUBLIC AnalyzerObjectBuilderInterface*
 	strus::createAnalyzerObjectBuilder_default(
+		const FileLocatorInterface* filelocator,
 		ErrorBufferInterface* errorhnd)
 {
 	try
@@ -163,7 +166,7 @@ DLL_PUBLIC AnalyzerObjectBuilderInterface*
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new AnalyzerObjectBuilder( errorhnd);
+		return new AnalyzerObjectBuilder( filelocator, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create analyzer object builder: %s"), *errorhnd, 0);
 }

@@ -14,6 +14,8 @@
 #include "strus/lib/analyzer_prgload_std.hpp"
 #include "strus/lib/segmenter_textwolf.hpp"
 #include "strus/lib/pattern_test.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/documentAnalyzerInstanceInterface.hpp"
@@ -37,6 +39,7 @@
 #undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -141,12 +144,14 @@ int main( int argc, const char* argv[])
 		}
 		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, dbgtrace);
 		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
 
 		// Create objects:
-		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_errorhnd));
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
 		if (!textproc.get()) throw std::runtime_error( "failed to create textprocessor");
 
-		textproc->addResourcePath( resourceDir);
+		g_fileLocator->addResourcePath( resourceDir);
 		std::string docFilePath = getFilePath( resourceDir, docFileName);
 		std::string expectFilePath = getFilePath( resourceDir, expectFileName);
 

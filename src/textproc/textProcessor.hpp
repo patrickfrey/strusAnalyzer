@@ -15,15 +15,16 @@ namespace strus {
 
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class FileLocatorInterface;
 
 class TextProcessor
 	:public TextProcessorInterface
 {
 public:
-	explicit TextProcessor( ErrorBufferInterface* errorhnd);
+	explicit TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_);
 	virtual ~TextProcessor();
 
-	virtual void addResourcePath( const std::string& path);
 	virtual std::string getResourcePath( const std::string& filename) const;
 
 	virtual const SegmenterInterface* getSegmenterByName( const std::string& segmenterName) const;
@@ -65,6 +66,8 @@ public:
 	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
+	ErrorBufferInterface* m_errorhnd;
+	const FileLocatorInterface* m_filelocator;
 	std::map<std::string,SegmenterInterface*> m_segmenterMap;		///< map of defined document segmenters (key is segmenter name)
 	std::map<std::string,SegmenterInterface*> m_mimeSegmenterMap;		///< map of defined document segmenters (key is MIME type)
 	std::map<std::string,analyzer::SegmenterOptions> m_schemeSegmenterOptions_map;
@@ -76,7 +79,6 @@ private:
 	PatternTermFeederInterface* m_patterntermfeeder;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
-	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

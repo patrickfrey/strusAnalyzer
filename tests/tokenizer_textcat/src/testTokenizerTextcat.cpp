@@ -9,6 +9,8 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/lib/textproc.hpp"
+#include "strus/lib/filelocator.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
@@ -26,6 +28,7 @@
 #undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
@@ -58,11 +61,13 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, NULL/*debug trace interface*/);
-		if (!g_errorhnd)
-		{
-			throw std::runtime_error("failed to create error buffer object");
-		}
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+		strus::local_ptr<strus::TextProcessorInterface> textproc( strus::createTextProcessor( g_fileLocator, g_errorhnd));
+		if (!textproc.get()) throw std::runtime_error("failed to create text processor");
+		
 		const char* resourcePath = argv[1];
 		const char* textcatConfig = argv[2];
 		const char* workingDir = argv[3];
@@ -77,10 +82,8 @@ int main( int argc, const char* argv[])
 		ec = strus::getFileName( textcatConfig, textcatConfigFile);
 		if (ec) throw std::runtime_error( "failed to get base name of text cat config file");
 
-		strus::local_ptr<strus::TextProcessorInterface>
-			textproc( strus::createTextProcessor( g_errorhnd));
-		textproc->addResourcePath( resourcePath);
-		textproc->addResourcePath( textcatConfigDir);
+		g_fileLocator->addResourcePath( resourcePath);
+		g_fileLocator->addResourcePath( textcatConfigDir);
 		
 		const strus::TokenizerFunctionInterface* tokenizer = textproc->getTokenizer( "textcat");
 		if (!tokenizer)

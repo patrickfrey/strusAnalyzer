@@ -47,7 +47,7 @@ public:
 			return rt;
 		}
 		textwolf::UChar ch;
-		if ((ch = *m_itr) != 0)
+		while ((ch = *m_itr) != 0)
 		{
 			++m_itr;
 			m_output.print( ch, rt);

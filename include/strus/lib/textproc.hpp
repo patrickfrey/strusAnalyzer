@@ -17,11 +17,13 @@ namespace strus {
 /// \brief Forward declaration
 class TextProcessorInterface;
 /// \brief Forward declaration
+class FileLocatorInterface;
+/// \brief Forward declaration
 class ErrorBufferInterface;
 
 /// \brief Create a text processor
 /// \return the constructed text processor
-TextProcessorInterface* createTextProcessor( ErrorBufferInterface* errorhnd);
+TextProcessorInterface* createTextProcessor( const FileLocatorInterface* filelocator, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

@@ -19,6 +19,6 @@ link_directories(
 add_cppcheck( testDocumentClassDetect testDocumentClassDetect.cpp )
 
 add_executable( testDocumentClassDetect testDocumentClassDetect.cpp)
-target_link_libraries( testDocumentClassDetect strus_error strus_textproc strusanalyzer_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testDocumentClassDetect strus_error strus_filelocator strus_textproc strusanalyzer_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 

@@ -20,5 +20,5 @@ add_executable( testSegmenterTextwolf testSegmenterTextwolf.cpp)
 target_link_libraries( testSegmenterTextwolf strus_segmenter_textwolf strus_segmenter_utils strus_detector_std  strus_base  strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 add_executable( testMarkupTextwolf testMarkupTextwolf.cpp)
-target_link_libraries( testMarkupTextwolf strus_textproc strus_segmenter_textwolf strus_segmenter_utils strus_detector_std  strus_base  strus_error strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testMarkupTextwolf strus_textproc strus_segmenter_textwolf strus_segmenter_utils strus_detector_std  strus_base  strus_error strus_filelocator strusanalyzer_private_utils ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 

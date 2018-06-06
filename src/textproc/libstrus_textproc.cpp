@@ -32,14 +32,14 @@
 using namespace strus;
 
 DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor( ErrorBufferInterface* errorhnd)
+	strus::createTextProcessor( const FileLocatorInterface* filelocator, ErrorBufferInterface* errorhnd)
 {
 	TextProcessor* rt = 0;
 	NormalizerFunctionInterface* nrm;
 	TokenizerFunctionInterface* tkn;
 	AggregatorFunctionInterface* agr;
 
-	rt = new TextProcessor( errorhnd);
+	rt = new TextProcessor( filelocator, errorhnd);
 	if (0==(nrm = createNormalizer_snowball( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

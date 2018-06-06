@@ -26,13 +26,13 @@
 #include "strus/analyzer/functionView.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/pattern_termfeeder.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/fileio.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "resourceDirectory.hpp"
 #include <stdexcept>
 #include <cstring>
 
@@ -280,8 +280,8 @@ class TextNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
+	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
@@ -654,12 +654,12 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
-TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
-	:m_patterntermfeeder(createPatternTermFeeder_default(errorhnd)),m_errorhnd(errorhnd)
+TextProcessor::TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_filelocator(filelocator_),m_patterntermfeeder(createPatternTermFeeder_default(errorhnd_))
 {
 	if (!m_patterntermfeeder) throw std::runtime_error( _TXT("error creating default pattern term feeder interface for text processor"));
 	DocumentClassDetectorInterface* dtc;
-	if (0==(dtc = createDetector_std( this, errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
+	if (0==(dtc = createDetector_std( this, m_errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
 
 	SegmenterInterface* segref = strus::createSegmenter_textwolf( m_errorhnd);
@@ -671,15 +671,15 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	segref = strus::createSegmenter_plain( m_errorhnd);
 	if (segref) defineSegmenter( "plain", segref);
 
-	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
-	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
-	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
-	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
-	defineNormalizer( "const", new ConstNormalizerFunction(errorhnd));
-	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
-	defineAggregator( "minpos", new MinPosAggregatorFunction(errorhnd));
-	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,errorhnd));
-	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,errorhnd));
+	defineTokenizer( "content", new ContentTokenizerFunction( m_errorhnd));
+	defineNormalizer( "orig", new OrigNormalizerFunction(m_errorhnd));
+	defineNormalizer( "text", new TextNormalizerFunction(m_errorhnd));
+	defineNormalizer( "empty", new EmptyNormalizerFunction(m_errorhnd));
+	defineNormalizer( "const", new ConstNormalizerFunction(m_errorhnd));
+	defineAggregator( "count", new CountAggregatorFunction(m_errorhnd));
+	defineAggregator( "minpos", new MinPosAggregatorFunction(m_errorhnd));
+	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,m_errorhnd));
+	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,m_errorhnd));
 }
 
 const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& name) const
@@ -1069,50 +1069,11 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 	}
 }
 
-void TextProcessor::addResourcePath( const std::string& path)
-{
-	try
-	{
-		char const* cc = path.c_str();
-		char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
-		for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
-		{
-			m_resourcePaths.push_back( string_conv::trim( std::string( cc, ee)));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
-#endif
-		}
-		m_resourcePaths.push_back( string_conv::trim( std::string( cc)));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
-#endif
-	}
-	CATCH_ERROR_MAP( _TXT("error in 'TextProcessor::addResourcePath': %s"), *m_errorhnd);
-}
-
 std::string TextProcessor::getResourcePath( const std::string& filename) const
 {
 	try
 	{
-		if (hasUpdirReference( filename))
-		{
-			m_errorhnd->report( ErrorCodeNotAllowed, _TXT("tried to read resource file with upper directory reference in the name"));
-			return std::string();
-		}
-		std::vector<std::string>::const_iterator
-			pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
-		for (; pi != pe; ++pi)
-		{
-			std::string absfilename = strus::joinFilePath( *pi, filename);
-#ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "check resource path '" << absfilename << "'" << std::endl;
-#endif
-			if (strus::isFile( absfilename))
-			{
-				return absfilename;
-			}
-		}
-		throw strus::runtime_error( _TXT("resource file '%s' not found"), filename.c_str());
+		return m_filelocator->getResourcePath( filename);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
 }

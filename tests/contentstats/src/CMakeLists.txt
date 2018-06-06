@@ -20,6 +20,6 @@ link_directories(
 add_cppcheck( testContentStats testContentStats.cpp )
 
 add_executable( testContentStats testContentStats.cpp)
-target_link_libraries( testContentStats strus_error strus_textproc strus_contentstats_std strus_detector_std strusanalyzer_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+target_link_libraries( testContentStats strus_error strus_filelocator strus_textproc strus_contentstats_std strus_detector_std strusanalyzer_private_utils strus_base ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 
