@@ -150,7 +150,7 @@ public:
 		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_filename(filename_),m_defaultOrig(defaultOrig_)
 	{
 		std::size_t sz;
-		std::string resolvedFilename = textproc->getResourcePath( m_filename);
+		std::string resolvedFilename = textproc->getResourceFilePath( m_filename);
 		if (resolvedFilename.empty() && m_errorhnd->hasError())
 		{
 			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), m_filename.c_str(), m_errorhnd->fetchError());

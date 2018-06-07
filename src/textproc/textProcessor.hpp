@@ -25,7 +25,7 @@ public:
 	explicit TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_);
 	virtual ~TextProcessor();
 
-	virtual std::string getResourcePath( const std::string& filename) const;
+	virtual std::string getResourceFilePath( const std::string& filename) const;
 
 	virtual const SegmenterInterface* getSegmenterByName( const std::string& segmenterName) const;
 

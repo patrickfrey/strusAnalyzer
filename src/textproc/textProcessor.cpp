@@ -1069,13 +1069,13 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 	}
 }
 
-std::string TextProcessor::getResourcePath( const std::string& filename) const
+std::string TextProcessor::getResourceFilePath( const std::string& filename) const
 {
 	try
 	{
-		return m_filelocator->getResourcePath( filename);
+		return m_filelocator->getResourceFilePath( filename);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourceFilePath': %s"), *m_errorhnd, std::string());
 }
 
 template <class Map>

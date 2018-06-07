@@ -47,7 +47,7 @@ public:
 
 	/// \brief Get the absolute path of a resource file
 	/// \param[in] filename name of the resource file
-	virtual std::string getResourcePath( const std::string& filename) const=0;
+	virtual std::string getResourceFilePath( const std::string& filename) const=0;
 
 	/// \brief Get a document segmenter object reference
 	/// \param[in] segmenterName name of the segmenter used (if empty, find the first one loaded or the default one)

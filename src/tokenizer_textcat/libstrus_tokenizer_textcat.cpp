@@ -215,7 +215,7 @@ public:
 		}
 		try
 		{
-			std::string resolvedConfigFilename = m_textproc->getResourcePath( args[0]);
+			std::string resolvedConfigFilename = m_textproc->getResourceFilePath( args[0]);
 			if (resolvedConfigFilename.empty() && m_errorhnd->hasError())
 			{
 				throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), args[0].c_str(), m_errorhnd->fetchError());
