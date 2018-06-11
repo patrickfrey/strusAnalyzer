@@ -1348,7 +1348,7 @@ bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInstanceInterface
 		{
 			throw strus::runtime_error( _TXT("unexpected token (%s) in document analyzer program"), tokenName( lexer.current()));
 		}
-		return true;
+		return !errorhnd->hasError();
 	}
 	catch (const std::bad_alloc& err)
 	{
@@ -1508,7 +1508,7 @@ bool strus::loadQueryAnalyzerProgramSource( QueryAnalyzerInstanceInterface* anal
 		{
 			throw strus::runtime_error( _TXT("unexpected token (%s) in query analyzer program"), tokenName( lexer.current()));
 		}
-		return true;
+		return !errorhnd->hasError();
 	}
 	catch (const std::bad_alloc& err)
 	{
