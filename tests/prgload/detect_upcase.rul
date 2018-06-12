@@ -1,5 +1,5 @@
-LOCASE ^1 : /\b[a-z][^ \n\t\r\b\s\;\,\!\.\:\-\/]*/;
-UPCASE ^1 : /\b[A-Z][^ \n\t\r\b\s\;\,\!\.\:\-\/]*/;
+LOCASE ^1 : /\b[a-z][^\s;-@!-\/]*/;
+UPCASE ^1 : /\b[A-Z][^\s;-@!-\/]*/;
 
 upcase            = UC=UPCASE;
 locase            = LOCASE;
