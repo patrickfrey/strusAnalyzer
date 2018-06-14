@@ -186,7 +186,7 @@ private:
 	void operator=( const Impl&){}	//< non copyable
 };
 
-DLL_PUBLIC PatternResultFormatTable::PatternResultFormatTable( ErrorBufferInterface* errorhnd_, const PatternResultFormatVariableMap* variableMap_)
+DLL_PUBLIC PatternResultFormatTable::PatternResultFormatTable( const PatternResultFormatVariableMap* variableMap_, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_variableMap(variableMap_),m_impl(0)
 {
 	try
@@ -680,7 +680,7 @@ struct PatternResultFormatMap::Impl
 	std::string sep_resultItem;
 
 	Impl( ErrorBufferInterface* errorhnd_, const std::string& resultFmtStr, const std::string& resultItemFmtStr, const std::string& resultItemSep_)
-		:table(errorhnd_,&g_patternResultFormatVariableMap),fmt_result(0),fmt_resultItem(0),sep_resultItem(resultItemSep_)
+		:table(&g_patternResultFormatVariableMap,errorhnd_),fmt_result(0),fmt_resultItem(0),sep_resultItem(resultItemSep_)
 	{
 		fmt_result = table.createResultFormat( resultFmtStr.c_str());
 		fmt_resultItem = table.createResultFormat( resultItemFmtStr.c_str());
@@ -691,7 +691,7 @@ struct PatternResultFormatMap::Impl
 	}
 };
 
-DLL_PUBLIC PatternResultFormatMap::PatternResultFormatMap( ErrorBufferInterface* errorhnd_, const char* src_)
+DLL_PUBLIC PatternResultFormatMap::PatternResultFormatMap( const char* src_, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
 {
 	try

@@ -61,7 +61,7 @@ public:
 class PatternResultFormatTable
 {
 public:
-	PatternResultFormatTable( ErrorBufferInterface* errorhnd_, const PatternResultFormatVariableMap* variableMap_);
+	PatternResultFormatTable( const PatternResultFormatVariableMap* variableMap_, ErrorBufferInterface* errorhnd_);
 	~PatternResultFormatTable();
 
 	/// \brief Create a format string representation out of its source
@@ -96,7 +96,7 @@ struct PatternResultFormatChunk
 class PatternResultFormatMap
 {
 public:
-	PatternResultFormatMap( ErrorBufferInterface* errorhnd_, const char* src_);
+	PatternResultFormatMap( const char* src_, ErrorBufferInterface* errorhnd_);
 	~PatternResultFormatMap();
 
 	std::string map( const analyzer::PatternMatcherResult& res) const;

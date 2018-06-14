@@ -202,7 +202,7 @@ static void checkPatternMatchResult( const char* res, const char* expected)
 static void runItemTests()
 {
 	ThisPatternResultFormatVariableMap varmap;
-	strus::PatternResultFormatTable formatTable( g_errorhnd, &varmap);
+	strus::PatternResultFormatTable formatTable( &varmap, g_errorhnd);
 	strus::PatternResultFormatContext context( g_errorhnd);
 
 	std::cerr << "Executing item tests:" << std::endl;
@@ -272,7 +272,7 @@ static void runResultTests()
 		{
 			std::cerr << "Executing test [" << tidx << "] " << ti->testname << std::endl;
 		}
-		strus::PatternResultFormatMap fmtmap( g_errorhnd, ti->formatstring);
+		strus::PatternResultFormatMap fmtmap( ti->formatstring, g_errorhnd);
 		strus::analyzer::PatternMatcherResult result = getResultFromDef( varmap, ti->result);
 
 		std::string output = fmtmap.map( result);

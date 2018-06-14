@@ -51,7 +51,7 @@ TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* er
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();
 	m_debugtrace = dt ? dt->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
-	m_resultFormatTable = new PatternResultFormatTable( m_errorhnd, &m_varmap);
+	m_resultFormatTable = new PatternResultFormatTable( &m_varmap, m_errorhnd);
 }
 
 TestPatternMatcherInstance::~TestPatternMatcherInstance()
