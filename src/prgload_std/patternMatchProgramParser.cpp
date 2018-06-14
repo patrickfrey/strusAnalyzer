@@ -384,6 +384,10 @@ void PatternMatcherProgramParser::loadMatcherRule( ProgramLexer& lexer, const st
 			}
 			lexer.setOption( ProgramLexer::KeepStringEscaping, keepescopt);
 		}
+		else if (lexer.current().isToken(TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("unexpected token found. expected the terminating semicolon ';' or an optional format string in square brackets '[' ']' before the terminating semicolon ';'"));
+		}
 		m_patternMatcher->definePattern( name, formatstring, visible);
 	}
 	while (lexer.current().isToken( TokOr));
