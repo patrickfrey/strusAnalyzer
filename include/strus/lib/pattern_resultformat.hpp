@@ -92,13 +92,36 @@ struct PatternResultFormatChunk
 	static bool parseNext( PatternResultFormatChunk& result, char const*& src);
 };
 
-
+/// \brief Result format for the output of pattern match results with names of members as variables in curly brackets '{' '}'
 class PatternResultFormatMap
 {
 public:
+	/// \brief Constructor
+	/// \remark Does not throw, check error buffer passed for errors
+	/// \param[in] src_ source with format string with three parts separated by '|'.
+	///		The first part is the format string for the result,
+	///		the second part is the format string for the result items,
+	///		the third part is the separator of result items if there are more than one.
+	///	The format strings (first and second part) can contain some of the following variables to be substituted
+	///	{ordpos}: ordinal (count) position
+	///	{ordlen}: ordinal (count) length
+	///	{ordend}: ordinal (count) end position, first position after the match
+	///	{startseg}: position of the segment the match started
+	///	{startpos}: offset of the match in the matching segment
+	///	{endseg}: position of the segment the match ends (first byte after the match)
+	///	{endpos}: bytes offset of the match in the matching segment
+	///	{abspos}: startseg and startofs added together, if this makes sense 
+	///	{abslen}: absolute difference (endseg+endofs) - (startseg+startofs), if this makes sense 
+	///	{name}: name of the matched variable or pattern
+	///	{value}: value of the matched variable or pattern, either defined by format string or the matching chunk from the original source encoded as PatternResultFormatChunk
+	/// \param[in] errorhnd_ error buffer interface to report errors (to be checked after this constructor call)
 	PatternResultFormatMap( const char* src_, ErrorBufferInterface* errorhnd_);
+	/// \brief Destructor
 	~PatternResultFormatMap();
 
+	/// \brief Map a result to a string in a format to be decoded with PatternResultFormatChunk::parseNext
+	/// \param[in] res result to map
+	/// \return result of the mapping
 	std::string map( const analyzer::PatternMatcherResult& res) const;
 
 private:

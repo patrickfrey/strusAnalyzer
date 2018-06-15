@@ -625,8 +625,8 @@ std::string parsePatternResultFormatMapStringElement( char const*& si)
 	return rt;
 }
 
-static const char* g_patternMatcherResult_VariableMap_names[] = {"ordpos","ordlen","ordend","startseg","startpos","endseg","endpos","name","value",0};
-enum PatternMatcherResult_Variable {VAR_ordpos,VAR_ordlen,VAR_ordend,VAR_startseg,VAR_startpos,VAR_endseg,VAR_endpos,VAR_name,VAR_value};
+static const char* g_patternMatcherResult_VariableMap_names[] = {"ordpos","ordlen","ordend","startseg","startpos","endseg","endpos","abspos","abslen","name","value",0};
+enum PatternMatcherResult_Variable {VAR_ordpos,VAR_ordlen,VAR_ordend,VAR_startseg,VAR_startpos,VAR_endseg,VAR_endpos,VAR_abspos,VAR_abslen,VAR_name,VAR_value};
 
 class PatternMatcherResult_VariableMap
 	:public PatternResultFormatVariableMap
@@ -755,6 +755,12 @@ std::string PatternResultFormatMap::mapItem( const analyzer::PatternMatcherResul
 					case VAR_endpos:
 						printNumber( rt, res.end_origpos());
 						break;
+					case VAR_abspos:
+						printNumber( rt, (res.start_origseg()+res.start_origpos()));
+						break;
+					case VAR_abslen:
+						printNumber( rt, (res.end_origseg()+res.end_origpos()) - (res.start_origseg()+res.start_origpos()));
+						break;
 					case VAR_name:
 						rt.append( res.name());
 						break;
@@ -822,20 +828,33 @@ DLL_PUBLIC std::string PatternResultFormatMap::map( const analyzer::PatternMatch
 						case VAR_endpos:
 							printNumber( rt, res.end_origpos());
 							break;
+						case VAR_abspos:
+							printNumber( rt, (res.start_origseg()+res.start_origpos()));
+							break;
+						case VAR_abslen:
+							printNumber( rt, (res.end_origseg()+res.end_origpos()) - (res.start_origseg()+res.start_origpos()));
+							break;
 						case VAR_name:
 							rt.append( res.name());
 							break;
 						case VAR_value:
 						{
-							std::vector<analyzer::PatternMatcherResultItem>::const_iterator
-								ri = res.items().begin(), re = res.items().end();
-							for (int ridx=0; ri != re; ++ri,++ridx)
+							if (res.value())
 							{
-								if (ridx)
+								rt.append( res.value());
+							}
+							else
+							{
+								std::vector<analyzer::PatternMatcherResultItem>::const_iterator
+									ri = res.items().begin(), re = res.items().end();
+								for (int ridx=0; ri != re; ++ri,++ridx)
 								{
-									rt.append( m_impl->sep_resultItem);
+									if (ridx)
+									{
+										rt.append( m_impl->sep_resultItem);
+									}
+									rt.append( mapItem( *ri));
 								}
-								rt.append( mapItem( *ri));
 							}
 							break;
 						}
