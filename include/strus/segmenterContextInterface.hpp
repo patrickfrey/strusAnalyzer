@@ -12,25 +12,12 @@
 #include <utility>
 #include <string>
 
-#ifdef _MSC_VER
-#include <BaseTsd.h>
-namespace strus {
-	///\typedef SegmenterPosition
-	///\brief Byte position in scanned source
-	typedef INT64 SegmenterPosition;
-}//namespace
-#else
-#include <stdint.h>
-namespace strus {
-	///\typedef SegmenterPosition
-	///\brief Byte position in scanned source
-	typedef int64_t SegmenterPosition;
-}//namespace
-#endif
-
 /// \brief strus toplevel namespace
 namespace strus
 {
+
+/// \brief Position of a segment in the original source
+typedef int SegmenterPosition;
 
 /// \class SegmenterContextInterface
 /// \brief Defines the context for segmenting one document

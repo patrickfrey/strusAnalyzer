@@ -27,11 +27,11 @@ class DebugTraceContextInterface;
 
 struct SegPosDef
 {
-	std::size_t start_strpos;
-	std::size_t end_strpos;
-	std::size_t segpos;
+	int start_strpos;
+	int end_strpos;
+	int segpos;
 
-	SegPosDef( std::size_t start_strpos_, std::size_t end_strpos_, std::size_t segpos_)
+	SegPosDef( int start_strpos_, int end_strpos_, int segpos_)
 		:start_strpos(start_strpos_),end_strpos(end_strpos_),segpos(segpos_){}
 	SegPosDef( const SegPosDef& o)
 		:start_strpos(o.start_strpos),end_strpos(o.end_strpos),segpos(o.segpos){}

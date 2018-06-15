@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/position.hpp"
 #include <cstddef>
 
 namespace strus {
@@ -24,8 +25,8 @@ public:
 	PatternLexem()
 		:Token(),m_id(0){}
 	/// \brief Constructor
-	PatternLexem( unsigned int id_, unsigned int ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)
-		:Token(ordpos_,origseg_,origpos_,origsize_),m_id(id_){}
+	PatternLexem( int id_, int ordpos_, const Position& origpos_, int origsize_)
+		:Token(ordpos_,origpos_,origsize_),m_id(id_){}
 	/// \brief Copy constructor
 	PatternLexem( const PatternLexem& o)
 		:Token(o),m_id(o.m_id){}
@@ -33,25 +34,16 @@ public:
 	~PatternLexem(){}
 
 	/// \brief Internal identifier of the term
-	unsigned int id() const				{return m_id;}
+	int id() const				{return m_id;}
 
 	bool operator < (const PatternLexem& o) const
 	{
-		return (origseg() == o.origseg())
-			? (
-				(origpos() == o.origpos())
-				? (
-					(origsize() == o.origsize())
-					? (m_id < o.m_id)
-					: (origsize() < o.origsize())
-				)
-				: (origpos() < o.origpos())
-			)
-			: (origseg() < o.origseg());
+		int cmp = Token::compare( o);
+		return (cmp == 0) ? m_id < o.m_id : cmp < 0;
 	}
 
 private:
-	unsigned int m_id;
+	int m_id;
 };
 
 

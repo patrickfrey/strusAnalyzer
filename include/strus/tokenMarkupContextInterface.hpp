@@ -12,6 +12,7 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/tokenMarkup.hpp"
+#include "strus/analyzer/position.hpp"
 #include <vector>
 #include <string>
 
@@ -28,17 +29,13 @@ public:
 	virtual ~TokenMarkupContextInterface(){}
 
 	/// \brief Define a marker for a span in the text
-	/// \param[in] start_segpos absolute segment position where the start of the token to mark has been defined (this position is not the absolute byte position in the document, but the absolute byte position of the segment where the token has been found plus the relative byte position of the token in the segment with all encoded entities or escaping resolved. The real absolute byte position can be calculated by this markup class by mapping the offset in the segment with encoded entities to the offset in the original segnment.)
-	/// \param[in] start_ofs offset of the token to mark in bytes in the segment processed
-	/// \param[in] end_segpos absolute segment position where the end of the to mark has been defined (this position is not the absolute byte position in the document, but the absolute byte position of the segment where the token has been found plus the relative byte position of the token in the segment with all encoded entities or escaping resolved. The real absolute byte position can be calculated by this markup class by mapping the offset in the segment with encoded entities to the offset in the original segnment.)
-	/// \param[in] start_ofs offset of the token to mark in bytes in the segment processed
+	/// \param[in] start start of the item to mark 
+	/// \param[in] end the end of the item to mark
 	/// \param[in] markup tag structure to use for markup
 	/// \param[in] level sort of priority (areas with a higher level markup are superseding the ones with lovel level. It is also used as criterion to resolve conflicts)
 	virtual void putMarkup(
-			const SegmenterPosition& start_segpos,
-			std::size_t start_ofs,
-			const SegmenterPosition& end_segpos,
-			std::size_t end_ofs,
+			const analyzer::Position& start,
+			const analyzer::Position& end,
 			const analyzer::TokenMarkup& markup,
 			unsigned int level)=0;
 

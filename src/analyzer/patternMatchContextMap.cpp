@@ -64,9 +64,9 @@ void PreProcPatternMatchContext::process( std::size_t segpos, const char* seg, s
 	DEBUG_OPEN( "input")
 	for (; li != le; ++li)
 	{
-		li->setOrigseg( segpos);
+		li->origpos().setSeg( segpos);
 		m_matcher->putInput( *li);
-		DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", li->id(), li->ordpos(), li->origseg(), li->origpos(), li->origsize());
+		DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", li->id(), li->ordpos(), li->origpos().seg(), li->origpos().ofs(), li->origsize());
 	}
 	DEBUG_CLOSE()
 }
@@ -79,34 +79,34 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 	DEBUG_OPEN( "result")
 	for (; ri != re; ++ri)
 	{
-		if (!m_config->allowCrossSegmentMatches() && ri->start_origseg() != ri->end_origseg()) continue;
+		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
 		if (!m_config->patternTypeName().empty())
 		{
-			rt.push_back( BindTerm( ri->start_origseg(), ri->start_origpos(), ri->end_ordpos() - ri->start_ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
+			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
 			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 		}
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
 		for (; ti != te; ++ti)
 		{
 			SegPosContentPosMap::const_iterator segi;
-			segi = m_segPosContentPosMap.find( ti->start_origseg());
+			segi = m_segPosContentPosMap.find( ti->origpos().seg());
 			if (segi == m_segPosContentPosMap.end()) throw std::runtime_error( _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstritr = segi->second;
-			segi = m_segPosContentPosMap.find( ti->end_origseg());
+			segi = m_segPosContentPosMap.find( ti->origend().seg());
 			if (segi == m_segPosContentPosMap.end()) throw std::runtime_error( _TXT("internal: inconsistency in data, segment position unknown"));
 			std::size_t segstrend = segi->second;
 
 			if (segstritr == segstrend)
 			{
-				const char* chunk = m_content.c_str() + segstritr + ti->start_origpos();
-				std::size_t chunksize = ti->end_origpos() - ti->start_origpos();
-				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), std::string( chunk, chunksize)));
+				const char* chunk = m_content.c_str() + segstritr + ti->origpos().ofs();
+				std::size_t chunksize = ti->origend().ofs() - ti->origpos().ofs();
+				rt.push_back( BindTerm( ti->origpos().seg(), ti->origpos().ofs(), ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), std::string( chunk, chunksize)));
 				DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 			}
 			else
 			{
 				std::string value;
-				segstritr += ti->start_origpos();
+				segstritr += ti->origpos().ofs();
 				while (segstritr < segstrend)
 				{
 					const char* chunk = m_content.c_str() + segstritr;
@@ -117,8 +117,8 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 				{
 					throw std::runtime_error( _TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
 				}
-				value.append( m_content.c_str() + segstritr, ti->end_origpos());
-				rt.push_back( BindTerm( ti->start_origseg(), ti->start_origpos(), ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
+				value.append( m_content.c_str() + segstritr, ti->origend().ofs());
+				rt.push_back( BindTerm( ti->origpos().seg(), ti->origpos().ofs(), ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), value));
 				DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 			}
 		}
@@ -203,7 +203,7 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 				prev_ofs = bi->ofs();
 			}
 			int virtpos = bidx;
-			pinput.push_back( analyzer::PatternLexem( bi->id(), ordpos, bi->seg(), virtpos, 1));
+			pinput.push_back( analyzer::PatternLexem( bi->id(), ordpos, analyzer::Position(bi->seg(), virtpos), 1));
 		}
 	}
 	// Feed input to matcher:
@@ -214,9 +214,9 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 		{
 			if (pi->id())
 			{
-				int virtpos = pi->origpos();
+				int virtpos = pi->origpos().ofs();
 				int origpos = m_input[ virtpos].ofs();
-				DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", pi->id(), pi->ordpos(), pi->origseg(), origpos, pi->origsize());
+				DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", pi->id(), pi->ordpos(), pi->origpos().seg(), origpos, pi->origsize());
 				m_matcher->putInput( *pi);
 			}
 		}
@@ -229,22 +229,22 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	std::vector<analyzer::PatternMatcherResult>::const_iterator ri = results.begin(), re = results.end();
 	for (; ri != re; ++ri)
 	{
-		if (!m_config->allowCrossSegmentMatches() && ri->start_origseg() != ri->end_origseg()) continue;
+		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
 
 		if (!m_config->patternTypeName().empty())
 		{
-			int start_virtpos = ri->start_origpos();
+			int start_virtpos = ri->origpos().ofs();
 			int start_origpos = m_input[ start_virtpos].ofs();
-			rt.push_back( BindTerm( ri->start_origseg(), start_origpos, ri->end_ordpos() - ri->start_ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
+			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
 			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 		}
 		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
 		for (; ti != te; ++ti)
 		{
-			int start_virtpos = ti->start_origpos();
+			int start_virtpos = ti->origpos().ofs();
 			int start_origpos = m_input[ start_virtpos].ofs();
 			const std::string& value = m_input[ start_virtpos].value();
-			rt.push_back( BindTerm( ti->start_origseg(), start_origpos, ti->end_ordpos() - ti->start_ordpos(), analyzer::BindContent, ti->name(), value));
+			rt.push_back( BindTerm( ti->origpos().seg(), start_origpos, ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), value));
 			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 		}
 	}

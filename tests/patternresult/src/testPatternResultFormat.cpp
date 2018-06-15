@@ -11,6 +11,7 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
 #include "strus/analyzer/patternMatcherResultItem.hpp"
+#include "strus/analyzer/position.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_format.hpp"
 #include "strus/base/utf8.hpp"
@@ -157,8 +158,8 @@ static std::vector<strus::analyzer::PatternMatcherResultItem>
 		}
 		rt.push_back( strus::analyzer::PatternMatcherResultItem(
 			varname, ii->value, ii->ordstart, ii->ordend,
-			ii->origstart.seg, ii->origstart.ofs,
-			ii->origend.seg, ii->origend.ofs));
+			strus::analyzer::Position(ii->origstart.seg, ii->origstart.ofs),
+			strus::analyzer::Position(ii->origend.seg, ii->origend.ofs)));
 	}
 	return rt;
 }
@@ -257,7 +258,7 @@ static strus::analyzer::PatternMatcherResult
 		const ResultDef& result)
 {
 	std::vector<strus::analyzer::PatternMatcherResultItem> items = getResultItemsFromDef( varmap, result.items);
-	return strus::analyzer::PatternMatcherResult( result.name, 0/*value*/, result.ordstart, result.ordend, result.origstart.seg, result.origstart.ofs, result.origend.seg, result.origend.ofs, items);
+	return strus::analyzer::PatternMatcherResult( result.name, 0/*value*/, result.ordstart, result.ordend, strus::analyzer::Position(result.origstart.seg, result.origstart.ofs), strus::analyzer::Position(result.origend.seg, result.origend.ofs), items);
 }
 
 static void runResultTests()

@@ -87,7 +87,7 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 				std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 				for (; ti != te; ++ti)
 				{
-					std::string val( input + ti->origpos(), ti->origsize());
+					std::string val( input + ti->origpos().ofs(), ti->origsize());
 					std::vector<NormalizerFunctionReference>::const_iterator
 						ni = ai->normalizers.begin(), ne = ai->normalizers.end();
 					for (; ni != ne; ++ni)

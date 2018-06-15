@@ -214,20 +214,20 @@ static inline char* printNumber( char* ri, const char* re, int num)
 static char* printResultItemReference( char* ri, const char* re, const analyzer::PatternMatcherResultItem& item)
 {
 	if (ri == re) return NULL;
-	if (item.start_origseg() == item.end_origseg() && item.end_origpos() > item.start_origpos())
+	if (item.origpos().seg() == item.origend().seg() && item.origend().ofs() > item.origpos().ofs())
 	{
 		*ri++ = '\1';
-		if (0==(ri = printNumber( ri, re, item.start_origseg()))) return NULL;
-		if (0==(ri = printNumber( ri, re, item.start_origpos()))) return NULL;
-		if (0==(ri = printNumber( ri, re, item.end_origpos() - item.start_origpos()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origpos().seg()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origpos().ofs()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origend().ofs() - item.origpos().ofs()))) return NULL;
 	}
 	else
 	{
 		*ri++ = '\2';
-		if (0==(ri = printNumber( ri, re, item.start_origseg()))) return NULL;
-		if (0==(ri = printNumber( ri, re, item.start_origpos()))) return NULL;
-		if (0==(ri = printNumber( ri, re, item.end_origseg()))) return NULL;
-		if (0==(ri = printNumber( ri, re, item.end_origpos()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origpos().seg()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origpos().ofs()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origend().seg()))) return NULL;
+		if (0==(ri = printNumber( ri, re, item.origend().ofs()))) return NULL;
 	}
 	return ri;
 }
@@ -735,31 +735,31 @@ std::string PatternResultFormatMap::mapItem( const analyzer::PatternMatcherResul
 				switch ((PatternMatcherResult_Variable)ei->value.idx)
 				{
 					case VAR_ordpos:
-						printNumber( rt, res.start_ordpos());
+						printNumber( rt, res.ordpos());
 						break;
 					case VAR_ordlen:
-						printNumber( rt, res.end_ordpos() - res.start_ordpos());
+						printNumber( rt, res.ordend() - res.ordpos());
 						break;
 					case VAR_ordend:
-						printNumber( rt, res.end_ordpos());
+						printNumber( rt, res.ordend());
 						break;
 					case VAR_startseg:
-						printNumber( rt, res.start_origseg());
+						printNumber( rt, res.origpos().seg());
 						break;
 					case VAR_startpos:
-						printNumber( rt, res.start_origpos());
+						printNumber( rt, res.origpos().ofs());
 						break;
 					case VAR_endseg:
-						printNumber( rt, res.end_origseg());
+						printNumber( rt, res.origend().seg());
 						break;
 					case VAR_endpos:
-						printNumber( rt, res.end_origpos());
+						printNumber( rt, res.origend().ofs());
 						break;
 					case VAR_abspos:
-						printNumber( rt, (res.start_origseg()+res.start_origpos()));
+						printNumber( rt, (res.origpos().seg()+res.origpos().ofs()));
 						break;
 					case VAR_abslen:
-						printNumber( rt, (res.end_origseg()+res.end_origpos()) - (res.start_origseg()+res.start_origpos()));
+						printNumber( rt, (res.origend().seg()+res.origend().ofs()) - (res.origpos().seg()+res.origpos().ofs()));
 						break;
 					case VAR_name:
 						rt.append( res.name());
@@ -808,31 +808,31 @@ DLL_PUBLIC std::string PatternResultFormatMap::map( const analyzer::PatternMatch
 					switch ((PatternMatcherResult_Variable)ei->value.idx)
 					{
 						case VAR_ordpos:
-							printNumber( rt, res.start_ordpos());
+							printNumber( rt, res.ordpos());
 							break;
 						case VAR_ordlen:
-							printNumber( rt, res.end_ordpos() - res.start_ordpos());
+							printNumber( rt, res.ordend() - res.ordpos());
 							break;
 						case VAR_ordend:
-							printNumber( rt, res.end_ordpos());
+							printNumber( rt, res.ordend());
 							break;
 						case VAR_startseg:
-							printNumber( rt, res.start_origseg());
+							printNumber( rt, res.origpos().seg());
 							break;
 						case VAR_startpos:
-							printNumber( rt, res.start_origpos());
+							printNumber( rt, res.origpos().ofs());
 							break;
 						case VAR_endseg:
-							printNumber( rt, res.end_origseg());
+							printNumber( rt, res.origend().seg());
 							break;
 						case VAR_endpos:
-							printNumber( rt, res.end_origpos());
+							printNumber( rt, res.origend().ofs());
 							break;
 						case VAR_abspos:
-							printNumber( rt, (res.start_origseg()+res.start_origpos()));
+							printNumber( rt, (res.origpos().seg()+res.origpos().ofs()));
 							break;
 						case VAR_abslen:
-							printNumber( rt, (res.end_origseg()+res.end_origpos()) - (res.start_origseg()+res.start_origpos()));
+							printNumber( rt, (res.origend().seg()+res.origend().ofs()) - (res.origpos().seg()+res.origpos().ofs()));
 							break;
 						case VAR_name:
 							rt.append( res.name());

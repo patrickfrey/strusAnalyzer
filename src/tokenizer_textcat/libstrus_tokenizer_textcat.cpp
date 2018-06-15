@@ -173,7 +173,7 @@ std::vector<Token> TextcatTokenizerInstance::tokenize( const char* src, std::siz
 			{
 				si = skipChar( si);
 			}
-			Token token( start-src/*ord*/, 0/*seg*/, start-src, si-start);
+			Token token( start-src/*ord*/, analyzer::Position(0/*seg*/, start-src), si-start);
 			rt.push_back( token);
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "textcat: " << m_language << " "

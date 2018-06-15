@@ -280,12 +280,12 @@ void TestPatternMatcherContext::putInput( const analyzer::PatternLexem& token)
 
 static bool comparePatternMatcherResult( const analyzer::PatternMatcherResult& aa, const analyzer::PatternMatcherResult& bb)
 {
-	if (aa.start_ordpos() < bb.start_ordpos()) return true;
-	if (aa.start_ordpos() > bb.start_ordpos()) return false;
-	if (aa.start_origpos() < bb.start_origpos()) return true;
-	if (aa.start_origpos() > bb.start_origpos()) return false;
-	if (aa.end_ordpos() > bb.end_ordpos()) return true;
-	if (aa.end_ordpos() < bb.end_ordpos()) return false;
+	if (aa.ordpos() < bb.ordpos()) return true;
+	if (aa.ordpos() > bb.ordpos()) return false;
+	if (aa.origpos().ofs() < bb.origpos().ofs()) return true;
+	if (aa.origpos().ofs() > bb.origpos().ofs()) return false;
+	if (aa.ordend() > bb.ordend()) return true;
+	if (aa.ordend() < bb.ordend()) return false;
 	return std::strcmp( aa.name(), bb.name()) < 0;
 }
 
@@ -334,7 +334,7 @@ std::string TestPatternMatcherContext::mapResultValue( unsigned int id, const Ma
 			const char* variable = m_instance->getVariableId( (*ii)->name);
 			if (variable)
 			{
-				analyzer::PatternMatcherResultItem translated( variable, (*ii)->value.c_str(), (*ii)->ordpos, (*ii)->ordpos+(*ii)->ordlen, (*ii)->start.seg, (*ii)->start.pos, (*ii)->end.seg, (*ii)->end.pos);
+				analyzer::PatternMatcherResultItem translated( variable, (*ii)->value.c_str(), (*ii)->ordpos, (*ii)->ordpos+(*ii)->ordlen, analyzer::Position((*ii)->start.seg, (*ii)->start.pos), analyzer::Position((*ii)->end.seg, (*ii)->end.pos));
 				ar.push_back( translated);
 			}
 		}
@@ -391,7 +391,7 @@ bool TestPatternMatcherContext::findFirstMatch( MatchResult& result, unsigned in
 		if (maxordlen)
 		{
 			const analyzer::PatternLexem& token = m_inputar[ inputiter];
-			if (token.ordpos() - result.ordpos > maxordlen) return false;
+			if (token.ordpos() - result.ordpos > (int)maxordlen) return false;
 		}
 		MatchResult aresult;
 		if (!matchItem( aresult, id, inputiter)) continue;
@@ -552,10 +552,10 @@ bool TestPatternMatcherContext::matchItem( MatchResult& result, unsigned int id,
 		case ItemToken:
 		{
 			const analyzer::PatternLexem& token = m_inputar[ inputiter];
-			if (token.id() == itemidx)
+			if (token.id() == (int)itemidx)
 			{
-				MatchAddress startadr( token.origseg(), token.origpos());
-				MatchAddress endadr( token.origseg(), token.origpos() + token.origsize());
+				MatchAddress startadr( token.origpos().seg(), token.origpos().ofs());
+				MatchAddress endadr( token.origpos().seg(), token.origpos().ofs() + token.origsize());
 				result = MatchResult( "", "", token.ordpos(), 1/*ordlen*/, startadr, endadr);
 				return true;
 			}
@@ -636,7 +636,7 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 				itemar.push_back( analyzer::PatternMatcherResultItem(
 					name, allocCharp( (*mi)->value),
 					(*mi)->ordpos, (*mi)->ordpos+(*mi)->ordlen,
-					(*mi)->start.seg, (*mi)->start.pos, (*mi)->end.seg, (*mi)->end.pos));
+					analyzer::Position((*mi)->start.seg, (*mi)->start.pos), analyzer::Position((*mi)->end.seg, (*mi)->end.pos)));
 			}
 			const char* itemValue = 0;
 			const PatternResultFormat* fmt = m_instance->getResultFormat( pattern.id);
@@ -648,8 +648,8 @@ void TestPatternMatcherContext::evalPattern( std::vector<analyzer::PatternMatche
 			analyzer::PatternMatcherResult elem( 
 				pattern.name.c_str(), itemValue,
 				result.ordpos, result.ordpos + result.ordlen,
-				result.start.seg, result.start.pos,
-				result.end.seg, result.end.pos, itemar);
+				analyzer::Position(result.start.seg, result.start.pos),
+				analyzer::Position(result.end.seg, result.end.pos), itemar);
 			res.push_back( elem);
 		}
 	}

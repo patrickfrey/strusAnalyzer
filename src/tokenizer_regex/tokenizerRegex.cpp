@@ -50,7 +50,7 @@ public:
 			for (; mt.pos >= 0; si += (mt.len ? (mt.pos + mt.len) : (mt.pos + 1)), mt = m_search.find( si, se))
 			{
 				std::size_t abspos = mt.pos + (si - src);
-				rt.push_back( analyzer::Token( abspos/*ord*/, 0/*seg*/, abspos, mt.len));
+				rt.push_back( analyzer::Token( abspos/*ord*/, analyzer::Position(0/*seg*/, abspos), mt.len));
 				if (abspos + mt.len >= srcsize) break;
 			}
 			return rt;

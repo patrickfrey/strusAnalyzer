@@ -9,7 +9,7 @@
 /// \file "patternMatcherResultItem.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_ITEM_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_MATCHER_RESULT_ITEM_HPP_INCLUDED
-#include <string>
+#include "strus/analyzer/position.hpp"
 #include "strus/base/stdint.h"
 
 namespace strus {
@@ -19,42 +19,39 @@ namespace analyzer {
 class PatternMatcherResultItem
 {
 public:
+	/// \brief Default constructor
+	PatternMatcherResultItem()
+		:m_name(0),m_value(0),m_ordpos(0),m_ordend(0),m_origpos(),m_origend(){}
 	/// \brief Constructor
-	PatternMatcherResultItem( const char* name_, const char* value_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_)
-		:m_name(name_),m_value(value_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_){}
+	PatternMatcherResultItem( const char* name_, const char* value_, int ordpos_, int ordend_, const Position& origpos_, const Position& origend_)
+		:m_name(name_),m_value(value_),m_ordpos(ordpos_),m_ordend(ordend_),m_origpos(origpos_),m_origend(origend_){}
 	/// \brief Copy constructor
 	PatternMatcherResultItem( const PatternMatcherResultItem& o)
-		:m_name(o.m_name),m_value(o.m_value),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos){}
+		:m_name(o.m_name),m_value(o.m_value),m_ordpos(o.m_ordpos),m_ordend(o.m_ordend),m_origpos(o.m_origpos),m_origend(o.m_origend){}
 	/// \brief Destructor
 	~PatternMatcherResultItem(){}
 
 	/// \brief Name of the item, defined by the variable assigned to the match
-	const char* name() const			{return m_name;}
+	const char* name() const		{return m_name;}
 	/// \brief Pointer to value of the item
-	/// \note The value is a null terminated string containing a constructed value of the result string or NULL if not such construction (format string) is defined.
-	const char* value() const			{return m_value;}
+	/// \note The value is a null terminated string containing a constructed value of the result string or NULL if no such construction (format string) is defined.
+	const char* value() const		{return m_value;}
 	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
-	uint32_t start_ordpos() const			{return m_start_ordpos;}
+	int ordpos() const			{return m_ordpos;}
 	/// \brief Ordinal (counting) end position of the match
-	uint32_t end_ordpos() const			{return m_end_ordpos;}
-	/// \brief Original segment index of the start of the result item in the source
-	std::size_t start_origseg() const		{return m_start_origseg;}
-	/// \brief Original byte position start of the result item in the source segment as UTF-8 specified with start_origseg
-	std::size_t start_origpos() const		{return m_start_origpos;}
-	/// \brief Original segment index of the end of the result item in the source
-	std::size_t end_origseg() const			{return m_end_origseg;}
-	/// \brief Original byte position end of the result item in the source segment as UTF-8 specified with start_origseg
-	std::size_t end_origpos() const			{return m_end_origpos;}
+	int ordend() const			{return m_ordend;}
+	/// \brief Start of the result item in the original source
+	const Position& origpos() const		{return m_origpos;}
+	/// \brief End of the result item in the original source (first byte after the item)
+	const Position& origend() const		{return m_origend;}
 
 private:
 	const char* m_name;
 	const char* m_value;
-	uint32_t m_start_ordpos;
-	uint32_t m_end_ordpos;
-	uint32_t m_start_origseg;
-	uint32_t m_end_origseg;
-	uint32_t m_start_origpos;
-	uint32_t m_end_origpos;
+	uint32_t m_ordpos;
+	uint32_t m_ordend;
+	Position m_origpos;
+	Position m_origend;
 };
 
 

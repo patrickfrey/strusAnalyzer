@@ -363,10 +363,10 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 					int symid = m_instance->getSymbol( id, symkey);
 					if (symid)
 					{
-						rt.push_back( analyzer::PatternLexem( symid, ordpos, 0, mi->pos, mi->len));
+						rt.push_back( analyzer::PatternLexem( symid, ordpos, analyzer::Position(0, mi->pos), mi->len));
 					}
 				}
-				rt.push_back( analyzer::PatternLexem( id, ordpos, 0, mi->pos, mi->len));
+				rt.push_back( analyzer::PatternLexem( id, ordpos, analyzer::Position(0, mi->pos), mi->len));
 			}
 		}
 		if (m_debugtrace)
@@ -374,10 +374,10 @@ std::vector<analyzer::PatternLexem> TestPatternLexerContext::match( const char* 
 			std::vector<analyzer::PatternLexem>::const_iterator xi = rt.begin(), xe = rt.end();
 			for (; xi != xe; ++xi)
 			{
-				std::string elem( src+xi->origpos(), xi->origsize());
+				std::string elem( src+xi->origpos().ofs(), xi->origsize());
 				std::map<unsigned int,std::string>::const_iterator li = m_instance->m_lexemNameMap.find( xi->id());
 				std::string elemname( li == m_instance->m_lexemNameMap.end() ? strus::string_format("%d",xi->id()) : li->second);
-				m_debugtrace->event( "match", "%u %u:%d %s '%s'", xi->ordpos(), xi->origpos(), xi->origsize(), elemname.c_str(), elem.c_str());
+				m_debugtrace->event( "match", "%u %u:%d %s '%s'", xi->ordpos(), xi->origpos().ofs(), xi->origsize(), elemname.c_str(), elem.c_str());
 			}
 		}
 		return rt;

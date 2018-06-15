@@ -30,8 +30,8 @@ static strus::FileLocatorInterface* g_fileLocator = 0;
 struct Token
 {
 	const char* value;
-	unsigned int pos;
-	unsigned int len;
+	int pos;
+	int len;
 };
 
 struct Test
@@ -59,9 +59,9 @@ static void printTokens( std::ostream& out, const std::vector<strus::analyzer::T
 	std::vector<strus::analyzer::Token>::const_iterator ri = tokens.begin(), re = tokens.end();
 	for (int ridx=0; ri != re; ++ri,++ridx)
 	{
-		std::string rval( src + ri->origpos(), ri->origsize());
+		std::string rval( src + ri->origpos().ofs(), ri->origsize());
 		if (ridx) out << ", ";
-		out << "(" << ri->origpos() << "," << ri->origsize() << ",'" << rval << "')";
+		out << "(" << ri->origpos().ofs() << "," << ri->origsize() << ",'" << rval << "')";
 	}
 }
 
@@ -100,9 +100,9 @@ int main( int argc, const char* argv[])
 			bool success = true;
 			for (; ri != re && ei->value; ++ri,++ei)
 			{
-				if (ei->pos != ri->origpos())
+				if (ei->pos != ri->origpos().ofs())
 				{
-					std::cerr << "match position not as expected: " << ei->pos << " != " << ri->origpos() << std::endl;
+					std::cerr << "match position not as expected: " << ei->pos << " != " << ri->origpos().ofs() << std::endl;
 					success = false;
 				}
 				if (ei->len != ri->origsize())
@@ -110,7 +110,7 @@ int main( int argc, const char* argv[])
 					std::cerr << "match length not as expected: " << ei->len << " != " << ri->origsize() << std::endl;
 					success = false;
 				}
-				std::string rval( ti->input + ri->origpos(), ei->len);
+				std::string rval( ti->input + ri->origpos().ofs(), ei->len);
 				if (rval != ei->value)
 				{
 					std::cerr << "match value not as expected: '" << rval << "' != '" << ei->value << "'" << std::endl;

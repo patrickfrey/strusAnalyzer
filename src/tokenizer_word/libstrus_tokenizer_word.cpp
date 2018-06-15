@@ -115,7 +115,7 @@ std::vector<Token> SeparationTokenizerInstance::tokenize( const char* src, std::
 			{
 				si = skipChar( si);
 			}
-			rt.push_back( Token( start-src, 0/*seg*/, start-src, si-start));
+			rt.push_back( Token( start-src, analyzer::Position(0/*seg*/, start-src), si-start));
 		}
 		return rt;
 	}
