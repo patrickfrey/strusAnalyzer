@@ -398,9 +398,11 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 	for (; ri != re; ++ri)
 	{
 		DEBUG_OPEN( ri->type().c_str());
-		const PatternFeatureConfig* cfg = m_patternFeatureConfigMap->getConfig( ri->type());
-		if (cfg)
+		std::vector<const PatternFeatureConfig*> cfgs = m_patternFeatureConfigMap->getConfigs( ri->type());
+		std::vector<const PatternFeatureConfig*>::const_iterator ci = cfgs.begin(), ce = cfgs.end();
+		for (; ci != ce; ++ci)
 		{
+			const PatternFeatureConfig* cfg = *ci;
 			DEBUG_EVENT5( featureClassType( cfg->featureClass()), "[%d %d %d] %s '%s'", (int)ri->seg(), (int)ri->ofs(), (int)ri->len(), cfg->name().c_str(), ri->value().c_str());
 
 			switch (cfg->featureClass())

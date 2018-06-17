@@ -40,7 +40,7 @@ link_directories(
 add_cppcheck( strus_analyzer libstrus_analyzer.cpp  ${source_files} )
 
 add_library( strus_analyzer SHARED  libstrus_analyzer.cpp  ${source_files} )
-target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strusanalyzer_private_utils strus_base )
+target_link_libraries( strus_analyzer strus_segmenter_textwolf strus_textproc strus_pattern_resultformat strusanalyzer_private_utils strus_base )
 set_target_properties(
     strus_analyzer
     PROPERTIES

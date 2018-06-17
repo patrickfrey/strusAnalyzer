@@ -114,7 +114,7 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 		ve = m_preProcPatternMatchContextMap.end();
 	for (; vi != ve; ++vi)
 	{
-		m_segmentProcessor.processPatternMatchResult( vi->fetchResults());
+		m_segmentProcessor.processPatternMatchResult( (*vi)->fetchResults());
 	}
 
 	// process post processing patterns:
@@ -123,22 +123,22 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 		pe = m_postProcPatternMatchContextMap.end();
 	for (; pi != pe; ++pi)
 	{
-		std::vector<std::string> lexems = pi->m_feeder->lexemTypes();
+		std::vector<std::string> lexems = (*pi)->feeder()->lexemTypes();
 		std::vector<std::string>::const_iterator li, le = lexems.end();
 		for (li = lexems.begin(); li != le; ++li)
 		{
 			if (m_analyzer->searchIndexTermTypeSet().find(*li) != m_analyzer->searchIndexTermTypeSet().end()) break;
 		}
-		if (li != le) pi->process( m_segmentProcessor.searchTerms());
+		if (li != le) (*pi)->process( m_segmentProcessor.searchTerms());
 
 		for (li = lexems.begin(); li != le; ++li)
 		{
 			if (m_analyzer->forwardIndexTermTypeSet().find(*li) != m_analyzer->forwardIndexTermTypeSet().end()) break;
 		}
-		if (li != le) pi->process( m_segmentProcessor.forwardTerms());
+		if (li != le) (*pi)->process( m_segmentProcessor.forwardTerms());
 
-		pi->process( m_segmentProcessor.patternLexemTerms());
-		m_segmentProcessor.processPatternMatchResult( pi->fetchResults());
+		(*pi)->process( m_segmentProcessor.patternLexemTerms());
+		m_segmentProcessor.processPatternMatchResult( (*pi)->fetchResults());
 	}
 	DEBUG_CLOSE()
 
@@ -154,12 +154,12 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 	pi = m_postProcPatternMatchContextMap.begin();
 	for (; pi != pe; ++pi)
 	{
-		pi->clear();
+		(*pi)->clear();
 	}
 	vi = m_preProcPatternMatchContextMap.begin();
 	for (; vi != ve; ++vi)
 	{
-		vi->clear();
+		(*vi)->clear();
 	}
 }
 

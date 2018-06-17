@@ -10,6 +10,7 @@
 #include "strus/patternMatcherContextInterface.hpp"
 #include "strus/patternLexerContextInterface.hpp"
 #include "strus/patternTermFeederInstanceInterface.hpp"
+#include "strus/segmenterContextInterface.hpp"
 #include "strus/reference.hpp"
 #include "bindTerm.hpp"
 #include "patternMatchConfig.hpp"
@@ -30,21 +31,23 @@ struct PreProcPatternMatchContext
 {
 	typedef Reference<PatternMatcherContextInterface> PatternMatcherContextReference;
 	typedef Reference<PatternLexerContextInterface> PatternLexerContextReference;
-	typedef std::map<std::size_t,std::size_t> SegPosContentPosMap;
+	typedef std::map<SegmenterPosition,std::size_t> SegPosContentPosMap;
 
 	PreProcPatternMatchContext( const PreProcPatternMatchConfig& config, ErrorBufferInterface* errorhnd_);
-	PreProcPatternMatchContext( const PreProcPatternMatchContext& o)
-		:m_config(o.m_config)
-		,m_matcher(o.m_matcher)
-		,m_lexer(o.m_lexer)
-		,m_errorhnd(o.m_errorhnd)
-		,m_debugtrace(o.m_debugtrace){}
 	~PreProcPatternMatchContext();
 
-	void process( std::size_t segpos, const char* seg, std::size_t segsize);
+	void process( const SegmenterPosition& segpos, const char* seg, std::size_t segsize);
 	std::vector<BindTerm> fetchResults();
 	void clear();
 
+	const PatternMatcherContextInterface* matcher() const		{return m_matcher.get();}
+	const PatternLexerContextInterface* lexer() const		{return m_lexer.get();}
+
+private:
+	std::string formatResult( const char* value) const;
+	PreProcPatternMatchContext( const PreProcPatternMatchContext&) {}//... non copyable
+
+private:
 	const PreProcPatternMatchConfig* m_config;
 	PatternMatcherContextReference m_matcher;
 	PatternLexerContextReference m_lexer;
@@ -59,20 +62,20 @@ struct PostProcPatternMatchContext
 	typedef Reference<PatternMatcherContextInterface> PatternMatcherContextReference;
 
 	PostProcPatternMatchContext( const PostProcPatternMatchConfig& config, ErrorBufferInterface* errorhnd_);
-	PostProcPatternMatchContext( const PostProcPatternMatchContext& o)
-		:m_config(o.m_config)
-		,m_matcher(o.m_matcher)
-		,m_feeder(o.m_feeder)
-		,m_input(o.m_input)
-		,m_fetchResults_called(o.m_fetchResults_called)
-		,m_errorhnd(o.m_errorhnd)
-		,m_debugtrace(o.m_debugtrace){}
 	~PostProcPatternMatchContext();
 
 	void process( const std::vector<BindTerm>& input);
 	std::vector<BindTerm> fetchResults();
 	void clear();
 
+	const PatternMatcherContextInterface* matcher() const		{return m_matcher.get();}
+	const PatternTermFeederInstanceInterface* feeder() const	{return m_feeder;}
+
+private:
+	std::string formatResult( const char* value) const;
+	PostProcPatternMatchContext( const PostProcPatternMatchContext&) {}//... non copyable
+
+private:
 	const PostProcPatternMatchConfig* m_config;
 	PatternMatcherContextReference m_matcher;
 	const PatternTermFeederInstanceInterface* m_feeder;
@@ -83,6 +86,7 @@ struct PostProcPatternMatchContext
 };
 
 
+typedef strus::Reference<PreProcPatternMatchContext> PreProcPatternMatchContextReference;
 
 /// \brief Set of pre processing pattern matching programs defined
 class PreProcPatternMatchContextMap
@@ -96,26 +100,27 @@ public:
 	const PreProcPatternMatchContext& context( std::size_t idx) const
 	{
 		if (idx <= 0 || idx > m_ar.size()) throw std::logic_error("array bound read (document analyzer pattern match context)");
-		return m_ar[ idx-1];
+		return *m_ar[ idx-1].get();
 	}
 	PreProcPatternMatchContext& context( std::size_t idx)
 	{
 		if (idx <= 0 || idx > m_ar.size()) throw std::logic_error("array bound write (document analyzer pattern match context)");
-		return m_ar[ idx-1];
+		return *m_ar[ idx-1].get();
 	}
 
-	typedef std::vector<PreProcPatternMatchContext>::iterator iterator;
+	typedef std::vector<PreProcPatternMatchContextReference>::iterator iterator;
 	iterator begin()		{return m_ar.begin();}
 	iterator end()			{return m_ar.end();}
 
 	void clear();
 
 private:
-	std::vector<PreProcPatternMatchContext> m_ar;
+	std::vector<PreProcPatternMatchContextReference> m_ar;
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 };
 
+typedef strus::Reference<PostProcPatternMatchContext> PostProcPatternMatchContextReference;
 
 /// \brief Set of post processing pattern matching programs defined
 class PostProcPatternMatchContextMap
@@ -126,14 +131,14 @@ public:
 		:m_ar(o.m_ar){}
 	~PostProcPatternMatchContextMap();
 
-	typedef std::vector<PostProcPatternMatchContext>::iterator iterator;
+	typedef std::vector<PostProcPatternMatchContextReference>::iterator iterator;
 	iterator begin()		{return m_ar.begin();}
 	iterator end()			{return m_ar.end();}
 
 	void clear();
 
 private:
-	std::vector<PostProcPatternMatchContext> m_ar;
+	std::vector<PostProcPatternMatchContextReference> m_ar;
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 };

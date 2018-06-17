@@ -30,12 +30,12 @@ public:
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 		const analyzer::FeatureOptions& options);
 
-	const PatternFeatureConfig* getConfig( const std::string& patternTypeName) const;
+	std::vector<const PatternFeatureConfig*> getConfigs( const std::string& patternTypeName) const;
 
 private:
-	friend class PatternFeatureContextMap;
+	typedef std::multimap<std::string,std::size_t> PatternNameConfigMap;
 	std::vector<PatternFeatureConfig> m_ar;
-	std::map<std::string,std::size_t> m_map;
+	PatternNameConfigMap m_map;
 };
 
 }//namespace

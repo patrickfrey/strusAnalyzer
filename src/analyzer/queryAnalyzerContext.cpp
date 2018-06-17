@@ -479,7 +479,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		ve = preProcPatternMatchContextMap.end();
 	for (; vi != ve; ++vi)
 	{
-		segmentProcessor.processPatternMatchResult( vi->fetchResults());
+		segmentProcessor.processPatternMatchResult( (*vi)->fetchResults());
 	}
 	DEBUG_CLOSE()
 	DEBUG_OPEN("post-patternmatch")
@@ -489,9 +489,9 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		pe = postProcPatternMatchContextMap.end();
 	for (; pi != pe; ++pi)
 	{
-		pi->process( segmentProcessor.searchTerms());
-		pi->process( segmentProcessor.patternLexemTerms());
-		segmentProcessor.processPatternMatchResult( pi->fetchResults());
+		(*pi)->process( segmentProcessor.searchTerms());
+		(*pi)->process( segmentProcessor.patternLexemTerms());
+		segmentProcessor.processPatternMatchResult( (*pi)->fetchResults());
 	}
 	DEBUG_CLOSE()
 	return segmentProcessor.fetchQuery();

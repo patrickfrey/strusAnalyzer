@@ -71,7 +71,8 @@ bool DictMap::get( const std::string& key, std::string& value) const
 class HashMap :public KeyMap
 {
 public:
-	HashMap(){}
+	explicit HashMap( ErrorBufferInterface* errorhnd)
+		:m_symtab(errorhnd),m_value_refs(),m_value_strings(){}
 	virtual ~HashMap(){}
 
 	virtual bool set( const std::string& key, const std::string& value);
@@ -160,7 +161,7 @@ public:
 		strus::local_ptr<KeyMap> map;
 		if (sz > 2000000)
 		{
-			map.reset( new HashMap());
+			map.reset( new HashMap(m_errorhnd));
 		}
 		else
 		{

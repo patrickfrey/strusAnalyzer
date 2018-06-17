@@ -46,7 +46,7 @@ PatternMatcherInstanceInterface* TestPatternMatcher::createInstance() const
 
 TestPatternMatcherInstance::TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_patternar(),m_patternrefar()
-	,m_expressionar(),m_exprvarmap(),m_varmap(),m_resultFormatTable(0)
+	,m_expressionar(),m_exprvarmap(),m_varmap(errorhnd_),m_resultFormatTable(0)
 	,m_operandsar(),m_stk(),m_exprfmtmap(),m_done(false)
 {
 	DebugTraceInterface* dt = m_errorhnd->debugTrace();

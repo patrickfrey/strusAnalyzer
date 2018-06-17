@@ -11,9 +11,13 @@
 #include "strus/base/string_format.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
+#include "strus/lib/pattern_resultformat.hpp"
 #include "private/debugTraceHelpers.hpp"
 #include <cstring>
 #include <algorithm>
+#include <limits>
+#include <iostream>
+#include <sstream>
 #include <limits>
 
 using namespace strus;
@@ -29,6 +33,8 @@ PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatc
 	:m_config(&config)
 	,m_matcher(config.matcher()->createContext())
 	,m_lexer(config.lexer()->createContext())
+	,m_content()
+	,m_segPosContentPosMap()
 	,m_errorhnd(errorhnd_)
 	,m_debugtrace(0)
 {
@@ -49,7 +55,7 @@ PreProcPatternMatchContext::~PreProcPatternMatchContext()
 	if (m_debugtrace) delete m_debugtrace;
 }
 
-void PreProcPatternMatchContext::process( std::size_t segpos, const char* seg, std::size_t segsize)
+void PreProcPatternMatchContext::process( const SegmenterPosition& segpos, const char* seg, std::size_t segsize)
 {
 	SegPosContentPosMap::const_iterator segi = m_segPosContentPosMap.find( segpos);
 	if (segi == m_segPosContentPosMap.end())
@@ -71,6 +77,32 @@ void PreProcPatternMatchContext::process( std::size_t segpos, const char* seg, s
 	DEBUG_CLOSE()
 }
 
+std::string PreProcPatternMatchContext::formatResult( const char* value) const
+{
+	std::ostringstream out;
+	strus::PatternResultFormatChunk chunk;
+	char const* vi = value;
+	while (strus::PatternResultFormatChunk::parseNext( chunk, vi))
+	{
+		if (chunk.value)
+		{
+			out << std::string( chunk.value, chunk.valuesize);
+		}
+		else
+		{
+			SegPosContentPosMap::const_iterator starti = m_segPosContentPosMap.find( chunk.start_seg);
+			SegPosContentPosMap::const_iterator endi = m_segPosContentPosMap.find( chunk.end_seg);
+			if (starti == m_segPosContentPosMap.end() || endi == m_segPosContentPosMap.end()) throw std::runtime_error(_TXT("corrupt result segment position"));
+
+			std::size_t start_srcpos = starti->second + chunk.start_pos;
+			std::size_t end_srcpos = endi->second + chunk.end_pos;
+			std::size_t len = end_srcpos - start_srcpos;
+			out << std::string( m_content.c_str()+start_srcpos, len);
+		}
+	}
+	return out.str();
+}
+
 std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 {
 	std::vector<BindTerm> rt;
@@ -80,48 +112,15 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 	for (; ri != re; ++ri)
 	{
 		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
-		if (!m_config->patternTypeName().empty())
+		if (ri->value())
+		{
+			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
+		}
+		else
 		{
 			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
-			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 		}
-		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
-		for (; ti != te; ++ti)
-		{
-			SegPosContentPosMap::const_iterator segi;
-			segi = m_segPosContentPosMap.find( ti->origpos().seg());
-			if (segi == m_segPosContentPosMap.end()) throw std::runtime_error( _TXT("internal: inconsistency in data, segment position unknown"));
-			std::size_t segstritr = segi->second;
-			segi = m_segPosContentPosMap.find( ti->origend().seg());
-			if (segi == m_segPosContentPosMap.end()) throw std::runtime_error( _TXT("internal: inconsistency in data, segment position unknown"));
-			std::size_t segstrend = segi->second;
-
-			if (segstritr == segstrend)
-			{
-				const char* chunk = m_content.c_str() + segstritr + ti->origpos().ofs();
-				std::size_t chunksize = ti->origend().ofs() - ti->origpos().ofs();
-				rt.push_back( BindTerm( ti->origpos().seg(), ti->origpos().ofs(), ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), std::string( chunk, chunksize)));
-				DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
-			}
-			else
-			{
-				std::string value;
-				segstritr += ti->origpos().ofs();
-				while (segstritr < segstrend)
-				{
-					const char* chunk = m_content.c_str() + segstritr;
-					value.append( chunk);
-					segstritr += std::strlen( chunk)+1;
-				}
-				if (segstritr != segstrend)
-				{
-					throw std::runtime_error( _TXT("internal: inconsistency in data, segments overlapping or not in ascending order"));
-				}
-				value.append( m_content.c_str() + segstritr, ti->origend().ofs());
-				rt.push_back( BindTerm( ti->origpos().seg(), ti->origpos().ofs(), ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), value));
-				DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
-			}
-		}
+		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
 	return rt;
@@ -173,6 +172,31 @@ void PostProcPatternMatchContext::process( const std::vector<BindTerm>& input)
 			m_input.push_back( BindLexem( lexemid, *bi));
 		}
 	}
+}
+
+std::string PostProcPatternMatchContext::formatResult( const char* value) const
+{
+	std::ostringstream out;
+	strus::PatternResultFormatChunk chunk;
+	char const* vi = value;
+	while (strus::PatternResultFormatChunk::parseNext( chunk, vi))
+	{
+		if (chunk.value)
+		{
+			out << std::string( chunk.value, chunk.valuesize);
+		}
+		else
+		{
+			int idx = chunk.start_pos;
+			for (;idx < chunk.end_pos; ++idx)
+			{
+				const BindLexem& lexem = m_input[ idx];
+				if (idx == chunk.start_pos) out << ' ';
+				out << lexem.value();
+			}
+		}
+	}
+	return out.str();
 }
 
 std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
@@ -230,23 +254,18 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	for (; ri != re; ++ri)
 	{
 		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
+		int start_virtpos = ri->origpos().ofs();
+		int start_origpos = m_input[ start_virtpos].ofs();
 
-		if (!m_config->patternTypeName().empty())
+		if (ri->value())
 		{
-			int start_virtpos = ri->origpos().ofs();
-			int start_origpos = m_input[ start_virtpos].ofs();
+			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
+		}
+		else
+		{
 			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
-			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 		}
-		std::vector<analyzer::PatternMatcherResultItem>::const_iterator ti = ri->items().begin(), te = ri->items().end();
-		for (; ti != te; ++ti)
-		{
-			int start_virtpos = ti->origpos().ofs();
-			int start_origpos = m_input[ start_virtpos].ofs();
-			const std::string& value = m_input[ start_virtpos].value();
-			rt.push_back( BindTerm( ti->origpos().seg(), start_origpos, ti->ordend() - ti->ordpos(), analyzer::BindContent, ti->name(), value));
-			DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
-		}
+		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
 	return rt;
@@ -269,7 +288,7 @@ PreProcPatternMatchContextMap::PreProcPatternMatchContextMap( const PreProcPatte
 	PreProcPatternMatchConfigMap::const_iterator ci = config.begin(), ce = config.end();
 	for (; ci != ce; ++ci)
 	{
-		m_ar.push_back( PreProcPatternMatchContext( *ci, errorhnd_));
+		m_ar.push_back( new PreProcPatternMatchContext( *ci, errorhnd_));
 	}
 }
 
@@ -288,7 +307,7 @@ PostProcPatternMatchContextMap::PostProcPatternMatchContextMap( const PostProcPa
 	PostProcPatternMatchConfigMap::const_iterator ci = config.begin(), ce = config.end();
 	for (; ci != ce; ++ci)
 	{
-		m_ar.push_back( PostProcPatternMatchContext( *ci, errorhnd_));
+		m_ar.push_back( new PostProcPatternMatchContext( *ci, errorhnd_));
 	}
 }
 
@@ -302,7 +321,7 @@ void PreProcPatternMatchContextMap::clear()
 	PreProcPatternMatchContextMap::iterator ci = begin(), ce = end();
 	for (; ci != ce; ++ci)
 	{
-		ci->clear();
+		(*ci)->clear();
 	}
 }
 
@@ -311,7 +330,7 @@ void PostProcPatternMatchContextMap::clear()
 	PostProcPatternMatchContextMap::iterator ci = begin(), ce = end();
 	for (; ci != ce; ++ci)
 	{
-		ci->clear();
+		(*ci)->clear();
 	}
 }
 

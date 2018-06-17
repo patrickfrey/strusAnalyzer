@@ -32,8 +32,8 @@ void PatternFeatureConfigMap::defineFeature(
 {
 	try
 	{
-		m_map[ patternTypeName] = m_ar.size();
 		m_ar.reserve( m_ar.size()+1);
+		m_map.insert( typename PatternNameConfigMap::value_type( patternTypeName, m_ar.size()));
 		m_ar.push_back( PatternFeatureConfig( string_conv::tolower( name), normalizers, featureClass, options));
 	}
 	catch (const std::bad_alloc&)
@@ -48,10 +48,15 @@ void PatternFeatureConfigMap::defineFeature(
 	}
 }
 
-const PatternFeatureConfig* PatternFeatureConfigMap::getConfig( const std::string& patternTypeName) const
+std::vector<const PatternFeatureConfig*> PatternFeatureConfigMap::getConfigs( const std::string& patternTypeName) const
 {
-	std::map<std::string,std::size_t>::const_iterator mi = m_map.find( patternTypeName);
-	if (mi == m_map.end()) return 0;
-	return &m_ar[ mi->second];
+	std::vector<const PatternFeatureConfig*> rt;
+	std::pair<PatternNameConfigMap::const_iterator,PatternNameConfigMap::const_iterator> range = m_map.equal_range( patternTypeName);
+	PatternNameConfigMap::const_iterator ci = range.first, ce = range.second;
+	for (; ci != ce; ++ci)
+	{
+		rt.push_back( &m_ar[ ci->second]);
+	}
+	return rt;
 }
 

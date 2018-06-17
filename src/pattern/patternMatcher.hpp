@@ -101,7 +101,8 @@ private:
 		:public PatternResultFormatVariableMap
 	{
 	public:
-		VariableMap(){}
+		explicit VariableMap( ErrorBufferInterface* errorhnd)
+			:m_map(errorhnd){}
 		virtual ~VariableMap(){}
 	
 		virtual const char* getVariable( const std::string& name) const;
