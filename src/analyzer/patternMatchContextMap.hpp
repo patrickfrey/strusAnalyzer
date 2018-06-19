@@ -52,6 +52,7 @@ private:
 	PatternMatcherContextReference m_matcher;
 	PatternLexerContextReference m_lexer;
 	std::string m_content;
+	int m_ordposofs;
 	SegPosContentPosMap m_segPosContentPosMap;
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;

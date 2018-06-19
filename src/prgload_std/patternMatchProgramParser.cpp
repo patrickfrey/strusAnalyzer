@@ -41,6 +41,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 	,m_patternLengthMap()
 	,m_symbolRegexIdList()
 	,m_unresolvedPatternNameSet()
+	,m_unresolvedIsError(false)
 {
 	if (!m_patternMatcher || !m_patternLexer) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
 	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
@@ -52,6 +53,7 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 		PatternMatcherInstanceInterface* tpm,
 		ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
+	,m_debugtrace(0)
 	,m_patternMatcher(tpm)
 	,m_patternLexer(0)
 	,m_patternTermFeeder(tfm)
@@ -60,8 +62,11 @@ PatternMatcherProgramParser::PatternMatcherProgramParser(
 	,m_lexemSymbolTab(errorhnd_)
 	,m_symbolRegexIdList()
 	,m_unresolvedPatternNameSet()
+	,m_unresolvedIsError(false)
 {
 	if (!m_patternMatcher || !m_patternTermFeeder) throw strus::runtime_error( "failed to create pattern matching structures to instrument");
+	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
+	m_debugtrace = dbg ? dbg->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME) : NULL;
 }
 
 PatternMatcherProgramParser::~PatternMatcherProgramParser()
@@ -70,9 +75,6 @@ PatternMatcherProgramParser::~PatternMatcherProgramParser()
 }
 
 enum Tokens {
-	TokLEXER,
-	TokMATCHER,
-	TokFEEDER,
 	TokIdentifier,
 	TokFloat,
 	TokInteger,
@@ -93,9 +95,6 @@ enum Tokens {
 	TokRightArrow
 };
 static const char* g_tokens[] = {
-	"\\%LEXER",
-	"\\%MATCHER",
-	"\\%FEEDER",
 	"[a-zA-Z_][a-zA-Z0-9_]*",
 	"[+-]*[0-9][0-9_]*[.][0-9]*",
 	"[+-]*[0-9][0-9_]*",
@@ -153,13 +152,19 @@ void PatternMatcherProgramParser::loadMatcherOption( ProgramLexer& lexer)
 	if (lexer.current().isToken( TokIdentifier))
 	{
 		std::string name = lexer.current().value();
-		if (lexer.next().isToken( TokAssign))
+		lexer.next();
+		if (strus::caseInsensitiveEquals( name, "strict"))
+		{
+			m_unresolvedIsError = true;
+		}
+		else if (lexer.current().isToken( TokAssign))
 		{
 			lexer.next();
 			if (lexer.current().isToken( TokFloat) || lexer.current().isToken( TokInteger))
 			{
 				double value = numstring_conv::todouble( lexer.current().value());
 				m_patternMatcher->defineOption( name, value);
+				lexer.next();
 			}
 			else
 			{
@@ -199,13 +204,14 @@ void PatternMatcherProgramParser::loadFeederOption( ProgramLexer& lexer)
 		if (isEqual( name, "lexem"))
 		{
 			lexer.next();
-			if (!lexer.current().isToken( TokIdentifier))
+			if (!lexer.current().isToken( TokIdentifier) && !lexer.current().isString())
 			{
 				throw strus::runtime_error( _TXT("identifier expected as argument of feeder option 'lexem'"));
 			}
 			std::string lexemid( lexer.current().value());
-			(void)defineAnalyzerTermType( lexemid);
 			lexer.next();
+
+			(void)defineAnalyzerTermType( lexemid);
 		}
 		else
 		{
@@ -222,9 +228,15 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 {
 	while (!lexer.current().end())
 	{
-		if (lexer.current().isToken( TokLEXER) || lexer.current().isToken( TokMATCHER) || lexer.current().isToken( TokFEEDER))
+		if (lexer.current().isToken( TokPercent))
 		{
-			if (lexer.current().isToken( TokLEXER))
+			lexer.next();
+			if (!lexer.current().isToken( TokIdentifier))
+			{
+				throw std::runtime_error( _TXT("identifier (LEXER,MATCHER or FEEDER) expected after percent '%%'"));
+			}
+			std::string component = lexer.current().value();
+			if (strus::caseInsensitiveEquals( component, "LEXER"))
 			{
 				if (!m_patternLexer)
 				{
@@ -236,7 +248,7 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 					loadLexerOption( lexer);
 				} while (lexer.current().isToken(TokComma));
 			}
-			else if (lexer.current().isToken( TokMATCHER))
+			else if (strus::caseInsensitiveEquals( component, "MATCHER"))
 			{
 				do
 				{
@@ -244,7 +256,7 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 					loadMatcherOption( lexer);
 				} while (lexer.current().isToken(TokComma));
 			}
-			else //if (lexer.current().isToken( TokFEEDER))
+			else if (strus::caseInsensitiveEquals( component, "FEEDER"))
 			{
 				if (!m_patternTermFeeder)
 				{
@@ -255,6 +267,10 @@ void PatternMatcherProgramParser::loadOptions( ProgramLexer& lexer)
 					lexer.next();
 					loadFeederOption( lexer);
 				} while (lexer.current().isToken(TokComma));
+			}
+			else
+			{
+				throw std::runtime_error( _TXT("LEXER,MATCHER or FEEDER expected after percent '%%'"));
 			}
 		}
 		else
@@ -398,6 +414,10 @@ void PatternMatcherProgramParser::loadRules( ProgramLexer& lexer)
 	ProgramLexem cur;
 	while (!lexer.current().end())
 	{
+		if (lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("superfluous semicolon ';' found in source"));
+		}
 		bool visible = true;
 		if (lexer.current().isToken( TokDot))
 		{
@@ -496,9 +516,26 @@ bool PatternMatcherProgramParser::compile()
 			std::set<uint32_t>::iterator
 				ui = m_unresolvedPatternNameSet.begin(),
 				ue = m_unresolvedPatternNameSet.end();
-			for (std::size_t uidx=0; ui != ue && uidx<10; ++ui,++uidx)
+			for (std::size_t uidx=0; ui != ue; ++ui,++uidx)
 			{
+				if (m_unresolvedIsError)
+				{
+					if (uidx < 10)
+					{
+						if (uidx) unresolved << ", ";
+						unresolved << m_patternNameSymbolTab.key(*ui);
+					}
+					else if (uidx == 10)
+					{
+						unresolved << ", ...";
+					}
+				}
 				if (m_debugtrace) m_debugtrace->event( "unresolved", "%s", m_patternNameSymbolTab.key(*ui));
+			}
+			if (m_unresolvedIsError)
+			{
+				std::string symlist( unresolved.str());
+				throw strus::runtime_error_ec( ErrorCodeSyntax, _TXT("unresolved symbols: %s"), symlist.c_str());
 			}
 		}
 		bool rt = true;
@@ -540,9 +577,11 @@ uint32_t PatternMatcherProgramParser::getOrCreateSymbol( unsigned int regexid, c
 {
 	char regexidbuf[ 16];
 	std::size_t regexidsize = utf8encode( regexidbuf, regexid+1);
-	std::string symkey( regexidbuf, regexidsize);
-	symkey.append( name);
-	uint32_t symid = m_lexemSymbolTab.getOrCreate( symkey) + MaxPatternTermNameId;
+	std::string symkeystr( regexidbuf, regexidsize);
+	symkeystr.append( name);
+	uint32_t symkey = m_lexemSymbolTab.getOrCreate( symkeystr);
+	if (!symkey) throw std::runtime_error( m_errorhnd->fetchError());
+	uint32_t symid = symkey + MaxPatternTermNameId;
 	if (m_lexemSymbolTab.isNew())
 	{
 		m_symbolRegexIdList.push_back( regexid);
@@ -764,34 +803,20 @@ void PatternMatcherProgramParser::loadExpressionNode( ProgramLexer& lexer, const
 		unsigned int id;
 		if (lexer.current().isString())
 		{
-			if (m_patternLexer)
-			{
-				id = m_regexNameSymbolTab.get( name);
-				if (!id) throw strus::runtime_error(_TXT("undefined lexem '%s'"), name.c_str());
-			}
-			else
-			{
-				id = defineAnalyzerTermType( name);
-			}
-			id = getOrCreateSymbol( id, lexer.current().value());
-			if (id)
-			{
-				m_patternMatcher->pushTerm( id);
-				exprinfo.minrange = 1;
-				exprinfo.maxrange = 1;
-			}
+			std::string symbol = lexer.current().value();
 			lexer.next();
+
+			id = m_regexNameSymbolTab.get( name);
+			if (!id) throw strus::runtime_error(_TXT("undefined lexem '%s'"), name.c_str());
+
+			id = getOrCreateSymbol( id, symbol);
+			m_patternMatcher->pushTerm( id);
+			exprinfo.minrange = 1;
+			exprinfo.maxrange = 1;
 		}
 		else
 		{
-			if (m_patternLexer)
-			{
-				id = m_regexNameSymbolTab.get( name);
-			}
-			else
-			{
-				id = getAnalyzerTermType( name);
-			}
+			id = m_regexNameSymbolTab.get( name);
 			if (id)
 			{
 				m_patternMatcher->pushTerm( id);

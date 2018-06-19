@@ -102,6 +102,7 @@ private:
 	std::map<uint32_t,unsigned int> m_patternLengthMap;
 	std::vector<uint32_t> m_symbolRegexIdList;
 	std::set<uint32_t> m_unresolvedPatternNameSet;
+	bool m_unresolvedIsError;
 };
 
 }//namespace

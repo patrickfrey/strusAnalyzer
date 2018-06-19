@@ -9,6 +9,7 @@
 /// \file "libstrus_pattern_resultformat.cpp"
 #include "strus/lib/pattern_resultformat.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/errorCodes.hpp"
 #include "strus/debugTraceInterface.hpp"
 #include "strus/base/utf8.hpp"
 #include "strus/base/dll_tags.hpp"
@@ -206,7 +207,7 @@ static inline char* printNumber( char* ri, const char* re, int num)
 {
 	std::size_t len;
 	if (re - ri < 8) return 0;
-	len = strus::utf8encode( ri, num);
+	len = strus::utf8encode( ri, num+1);
 	if (!len) return 0;
 	return ri + len;
 }
@@ -544,52 +545,61 @@ DLL_PUBLIC const PatternResultFormat* PatternResultFormatTable::createResultForm
 
 static int decodeInt( char const*& src)
 {
-	if (*src == '\0') return 0;
+	if (*src == '\0') throw strus::runtime_error( _TXT("internal data corruption"));
 	int chlen = strus::utf8charlen( *src);
 	int rt = strus::utf8decode( src, chlen);
+	if (rt <= 0) throw strus::runtime_error( _TXT("internal data corruption"));
 	src += chlen;
-	return rt;
+	return rt-1;
 }
 
-DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& result, char const*& src)
+DLL_PUBLIC bool PatternResultFormatChunk::parseNext( PatternResultFormatChunk& result, char const*& src, ErrorBufferInterface* errorhnd)
 {
-	std::memset( &result, 0, sizeof(PatternResultFormatChunk));
-	const char* start = src;
+	try
+	{
+		std::memset( &result, 0, sizeof(PatternResultFormatChunk));
+		const char* start = src;
 
-	while ((unsigned char)*src > 2) ++src;
-	if (start == src)
-	{
-		if (*src == '\0')
+		while ((unsigned char)*src > 2) ++src;
+		if (start == src)
 		{
-			return false;
+			if (*src == '\0')
+			{
+				return false;
+			}
+			if (*src == '\1')
+			{
+				++src;
+				result.start_seg = decodeInt( src);
+				result.start_pos = decodeInt( src);
+				int len = decodeInt( src);
+
+				result.end_seg = result.start_seg;
+				result.end_pos = result.start_pos + len;
+			}
+			else//if (*src == '\2')
+			{
+				++src;
+				result.start_seg = decodeInt( src);
+				result.start_pos = decodeInt( src);
+				result.end_seg = decodeInt( src);
+				result.end_pos = decodeInt( src);
+			}
+			return true;
 		}
-		if (*src == '\1')
+		else
 		{
-			++src;
-			result.start_seg = decodeInt( src);
-			result.start_pos = decodeInt( src);
-			int len = decodeInt( src);
-			result.end_seg = result.start_seg;
-			result.end_pos = result.start_pos + len;
+			result.value = start;
+			result.valuesize = src - start;
+			return true;
 		}
-		else//if (*src == '\2')
-		{
-			++src;
-			result.start_seg = decodeInt( src);
-			result.start_pos = decodeInt( src);
-			result.end_seg = decodeInt( src);
-			result.end_pos = decodeInt( src);
-		}
-		return true;
 	}
-	else
+	catch (const std::exception& err)
 	{
-		result.value = start;
-		result.valuesize = src - start;
-		return true;
+		errorhnd->report( ErrorCodeLogicError, "%s", err.what());
+		return false;
 	}
 }
-
 
 std::string parsePatternResultFormatMapStringElement( char const*& si)
 {

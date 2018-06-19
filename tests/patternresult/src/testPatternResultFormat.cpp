@@ -177,7 +177,7 @@ static void checkPatternMatchResult( const char* res, const char* expected)
 	std::ostringstream fmtout;
 	strus::PatternResultFormatChunk chunk;
 	char const* ri = res;
-	while (strus::PatternResultFormatChunk::parseNext( chunk, ri))
+	while (strus::PatternResultFormatChunk::parseNext( chunk, ri, g_errorhnd))
 	{
 		if (chunk.value)
 		{

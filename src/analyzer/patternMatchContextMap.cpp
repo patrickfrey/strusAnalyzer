@@ -27,6 +27,7 @@ using namespace strus;
 #define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
 #define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
 #define DEBUG_EVENT5( NAME, FMT, X1, X2, X3, X4, X5)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5);
+#define DEBUG_EVENT7( NAME, FMT, X1, X2, X3, X4, X5, X6, X7)	if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5, X6, X7);
 #define DEBUG_EVENT_STR( NAME, FMT, VAL)			if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, valstr.c_str());}
 
 PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatchConfig& config, ErrorBufferInterface* errorhnd_)
@@ -34,6 +35,7 @@ PreProcPatternMatchContext::PreProcPatternMatchContext( const PreProcPatternMatc
 	,m_matcher(config.matcher()->createContext())
 	,m_lexer(config.lexer()->createContext())
 	,m_content()
+	,m_ordposofs(0)
 	,m_segPosContentPosMap()
 	,m_errorhnd(errorhnd_)
 	,m_debugtrace(0)
@@ -63,18 +65,24 @@ void PreProcPatternMatchContext::process( const SegmenterPosition& segpos, const
 		m_segPosContentPosMap[ segpos] = m_content.size() + 1;
 		m_content.push_back( '\0');
 		m_content.append( seg, segsize);
+
+		DEBUG_EVENT_STR( "segment", "%s", strus::getStringContentStart( std::string( seg, segsize), 200));
+		std::vector<analyzer::PatternLexem> lexems = m_lexer->match( seg, segsize);
+		std::vector<analyzer::PatternLexem>::iterator li = lexems.begin(), le = lexems.end();
+		DEBUG_OPEN( "input")
+		for (; li != le; ++li)
+		{
+			li->origpos().setSeg( segpos);
+			li->setOrdpos( m_ordposofs + li->ordpos());
+			m_matcher->putInput( *li);
+			DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", li->id(), li->ordpos(), li->origpos().seg(), li->origpos().ofs(), li->origsize());
+		}
+		if (!lexems.empty())
+		{
+			m_ordposofs += lexems.back().ordpos();
+		}
+		DEBUG_CLOSE()
 	}
-	DEBUG_EVENT_STR( "segment", "%s", strus::getStringContentStart( std::string( seg, segsize), 200));
-	std::vector<analyzer::PatternLexem> lexems = m_lexer->match( seg, segsize);
-	std::vector<analyzer::PatternLexem>::iterator li = lexems.begin(), le = lexems.end();
-	DEBUG_OPEN( "input")
-	for (; li != le; ++li)
-	{
-		li->origpos().setSeg( segpos);
-		m_matcher->putInput( *li);
-		DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", li->id(), li->ordpos(), li->origpos().seg(), li->origpos().ofs(), li->origsize());
-	}
-	DEBUG_CLOSE()
 }
 
 std::string PreProcPatternMatchContext::formatResult( const char* value) const
@@ -82,7 +90,7 @@ std::string PreProcPatternMatchContext::formatResult( const char* value) const
 	std::ostringstream out;
 	strus::PatternResultFormatChunk chunk;
 	char const* vi = value;
-	while (strus::PatternResultFormatChunk::parseNext( chunk, vi))
+	while (strus::PatternResultFormatChunk::parseNext( chunk, vi, m_errorhnd))
 	{
 		if (chunk.value)
 		{
@@ -123,6 +131,7 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
+	if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());
 	return rt;
 }
 
@@ -131,6 +140,7 @@ void PreProcPatternMatchContext::clear()
 	m_matcher->reset();
 	m_lexer->reset();
 	m_content.clear();
+	m_ordposofs = 0;
 	m_segPosContentPosMap.clear();
 }
 
@@ -179,7 +189,7 @@ std::string PostProcPatternMatchContext::formatResult( const char* value) const
 	std::ostringstream out;
 	strus::PatternResultFormatChunk chunk;
 	char const* vi = value;
-	while (strus::PatternResultFormatChunk::parseNext( chunk, vi))
+	while (strus::PatternResultFormatChunk::parseNext( chunk, vi, m_errorhnd))
 	{
 		if (chunk.value)
 		{
@@ -191,7 +201,7 @@ std::string PostProcPatternMatchContext::formatResult( const char* value) const
 			for (;idx < chunk.end_pos; ++idx)
 			{
 				const BindLexem& lexem = m_input[ idx];
-				if (idx == chunk.start_pos) out << ' ';
+				if (idx != chunk.start_pos) out << ' ';
 				out << lexem.value();
 			}
 		}
@@ -209,9 +219,9 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 
 	DEBUG_OPEN( "result")
 	std::sort( m_input.begin(), m_input.end());
-	unsigned int prev_seg = std::numeric_limits<unsigned int>::max();
-	unsigned int prev_ofs = std::numeric_limits<unsigned int>::max();
-	unsigned int ordpos = 0;
+	int prev_origseg = std::numeric_limits<int>::max();
+	int prev_origofs = std::numeric_limits<int>::max();
+	int ordpos = 0;
 
 	// Convert input elements:
 	std::vector<analyzer::PatternLexem> pinput;
@@ -219,12 +229,12 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 		std::vector<BindLexem>::const_iterator bi = m_input.begin(), be = m_input.end();
 		for (std::size_t bidx=0; bi != be; ++bi,++bidx)
 		{
-			if (bi->ofs() != prev_ofs || bi->seg() != prev_seg)
+			if (bi->ofs() != prev_origofs || bi->seg() != prev_origseg)
 			{
 				// Increment ordinal position:
 				++ordpos;
-				prev_seg = bi->seg();
-				prev_ofs = bi->ofs();
+				prev_origseg = bi->seg();
+				prev_origofs = bi->ofs();
 			}
 			int virtpos = bidx;
 			pinput.push_back( analyzer::PatternLexem( bi->id(), ordpos, analyzer::Position(bi->seg(), virtpos), 1));
@@ -238,9 +248,8 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 		{
 			if (pi->id())
 			{
-				int virtpos = pi->origpos().ofs();
-				int origpos = m_input[ virtpos].ofs();
-				DEBUG_EVENT5( "lexem", "%d pos %d [%d %d %d]", pi->id(), pi->ordpos(), pi->origpos().seg(), origpos, pi->origsize());
+				const BindLexem& lx = m_input[ pi->origpos().ofs()];
+				DEBUG_EVENT7( "lexem", "%d pos %d [%d %d %d] %s '%s'", pi->id(), pi->ordpos(), pi->origpos().seg(), pi->origpos().ofs(), pi->origsize(), lx.type().c_str(), lx.value().c_str());
 				m_matcher->putInput( *pi);
 			}
 		}
@@ -268,6 +277,7 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
+	if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());
 	return rt;
 }
 

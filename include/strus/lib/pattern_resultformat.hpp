@@ -89,7 +89,7 @@ struct PatternResultFormatChunk
 	int end_pos;			///< end position in case of a chunk referencing content
 
 	///\ brief Parse the next chunk in a mapped pattern match result value
-	static bool parseNext( PatternResultFormatChunk& result, char const*& src);
+	static bool parseNext( PatternResultFormatChunk& result, char const*& src, ErrorBufferInterface* errorhnd);
 };
 
 /// \brief Result format for the output of pattern match results with names of members as variables in curly brackets '{' '}'

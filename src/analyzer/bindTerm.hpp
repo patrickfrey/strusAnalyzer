@@ -18,12 +18,12 @@ class BindTerm
 public:
 	BindTerm( const BindTerm& o)
 		:m_seg(o.m_seg),m_ofs(o.m_ofs),m_len(o.m_len),m_posbind(o.m_posbind),m_type(o.m_type),m_value(o.m_value){}
-	BindTerm( unsigned int seg_, unsigned int ofs_, unsigned int len_, analyzer::PositionBind posbind_, const std::string& type_, const std::string& value_)
+	BindTerm( int seg_, int ofs_, int len_, analyzer::PositionBind posbind_, const std::string& type_, const std::string& value_)
 		:m_seg(seg_),m_ofs(ofs_),m_len(len_),m_posbind(posbind_),m_type(type_),m_value(value_){}
 
-	unsigned int seg() const				{return m_seg;}
-	unsigned int ofs() const				{return m_ofs;}
-	unsigned int len() const				{return m_len;}
+	int seg() const						{return m_seg;}
+	int ofs() const						{return m_ofs;}
+	int len() const						{return m_len;}
 	const std::string& type() const				{return m_type;}
 	const std::string& value() const			{return m_value;}
 	analyzer::PositionBind posbind() const			{return m_posbind;}
@@ -48,9 +48,9 @@ public:
 	}
 
 private:
-	unsigned int m_seg;
-	unsigned int m_ofs;
-	unsigned int m_len;
+	int m_seg;
+	int m_ofs;
+	int m_len;
 	analyzer::PositionBind m_posbind;
 	std::string m_type;
 	std::string m_value;
@@ -62,10 +62,10 @@ class BindLexem
 public:
 	BindLexem( const BindLexem& o)
 		:BindTerm(o),m_id(o.m_id){}
-	BindLexem( unsigned int id_, const BindTerm& term)
+	BindLexem( int id_, const BindTerm& term)
 		:BindTerm(term),m_id(id_){}
 
-	unsigned int id() const		{return m_id;}
+	int id() const		{return m_id;}
 
 	bool operator < (const BindLexem& o) const
 	{
@@ -73,7 +73,7 @@ public:
 	}
 
 private:
-	unsigned int m_id;
+	int m_id;
 };
 
 }//namespace
