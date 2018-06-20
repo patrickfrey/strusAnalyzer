@@ -161,7 +161,7 @@ static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnaly
 	{
 		throw std::runtime_error( g_errorhnd->fetchError());
 	}
-	analyzer->definePatternMatcherPostProc( "pattern", matcherinst.get(), termfeederinst.get());
+	analyzer->defineTokenPatternMatcher( "pattern", matcherinst.get(), termfeederinst.get());
 	matcherinst.release();
 	termfeederinst.release();
 

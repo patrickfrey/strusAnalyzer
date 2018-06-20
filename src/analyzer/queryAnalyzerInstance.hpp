@@ -53,12 +53,12 @@ public:
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			int priority);
 
-	virtual void definePatternMatcherPostProc(
+	virtual void defineTokenPatternMatcher(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
 			PatternTermFeederInstanceInterface* feeder);
 
-	virtual void definePatternMatcherPreProc(
+	virtual void defineContentPatternMatcher(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
 			PatternLexerInstanceInterface* lexer,

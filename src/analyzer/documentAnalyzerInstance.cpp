@@ -234,7 +234,7 @@ void DocumentAnalyzerInstance::addPatternLexem(
 	defineSelectorExpression( featidx, selectexpr);
 }
 
-void DocumentAnalyzerInstance::definePatternMatcherPostProc(
+void DocumentAnalyzerInstance::defineTokenPatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternTermFeederInstanceInterface* feeder)
@@ -243,10 +243,10 @@ void DocumentAnalyzerInstance::definePatternMatcherPostProc(
 	{
 		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, true);
 	}
-	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error defining token pattern match: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzerInstance::definePatternMatcherPreProc(
+void DocumentAnalyzerInstance::defineContentPatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternLexerInstanceInterface* lexer,
@@ -263,7 +263,7 @@ void DocumentAnalyzerInstance::definePatternMatcherPreProc(
 			defineSelectorExpression( idx, *si);
 		}
 	}
-	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error defining content pattern match: %s"), *m_errorhnd);
 }
 
 void DocumentAnalyzerInstance::addSearchIndexFeatureFromPatternMatch(

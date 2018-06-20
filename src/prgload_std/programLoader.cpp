@@ -833,7 +833,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 		{
 			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
 		}
-		analyzer->definePatternMatcherPostProc( patternTypeName, matcherctx.get(), feederctx.get());
+		analyzer->defineTokenPatternMatcher( patternTypeName, matcherctx.get(), feederctx.get());
 		matcherctx.release();
 		feederctx.release();
 		if (errorhnd->hasError())
@@ -859,7 +859,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 		{
 			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
 		}
-		analyzer->definePatternMatcherPreProc( patternTypeName, matcherctx.get(), lexerctx.get(), selectexprlist);
+		analyzer->defineContentPatternMatcher( patternTypeName, matcherctx.get(), lexerctx.get(), selectexprlist);
 		matcherctx.release();
 		lexerctx.release();
 		if (errorhnd->hasError())

@@ -50,7 +50,7 @@ void QueryAnalyzerInstance::addPatternLexem(
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerInstance::definePatternMatcherPostProc(
+void QueryAnalyzerInstance::defineTokenPatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternTermFeederInstanceInterface* feeder)
@@ -59,10 +59,10 @@ void QueryAnalyzerInstance::definePatternMatcherPostProc(
 	{
 		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, false);
 	}
-	CATCH_ERROR_MAP( _TXT("error defining post processing pattern match: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error defining token pattern match: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerInstance::definePatternMatcherPreProc(
+void QueryAnalyzerInstance::defineContentPatternMatcher(
 		const std::string& patternTypeName,
 		PatternMatcherInstanceInterface* matcher,
 		PatternLexerInstanceInterface* lexer,
@@ -78,7 +78,7 @@ void QueryAnalyzerInstance::definePatternMatcherPreProc(
 			m_fieldTypePatternMap.insert( FieldTypeFeatureDef( *si, idx));
 		}
 	}
-	CATCH_ERROR_MAP( _TXT("error defining pre processing pattern match: %s"), *m_errorhnd);
+	CATCH_ERROR_MAP( _TXT("error defining content pattern match: %s"), *m_errorhnd);
 }
 
 void QueryAnalyzerInstance::addElementFromPatternMatch(

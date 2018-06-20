@@ -60,21 +60,21 @@ public:
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			int priority)=0;
 
-	/// \brief Declare a pattern matcher on the query features after other query analysis
+	/// \brief Declare a pattern matcher on the tokens after normalization (pattern lexems and query features)
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
 	/// \param[in] feeder feeder that maps document analysis term to pattern lexems as input of the matcher (ownership passed to this) 
-	virtual void definePatternMatcherPostProc(
+	virtual void defineTokenPatternMatcher(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
 			PatternTermFeederInstanceInterface* feeder)=0;
 
-	/// \brief Declare a pattern matcher on the query features after other query analysis
+	/// \brief Declare a pattern matcher on the content
 	/// \param[in] patternTypeName name of the type to assign to the pattern matching results
 	/// \param[in] matcher pattern matcher compiled (ownership passed to this) 
 	/// \param[in] lexer lexer that tokenizes a document segment as input of pattern matching (ownership passed to this) 
 	/// \param[in] selectexpr list of selection expressions as input of the pattern matching
-	virtual void definePatternMatcherPreProc(
+	virtual void defineContentPatternMatcher(
 			const std::string& patternTypeName,
 			PatternMatcherInstanceInterface* matcher,
 			PatternLexerInstanceInterface* lexer,
