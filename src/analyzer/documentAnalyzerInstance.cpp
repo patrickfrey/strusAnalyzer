@@ -227,9 +227,10 @@ void DocumentAnalyzerInstance::addPatternLexem(
 		const std::string& termtype,
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority)
 {
-	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
+	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, priority, analyzer::FeatureOptions());
 	defineSelectorExpression( featidx, selectexpr);
 }
 
@@ -354,7 +355,7 @@ static analyzer::FeatureView getFeatureView( const FeatureConfig& cfg)
 	{
 		normalizerviews.push_back( (*ni)->view());
 	}
-	return analyzer::FeatureView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.options());
+	return analyzer::FeatureView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.options(), cfg.priority());
 }
 
 analyzer::DocumentAnalyzerView DocumentAnalyzerInstance::view() const

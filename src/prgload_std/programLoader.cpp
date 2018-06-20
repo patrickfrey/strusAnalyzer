@@ -68,7 +68,7 @@ static const char* g_tokens[] = {
 	"\\[",
 	"\\]",
 	"\\=",
-	"^",
+	"\\^",
 	",",
 	":",
 	";",
@@ -632,7 +632,7 @@ static void parseDocumentFeatureDef(
 			}
 			analyzer.addPatternLexem(
 				featureName, xpathexpr,
-				featuredef.tokenizer.get(), featuredef.normalizer);
+				featuredef.tokenizer.get(), featuredef.normalizer, priority);
 			break;
 	}
 	featuredef.release();
@@ -667,10 +667,9 @@ static void parseQueryElementDef(
 			break;
 
 		case QueryElementLexem:
-			if (priority) throw std::runtime_error(_TXT("no priority definition expected for pattern lexem definition"));
 			analyzer.addPatternLexem(
 				featureName, fieldname,
-				featuredef.tokenizer.get(), featuredef.normalizer);
+				featuredef.tokenizer.get(), featuredef.normalizer, priority);
 			break;
 	}
 	featuredef.release();

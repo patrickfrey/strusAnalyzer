@@ -50,7 +50,8 @@ public:
 			const std::string& termtype,
 			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority);
 
 	virtual void definePatternMatcherPostProc(
 			const std::string& patternTypeName,

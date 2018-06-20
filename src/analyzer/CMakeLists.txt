@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # --------------------------------------
 # SOURCES AND INCLUDES
 # --------------------------------------
-set(source_files
+set( source_files
+	bindTerm.cpp
 	featureConfig.cpp
 	featureConfigMap.cpp
 	patternFeatureConfig.cpp

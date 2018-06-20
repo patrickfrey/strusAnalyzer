@@ -9,6 +9,7 @@
 #define _STRUS_ANALYZER_BIND_TERM_HPP_INCLUDED
 #include "strus/analyzer/positionBind.hpp"
 #include <string>
+#include <vector>
 
 namespace strus
 {
@@ -58,6 +59,8 @@ public:
 			)
 			: (m_seg < o.m_seg);
 	}
+
+	static void eliminateCoveredElements( std::vector<BindTerm>& terms);
 
 private:
 	int m_seg;

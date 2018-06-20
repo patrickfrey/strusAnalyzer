@@ -106,6 +106,7 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 {
 	// process concatenated chunks:
 	m_segmentProcessor.processConcatenated();
+	m_segmentProcessor.eliminateCovered();
 
 	DEBUG_OPEN("patternmatch")
 	// fetch pre processing pattern outputs:

@@ -26,15 +26,16 @@ public:
 	QueryElementView(){}
 	/// \brief Copy constructor
 	QueryElementView( const QueryElementView& o)
-		:m_type(o.m_type),m_field(o.m_field),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer){}
+		:m_type(o.m_type),m_field(o.m_field),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer),m_priority(o.m_priority){}
 
 	/// \brief Constructor
 	/// \param[in] type_ name of the function
 	/// \param[in] field_ list of named parameters
 	/// \param[in] tokenizer_ view of tokenizer
 	/// \param[in] normalizer_ list of views of normalizers
-	QueryElementView( const std::string& type_, const std::string& field_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_)
-		:m_type(type_),m_field(field_),m_tokenizer(tokenizer_),m_normalizer(normalizer_){}
+	/// \param[in] priority_ priority of the feature
+	QueryElementView( const std::string& type_, const std::string& field_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_, int priority_)
+		:m_type(type_),m_field(field_),m_tokenizer(tokenizer_),m_normalizer(normalizer_),m_priority(priority_){}
 
 	/// \brief Get the type
 	const std::string& type() const				{return m_type;}
@@ -44,12 +45,15 @@ public:
 	const FunctionView& tokenizer() const			{return m_tokenizer;}
 	/// \brief Get the list of normalizers
 	const std::vector<FunctionView>& normalizer() const	{return m_normalizer;}
+	/// \brief Get the priority of the feature
+	int priority() const					{return m_priority;}
 
 private:
 	std::string m_type;
 	std::string m_field;
 	FunctionView m_tokenizer;
 	std::vector<FunctionView> m_normalizer;
+	int m_priority;
 };
 
 }}//namespace

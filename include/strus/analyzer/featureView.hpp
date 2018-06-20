@@ -27,7 +27,7 @@ public:
 	FeatureView(){}
 	/// \brief Copy constructor
 	FeatureView( const FeatureView& o)
-		:m_type(o.m_type),m_selectexpr(o.m_selectexpr),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer),m_options(o.m_options){}
+		:m_type(o.m_type),m_selectexpr(o.m_selectexpr),m_tokenizer(o.m_tokenizer),m_normalizer(o.m_normalizer),m_options(o.m_options),m_priority(o.m_priority){}
 
 	/// \brief Constructor
 	/// \brief Constructor
@@ -36,8 +36,8 @@ public:
 	/// \param[in] tokenizer_ view of tokenizer
 	/// \param[in] normalizer_ list of views of normalizers
 	/// \param[in] options_ set of feature options (e.g. how to build positions)
-	FeatureView( const std::string& type_, const std::string& selectexpr_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_, const FeatureOptions& options_)
-		:m_type(type_),m_selectexpr(selectexpr_),m_tokenizer(tokenizer_),m_normalizer(normalizer_),m_options(options_){}
+	FeatureView( const std::string& type_, const std::string& selectexpr_, const FunctionView& tokenizer_, const std::vector<FunctionView>& normalizer_, const FeatureOptions& options_, int priority_)
+		:m_type(type_),m_selectexpr(selectexpr_),m_tokenizer(tokenizer_),m_normalizer(normalizer_),m_options(options_),m_priority(priority_){}
 
 	/// \brief Get the type
 	const std::string& type() const				{return m_type;}
@@ -49,6 +49,8 @@ public:
 	const std::vector<FunctionView>& normalizer() const	{return m_normalizer;}
 	/// \brief Get the options
 	const FeatureOptions& options() const			{return m_options;}
+	/// \brief Get the priority of the feature
+	int priority() const					{return m_priority;}
 
 	/// \brief Get position bind option
 	const char* posbindOption() const
@@ -63,6 +65,7 @@ private:
 	FunctionView m_tokenizer;
 	std::vector<FunctionView> m_normalizer;
 	FeatureOptions m_options;
+	int m_priority;
 };
 
 }}//namespace

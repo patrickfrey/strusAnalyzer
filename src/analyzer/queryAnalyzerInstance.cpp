@@ -39,11 +39,12 @@ void QueryAnalyzerInstance::addPatternLexem(
 		const std::string& termtype,
 		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority)
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, priority, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
@@ -141,7 +142,7 @@ static analyzer::QueryElementView getQueryElementView( const FeatureConfig& cfg)
 	{
 		normalizerviews.push_back( (*ni)->view());
 	}
-	return analyzer::QueryElementView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews);
+	return analyzer::QueryElementView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.priority());
 }
 
 analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const

@@ -66,6 +66,8 @@ public:
 			std::size_t segmentsize);
 
 	void processConcatenated();
+	void eliminateCovered();
+
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
