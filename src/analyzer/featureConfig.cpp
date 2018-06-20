@@ -30,7 +30,7 @@ FeatureConfig::FeatureConfig(
 	,m_selectexpr(selectexpr_)
 	,m_tokenizer()
 	,m_normalizerlist()
-	,m_priority(0)
+	,m_priority(priority_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

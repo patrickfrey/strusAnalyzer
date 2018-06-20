@@ -37,8 +37,8 @@ struct TermPrio
 		if (seg > o.seg) return false;
 		if (ofs < o.ofs) return true;
 		if (ofs > o.ofs) return false;
-		if (priority < o.priority) return true;
-		if (priority > o.priority) return false;
+		if (priority > o.priority) return true;
+		if (priority < o.priority) return false;
 		if (endofs < o.endofs) return true;
 		if (endofs > o.endofs) return false;
 		return idx < o.idx;
@@ -88,9 +88,9 @@ void BindTerm::eliminateCoveredElements( std::vector<BindTerm>& terms)
 			{
 				if (pn->seg != pi->seg) break;
 				if (pi->ofs > pn->endofs) break;
-				if (pi->endofs < pn->endofs && pi->priority < pn->priority)
+				if (pi->endofs >= pn->endofs && pi->priority > pn->priority)
 				{
-					eliminated.insert( pi->idx);
+					eliminated.insert( pn->idx);
 				}
 			}
 		}
