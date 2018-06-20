@@ -28,12 +28,19 @@ public:
 	/// \brief Default constructor
 	Document(){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	Document( Document&& ) = default;
+	Document( const Document& ) = default;
+	Document& operator= ( Document&& ) = default;
+	Document& operator= ( const Document& ) = default;
+#else
 	Document( const Document& o)
 		:m_subdoctypename(o.m_subdoctypename)
 		,m_metadata(o.m_metadata)
 		,m_attributes(o.m_attributes)
 		,m_searchIndexTerms(o.m_searchIndexTerms)
 		,m_forwardIndexTerms(o.m_forwardIndexTerms){}
+#endif
 
 	/// \brief Get the sub document type name
 	const std::string& subDocumentTypeName() const			{return m_subdoctypename;}

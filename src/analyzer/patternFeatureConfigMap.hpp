@@ -20,7 +20,7 @@ class PatternFeatureConfigMap
 {
 public:
 	PatternFeatureConfigMap()
-		:m_ar(){}
+		:m_ar(),m_minPriority(std::numeric_limits<int>::max()){}
 	~PatternFeatureConfigMap(){}
 
 	void defineFeature(
@@ -28,14 +28,17 @@ public:
 		const std::string& name,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options);
 
 	std::vector<const PatternFeatureConfig*> getConfigs( const std::string& patternTypeName) const;
+	int minPriority() const				{return m_minPriority;}
 
 private:
 	typedef std::multimap<std::string,std::size_t> PatternNameConfigMap;
 	std::vector<PatternFeatureConfig> m_ar;
 	PatternNameConfigMap m_map;
+	int m_minPriority;
 };
 
 }//namespace

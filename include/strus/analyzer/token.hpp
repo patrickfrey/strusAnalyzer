@@ -31,9 +31,16 @@ public:
 	Token( int ordpos_, const Position& origpos_, int origsize_)
 		:m_ordpos(ordpos_),m_origsize(origsize_),m_origpos(origpos_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	Token( Token&& ) = default;
+	Token( const Token& ) = default;
+	Token& operator= ( Token&& ) = default;
+	Token& operator= ( const Token& ) = default;
+#else
 	Token( const Token& o)
 		:m_ordpos(o.m_ordpos),m_origsize(o.m_origsize),m_origpos(o.m_origpos){}
-
+#endif
+	
 	///\brief Get the ordinal (counting) position in the document. This value is used to assign the term position, that is not the byte position but a number taken from the enumeration of all distinct feature byte postions
 	int ordpos() const		{return m_ordpos;}
 	///\brief Get the start position of this token in the original document

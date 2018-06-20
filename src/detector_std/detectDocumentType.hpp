@@ -28,8 +28,15 @@ struct DocumentType
 		:mimetypeid(MimeBinary),mimetype(0),encoding(0){}
 	DocumentType( MimeType mimetypeid_, const char* mimetype_, const char* encoding_)
 		:mimetypeid(mimetypeid_),mimetype(mimetype_),encoding(encoding_){}
+#if __cplusplus >= 201103L
+	DocumentType( DocumentType&& ) = default;
+	DocumentType( const DocumentType& ) = default;
+	DocumentType& operator= ( DocumentType&& ) = default;
+	DocumentType& operator= ( const DocumentType& ) = default;
+#else
 	DocumentType( const DocumentType& o)
 		:mimetypeid(o.mimetypeid),mimetype(o.mimetype),encoding(o.encoding){}
+#endif
 };
 
 DocumentType detectDocumentType( const char* src, std::size_t srcsize, bool eof);

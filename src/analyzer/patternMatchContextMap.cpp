@@ -27,6 +27,7 @@ using namespace strus;
 #define DEBUG_CLOSE() if (m_debugtrace) m_debugtrace->close();
 #define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
 #define DEBUG_EVENT5( NAME, FMT, X1, X2, X3, X4, X5)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5);
+#define DEBUG_EVENT6( NAME, FMT, X1, X2, X3, X4, X5, X6)	if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5, X6);
 #define DEBUG_EVENT7( NAME, FMT, X1, X2, X3, X4, X5, X6, X7)	if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5, X6, X7);
 #define DEBUG_EVENT_STR( NAME, FMT, VAL)			if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, valstr.c_str());}
 
@@ -119,16 +120,25 @@ std::vector<BindTerm> PreProcPatternMatchContext::fetchResults()
 	DEBUG_OPEN( "result")
 	for (; ri != re; ++ri)
 	{
-		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
-		if (ri->value())
+		int endofs;
+		if (ri->origpos().seg() != ri->origend().seg())
 		{
-			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
+			if (!m_config->allowCrossSegmentMatches()) continue;
+			endofs = std::numeric_limits<int>::max();
 		}
 		else
 		{
-			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
+			endofs = ri->origend().ofs();
 		}
-		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
+		if (ri->value())
+		{
+			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), endofs, ri->ordend() - ri->ordpos(), 0/*priority*/, analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
+		}
+		else
+		{
+			rt.push_back( BindTerm( ri->origpos().seg(), ri->origpos().ofs(), endofs, ri->ordend() - ri->ordpos(), 0/*priority*/, analyzer::BindContent, m_config->patternTypeName(), ri->name()));
+		}
+		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().ordlen(), rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
 	if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());
@@ -262,19 +272,30 @@ std::vector<BindTerm> PostProcPatternMatchContext::fetchResults()
 	std::vector<analyzer::PatternMatcherResult>::const_iterator ri = results.begin(), re = results.end();
 	for (; ri != re; ++ri)
 	{
-		if (!m_config->allowCrossSegmentMatches() && ri->origpos().seg() != ri->origend().seg()) continue;
+		int endofs;
+		if (ri->origpos().seg() != ri->origend().seg())
+		{
+			if (!m_config->allowCrossSegmentMatches()) continue;
+			endofs = std::numeric_limits<int>::max();
+		}
+		else
+		{
+			int end_virtpos = ri->origend().ofs();
+			int end_origpos = m_input[ end_virtpos].ofs();
+			endofs = end_origpos;
+		}
 		int start_virtpos = ri->origpos().ofs();
 		int start_origpos = m_input[ start_virtpos].ofs();
 
 		if (ri->value())
 		{
-			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
+			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, endofs, ri->ordend() - ri->ordpos(), 0/*priority*/, analyzer::BindContent, m_config->patternTypeName(), formatResult( ri->value())));
 		}
 		else
 		{
-			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, ri->ordend() - ri->ordpos(), analyzer::BindContent, m_config->patternTypeName(), ri->name()));
+			rt.push_back( BindTerm( ri->origpos().seg(), start_origpos, endofs, ri->ordend() - ri->ordpos(), 0/*priority*/, analyzer::BindContent, m_config->patternTypeName(), ri->name()));
 		}
-		DEBUG_EVENT5( "result", "[%d %d %d] %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().len(), rt.back().type().c_str(), rt.back().value().c_str());
+		DEBUG_EVENT6( "result", "[%d %d %d] %d %s '%s'", rt.back().seg(), rt.back().ofs(), rt.back().ordlen(), 0/*priority*/, rt.back().type().c_str(), rt.back().value().c_str());
 	}
 	DEBUG_CLOSE()
 	if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());

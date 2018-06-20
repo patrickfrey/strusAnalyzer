@@ -33,8 +33,15 @@ struct SegPosDef
 
 	SegPosDef( int start_strpos_, int end_strpos_, int segpos_)
 		:start_strpos(start_strpos_),end_strpos(end_strpos_),segpos(segpos_){}
+#if __cplusplus >= 201103L
+	SegPosDef( SegPosDef&& ) = default;
+	SegPosDef( const SegPosDef& ) = default;
+	SegPosDef& operator= ( SegPosDef&& ) = default;
+	SegPosDef& operator= ( const SegPosDef& ) = default;
+#else
 	SegPosDef( const SegPosDef& o)
 		:start_strpos(o.start_strpos),end_strpos(o.end_strpos),segpos(o.segpos){}
+#endif
 };
 
 class SegmentProcessor
@@ -68,17 +75,22 @@ public:
 		:public analyzer::QueryTerm
 	{
 	public:
+		QueryElement( int fieldno_, int pos_, int priority_, const analyzer::QueryTerm& term_)
+			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_priority(priority_),m_pos(pos_){}
+#if __cplusplus >= 201103L
+		QueryElement( QueryElement&& ) = default;
+		QueryElement( const QueryElement& ) = default;
+		QueryElement& operator= ( QueryElement&& ) = default;
+		QueryElement& operator= ( const QueryElement& ) = default;
+#else
 		QueryElement( const QueryElement& o)
 			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_priority(o.m_priority),m_pos(o.m_pos){}
-		QueryElement( int fieldno_, int pos_, const analyzer::QueryTerm& term_)
-			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_priority(0),m_pos(pos_){}
+#endif
 
 		int fieldno() const		{return m_fieldno;}
 		int priority() const		{return m_priority;}
 		int pos() const			{return m_pos;}
 		int endpos() const		{return m_pos+len();}
-
-		void setPriority( int p)	{m_priority = p;}
 
 		static bool orderPosition( const QueryElement& a, const QueryElement& b)
 		{
@@ -127,9 +139,15 @@ private:
 		{
 			concatposmap.push_back( SegPosDef( 0, content.size(), segpos));
 		}
+#if __cplusplus >= 201103L
+		Chunk( Chunk&& ) = default;
+		Chunk( const Chunk& ) = default;
+		Chunk& operator= ( Chunk&& ) = default;
+		Chunk& operator= ( const Chunk& ) = default;
+#else
 		Chunk( const Chunk& o)
 			:content(o.content),concatposmap(o.concatposmap){}
-	
+#endif
 		std::string content;
 		std::vector<SegPosDef> concatposmap;
 	};

@@ -83,6 +83,10 @@ private:
 			:operation(o.operation),argc(o.argc),range(o.range),cardinality(o.cardinality),operandsidx(o.operandsidx){}
 		Expression( JoinOperation operation_, unsigned int argc_, unsigned int range_, unsigned int cardinality_, int operandsidx_)
 			:operation(operation_),argc(argc_),range(range_),cardinality(cardinality_),operandsidx(operandsidx_){}
+#if __cplusplus >= 201103L
+		Expression( Expression&& o) = default;
+#endif
+
 	};
 	struct Pattern
 	{
@@ -93,6 +97,9 @@ private:
 			:id(id_),name(name_){}
 		Pattern( const Pattern& o)
 			:id(o.id),name(o.name){}
+#if __cplusplus >= 201103L
+		Pattern( Pattern&& o) = default;
+#endif
 	};
 	typedef std::map<unsigned int,const char*> ExpressionVariableMap;
 	typedef std::map<unsigned int,const PatternResultFormat*> ExpressionResultFormatMap;
@@ -160,6 +167,9 @@ private:
 			:seg(o.seg),pos(o.pos){}
 		MatchAddress& operator=( const MatchAddress& o)
 			{seg=o.seg;pos=o.pos; return *this;}
+#if __cplusplus >= 201103L
+		MatchAddress( MatchAddress&& o) = default;
+#endif
 
 		bool operator < (const MatchAddress& o) const
 		{

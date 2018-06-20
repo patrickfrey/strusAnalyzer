@@ -61,8 +61,15 @@ private:
 
 		MarkupElement( const analyzer::Position& start_, const analyzer::Position& end_, const analyzer::TokenMarkup& markup_, unsigned int level_, unsigned int orderidx_)
 			:start(start_),end(end_),markup(markup_),level(level_),orderidx(orderidx_){}
+#if __cplusplus >= 201103L
+		MarkupElement( MarkupElement&& ) = default;
+		MarkupElement( const MarkupElement& ) = default;
+		MarkupElement& operator= ( MarkupElement&& ) = default;
+		MarkupElement& operator= ( const MarkupElement& ) = default;
+#else
 		MarkupElement( const MarkupElement& o)
 			:start(o.start),end(o.end),markup(o.markup),level(o.level),orderidx(o.orderidx){}
+#endif
 
 		bool operator<( const MarkupElement& o) const
 		{

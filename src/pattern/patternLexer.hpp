@@ -107,33 +107,6 @@ private:
 };
 
 
-// Match candidate structure
-struct Match
-{
-	int idx;
-	int level;
-	int pos;
-	int len;
-
-	Match( int idx_, int level_, int pos_, int len_)
-		:idx(idx_),level(level_),pos(pos_),len(len_){}
-	Match( const Match& o)
-		:idx(o.idx),level(o.level),pos(o.pos),len(o.len){}
-
-	bool operator < (const Match& o) const
-	{
-		if (pos < o.pos) return true;
-		if (pos > o.pos) return false;
-		if (level < o.level) return true;
-		if (level > o.level) return false;
-		if (len > o.len) return true;
-		if (len < o.len) return false;
-		if (idx < o.idx) return true;
-		if (idx > o.idx) return false;
-		return false;
-	}
-};
-
 /// \brief Test implementation of the lexer context interface for pattern matching
 class TestPatternLexerContext
 	:public PatternLexerContextInterface

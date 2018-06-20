@@ -124,7 +124,7 @@ static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnaly
 		if (!ninst) throw std::runtime_error( g_errorhnd->fetchError());
 		ninstar.push_back( ninst);
 	}
-	analyzer->addElement( descr->basefeat.name, "text", tinst, ninstar);
+	analyzer->addElement( descr->basefeat.name, "text", tinst, ninstar, 0/*priority*/);
 
 	// Define ConceptFeatures:
 	strus::local_ptr<strus::PatternTermFeederInterface> termfeeder( strus::createPatternTermFeeder_default( g_errorhnd));
@@ -165,8 +165,7 @@ static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnaly
 	matcherinst.release();
 	termfeederinst.release();
 
-	analyzer->addElementFromPatternMatch( "pattern", "pattern", std::vector<strus::NormalizerFunctionInstanceInterface*>());
-	analyzer->declareTermPriority( "pattern", 1);
+	analyzer->addElementFromPatternMatch( "pattern", "pattern", std::vector<strus::NormalizerFunctionInstanceInterface*>(), 1/*priority*/);
 }
 
 static std::string queryTermExpression_tostring( const strus::analyzer::QueryTermExpression* res)

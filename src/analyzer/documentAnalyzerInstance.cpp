@@ -108,11 +108,12 @@ void DocumentAnalyzerInstance::addSearchIndexFeature(
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, type, selectexpr, tokenizer, normalizers, priority, options);
 		defineSelectorExpression( featidx, selectexpr);
 		m_searchIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
@@ -124,11 +125,12 @@ void DocumentAnalyzerInstance::addForwardIndexFeature(
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, options);
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatForwardIndexTerm, type, selectexpr, tokenizer, normalizers, priority, options);
 		defineSelectorExpression( featidx, selectexpr);
 		m_forwardIndexTermTypeSet.insert( string_conv::tolower( type));
 	}
@@ -143,7 +145,7 @@ void DocumentAnalyzerInstance::defineMetaData(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatMetaData, metaname, selectexpr, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining metadata: %s"), *m_errorhnd);
@@ -157,7 +159,7 @@ void DocumentAnalyzerInstance::defineAttribute(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatAttribute, attribname, selectexpr, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 		defineSelectorExpression( featidx, selectexpr);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining attribute: %s"), *m_errorhnd);
@@ -227,7 +229,7 @@ void DocumentAnalyzerInstance::addPatternLexem(
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
-	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, analyzer::FeatureOptions());
+	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 	defineSelectorExpression( featidx, selectexpr);
 }
 
@@ -267,11 +269,12 @@ void DocumentAnalyzerInstance::addSearchIndexFeatureFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, options);
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, priority, options);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining search index feature from pattern matching result: %s"), *m_errorhnd);
 }
@@ -280,11 +283,12 @@ void DocumentAnalyzerInstance::addForwardIndexFeatureFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		m_patternFeatureConfigMap.defineFeature( FeatForwardIndexTerm, type, patternTypeName, normalizers, options);
+		m_patternFeatureConfigMap.defineFeature( FeatForwardIndexTerm, type, patternTypeName, normalizers, priority, options);
 	}
 	CATCH_ERROR_MAP( _TXT("error defining forward index feature from pattern matching result: %s"), *m_errorhnd);
 }
@@ -296,7 +300,7 @@ void DocumentAnalyzerInstance::defineMetaDataFromPatternMatch(
 {
 	try
 	{
-		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, analyzer::FeatureOptions());
+		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error defining document meta data from pattern matching result: %s"), *m_errorhnd);
 }
@@ -308,7 +312,7 @@ void DocumentAnalyzerInstance::defineAttributeFromPatternMatch(
 {
 	try
 	{
-		m_patternFeatureConfigMap.defineFeature( FeatAttribute, attribname, patternTypeName, normalizers, analyzer::FeatureOptions());
+		m_patternFeatureConfigMap.defineFeature( FeatAttribute, attribname, patternTypeName, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error defining document attribute from pattern matching result: %s"), *m_errorhnd);
 }

@@ -25,8 +25,15 @@ public:
 	QueryTerm()
 		:m_type(),m_value(),m_len(0){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	QueryTerm( QueryTerm&& ) = default;
+	QueryTerm( const QueryTerm& ) = default;
+	QueryTerm& operator= ( QueryTerm&& ) = default;
+	QueryTerm& operator= ( const QueryTerm& ) = default;
+#else
 	QueryTerm( const QueryTerm& o)
 		:m_type(o.m_type),m_value(o.m_value),m_len(o.m_len){}
+#endif
 	/// \brief Constructor
 	/// \param[in] t name of the term
 	/// \param[in] v value of the term

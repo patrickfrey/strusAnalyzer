@@ -29,8 +29,15 @@ public:
 	SegmenterOptions()
 		:m_optar(0){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	SegmenterOptions( SegmenterOptions&& ) = default;
+	SegmenterOptions( const SegmenterOptions& ) = default;
+	SegmenterOptions& operator= ( SegmenterOptions&& ) = default;
+	SegmenterOptions& operator= ( const SegmenterOptions& ) = default;
+#else
 	SegmenterOptions( const SegmenterOptions& o)
 		:m_optar(o.m_optar){}
+#endif
 
 	/// \brief One option item. Interpretation depends on the segmenter implementation
 	typedef std::pair<std::string,std::string> Item;

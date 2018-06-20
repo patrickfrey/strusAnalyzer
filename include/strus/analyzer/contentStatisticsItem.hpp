@@ -21,8 +21,15 @@ class ContentStatisticsItem
 public:
 	ContentStatisticsItem( const std::string& select_, const std::string& type_, const std::string& example_, int df_, int tf_)
 		:m_select(select_),m_type(type_),m_example(example_),m_df(df_),m_tf(tf_){}
+#if __cplusplus >= 201103L
+	ContentStatisticsItem( ContentStatisticsItem&& ) = default;
+	ContentStatisticsItem( const ContentStatisticsItem& ) = default;
+	ContentStatisticsItem& operator= ( ContentStatisticsItem&& ) = default;
+	ContentStatisticsItem& operator= ( const ContentStatisticsItem& ) = default;
+#else
 	ContentStatisticsItem( const ContentStatisticsItem& o)
 		:m_select(o.m_select),m_type(o.m_type),m_example(o.m_example),m_df(o.m_df),m_tf(o.m_tf){}
+#endif
 
 	///\brief Get the select expression
 	const std::string& select() const	{return m_select;}

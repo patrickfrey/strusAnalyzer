@@ -29,9 +29,15 @@ public:
 		Attribute( const std::string& name_, const std::string& value_)
 			:m_name(name_),m_value(value_){}
 		/// \brief Copy constructor
+#if __cplusplus >= 201103L
+		Attribute( Attribute&& ) = default;
+		Attribute( const Attribute& ) = default;
+		Attribute& operator= ( Attribute&& ) = default;
+		Attribute& operator= ( const Attribute& ) = default;
+#else
 		Attribute( const Attribute& o)
 			:m_name(o.m_name),m_value(o.m_value){}
-
+#endif
 		/// \brief Get the tag name of the markup attribute
 		const std::string& name() const			{return m_name;}
 		/// \brief Get the tag value of the markup attribute
@@ -52,8 +58,15 @@ public:
 	TokenMarkup( const std::string& name_, const std::vector<Attribute>& attributes_)
 		:m_name(name_),m_attributes(attributes_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	TokenMarkup( TokenMarkup&& ) = default;
+	TokenMarkup( const TokenMarkup& ) = default;
+	TokenMarkup& operator= ( TokenMarkup&& ) = default;
+	TokenMarkup& operator= ( const TokenMarkup& ) = default;
+#else
 	TokenMarkup( const TokenMarkup& o)
 		:m_name(o.m_name),m_attributes(o.m_attributes){}
+#endif
 
 	/// \brief Get the tag name of the markup element
 	const std::string& name() const				{return m_name;}

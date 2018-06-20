@@ -23,11 +23,12 @@ void QueryAnalyzerInstance::addElement(
 		const std::string& termtype,
 		const std::string& fieldtype,
 		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority)
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, fieldtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatSearchIndexTerm, termtype, fieldtype, tokenizer, normalizers, priority, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 		m_searchIndexTermTypeSet.insert( string_conv::tolower( termtype));
 	}
@@ -42,7 +43,7 @@ void QueryAnalyzerInstance::addPatternLexem(
 {
 	try
 	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, analyzer::FeatureOptions());
+		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, 0/*priority*/, analyzer::FeatureOptions());
 		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
 	}
 	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
@@ -82,22 +83,14 @@ void QueryAnalyzerInstance::definePatternMatcherPreProc(
 void QueryAnalyzerInstance::addElementFromPatternMatch(
 		const std::string& type,
 		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
+		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority)
 {
 	try
 	{
-		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, analyzer::FeatureOptions());
+		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, priority, analyzer::FeatureOptions());
 	}
 	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzerInstance::declareTermPriority( const std::string& type, int priority)
-{
-	try
-	{
-		m_featureTypePriorityMap[ type] = priority;
-	}
-	CATCH_ERROR_MAP( _TXT("error defining feature priority: %s"), *m_errorhnd);
 }
 
 std::vector<std::string> QueryAnalyzerInstance::queryTermTypes() const
@@ -157,7 +150,6 @@ analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const
 	{
 		std::vector<analyzer::QueryElementView> elements;
 		std::vector<analyzer::QueryElementView> patternLexems;
-		std::map<std::string,int> prioritydefs;
 
 		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
 		for (; fi != fe; ++fi)
@@ -181,7 +173,7 @@ analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const
 					break;
 			}
 		}
-		return analyzer::QueryAnalyzerView( elements, patternLexems, m_featureTypePriorityMap);
+		return analyzer::QueryAnalyzerView( elements, patternLexems);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in query analyzer create view: %s"), *m_errorhnd, analyzer::QueryAnalyzerView());
 }

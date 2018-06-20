@@ -31,8 +31,15 @@ public:
 	Position( int seg_, int ofs_)
 		:m_seg(seg_),m_ofs(ofs_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	Position( Position&& ) = default;
+	Position( const Position& ) = default;
+	Position& operator= ( Position&& ) = default;
+	Position& operator= ( const Position& ) = default;
+#else
 	Position( const Position& o)
 		:m_seg(o.m_seg),m_ofs(o.m_ofs){}
+#endif
 
 	///\brief Get the position of the segment in the original source
 	int seg() const	{return m_seg;}
@@ -56,6 +63,16 @@ public:
 		return (m_seg == o.m_seg)
 			? ((m_ofs < o.m_ofs) - (m_ofs > o.m_ofs))
 			: ((m_seg < o.m_seg) - (m_seg > o.m_seg));
+	}
+	bool operator <= (const Position& o) const
+	{
+		return (m_seg == o.m_seg)
+			? (m_ofs <= o.m_ofs)
+			: (m_seg <= o.m_seg);
+	}
+	bool operator == (const Position& o) const
+	{
+		return (m_seg == o.m_seg && m_ofs == o.m_ofs);
 	}
 	bool operator < (const Position& o) const
 	{

@@ -23,10 +23,14 @@ FeatureConfig::FeatureConfig(
 		const std::string& selectexpr_,
 		TokenizerFunctionInstanceInterface* tokenizer_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
+		int priority_,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
 	,m_selectexpr(selectexpr_)
+	,m_tokenizer()
+	,m_normalizerlist()
+	,m_priority(0)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

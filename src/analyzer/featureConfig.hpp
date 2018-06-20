@@ -37,6 +37,7 @@ public:
 			const std::string& selectexpr_,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority_,
 			FeatureClass featureClass_,
 			const analyzer::FeatureOptions& options_);
 
@@ -45,6 +46,7 @@ public:
 		,m_selectexpr(o.m_selectexpr)
 		,m_tokenizer(o.m_tokenizer)
 		,m_normalizerlist(o.m_normalizerlist)
+		,m_priority(o.m_priority)
 		,m_featureClass(o.m_featureClass)
 		,m_options(o.m_options){}
 
@@ -55,6 +57,7 @@ public:
 	const std::string& selectexpr() const				{return m_selectexpr;}
 	const TokenizerReference& tokenizer() const			{return m_tokenizer;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
+	int priority() const						{return m_priority;}
 	FeatureClass featureClass() const				{return m_featureClass;}
 	const analyzer::FeatureOptions& options() const			{return m_options;}
 
@@ -66,6 +69,7 @@ private:
 	std::string m_selectexpr;
 	TokenizerReference m_tokenizer;
 	std::vector<NormalizerReference> m_normalizerlist;
+	int m_priority;
 	FeatureClass m_featureClass;
 	analyzer::FeatureOptions m_options;
 };

@@ -105,8 +105,15 @@ public:
 
 		MarkupElement( Type type_, std::size_t pos_, std::size_t idx_, const std::string& value_)
 			:type(type_),pos(pos_),idx(idx_),value(value_){}
+#if __cplusplus >= 201103L
+		MarkupElement( MarkupElement&& ) = default;
+		MarkupElement( const MarkupElement& ) = default;
+		MarkupElement& operator= ( MarkupElement&& ) = default;
+		MarkupElement& operator= ( const MarkupElement& ) = default;
+#else
 		MarkupElement( const MarkupElement& o)
 			:type(o.type),pos(o.pos),idx(o.idx),value(o.value){}
+#endif
 
 		bool operator < (const MarkupElement& o) const
 		{
@@ -295,8 +302,15 @@ private:
 
 		SegmentDef( std::size_t segidx_, std::size_t segsize_, std::size_t tagidx_, std::size_t origpos_, int taglevel_)
 			:segidx(segidx_),segsize(segsize_),tagidx(tagidx_),origpos(origpos_),taglevel(taglevel_){}
+#if __cplusplus >= 201103L
+		SegmentDef( SegmentDef&& ) = default;
+		SegmentDef( const SegmentDef& ) = default;
+		SegmentDef& operator= ( SegmentDef&& ) = default;
+		SegmentDef& operator= ( const SegmentDef& ) = default;
+#else
 		SegmentDef( const SegmentDef& o)
 			:segidx(o.segidx),segsize(o.segsize),tagidx(o.tagidx),origpos(o.origpos),taglevel(o.taglevel){}
+#endif
 	};
 	typedef std::map<SegmenterPosition,SegmentDef> SegmentMap;
 
@@ -473,6 +487,15 @@ private:
 
 		PositionInfo()
 			:segpos(0),ofs(0),pos(0){}
+#if __cplusplus >= 201103L
+		PositionInfo( PositionInfo&& ) = default;
+		PositionInfo( const PositionInfo& ) = default;
+		PositionInfo& operator= ( PositionInfo&& ) = default;
+		PositionInfo& operator= ( const PositionInfo& ) = default;
+#else
+		PositionInfo( const PositionInfo& o)
+			:segpos(o.segpos),ofs(o.ofs),pos(o.pos){}
+#endif
 	};
 	mutable PositionInfo lastPositionInfo;
 	ErrorBufferInterface* m_errorhnd;

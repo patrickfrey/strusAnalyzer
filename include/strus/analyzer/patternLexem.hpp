@@ -28,8 +28,15 @@ public:
 	PatternLexem( int id_, int ordpos_, const Position& origpos_, int origsize_)
 		:Token(ordpos_,origpos_,origsize_),m_id(id_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	PatternLexem( PatternLexem&& ) = default;
+	PatternLexem( const PatternLexem& ) = default;
+	PatternLexem& operator= ( PatternLexem&& ) = default;
+	PatternLexem& operator= ( const PatternLexem& ) = default;
+#else
 	PatternLexem( const PatternLexem& o)
 		:Token(o),m_id(o.m_id){}
+#endif
 	/// \brief Destructor
 	~PatternLexem(){}
 

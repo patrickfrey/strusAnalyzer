@@ -13,8 +13,10 @@
 #include "strus/segmenterContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
+#include "strus/analyzer/position.hpp"
 #include <set>
 #include <iostream>
+#include <algorithm>
 
 using namespace strus;
 
@@ -24,6 +26,7 @@ using namespace strus;
 #define DEBUG_EVENT1( NAME, FMT, X1)				if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1);
 #define DEBUG_EVENT4( NAME, FMT, X1, X2, X3, X4)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4);
 #define DEBUG_EVENT5( NAME, FMT, X1, X2, X3, X4, X5)		if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5);
+#define DEBUG_EVENT6( NAME, FMT, X1, X2, X3, X4, X5, X6)	if (m_debugtrace) m_debugtrace->event( NAME, FMT, X1, X2, X3, X4, X5, X6);
 #define DEBUG_EVENT2_STR( NAME, FMT, ID, VAL)			if (m_debugtrace) {std::string valstr(VAL); m_debugtrace->event( NAME, FMT, ID, valstr.c_str());}
 
 
@@ -75,50 +78,124 @@ void SegmentProcessor::concatDocumentSegment(
 	}
 }
 
-struct Position
+struct TermPrio
 {
-	unsigned int seg;
-	unsigned int ofs;
+	int seg;
+	int ofs;
+	int endofs;
+	int priority;
+	int idx;
 
-	Position( unsigned int seg_, unsigned int ofs_)
-		:seg(seg_),ofs(ofs_){}
-	Position( const Position& o)
-		:seg(o.seg),ofs(o.ofs){}
+	TermPrio( int seg_, int ofs_, int endofs_, int priority_, int idx_)
+		:seg(seg_),ofs(ofs_),endofs(endofs_),priority(priority_),idx(idx_){}
+#if __cplusplus >= 201103L
+	TermPrio( TermPrio&& ) = default;
+	TermPrio( const TermPrio& ) = default;
+	TermPrio& operator= ( TermPrio&& ) = default;
+	TermPrio& operator= ( const TermPrio& ) = default;
+#else
+	TermPrio( const TermPrio& o)
+		:seg(o.seg),ofs(o.ofs),endofs(o.endofs),priority(o.priority),idx(o.idx){}
+#endif
 
-	bool operator < (const Position& o) const
+	bool operator<( const TermPrio& o) const
 	{
-		return seg == o.seg ? ofs < o.ofs : seg < o.seg;
-	}
-	bool operator <= (const Position& o) const
-	{
-		return seg == o.seg ? ofs <= o.ofs : seg <= o.seg;
-	}
-	bool operator == (const Position& o) const
-	{
-		return seg == o.seg && ofs == o.ofs;
+		if (seg < o.seg) return true;
+		if (seg > o.seg) return false;
+		if (ofs < o.ofs) return true;
+		if (ofs > o.ofs) return false;
+		if (priority < o.priority) return true;
+		if (priority > o.priority) return false;
+		if (endofs < o.endofs) return true;
+		if (endofs > o.endofs) return false;
+		return idx < o.idx;
 	}
 };
 
-static void fillPositionSet( std::set<Position>& pset, std::set<Position>& pset_unique, const std::vector<BindTerm>& terms)
+static void eliminateCoveredElements( std::vector<BindTerm>& terms)
+{
+	std::set<TermPrio> prioset;
+	std::vector<BindTerm>::const_iterator ti = terms.begin(), te = terms.end();
+	if (ti == te) return;
+	int min_priority = ti->priority();
+	bool has_diff = false;
+	for (++ti; ti != te; ++ti)
+	{
+		if (ti->priority() != min_priority)
+		{
+			has_diff = true;
+			if (ti->priority() < min_priority)
+			{
+				min_priority = ti->priority();
+				for (++ti; ti != te; ++ti)
+				{
+					if (ti->priority() < min_priority)
+					{
+						min_priority = ti->priority();
+					}
+				}
+			}
+			break;
+		}
+	}
+	if (!has_diff) return;
+	int tidx = 0;
+	for (ti = terms.begin(); ti != te; ++ti,++tidx)
+	{
+		prioset.insert( TermPrio( ti->seg(), ti->ofs(), ti->endofs(), ti->priority(), tidx));
+	}
+	std::set<int> eliminated;
+	std::set<TermPrio>::iterator pi = prioset.begin(), pe = prioset.end();
+	for (; pi != pe; ++pi)
+	{
+		if (pi->priority > min_priority)
+		{
+			std::set<TermPrio>::iterator pn = pi;
+			for (++pn; pn != pe; ++pn)
+			{
+				if (pn->seg != pi->seg) break;
+				if (pi->ofs > pn->endofs) break;
+				if (pi->endofs < pn->endofs && pi->priority < pn->priority)
+				{
+					eliminated.insert( pi->idx);
+				}
+			}
+		}
+	}
+	if (eliminated.empty()) return;
+
+	std::set<int>::reverse_iterator ei = eliminated.rbegin(), ee = eliminated.rend();
+	for (; ei != ee; ++ei)
+	{
+		if ((std::size_t)*ei != terms.size()-1)
+		{
+			std::swap( terms[ *ei], terms.back());
+		}
+		terms.pop_back();
+	}
+	std::sort( terms.begin(), terms.end());
+}
+
+static void fillPositionSet( std::set<analyzer::Position>& pset, std::set<analyzer::Position>& pset_unique, const std::vector<BindTerm>& terms)
 {
 	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
 	for (; ri != re; ++ri)
 	{
 		if (ri->posbind() == analyzer::BindContent)
 		{
-			pset.insert( Position( ri->seg(), ri->ofs()+1));
+			pset.insert( analyzer::Position( ri->seg(), ri->ofs()+1));
 		}
 		else if (ri->posbind() == analyzer::BindUnique)
 		{
-			pset_unique.insert( Position( ri->seg(), ri->ofs()+1));
+			pset_unique.insert( analyzer::Position( ri->seg(), ri->ofs()+1));
 		}
 	}
 }
 
-static void mergeUniquePositionSet( std::set<Position>& pset, const std::set<Position>& pset_unique)
+static void mergeUniquePositionSet( std::set<analyzer::Position>& pset, const std::set<analyzer::Position>& pset_unique)
 {
-	std::set<Position>::const_iterator si = pset.begin(), se = pset.end();
-	std::set<Position>::const_iterator ui = pset_unique.begin(), ue = pset_unique.end();
+	std::set<analyzer::Position>::const_iterator si = pset.begin(), se = pset.end();
+	std::set<analyzer::Position>::const_iterator ui = pset_unique.begin(), ue = pset_unique.end();
 	while (si != se && ui != ue)
 	{
 		while (*si < *ui && si != se) ++si;
@@ -126,25 +203,25 @@ static void mergeUniquePositionSet( std::set<Position>& pset, const std::set<Pos
 		{
 			for (++ui; ui != ue && *ui <= *si; ++ui){}
 			// ... take only the last of a unique sequence
-			std::set<Position>::const_iterator lastinseq = ui;
+			std::set<analyzer::Position>::const_iterator lastinseq = ui;
 			--lastinseq;
 			pset.insert( *lastinseq);
 		}
 	}
 	if (ui != ue)
 	{
-		std::set<Position>::const_iterator lastinseq = ue;
+		std::set<analyzer::Position>::const_iterator lastinseq = ue;
 		--lastinseq;
 		pset.insert( *lastinseq);
 	}
 }
 
-typedef std::map<Position, unsigned int> PositionMap;
+typedef std::map<analyzer::Position, unsigned int> PositionMap;
 
-static PositionMap getPositionMap( const std::set<Position>& pset)
+static PositionMap getPositionMap( const std::set<analyzer::Position>& pset)
 {
 	PositionMap posmap;
-	std::set<Position>::const_iterator pi = pset.begin(), pe = pset.end();
+	std::set<analyzer::Position>::const_iterator pi = pset.begin(), pe = pset.end();
 	unsigned int pcnt = 0;
 	for (; pi != pe; ++pi)
 	{
@@ -166,7 +243,7 @@ static void fillTermsDocument(
 			case analyzer::BindContent:
 			{
 				PositionMap::const_iterator
-					mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
+					mi = posmap.find( analyzer::Position( ri->seg(), ri->ofs()+1));
 				res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
 				break;
 			}
@@ -174,7 +251,7 @@ static void fillTermsDocument(
 			case analyzer::BindSuccessor:
 			{
 				PositionMap::const_iterator
-					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()));
+					mi = posmap.upper_bound( analyzer::Position( ri->seg(), ri->ofs()));
 				if (mi != posmap.end())
 				{
 					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
@@ -184,7 +261,7 @@ static void fillTermsDocument(
 			case analyzer::BindPredecessor:
 			{
 				PositionMap::const_iterator
-					mi = posmap.upper_bound( Position( ri->seg(), ri->ofs()+1));
+					mi = posmap.upper_bound( analyzer::Position( ri->seg(), ri->ofs()+1));
 				if (mi != posmap.end() && mi->second + posofs > 1)
 				{
 					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs - 1));
@@ -208,8 +285,8 @@ static void fillTermsQuery(
 			throw std::runtime_error( _TXT("only position bind content expected in query"));
 		}
 		PositionMap::const_iterator
-			mi = posmap.find( Position( ri->seg(), ri->ofs()+1));
-		res.push_back( SegmentProcessor::QueryElement( ri->seg(), mi->second + posofs, analyzer::QueryTerm( ri->type(), ri->value(), ri->len())));
+			mi = posmap.find( analyzer::Position( ri->seg(), ri->ofs()+1));
+		res.push_back( SegmentProcessor::QueryElement( ri->seg(), mi->second + posofs, ri->priority(), analyzer::QueryTerm( ri->type(), ri->value(), ri->ordlen())));
 	}
 }
 
@@ -217,8 +294,10 @@ analyzer::Document SegmentProcessor::fetchDocument()
 {
 	analyzer::Document rt;
 
-	std::set<Position> pset;
-	std::set<Position> pset_unique;
+	eliminateCoveredElements( m_searchTerms);
+	eliminateCoveredElements( m_forwardTerms);
+	std::set<analyzer::Position> pset;
+	std::set<analyzer::Position> pset_unique;
 	fillPositionSet( pset, pset_unique, m_searchTerms);
 	fillPositionSet( pset, pset_unique, m_forwardTerms);
 	mergeUniquePositionSet( pset, pset_unique);
@@ -254,8 +333,8 @@ analyzer::Document SegmentProcessor::fetchDocument()
 
 std::vector<SegmentProcessor::QueryElement> SegmentProcessor::fetchQuery() const
 {
-	std::set<Position> pset;
-	std::set<Position> pset_unique;
+	std::set<analyzer::Position> pset;
+	std::set<analyzer::Position> pset_unique;
 	fillPositionSet( pset, pset_unique, m_searchTerms);
 	fillPositionSet( pset, pset_unique, m_metadataTerms);
 	mergeUniquePositionSet( pset, pset_unique);
@@ -308,9 +387,10 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 			char const* ve = vi + termval.size();
 			for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
 			{
+				int ofs = ti->origpos().ofs() - str_position/*ofs*/;
 				BindTerm term(
-					segmentpos, ti->origpos().ofs() - str_position/*ofs*/, 1/*len*/,
-					feat.options().positionBind(),
+					segmentpos, ofs, ofs + ti->origsize(), 1/*len*/,
+					feat.priority(), feat.options().positionBind(),
 					feat.name()/*type*/, vi/*value*/);
 				DEBUG_EVENT4( "term", "[%d %d] %s '%s'", (int)term.seg(), (int)term.ofs(), term.type().c_str(), term.value().c_str());
 				result.push_back( term);
@@ -319,9 +399,10 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 		}
 		else
 		{
+			int ofs = ti->origpos().ofs() - str_position/*ofs*/;
 			BindTerm term(
-				segmentpos, ti->origpos().ofs() - str_position/*ofs*/, 1/*len*/,
-				feat.options().positionBind(),
+				segmentpos, ofs, ofs + ti->origsize(), 1/*len*/,
+				feat.priority(), feat.options().positionBind(),
 				feat.name()/*type*/, termval/*value*/);
 			DEBUG_EVENT4( "term", "[%d %d] %s '%s'", (int)term.seg(), (int)term.ofs(), term.type().c_str(), term.value().c_str());
 			result.push_back( term);
@@ -403,21 +484,21 @@ void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& r
 		for (; ci != ce; ++ci)
 		{
 			const PatternFeatureConfig* cfg = *ci;
-			DEBUG_EVENT5( featureClassType( cfg->featureClass()), "[%d %d %d] %s '%s'", (int)ri->seg(), (int)ri->ofs(), (int)ri->len(), cfg->name().c_str(), ri->value().c_str());
+			DEBUG_EVENT6( featureClassType( cfg->featureClass()), "[%d %d %d] %d %s '%s'", cfg->priority(), (int)ri->seg(), (int)ri->ofs(), (int)ri->ordlen(), cfg->name().c_str(), ri->value().c_str());
 
 			switch (cfg->featureClass())
 			{
 				case FeatMetaData:
-					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
 					break;
 				case FeatAttribute:
-					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
 					break;
 				case FeatSearchIndexTerm:
-					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
 					break;
 				case FeatForwardIndexTerm:
-					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->len(), cfg->options().positionBind(), cfg->name(), ri->value()));
+					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
 					break;
 				case FeatPatternLexem:
 					throw std::runtime_error( _TXT("internal: illegal feature class for pattern match result"));

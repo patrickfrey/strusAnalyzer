@@ -24,8 +24,15 @@ public:
 		:m_nofDocuments(0),m_items(){}
 	ContentStatisticsResult( int nofDocuments_, const std::vector<analyzer::ContentStatisticsItem>& items_)
 		:m_nofDocuments(nofDocuments_),m_items(items_){}
+#if __cplusplus >= 201103L
+	ContentStatisticsResult( ContentStatisticsResult&& ) = default;
+	ContentStatisticsResult( const ContentStatisticsResult& ) = default;
+	ContentStatisticsResult& operator= ( ContentStatisticsResult&& ) = default;
+	ContentStatisticsResult& operator= ( const ContentStatisticsResult& ) = default;
+#else
 	ContentStatisticsResult( const ContentStatisticsResult& o)
 		:m_nofDocuments(o.m_nofDocuments),m_items(o.m_items){}
+#endif
 
 	///\brief Get the number of sample documents
 	int nofDocuments() const						{return m_nofDocuments;}

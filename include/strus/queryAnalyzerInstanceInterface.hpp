@@ -39,11 +39,13 @@ public:
 	/// \param[in] fieldtype type of the field of this element in the query
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	virtual void addElement(
 			const std::string& termtype,
 			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority)=0;
 
 	/// \brief Declare an element to be used as lexem by post processing pattern matching but not put into the result of query analysis
 	/// \param[in] termtype term type name of the lexem to be feed to the pattern matching
@@ -81,15 +83,12 @@ public:
 	/// \param[in] patternTypeName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
 	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	virtual void addElementFromPatternMatch(
 			const std::string& type,
 			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
-
-	/// \brief Declare the priority of a query element, features with higher priority are ousting features with lower priority if they cover them completely with field position and length
-	/// \param[in] type type name of the feature
-	/// \param[in] priority of the feature
-	virtual void declareTermPriority( const std::string& type, int priority)=0;
+			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority)=0;
 
 	/// \brief Get the query term types declared in order of appearance in declarations
 	/// return the query field types

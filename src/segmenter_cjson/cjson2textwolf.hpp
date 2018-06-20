@@ -24,10 +24,17 @@ struct TextwolfItem
 	Type type;
 	const char* value;
 
-	TextwolfItem( const TextwolfItem& o)
-		:type(o.type),value(o.value){}
 	explicit TextwolfItem( const Type& type_, const char* value_=0)
 		:type(type_),value(value_){}
+#if __cplusplus >= 201103L
+	TextwolfItem( TextwolfItem&& ) = default;
+	TextwolfItem( const TextwolfItem& ) = default;
+	TextwolfItem& operator= ( TextwolfItem&& ) = default;
+	TextwolfItem& operator= ( const TextwolfItem& ) = default;
+#else
+	TextwolfItem( const TextwolfItem& o)
+		:type(o.type),value(o.value){}
+#endif
 };
 
 

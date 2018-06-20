@@ -146,10 +146,10 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInstanceInterface* analyz
 				analyzer->defineAttribute( ci->name, ci->path, tki.release(), normalizers);
 				break;
 			case ConfigItem::SearchIndex:
-				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
+				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers, 0/*priority*/, opt);
 				break;
 			case ConfigItem::ForwardIndex:
-				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
+				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers, 0/*priority*/, opt);
 				break;
 		}
 	}

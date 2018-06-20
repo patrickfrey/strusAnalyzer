@@ -278,7 +278,7 @@ static void defineQueryAnalysis( strus::QueryAnalyzerInstanceInterface* qana, st
 		std::vector<strus::NormalizerFunctionInstanceInterface*> normalizers;
 		normalizers.push_back( new MultiplyNormalizerFunctionInstance( ti));
 
-		qana->addElement( termtype, fieldtype, tokenizer.get(), normalizers);
+		qana->addElement( termtype, fieldtype, tokenizer.get(), normalizers, 0/*priority*/);
 #ifdef STRUS_LOWLEVEL_DEBUG
 		std::cerr << strus::string_format( "Define query element type '%s' field '%s' normalizer * %d\n", termtype.c_str(), fieldtype.c_str(), ti);
 #endif

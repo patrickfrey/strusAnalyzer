@@ -110,8 +110,15 @@ struct Event
 
 	Event( bool select_, int schemeidx_, int expridx_)
 		:select(select_),schemeidx(schemeidx_),expridx(expridx_){}
+#if __cplusplus >= 201103L
+	Event( Event&& ) = default;
+	Event( const Event& ) = default;
+	Event& operator= ( Event&& ) = default;
+	Event& operator= ( const Event& ) = default;
+#else
 	Event( const Event& o)
 		:select(o.select),schemeidx(o.schemeidx),expridx(o.expridx){}
+#endif
 };
 
 static inline Event getEvent( unsigned int evid)

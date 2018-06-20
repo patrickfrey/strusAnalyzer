@@ -172,8 +172,15 @@ struct Match
 
 	Match( int idx_, int level_, int pos_, int len_)
 		:idx(idx_),level(level_),pos(pos_),len(len_){}
+#if __cplusplus >= 201103L
+	Match( Match&& ) = default;
+	Match( const Match& ) = default;
+	Match& operator= ( Match&& ) = default;
+	Match& operator= ( const Match& ) = default;
+#else
 	Match( const Match& o)
 		:idx(o.idx),level(o.level),pos(o.pos),len(o.len){}
+#endif
 
 	bool operator < (const Match& o) const
 	{

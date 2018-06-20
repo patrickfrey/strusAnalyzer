@@ -36,16 +36,25 @@ unsigned int FeatureConfigMap::defineFeature(
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
+		if (priority < 0)
+		{
+			throw std::runtime_error( _TXT("negative priority is not allowed"));
+		}
+		if (priority < m_minPriority)
+		{
+			m_minPriority = priority;
+		}
 		if (m_ar.size()+1 >= MaxNofFeatures)
 		{
 			throw std::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), selectexpr, tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), selectexpr, tokenizer, normalizers, priority, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)

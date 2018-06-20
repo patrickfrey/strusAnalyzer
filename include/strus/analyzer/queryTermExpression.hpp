@@ -25,9 +25,16 @@ public:
 	/// \brief Default constructor
 	QueryTermExpression(){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	QueryTermExpression( QueryTermExpression&& ) = default;
+	QueryTermExpression( const QueryTermExpression& ) = default;
+	QueryTermExpression& operator= ( QueryTermExpression&& ) = default;
+	QueryTermExpression& operator= ( const QueryTermExpression& ) = default;
+#else
 	QueryTermExpression( const QueryTermExpression& o)
 		:m_terms(o.m_terms)
 		,m_instructions(o.m_instructions){}
+#endif
 
 	/// \brief Query instruction
 	class Instruction

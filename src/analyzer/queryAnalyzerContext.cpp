@@ -80,8 +80,15 @@ struct QueryTreeNode
 {
 	QueryTreeNode( int groupId_, unsigned int queryElement_, unsigned int position_, unsigned int nofChild_, unsigned int child_, unsigned int next_)
 		:groupId(groupId_),queryElement(queryElement_),position(position_),nofChild(nofChild_),child(child_),next(next_){}
+#if __cplusplus >= 201103L
+	QueryTreeNode( QueryTreeNode&& ) = default;
+	QueryTreeNode( const QueryTreeNode& ) = default;
+	QueryTreeNode& operator= ( QueryTreeNode&& ) = default;
+	QueryTreeNode& operator= ( const QueryTreeNode& ) = default;
+#else
 	QueryTreeNode( const QueryTreeNode& o)
 		:groupId(o.groupId),queryElement(o.queryElement),position(o.position),nofChild(o.nofChild),child(o.child),next(o.next){}
+#endif
 
 	int groupId;
 	unsigned int queryElement;
@@ -95,9 +102,15 @@ struct QueryTree
 {
 	QueryTree()
 		:root(),nodear(){}
+#if __cplusplus >= 201103L
+	QueryTree( QueryTree&& ) = default;
+	QueryTree( const QueryTree& ) = default;
+	QueryTree& operator= ( QueryTree&& ) = default;
+	QueryTree& operator= ( const QueryTree& ) = default;
+#else
 	QueryTree( const QueryTree& o)
 		:root(o.root),nodear(o.nodear){}
-
+#endif
 	std::vector<unsigned int> root;
 	std::vector<QueryTreeNode> nodear;
 };
@@ -516,20 +529,13 @@ static void buildQueryInstructions( analyzer::QueryTermExpression& qry, const st
 	}
 }
 
-static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
-		std::vector<SegmentProcessor::QueryElement>& elems,
-		const QueryAnalyzerInstance::FeatureTypePriorityMap& pmap)
+static void eliminateCoveredElements( std::vector<SegmentProcessor::QueryElement>& elems)
 {
 	std::vector<SegmentProcessor::QueryElement> rt;
-	std::vector<SegmentProcessor::QueryElement>::iterator ei = elems.begin(), ee = elems.end();
-	for (; ei != ee; ++ei)
-	{
-		QueryAnalyzerInstance::FeatureTypePriorityMap::const_iterator mi = pmap.find( ei->type());
-		if (mi != pmap.end())
-		{
-			ei->setPriority( mi->second);
-		}
-	}
+	std::vector<SegmentProcessor::QueryElement>::iterator ei = elems.begin(), en = elems.begin(), ee = elems.end();
+	if (ei != ee) for (++en; en != ee; ++en) if (en->priority() != ei->priority()) break;
+	if (en == ee) return;
+
 	std::sort( elems.begin(), elems.end(), &SegmentProcessor::QueryElement::orderPosition);
 	ei = elems.begin(), ee = elems.end();
 	for (; ei != ee; ++ei)
@@ -553,7 +559,7 @@ static std::vector<SegmentProcessor::QueryElement> eliminateCoveredElements(
 			rt.push_back( *ei);
 		}
 	}
-	return rt;
+	elems = rt;
 }
 
 analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
@@ -564,10 +570,7 @@ analyzer::QueryTermExpression QueryAnalyzerContext::analyze()
 		analyzer::QueryTermExpression rt;
 		std::vector<SegmentProcessor::QueryElement> elems = analyzeQueryFields();
 
-		if (!m_analyzer->featureTypePriorityMap().empty())
-		{
-			elems = eliminateCoveredElements( elems, m_analyzer->featureTypePriorityMap());
-		}
+		eliminateCoveredElements( elems);
 		if (m_groups.empty())
 		{
 			// Groups are empty, so we just copy the elements into the instructions

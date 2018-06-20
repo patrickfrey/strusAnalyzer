@@ -51,12 +51,14 @@ public:
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addSearchIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the forward index used for summarization extraction.
@@ -64,12 +66,14 @@ public:
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)
 	/// \param[in] tokenizer tokenizer (ownership passed to this) to use for this feature
 	/// \param[in] normalizers list of normalizers (ownership of elements passed to this) to use for this feature
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	/// \param[in] options options that stear the document analysis result (e.g. influence the assingment of document position of terms produced)
 	virtual void addForwardIndexFeature(
 			const std::string& type,
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
@@ -155,22 +159,26 @@ public:
 	/// \param[in] type type name of the feature
 	/// \param[in] patternName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
 	virtual void addSearchIndexFeatureFromPatternMatch(
 			const std::string& type,
 			const std::string& patternName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the forward index derived from a pattern matcher result item
 	/// \param[in] type type name of the feature
 	/// \param[in] patternName type name of the pattern match result or result item
 	/// \param[in] normalizers list of normalizers (element ownership passed to this) to use for this feature
+	/// \param[in] priority element priority analyzer element with lower priority are ousted if they are completely covered by elements with higher priority
 	/// \param[in] options (only for pre processing patterns) options that stear the document analysis result, e.g. influence the assingment of document position of terms produced
 	virtual void addForwardIndexFeatureFromPatternMatch(
 			const std::string& type,
 			const std::string& patternName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a feature to be put into the meta data table for restrictions, weighting and summarization, derived from a pattern matcher result item

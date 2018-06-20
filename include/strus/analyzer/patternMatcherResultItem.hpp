@@ -26,8 +26,15 @@ public:
 	PatternMatcherResultItem( const char* name_, const char* value_, int ordpos_, int ordend_, const Position& origpos_, const Position& origend_)
 		:m_name(name_),m_value(value_),m_ordpos(ordpos_),m_ordend(ordend_),m_origpos(origpos_),m_origend(origend_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	PatternMatcherResultItem( PatternMatcherResultItem&& ) = default;
+	PatternMatcherResultItem( const PatternMatcherResultItem& ) = default;
+	PatternMatcherResultItem& operator= ( PatternMatcherResultItem&& ) = default;
+	PatternMatcherResultItem& operator= ( const PatternMatcherResultItem& ) = default;
+#else
 	PatternMatcherResultItem( const PatternMatcherResultItem& o)
 		:m_name(o.m_name),m_value(o.m_value),m_ordpos(o.m_ordpos),m_ordend(o.m_ordend),m_origpos(o.m_origpos),m_origend(o.m_origend){}
+#endif
 	/// \brief Destructor
 	~PatternMatcherResultItem(){}
 

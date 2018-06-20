@@ -50,6 +50,7 @@ enum Tokens {
 	TokOpenSquareBracket,
 	TokCloseSquareBracket,
 	TokAssign,
+	TokExp,
 	TokComma,
 	TokColon,
 	TokSemiColon,
@@ -67,6 +68,7 @@ static const char* g_tokens[] = {
 	"\\[",
 	"\\]",
 	"\\=",
+	"^",
 	",",
 	":",
 	";",
@@ -85,6 +87,7 @@ static const char* g_token_names[] = {
 	"open square bracket '['",
 	"close square bracket ']'",
 	"assign '='",
+	"exp '^'",
 	"comma ','",
 	"colon ':'",
 	"semicolon ';'",
@@ -465,6 +468,7 @@ static void parseDocumentPatternFeatureDef(
 	DocumentAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
 	const std::string& featureName,
+	int priority,
 	DocumentFeatureClass featureClass)
 {
 	FeatureDef featuredef;
@@ -490,15 +494,19 @@ static void parseDocumentPatternFeatureDef(
 	{
 		case FeatSearchIndexTerm:
 			analyzer.addSearchIndexFeatureFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer, featopt);
+				featureName, patternTypeName, featuredef.normalizer, priority, featopt);
 			break;
 
 		case FeatForwardIndexTerm:
 			analyzer.addForwardIndexFeatureFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer, featopt);
+				featureName, patternTypeName, featuredef.normalizer, priority, featopt);
 			break;
 
 		case FeatMetaData:
+			if (priority)
+			{
+				throw strus::runtime_error( _TXT("no priority expected for meta data feature"));
+			}
 			if (featopt.opt())
 			{
 				throw strus::runtime_error( _TXT("no feature options expected for meta data feature"));
@@ -508,6 +516,10 @@ static void parseDocumentPatternFeatureDef(
 			break;
 
 		case FeatAttribute:
+			if (priority)
+			{
+				throw strus::runtime_error( _TXT("no priority expected for attribute feature"));
+			}
 			if (featopt.opt())
 			{
 				throw strus::runtime_error( _TXT("no feature options expected for attribute feature"));
@@ -526,7 +538,8 @@ static void parseQueryPatternFeatureDef(
 	ProgramLexer& lexer,
 	QueryAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
-	const std::string& featureName)
+	const std::string& featureName,
+	int priority)
 {
 	FeatureDef featuredef;
 
@@ -544,7 +557,7 @@ static void parseQueryPatternFeatureDef(
 		featuredef.parseNormalizer( lexer, textproc);
 	}
 	// [3] Define the element:
-	analyzer.addElementFromPatternMatch( featureName, patternTypeName, featuredef.normalizer);
+	analyzer.addElementFromPatternMatch( featureName, patternTypeName, featuredef.normalizer, priority);
 	featuredef.release();
 }
 
@@ -553,6 +566,7 @@ static void parseDocumentFeatureDef(
 	DocumentAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
 	const std::string& featureName,
+	int priority,
 	DocumentFeatureClass featureClass)
 {
 	FeatureDef featuredef;
@@ -573,17 +587,21 @@ static void parseDocumentFeatureDef(
 			analyzer.addSearchIndexFeature(
 				featureName, xpathexpr,
 				featuredef.tokenizer.get(), featuredef.normalizer,
-				featopt);
+				priority, featopt);
 			break;
 
 		case FeatForwardIndexTerm:
 			analyzer.addForwardIndexFeature(
 				featureName, xpathexpr,
 				featuredef.tokenizer.get(), featuredef.normalizer,
-				featopt);
+				priority, featopt);
 			break;
 
 		case FeatMetaData:
+			if (priority)
+			{
+				throw strus::runtime_error( _TXT("no priority expected for meta data feature"));
+			}
 			if (featopt.opt())
 			{
 				throw strus::runtime_error( _TXT("no feature options expected for meta data feature"));
@@ -594,6 +612,10 @@ static void parseDocumentFeatureDef(
 			break;
 
 		case FeatAttribute:
+			if (priority)
+			{
+				throw strus::runtime_error( _TXT("no priority expected for attribute feature"));
+			}
 			if (featopt.opt())
 			{
 				throw strus::runtime_error( _TXT("no feature options expected for attribute feature"));
@@ -621,6 +643,7 @@ static void parseQueryElementDef(
 	QueryAnalyzerInstanceInterface& analyzer,
 	const TextProcessorInterface* textproc,
 	const std::string& featureName,
+	int priority,
 	QueryElementClass elementClass)
 {
 	FeatureDef featuredef;
@@ -640,10 +663,11 @@ static void parseQueryElementDef(
 		case QueryElementTerm:
 			analyzer.addElement(
 				featureName, fieldname,
-				featuredef.tokenizer.get(), featuredef.normalizer);
+				featuredef.tokenizer.get(), featuredef.normalizer, priority);
 			break;
 
 		case QueryElementLexem:
+			if (priority) throw std::runtime_error(_TXT("no priority definition expected for pattern lexem definition"));
 			analyzer.addPatternLexem(
 				featureName, fieldname,
 				featuredef.tokenizer.get(), featuredef.normalizer);
@@ -1125,16 +1149,25 @@ static void loadFeatureSection( ProgramLexer& lexer, const DocumentFeatureClass&
 		}
 		std::string identifier = lexer.current().value();
 		lexer.next();
-
+		int priority = 0;
+		if (lexer.current().isToken(TokExp))
+		{
+			if (!lexer.next().isToken(TokInteger))
+			{
+				throw strus::runtime_error( _TXT("priority value (integer) expected intead of %s after exp '^'"), tokenName( lexer.current()));
+			}
+			priority = numstring_conv::touint( lexer.current().value(), std::numeric_limits<int>::max());
+			lexer.next();
+		}
 		if (lexer.current().isToken(TokAssign))
 		{
 			lexer.next();
-			parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
+			parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, priority, featclass);
 		}
 		else if (lexer.current().isToken( TokLeftArrow))
 		{
 			lexer.next();
-			parseDocumentPatternFeatureDef( lexer, *analyzer, textproc, identifier, featclass);
+			parseDocumentPatternFeatureDef( lexer, *analyzer, textproc, identifier, priority, featclass);
 		}
 		else
 		{
@@ -1159,51 +1192,31 @@ static void loadQueryElementSection( ProgramLexer& lexer, const QueryElementClas
 		}
 		std::string identifier = lexer.current().value();
 		lexer.next();
-
+		int priority = 0;
+		if (lexer.current().isToken(TokExp))
+		{
+			if (!lexer.next().isToken(TokInteger))
+			{
+				throw strus::runtime_error( _TXT("priority value (integer) expected intead of %s after exp '^'"), tokenName( lexer.current()));
+			}
+			priority = numstring_conv::touint( lexer.current().value(), std::numeric_limits<int>::max());
+			lexer.next();
+		}
 		if (lexer.current().isToken(TokAssign))
 		{
 			lexer.next();
-			parseQueryElementDef( lexer, *analyzer, textproc, identifier, featclass);
+			parseQueryElementDef( lexer, *analyzer, textproc, identifier, priority, featclass);
 		}
 		else if (lexer.current().isToken( TokLeftArrow))
 		{
 			if (featclass != QueryElementTerm) throw strus::runtime_error(_TXT("pattern feature definitions ('<-') only allowed in \"SearchTerm\" section"));
 			lexer.next();
-			parseQueryPatternFeatureDef( lexer, *analyzer, textproc, identifier);
+			parseQueryPatternFeatureDef( lexer, *analyzer, textproc, identifier, priority);
 		}
 		else
 		{
 			throw strus::runtime_error( _TXT("assignment operator '=' or '<-' instead of %s expected after set identifier in a %s declaration"), tokenName( lexer.current()), "feature");
 		}
-		if (!lexer.current().isToken( TokSemiColon))
-		{
-			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), "feature");
-		}
-		lexer.next();
-	}
-	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
-}
-
-static void loadQueryTermPrioritySection( ProgramLexer& lexer, QueryAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
-{
-	do
-	{
-		if (!lexer.current().isToken(TokIdentifier))
-		{
-			throw strus::runtime_error( _TXT("feature type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), "priority");
-		}
-		std::string identifier = lexer.current().value();
-		if (!lexer.next().isToken(TokColon))
-		{
-			throw strus::runtime_error( _TXT("colon ':' expected instead of %s after feature identifier in a priority declaration"), tokenName( lexer.current()));
-		}
-		if (!lexer.next().isToken(TokInteger))
-		{
-			throw strus::runtime_error( _TXT("integer value expected instead of %s on the right side of a priority declaration"), tokenName( lexer.current()));
-		}
-		int priority = strus::numstring_conv::toint( lexer.current().value(), 256);
-		analyzer->declareTermPriority( identifier, priority);
-
 		if (!lexer.current().isToken( TokSemiColon))
 		{
 			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), "feature");
@@ -1478,11 +1491,7 @@ bool strus::loadQueryAnalyzerProgramSource( QueryAnalyzerInstanceInterface* anal
 			SectionHeader header = parseSectionHeader( lexer);
 			if (lexer.current().isToken( TokOpenSquareBracket) || lexer.current().isEof()) continue;
 
-			if (isEqual( header.name, "Priority"))
-			{
-				loadQueryTermPrioritySection( lexer, analyzer, textproc, errorhnd);
-			}
-			else if (isEqual( header.name, "PatternMatch"))
+			if (isEqual( header.name, "PatternMatch"))
 			{
 				loadPatternMatchSection( lexer, header, analyzer, textproc, errorhnd);
 			}

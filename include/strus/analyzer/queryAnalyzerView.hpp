@@ -28,27 +28,22 @@ public:
 	QueryAnalyzerView( const QueryAnalyzerView& o)
 		:m_elements(o.m_elements)
 		,m_patternLexems(o.m_patternLexems)
-		,m_priorities(o.m_priorities)
 		{}
 	/// \brief Constructor
 	/// \param[in] elements_ elements
 	QueryAnalyzerView(
 			const std::vector<QueryElementView>& elements_,
-			const std::vector<QueryElementView>& patternLexems_,
-			const std::map<std::string,int>& priorities_)
+			const std::vector<QueryElementView>& patternLexems_)
 		:m_elements(elements_)
 		,m_patternLexems(patternLexems_)
-		,m_priorities(priorities_)
 		{}
 
 	const std::vector<QueryElementView>& elements() const		{return m_elements;}
 	const std::vector<QueryElementView>& patternLexems() const	{return m_patternLexems;}
-	const std::map<std::string,int>& priorities() const		{return m_priorities;}
 
 private:
 	std::vector<QueryElementView> m_elements;
 	std::vector<QueryElementView> m_patternLexems;
-	std::map<std::string,int> m_priorities;
 };
 
 }}//namespace

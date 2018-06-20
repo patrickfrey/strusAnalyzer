@@ -43,8 +43,15 @@ public:
 	/// \brief Constructor
 	PatternMatcherStatistics(){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	PatternMatcherStatistics( PatternMatcherStatistics&& ) = default;
+	PatternMatcherStatistics( const PatternMatcherStatistics& ) = default;
+	PatternMatcherStatistics& operator= ( PatternMatcherStatistics&& ) = default;
+	PatternMatcherStatistics& operator= ( const PatternMatcherStatistics& ) = default;
+#else
 	PatternMatcherStatistics( const PatternMatcherStatistics& o)
 		:m_items(o.m_items){}
+#endif
 
 	/// \brief Define statistics item
 	/// \param[in] name name of the statistics item

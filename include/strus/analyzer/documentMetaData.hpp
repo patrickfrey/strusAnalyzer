@@ -24,9 +24,15 @@ public:
 	/// \brief Default constructor
 	DocumentMetaData(){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	DocumentMetaData( DocumentMetaData&& ) = default;
+	DocumentMetaData( const DocumentMetaData& ) = default;
+	DocumentMetaData& operator= ( DocumentMetaData&& ) = default;
+	DocumentMetaData& operator= ( const DocumentMetaData& ) = default;
+#else
 	DocumentMetaData( const DocumentMetaData& o)
 		:m_name(o.m_name),m_value(o.m_value){}
-
+#endif
 	/// \brief Constructor
 	/// \param[in] n name of the meta data element
 	/// \param[in] v value of the meta data element

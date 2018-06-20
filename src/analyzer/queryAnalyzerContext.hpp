@@ -52,8 +52,15 @@ public:
 
 		Field( int fieldNo_, const std::string& fieldType_, const std::string& content_)
 			:fieldNo(fieldNo_), fieldType(fieldType_), content(content_) {}
+#if __cplusplus >= 201103L
+		Field( Field&& ) = default;
+		Field( const Field& ) = default;
+		Field& operator= ( Field&& ) = default;
+		Field& operator= ( const Field& ) = default;
+#else
 		Field( const Field& o)
 			:fieldNo(o.fieldNo), fieldType(o.fieldType), content(o.content) {}
+#endif
 	};
 	struct Group
 	{
@@ -66,6 +73,9 @@ public:
 			:groupId(groupId_), groupBy(groupBy_), groupSingle(groupSingle_), fieldNoList(fieldNoList_) {}
 		Group( const Group& o)
 			:groupId(o.groupId), groupBy(o.groupBy), groupSingle(o.groupSingle), fieldNoList(o.fieldNoList) {}
+#if __cplusplus >= 201103L
+		Group( Group&& o) = default;
+#endif
 	};
 
 private:

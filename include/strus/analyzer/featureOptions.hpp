@@ -25,8 +25,15 @@ public:
 	FeatureOptions()
 		:m_opt(0){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	FeatureOptions( FeatureOptions&& ) = default;
+	FeatureOptions( const FeatureOptions& ) = default;
+	FeatureOptions& operator= ( FeatureOptions&& ) = default;
+	FeatureOptions& operator= ( const FeatureOptions& ) = default;
+#else
 	FeatureOptions( const FeatureOptions& o)
 		:m_opt(o.m_opt){}
+#endif
 	/// \brief Constructor
 	FeatureOptions( unsigned int opt_)
 		:m_opt(opt_){}

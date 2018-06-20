@@ -16,9 +16,12 @@ using namespace strus;
 PatternFeatureConfig::PatternFeatureConfig(
 		const std::string& name_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority_,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
+	,m_normalizerlist()
+	,m_priority(priority_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

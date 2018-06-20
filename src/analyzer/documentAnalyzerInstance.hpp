@@ -53,6 +53,7 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options);
 
 	virtual void addForwardIndexFeature(
@@ -60,6 +61,7 @@ public:
 			const std::string& selectexpr,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options);
 
 	virtual void defineMetaData(
@@ -107,12 +109,14 @@ public:
 			const std::string& type,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options);
 
 	virtual void addForwardIndexFeatureFromPatternMatch(
 			const std::string& type,
 			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority,
 			const analyzer::FeatureOptions& options);
 
 	virtual void defineMetaDataFromPatternMatch(

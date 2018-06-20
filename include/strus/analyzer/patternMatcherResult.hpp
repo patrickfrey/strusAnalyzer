@@ -31,8 +31,15 @@ public:
 	PatternMatcherResult( const char* name_, const char* value_, int ordpos_, int ordend_, const Position& origpos_, const Position& origend_, const std::vector<Item>& itemlist_=std::vector<Item>())
 		:PatternMatcherResultItem(name_,value_,ordpos_,ordend_,origpos_,origend_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	PatternMatcherResult( PatternMatcherResult&& ) = default;
+	PatternMatcherResult( const PatternMatcherResult& ) = default;
+	PatternMatcherResult& operator= ( PatternMatcherResult&& ) = default;
+	PatternMatcherResult& operator= ( const PatternMatcherResult& ) = default;
+#else
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:PatternMatcherResultItem(o),m_itemlist(o.m_itemlist){}
+		:PatternMatcherResult(o),m_itemlist(o.m_itemlist){}
+#endif
 	/// \brief Destructor
 	~PatternMatcherResult(){}
 

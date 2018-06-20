@@ -28,13 +28,22 @@ void PatternFeatureConfigMap::defineFeature(
 	const std::string& name,
 	const std::string& patternTypeName,
 	const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+	int priority,
 	const analyzer::FeatureOptions& options)
 {
 	try
 	{
+		if (priority < 0)
+		{
+			throw std::runtime_error( _TXT("negative priority is not allowed"));
+		}
+		if (priority < m_minPriority)
+		{
+			m_minPriority = priority;
+		}
 		m_ar.reserve( m_ar.size()+1);
 		m_map.insert( typename PatternNameConfigMap::value_type( patternTypeName, m_ar.size()));
-		m_ar.push_back( PatternFeatureConfig( string_conv::tolower( name), normalizers, featureClass, options));
+		m_ar.push_back( PatternFeatureConfig( string_conv::tolower( name), normalizers, priority, featureClass, options));
 	}
 	catch (const std::bad_alloc&)
 	{

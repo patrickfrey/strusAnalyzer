@@ -10,6 +10,7 @@
 #include "featureConfig.hpp"
 #include <vector>
 #include <string>
+#include <limits>
 
 namespace strus
 {
@@ -35,7 +36,9 @@ class FeatureConfigMap
 {
 public:
 	FeatureConfigMap()
-		:m_ar(){}
+		:m_ar(),m_minPriority(std::numeric_limits<int>::max()){}
+	FeatureConfigMap( const FeatureConfigMap& o)
+		:m_ar(o.m_ar),m_minPriority(o.m_minPriority){}
 	~FeatureConfigMap(){}
 
 	unsigned int defineFeature(
@@ -44,6 +47,7 @@ public:
 		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options);
 
 	const FeatureConfig& featureConfig( int featidx) const;
@@ -52,9 +56,11 @@ public:
 	const_iterator begin() const			{return m_ar.begin();}
 	const_iterator end() const			{return m_ar.end();}
 	const std::vector<FeatureConfig>& list() const	{return m_ar;}
+	int minPriority() const				{return m_minPriority;}
 
 private:
 	std::vector<FeatureConfig> m_ar;
+	int m_minPriority;
 };
 
 }//namespace
