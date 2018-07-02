@@ -85,7 +85,7 @@ std::string TokenMarkupContext::markupDocument(
 						--mi;
 					}
 				}
-				else if (mp->level < mi->level)
+				else// if (mp->level < mi->level)
 				{
 					mi->start = mp->end;
 				}

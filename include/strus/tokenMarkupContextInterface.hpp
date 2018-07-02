@@ -32,7 +32,7 @@ public:
 	/// \param[in] start start of the item to mark 
 	/// \param[in] end the end of the item to mark
 	/// \param[in] markup tag structure to use for markup
-	/// \param[in] level sort of priority (areas with a higher level markup are superseding the ones with lovel level. It is also used as criterion to resolve conflicts)
+	/// \param[in] level sort of priority (areas with a higher level markup are superseding the ones with lover level. It is also used as criterion to resolve conflicts)
 	virtual void putMarkup(
 			const analyzer::Position& start,
 			const analyzer::Position& end,
