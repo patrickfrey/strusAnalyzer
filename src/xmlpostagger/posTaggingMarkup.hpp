@@ -36,16 +36,18 @@ public:
 		,m_tagar()
 		,m_unknowntag()
 		,m_rootidx(0){}
-	
-private:
-#if __cplusplus >= 201103L
-	PosTaggingMarkup( const PosTaggingMarkup& ) = delete;
-	PosTaggingMarkup& operator= ( const PosTaggingMarkup& ) = delete;
-#else
-	PosTaggingMarkup( const PosTaggingMarkup&)  :m_symtab(o.m_errorhnd){} ///... non copyable
-#endif
+
 public:
-	typedef std::pair<std::string,std::string> Element;
+	struct Element
+	{
+		std::string type;
+		std::string value;
+
+		Element( const std::string& type_, const std::string& value_)
+			:type(type_),value(value_){}
+		Element( const Element& o)
+			:type(o.type),value(o.value){}
+	};
 
 	void addInfo( const std::vector<Element>& sentence);
 
@@ -80,7 +82,8 @@ private:
 	const char* getTypeList( const std::vector<Element>& sentence);
 	const char* getValueList( const std::vector<Element>& sentence);
 	std::vector<const char*> getTagList( const std::vector<std::string>& sentence) const;
-	void processContent( const char* src, int srclen) const;
+	std::string processContent( const char* src, int srclen) const;
+	static std::vector<std::string> tokenize( const char* src, int srclen);
 
 	ErrorBufferInterface* m_errorhnd;
 	SymbolTable m_symtab;
@@ -91,6 +94,14 @@ private:
 	std::vector<std::string> m_tagar;
 	std::string m_unknowntag;
 	int m_rootidx;
+
+private:
+#if __cplusplus >= 201103L
+	PosTaggingMarkup( const PosTaggingMarkup& ) = delete;
+	PosTaggingMarkup& operator= ( const PosTaggingMarkup& ) = delete;
+#else
+	PosTaggingMarkup( const PosTaggingMarkup&)  :m_symtab(o.m_errorhnd){} ///... non copyable
+#endif
 };
 
 }//namespace
