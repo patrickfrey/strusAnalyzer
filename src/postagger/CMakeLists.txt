@@ -4,14 +4,18 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR )
 # SOURCES AND INCLUDES
 # --------------------------------------
 set( source_files
-	strusXmlPosTagger.cpp
+	posTaggerData.cpp
+	posTaggerInstance.cpp
+	posTaggerContext.cpp
+	posTagger.cpp
 )
 
 include_directories(
-	    "${Intl_INCLUDE_DIRS}"
-            ${Boost_INCLUDE_DIRS}
-	    "${TEXTWOLF_INCLUDE_DIRS}"
-	    "${strusbase_INCLUDE_DIRS}"
+	"${PROJECT_SOURCE_DIR}/include"
+	"${Intl_INCLUDE_DIRS}"
+        ${Boost_INCLUDE_DIRS}
+	"${TEXTWOLF_INCLUDE_DIRS}"
+	"${strusbase_INCLUDE_DIRS}"
 )
 link_directories( 
 	   "${UTILS_LIBRARY_DIRS}" 

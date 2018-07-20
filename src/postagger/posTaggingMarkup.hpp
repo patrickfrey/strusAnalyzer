@@ -26,7 +26,7 @@ class ErrorBufferInterface;
 class PosTaggingMarkup
 {
 public:
-	PosTaggingMarkup( const std::string& unknowntag_, ErrorBufferInterface* errorhnd_)
+	PosTaggingMarkup( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
 		,m_symtab(errorhnd_)
 		,m_seqtab(errorhnd_)
@@ -34,20 +34,9 @@ public:
 		,m_typedescrlist()
 		,m_tagmap()
 		,m_tagar()
-		,m_unknowntag()
 		,m_rootidx(0){}
 
 public:
-	struct Element
-	{
-		std::string type;
-		std::string value;
-
-		Element( const std::string& type_, const std::string& value_)
-			:type(type_),value(value_){}
-		Element( const Element& o)
-			:type(o.type),value(o.value){}
-	};
 
 	void addInfo( const std::vector<Element>& sentence);
 
@@ -70,7 +59,6 @@ private:
 		Node( int value_)
 			:value(value_),next(0),chld(0){}
 	};
-	typedef std::map<std::string,int> TagMap;
 
 	int getOrCreateTagIdx( const std::string& tagnam);
 	int getTagIdx( const std::string& tagnam) const;
@@ -85,14 +73,9 @@ private:
 	std::string processContent( const char* src, int srclen) const;
 	static std::vector<std::string> tokenize( const char* src, int srclen);
 
-	ErrorBufferInterface* m_errorhnd;
-	SymbolTable m_symtab;
-	SymbolTable m_seqtab;
-	BlockAllocator m_allocator;
 	std::vector<const char*> m_typedescrlist;
-	TagMap m_tagmap;
+	TagMap m_typemap;
 	std::vector<std::string> m_tagar;
-	std::string m_unknowntag;
 	int m_rootidx;
 
 private:

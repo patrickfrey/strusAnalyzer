@@ -17,7 +17,8 @@
 using namespace strus;
 static bool g_intl_initialized = false;
 
-DLL_PUBLIC TokenMarkupInstanceInterface* strus::createTokenMarkupInstance_standard( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC TokenMarkupInstanceInterface* strus::createTokenMarkupInstance_standard(
+		ErrorBufferInterface* errorhnd)
 {
 	try
 	{

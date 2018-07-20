@@ -27,8 +27,10 @@ class TokenMarkupContext
 {
 public:
 	/// \brief Constructor
+	/// \param[in] segmenter to used for markup
 	/// \param[in] errorhnd_ error buffer interface
-	explicit TokenMarkupContext(
+	TokenMarkupContext(
+			const SegmenterInstanceInterface* segmenter_,
 			ErrorBufferInterface* errorhnd_);
 
 	/// \brief Destructor
@@ -41,7 +43,6 @@ public:
 			unsigned int level);
 
 	virtual std::string markupDocument(
-			const SegmenterInstanceInterface* segmenter,
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const;
 
@@ -86,6 +87,7 @@ private:
 	};
 
 private:
+	const SegmenterInstanceInterface* m_segmenter;
 	std::vector<MarkupElement> m_markupar;
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -102,7 +104,7 @@ public:
 	/// \brief Destructor
 	virtual ~TokenMarkupInstance(){}
 
-	virtual TokenMarkupContextInterface* createContext() const;
+	virtual TokenMarkupContextInterface* createContext( const SegmenterInstanceInterface* segmenter) const;
 
 	virtual analyzer::FunctionView view() const;
 

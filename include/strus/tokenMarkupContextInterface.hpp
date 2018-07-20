@@ -40,12 +40,10 @@ public:
 			unsigned int level)=0;
 
 	/// \brief Get the original document content with all markups declared inserted
-	/// \param[in] segmenter segmenter to use for inserting document markup tags
 	/// \param[in] dclass document class of document to markup
 	/// \param[in] content content string of document to markup
 	/// \return the marked up document content
 	virtual std::string markupDocument(
-			const SegmenterInstanceInterface* segmenter,
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const=0;
 };

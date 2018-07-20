@@ -20,8 +20,9 @@
 using namespace strus;
 
 TokenMarkupContext::TokenMarkupContext(
+		const SegmenterInstanceInterface* segmenter_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_)
+	:m_segmenter(segmenter_),m_errorhnd(errorhnd_)
 {}
 
 TokenMarkupContext::~TokenMarkupContext()
@@ -55,13 +56,12 @@ void TokenMarkupContext::writeOpenMarkup( SegmenterMarkupContextInterface* marku
 }
 
 std::string TokenMarkupContext::markupDocument(
-		const SegmenterInstanceInterface* segmenter,
 		const analyzer::DocumentClass& dclass,
 		const std::string& content) const
 {
 	try
 	{
-		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
+		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( m_segmenter->createMarkupContext( dclass, content));
 		if (!markupdoc.get()) throw std::runtime_error( _TXT("failed to create markup document context"));
 
 		std::vector<MarkupElement> markupar = m_markupar;
@@ -121,11 +121,11 @@ std::string TokenMarkupContext::markupDocument(
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create document with markups inserted: %s"), *m_errorhnd, std::string());
 }
 
-TokenMarkupContextInterface* TokenMarkupInstance::createContext() const
+TokenMarkupContextInterface* TokenMarkupInstance::createContext( const SegmenterInstanceInterface* segmenter) const
 {
 	try
 	{
-		return new TokenMarkupContext( m_errorhnd);
+		return new TokenMarkupContext( segmenter, m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create token markup: %s"), *m_errorhnd, 0);
 }
