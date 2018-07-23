@@ -50,7 +50,7 @@ public:
 
 	/// \brief Add a tagged text chunk
 	/// \param[in] sequence tagged text chunk
-	virtual void insert( const std::vector<Element>& sequence)=0;
+	virtual void insert( int docno, const std::vector<Element>& sequence)=0;
 
 	/// \brief Get a text chunk tagged
 	/// \param[in] markupContext document context to do the markup of the POS tags
