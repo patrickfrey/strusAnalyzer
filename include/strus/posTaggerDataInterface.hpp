@@ -25,19 +25,24 @@ class PosTaggerDataInterface
 {
 public:
 	/// \brief Output element of POS tagging
-	struct Element
+	class Element
 	{
-		std::string type;	///< Type of token (e.g. POS tag)
-		std::string value;	///< Value of token (tagged value)
+	public:
+		const std::string& type() const {return m_type;}	///< Type of token (e.g. POS tag)
+		const std::string& value() const {return m_value;}	///< Value of token (tagged value)
 
 		/// \brief Constructor
 		/// \param[in] type type of token (e.g. POS tag)
 		/// \param[in] value value of token (tagged value)
 		Element( const std::string& type_, const std::string& value_)
-			:type(type_),value(value_){}
+			:m_type(type_),m_value(value_){}
 		/// \brief Copy constructor
 		Element( const Element& o)
-			:type(o.type),value(o.value){}
+			:m_type(o.m_type),m_value(o.m_value){}
+
+	private:
+		std::string m_type;	///< Type of token (e.g. POS tag)
+		std::string m_value;	///< Value of token (tagged value)
 	};
 
 	virtual ~PosTaggerDataInterface(){}
@@ -58,7 +63,7 @@ public:
 	/// \param[in] segmentpos position of the segment in the original source
 	/// \param[in] segmentptr pointer to content of segment to tag
 	/// \param[in] segmentsize size of content of segment to tag in bytes
-	virtual void markupSegment( TokenMarkupContextInterface* markupContext, int docno, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize)=0;
+	virtual void markupSegment( TokenMarkupContextInterface* markupContext, int docno, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize)=0;
 };
 
 }//namespace
