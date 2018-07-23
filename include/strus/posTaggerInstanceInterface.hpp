@@ -45,7 +45,7 @@ public:
 
 	/// \brief Create a context for POS 
 	/// \param[ín] data collected data from POS tagging output
-	virtual PosTaggerContextInterface* createContext( const PosTaggerDataInterface* data) const;
+	virtual PosTaggerContextInterface* createContext( const PosTaggerDataInterface* data) const=0;
 };
 
 }//namespace
