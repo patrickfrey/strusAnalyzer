@@ -39,14 +39,9 @@ set_target_properties(
     VERSION ${STRUS_VERSION}
 )
 
-add_executable( strusPosTagger strusPosTagger.cpp )
-target_link_libraries( strusPosTagger  strus_postagger strus_markup_std strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
-
 # ------------------------------
 # INSTALLATION
 # ------------------------------
 install( TARGETS strus_postagger
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
-install( TARGETS strusPosTagger
-	   RUNTIME DESTINATION bin )
 
