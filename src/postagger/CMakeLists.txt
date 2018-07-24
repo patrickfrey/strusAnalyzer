@@ -12,6 +12,7 @@ set( source_files
 
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
+	"${GEN_INCLUDE_DIR}"
 	"${Intl_INCLUDE_DIRS}"
         ${Boost_INCLUDE_DIRS}
 	"${TEXTWOLF_INCLUDE_DIRS}"
