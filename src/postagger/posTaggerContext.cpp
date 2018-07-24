@@ -24,7 +24,7 @@ using namespace strus;
 #define COMPONENT_NAME "POS tagger instance"
 #define STRUS_DBGTRACE_COMPONENT_NAME "postag"
 
-PosTaggerContext::PosTaggerContext( const SegmenterInstanceInterface* segmenter_, const TokenMarkupInstanceInterface* markup_, PosTaggerDataInterface* data_, ErrorBufferInterface* errorhnd_)
+PosTaggerContext::PosTaggerContext( const SegmenterInstanceInterface* segmenter_, const TokenMarkupInstanceInterface* markup_, const PosTaggerDataInterface* data_, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_segmenter(segmenter_),m_markup(markup_),m_data(data_)
 {
 	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
@@ -36,7 +36,7 @@ PosTaggerContext::~PosTaggerContext()
 	if (m_debugtrace) delete m_debugtrace;
 }
 
-std::string PosTaggerContext::markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content)
+std::string PosTaggerContext::markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
 	{
@@ -46,8 +46,8 @@ std::string PosTaggerContext::markupDocument( int docno, const analyzer::Documen
 
 		segctx->putInput( content.c_str(), content.size(), true/*eof*/);
 		int id = 0;
+		int docitr = 0;
 		SegmenterPosition pos = 0;
-		SegmenterPosition prevpos = 0;
 		const char* segment = 0;
 		std::size_t segmentsize = 0;
 		std::string rt;
@@ -56,7 +56,7 @@ std::string PosTaggerContext::markupDocument( int docno, const analyzer::Documen
 		{
 			if (id == 1)
 			{
-				m_data->markupSegment( markupContext.get(), docno, pos, segment, segmentsize);
+				m_data->markupSegment( markupContext.get(), docno, docitr, pos, segment, segmentsize);
 			}
 		}
 		rt.append( markupContext->markupDocument( dclass, content));

@@ -26,7 +26,7 @@
 
 using namespace strus;
 
-PosTaggerInstance::PosTaggerInstance( SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd_)
+PosTaggerInstance::PosTaggerInstance( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd( errorhnd_),m_debugtrace(0),m_segmenter(segmenter_->createInstance( opts)),m_markup(strus::createTokenMarkupInstance_standard(errorhnd_)),m_values()
 {
 	if (!m_markup) {cleanup(); throw std::runtime_error( m_errorhnd->fetchError());}

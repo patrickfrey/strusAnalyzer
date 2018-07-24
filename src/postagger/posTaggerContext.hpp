@@ -31,17 +31,17 @@ class PosTaggerContext
 	:public PosTaggerContextInterface
 {
 public:
-	PosTaggerContext( const SegmenterInstanceInterface* segmenter_, const TokenMarkupInstanceInterface* markup_, PosTaggerDataInterface* data_, ErrorBufferInterface* errorhnd_);
+	PosTaggerContext( const SegmenterInstanceInterface* segmenter_, const TokenMarkupInstanceInterface* markup_, const PosTaggerDataInterface* data_, ErrorBufferInterface* errorhnd_);
 	virtual ~PosTaggerContext();
 
-	virtual std::string markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content);
+	virtual std::string markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content) const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 	const SegmenterInstanceInterface* m_segmenter;
 	const TokenMarkupInstanceInterface* m_markup; 
-	PosTaggerDataInterface* m_data;
+	const PosTaggerDataInterface* m_data;
 };
 
 }//namespace

@@ -60,10 +60,11 @@ public:
 	/// \brief Get a text chunk tagged
 	/// \param[in] markupContext document context to do the markup of the POS tags
 	/// \param[in] docno document number of the segment to tag
+	/// \param[in,out] docitr iterator in the document (initial value 0)
 	/// \param[in] segmentpos position of the segment in the original source
 	/// \param[in] segmentptr pointer to content of segment to tag
 	/// \param[in] segmentsize size of content of segment to tag in bytes
-	virtual void markupSegment( TokenMarkupContextInterface* markupContext, int docno, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize)=0;
+	virtual void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const=0;
 };
 
 }//namespace

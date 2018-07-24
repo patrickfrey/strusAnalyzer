@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_POS_TAGGER_IMPLEMENTATION_HPP_INCLUDED
 #define _STRUS_ANALYZER_POS_TAGGER_IMPLEMENTATION_HPP_INCLUDED
 #include "strus/posTaggerInterface.hpp"
+#include "strus/analyzer/segmenterOptions.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -20,6 +21,9 @@ namespace strus
 class SegmenterInterface;
 /// \brief Forward declaration
 class PosTaggerInstanceInterface;
+/// \brief Forward declaration
+class ErrorBufferInterface;
+
 
 /// \brief Interface for the construction of a POS tagger instance for a specified segmenter
 class PosTagger

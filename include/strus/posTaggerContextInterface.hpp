@@ -26,7 +26,7 @@ public:
 	/// \brief Markup a document with POS tagging info
 	/// \param[ín] dclass document class of document to markup
 	/// \param[ín] content to markup
-	virtual std::string markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content)=0;
+	virtual std::string markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content) const=0;
 };
 
 }//namespace

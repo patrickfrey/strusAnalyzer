@@ -37,7 +37,7 @@ class PosTaggerInstance
 public:
 	/// \param[in] segmenter_ segmenter instance to use (passed with ownership)
 	/// \param[in] errorhnd_ error buffer interface
-	PosTaggerInstance( SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd_);
+	PosTaggerInstance( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd_);
 	virtual ~PosTaggerInstance();
 
 	virtual void addContentExpression( const std::string& expression);

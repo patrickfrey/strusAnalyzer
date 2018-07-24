@@ -38,9 +38,7 @@ public:
 
 	virtual void insert( int docno, const std::vector<Element>& elements);
 
-	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize);
-
-	!!!! HOLD CONTEXT OF markupSegment BY CALLER TO MAKE IT CONST
+	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize) const;
 
 private:
 	typedef std::map<std::string,std::string> TypeTagMap;
@@ -77,9 +75,6 @@ private:
 	std::vector<std::string> m_typeList;
 	std::vector<DocAssignment> m_docs;
 	std::map<int,int> m_docnoDocMap;
-	int m_docno;
-	int m_docidx;
-	int m_docitr;
 	SymbolTable m_symtab;
 };
 

@@ -26,7 +26,7 @@ using namespace strus;
 PosTaggerData::PosTaggerData( TokenizerFunctionInstanceInterface* tokenizer_, ErrorBufferInterface* errorhnd_)
 	:m_errorhnd( errorhnd_),m_debugtrace(0),m_tokenizer(tokenizer_)
 	,m_typeTagMap(),m_typeList()
-	,m_docs(),m_docnoDocMap(),m_docno(0),m_docidx(0),m_docitr(0)
+	,m_docs(),m_docnoDocMap()
 	,m_symtab(errorhnd_)
 {
 	DebugTraceInterface* dbg = m_errorhnd->debugTrace();
@@ -52,16 +52,16 @@ std::vector<PosTaggerDataInterface::Element> PosTaggerData::tokenize( const std:
 	std::vector<Element>::const_iterator ei = sequence.begin(), ee = sequence.end();
 	for (; ei != ee; ++ei)
 	{
-		if (ei->type.empty()) throw std::runtime_error(_TXT("empty element type name is not allowed"));
+		if (ei->type().empty()) throw std::runtime_error(_TXT("empty element type name is not allowed"));
 
-		std::vector<analyzer::Token> tokens = tokenize( ei->value.c_str(), ei->value.size());
+		std::vector<analyzer::Token> tokens = tokenize( ei->value().c_str(), ei->value().size());
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 		if (ti != te)
 		{
-			rt.push_back( Element( ei->type, std::string( ei->value.c_str() + ti->origpos().ofs(), ti->origsize())));
+			rt.push_back( Element( ei->type(), std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize())));
 			for (++ti; ti != te; ++ti)
 			{
-				rt.push_back( Element( "", std::string( ei->value.c_str() + ti->origpos().ofs(), ti->origsize())));
+				rt.push_back( Element( "", std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize())));
 			}
 		}
 		else
@@ -109,18 +109,18 @@ void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 		std::vector<Element>::const_iterator ei = elements.begin(), ee = elements.end();
 		for (; ei != ee; ++ei)
 		{
-			int vlidx = m_symtab.getOrCreate( ei->value);
+			int vlidx = m_symtab.getOrCreate( ei->value());
 			if (!vlidx) throw std::runtime_error( m_errorhnd->fetchError());
 
 			const char* tgstr = 0;
-			if (ei->type.empty())
+			if (ei->type().empty())
 			{
 				// ... belongs to predecessor element
 				tgstr = RESERVED_TAG_BOUND;
 			}
 			else
 			{
-				TypeTagMap::const_iterator ti = m_typeTagMap.find( ei->type);
+				TypeTagMap::const_iterator ti = m_typeTagMap.find( ei->type());
 				if (ti != m_typeTagMap.end()) tgstr = ti->second.c_str();
 			}
 			m_docs.back().ar.push_back( TagAssignment( vlidx, tgstr));
@@ -129,7 +129,7 @@ void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 	CATCH_ERROR_ARG1_MAP( _TXT("error insert elements in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
 }
 
-void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize)
+void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize) const
 {
 	try
 	{
@@ -139,19 +139,14 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		std::vector<analyzer::Token> tokens = tokenize( segmentptr, segmentsize);
 		if (tokens.empty()) return;
 
-		if (m_docno != docno)
+		std::map<int,int>::const_iterator di = m_docnoDocMap.find( docno);
+		if (di == m_docnoDocMap.end())
 		{
-			m_docitr = 0;
-			m_docno = docno;
-			std::map<int,int>::const_iterator di = m_docnoDocMap.find( docno);
-			if (di == m_docnoDocMap.end())
-			{
-				throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("document (docno %d) tagged undefined"), docno);
-			}
-			m_docidx = di->second;
+			throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("document (docno %d) tagged undefined"), docno);
 		}
-		const std::vector<TagAssignment>& tgar = m_docs[ m_docidx].ar;
-		std::vector<TagAssignment>::const_iterator ai = tgar.begin() + m_docitr;
+		int docidx = di->second;
+		const std::vector<TagAssignment>& tgar = m_docs[ docidx].ar;
+		std::vector<TagAssignment>::const_iterator ai = tgar.begin() + docitr;
 		struct
 		{
 			const char* tag;
@@ -160,13 +155,13 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		state.tag = 0;
 
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
-		for (; ti != te; ++ti)
+		for (; ti != te; ++ti,++docitr)
 		{
 			int vlidx = m_symtab.get( segmentptr + ti->origpos().ofs(), ti->origsize());
 			if (!vlidx) throw std::runtime_error( _TXT( "undefined value, failed to POS tag document"));
-			if (m_docitr < (int)tgar.size() && tgar[ m_docitr].value != vlidx) break;
+			if (docitr < (int)tgar.size() && tgar[ docitr].value != vlidx) break;
 
-			if (isBound( tgar[ m_docitr].tag))
+			if (isBound( tgar[ docitr].tag))
 			{
 				if (!state.tag)
 				{
@@ -183,15 +178,15 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 				state.tag = 0;
 				state.pos = 0;
 			}
-			if (tgar[ m_docitr].tag)
+			if (tgar[ docitr].tag)
 			{
-				state.tag = tgar[ m_docitr].tag;
+				state.tag = tgar[ docitr].tag;
 				state.pos = ti->origpos().ofs();
 			}
 		}
 		if (ti != te)
 		{
-			if (m_docitr >= (int)tgar.size())
+			if (docitr >= (int)tgar.size())
 			{
 				throw std::runtime_error( _TXT( "unexpected token after end of document"));
 			}

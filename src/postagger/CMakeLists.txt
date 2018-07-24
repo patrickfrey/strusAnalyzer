@@ -26,14 +26,26 @@ link_directories(
 # ------------------------------
 # PROGRAMS
 # ------------------------------
-add_cppcheck( strusXmlPosTagger ${source_files} )
+add_cppcheck( strus_postagger ${source_files} )
 
-add_executable( strusXmlPosTagger ${source_files} )
-target_link_libraries( strusXmlPosTagger  strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES})
+add_library( strus_postagger SHARED ${source_files} )
+target_link_libraries( strus_postagger  strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
+set_target_properties(
+    strus_postagger
+    PROPERTIES
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
+
+add_executable( strusPosTagger strusPosTagger.cpp )
+target_link_libraries( strusPosTagger  strus_postagger strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
 
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strusXmlPosTagger
+install( TARGETS strus_postagger
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
+install( TARGETS strusPosTagger
 	   RUNTIME DESTINATION bin )
 
