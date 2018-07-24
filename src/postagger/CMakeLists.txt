@@ -30,7 +30,7 @@ link_directories(
 add_cppcheck( strus_postagger ${source_files} )
 
 add_library( strus_postagger SHARED ${source_files} )
-target_link_libraries( strus_postagger  strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
+target_link_libraries( strus_postagger  strus_markup_std strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
 set_target_properties(
     strus_postagger
     PROPERTIES
@@ -40,7 +40,7 @@ set_target_properties(
 )
 
 add_executable( strusPosTagger strusPosTagger.cpp )
-target_link_libraries( strusPosTagger  strus_postagger strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
+target_link_libraries( strusPosTagger  strus_postagger strus_markup_std strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
 
 # ------------------------------
 # INSTALLATION
