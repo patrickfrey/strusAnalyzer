@@ -10,6 +10,8 @@
 #include "strus/lib/segmenter_cjson.hpp"
 #include "strus/lib/segmenter_tsv.hpp"
 #include "strus/lib/segmenter_plain.hpp"
+#include "strus/lib/markup_std.hpp"
+#include "strus/lib/postagger_std.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "strus/segmenterInterface.hpp"
@@ -884,6 +886,21 @@ const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::stri
 const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
 {
 	return m_patterntermfeeder;
+}
+
+PosTaggerDataInterface* TextProcessor::createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const
+{
+	return strus::createPosTaggerData_standard( this, tokenizerfunc, tokenizerarg, m_errorhnd);
+}
+
+PosTaggerInterface* TextProcessor::createPosTagger() const
+{
+	return strus::createPosTagger_standard( m_errorhnd);
+}
+
+TokenMarkupInstanceInterface* TextProcessor::createTokenMarkupInstance() const
+{
+	return strus::createTokenMarkupInstance_standard( m_errorhnd);
 }
 
 bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const

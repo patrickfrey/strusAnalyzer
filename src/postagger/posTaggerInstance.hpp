@@ -29,6 +29,8 @@ class ErrorBufferInterface;
 class DebugTraceContextInterface;
 /// \brief Forward declaration
 class PosTaggerContextInterface;
+/// \brief Forward declaration
+class PosTaggerDataInterface;
 
 /// \brief Implementation of the POS tagger instance for creating the input for POS tagging to build the data and to create to context for tagging with the data build from the POS tagging output
 class PosTaggerInstance

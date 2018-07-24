@@ -35,7 +35,12 @@ class PatternMatcherInterface;
 class PatternMatcherProgramInterface;
 /// \brief Forward declaration
 class PatternTermFeederInterface;
-
+/// \brief Forward declaration
+class PosTaggerDataInterface;
+/// \brief Forward declaration
+class PosTaggerInterface;
+/// \brief Forward declaration
+class TokenMarkupInstanceInterface;
 
 /// \class TextProcessorInterface
 /// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics
@@ -86,6 +91,20 @@ public:
 	/// \brief Get the default pattern term feeder interface for post processing pattern matching on analyzer output
 	/// \return the pattern term feeder
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const=0;
+
+	/// \brief Create a data structure to feed with POS tagging info
+	/// \param[in] tokenizerfunc function used for tokenization in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
+	/// \param[in] tokenizerarg arguments of the tokenizer function passed 
+	/// \return the POS tagger data interface (with ownership)
+	virtual PosTaggerDataInterface* createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const=0;
+
+	/// \brief Create an interface to do POS tagging of documents
+	/// \return the POS tagger interface (with ownership)
+	virtual PosTaggerInterface* createPosTagger() const=0;
+
+	/// \brief Create an interface for markup of content
+	/// \return the token markup instance interface
+	virtual TokenMarkupInstanceInterface* createTokenMarkupInstance() const=0;
 
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class

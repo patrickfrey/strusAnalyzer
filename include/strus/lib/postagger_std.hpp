@@ -31,10 +31,13 @@ class PosTaggerInterface;
 /// \param[in] tokenizerfunc function used for tokenization in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
 /// \param[in] tokenizerarg arguments of the tokenizer function passed 
 /// \param[in] errorhnd error buffer interface for exceptions thrown
-PosTaggerDataInterface* createPosTaggerData( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd);
+/// \return the structure to collect POS tagging output
+PosTaggerDataInterface* createPosTaggerData_standard( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd);
 
 /// \brief Create an interface for the construction of a POS tagger instance for a specified segmenter
-PosTaggerInterface* createPosTagger( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd);
+/// \param[in] errorhnd error buffer interface for exceptions thrown
+/// \return the POS tagger base interface
+PosTaggerInterface* createPosTagger_standard( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

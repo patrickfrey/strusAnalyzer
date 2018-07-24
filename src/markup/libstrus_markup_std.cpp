@@ -29,7 +29,7 @@ DLL_PUBLIC TokenMarkupInstanceInterface* strus::createTokenMarkupInstance_standa
 		}
 		return new TokenMarkupInstance( errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating char regex match interface: %s"), *errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating token markup interface: %s"), *errorhnd, 0);
 }
 
 

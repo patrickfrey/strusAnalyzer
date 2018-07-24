@@ -7,8 +7,9 @@
  */
 /// \brief Library for tagging documents with part of speech tagging info fed from a 3rdParty source (e.g. standford POS tagger, google syntaxnet, etc.)
 /// \file libstrus_analyzer_postagger.hpp
-#ifndef _STRUS_ANALYZER_LIB_POS_TAGGER_HPP_INCLUDED
-#define _STRUS_ANALYZER_LIB_POS_TAGGER_HPP_INCLUDED
+#include "strus/lib/postagger_std.hpp"
+#include "posTagger.hpp"
+#include "posTaggerData.hpp"
 #include "strus/posTaggerInterface.hpp"
 #include "strus/posTaggerInstanceInterface.hpp"
 #include "strus/posTaggerContextInterface.hpp"
@@ -17,20 +18,49 @@
 #include "strus/textProcessorInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/tokenizerFunctionContextInterface.hpp"
-#include <string>
+#include "private/errorUtils.hpp"
+#include "private/internationalization.hpp"
+#include "strus/base/dll_tags.hpp"
+#include "strus/base/local_ptr.hpp"
+
+static bool g_intl_initialized = false;
 
 /// \brief strus toplevel namespace
 using namespace strus;
 
-PosTaggerDataInterface* strus::createPosTaggerData( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd)
+#define COMPONENT_NAME "POS tagger"
+
+DLL_PUBLIC PosTaggerDataInterface* strus::createPosTaggerData_standard( const TextProcessorInterface* textproc, const std::string& tokenizername, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd)
 {
-	
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		const TokenizerFunctionInterface* tokenizerfunc = textproc->getTokenizer( tokenizername);
+		if (!tokenizerfunc) throw std::runtime_error( errorhnd->fetchError());
+		strus::local_ptr<TokenizerFunctionInstanceInterface> tokenizer( tokenizerfunc->createInstance( tokenizerarg, textproc));
+		PosTaggerDataInterface* rt = new PosTaggerData( tokenizer.get(), errorhnd);
+		tokenizer.release();
+		return rt;
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating data for \"%s\": %s"), COMPONENT_NAME, *errorhnd, NULL);
 }
 
-PosTaggerInterface* strus::createPosTagger( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC PosTaggerInterface* strus::createPosTagger_standard( ErrorBufferInterface* errorhnd)
 {
-	
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new PosTagger( errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating \"%s\": %s"), COMPONENT_NAME, *errorhnd, NULL);
 }
 
 

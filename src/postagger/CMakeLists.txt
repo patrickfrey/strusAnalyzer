@@ -8,6 +8,7 @@ set( source_files
 	posTaggerInstance.cpp
 	posTaggerContext.cpp
 	posTagger.cpp
+	libstrus_postagger_std.cpp
 )
 
 include_directories(
@@ -27,12 +28,12 @@ link_directories(
 # ------------------------------
 # PROGRAMS
 # ------------------------------
-add_cppcheck( strus_postagger ${source_files} )
+add_cppcheck( strus_postagger_std ${source_files} )
 
-add_library( strus_postagger SHARED ${source_files} )
-target_link_libraries( strus_postagger  strus_markup_std strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
+add_library( strus_postagger_std SHARED ${source_files} )
+target_link_libraries( strus_postagger_std  strus_markup_std strusanalyzer_private_utils strus_base strus_error ${Intl_LIBRARIES} )
 set_target_properties(
-    strus_postagger
+    strus_postagger_std
     PROPERTIES
     DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
@@ -42,6 +43,6 @@ set_target_properties(
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strus_postagger
+install( TARGETS strus_postagger_std
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

@@ -38,7 +38,7 @@ public:
 
 	virtual void insert( int docno, const std::vector<Element>& elements);
 
-	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize) const;
+	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const;
 
 private:
 	typedef std::map<std::string,std::string> TypeTagMap;

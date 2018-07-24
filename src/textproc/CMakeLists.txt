@@ -36,6 +36,8 @@ link_directories(
  	"${MAIN_SOURCE_DIR}/segmenter_cjson"
  	"${MAIN_SOURCE_DIR}/segmenter_tsv"
  	"${MAIN_SOURCE_DIR}/segmenter_plain"
+ 	"${MAIN_SOURCE_DIR}/postagger"
+ 	"${MAIN_SOURCE_DIR}/markup_std"
  	"${MAIN_SOURCE_DIR}/pattern"
  	"${MAIN_SOURCE_DIR}/utils"
 	${Boost_LIBRARY_DIRS}
@@ -52,6 +54,8 @@ add_library( strus_textproc SHARED ${source_files} )
 target_link_libraries(
 	strus_textproc
 	strus_detector_std
+	strus_markup_std
+	strus_postagger_std
 	strus_segmenter_textwolf
 	strus_segmenter_cjson
 	strus_segmenter_tsv

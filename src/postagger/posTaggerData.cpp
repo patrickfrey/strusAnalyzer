@@ -129,7 +129,7 @@ void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 	CATCH_ERROR_ARG1_MAP( _TXT("error insert elements in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
 }
 
-void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, SegmenterPosition segmentpos, const char* segmentptr, std::size_t segmentsize) const
+void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const
 {
 	try
 	{
