@@ -98,9 +98,9 @@ public:
 	/// \return the POS tagger data interface (with ownership)
 	virtual PosTaggerDataInterface* createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const=0;
 
-	/// \brief Create an interface to do POS tagging of documents
+	/// \brief Get the default POS tagger interface to do POS tagging of documents
 	/// \return the POS tagger interface (with ownership)
-	virtual PosTaggerInterface* createPosTagger() const=0;
+	virtual const PosTaggerInterface* getPosTagger() const=0;
 
 	/// \brief Create an interface for markup of content
 	/// \return the token markup instance interface

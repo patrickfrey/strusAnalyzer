@@ -18,9 +18,6 @@ namespace strus
 
 /// \brief Forward declaration
 class PosTaggerDataInterface;
-/// \brief Forward declaration
-class PosTaggerContextInterface;
-
 
 /// \brief Interface to define a POS tagger instance for creating the input for POS tagging to build the data and to create to context for tagging with the data build from the POS tagging output
 class PosTaggerInstanceInterface
@@ -43,9 +40,12 @@ public:
 	/// \param[in] content input to map
 	virtual std::string getPosTaggerInput( const analyzer::DocumentClass& dclass, const std::string& content) const=0;
 
-	/// \brief Create a context for POS 
-	/// \param[ín] data collected data from POS tagging output
-	virtual PosTaggerContextInterface* createContext( const PosTaggerDataInterface* data) const=0;
+	/// \brief Markup a document with POS tagging info
+	/// \param[ín] data data collected by POS tagger
+	/// \param[ín] docno number of document to tag, links to tagging info in data
+	/// \param[ín] dclass document class of document to markup
+	/// \param[ín] content to markup
+	virtual std::string markupDocument( const PosTaggerDataInterface* data, int docno, const analyzer::DocumentClass& dclass, const std::string& content) const=0;
 };
 
 }//namespace

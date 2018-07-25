@@ -29,6 +29,7 @@
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/fileLocatorInterface.hpp"
+#include "strus/posTaggerInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/pattern_termfeeder.hpp"
 #include "strus/base/string_conv.hpp"
@@ -49,7 +50,7 @@ using namespace strus::analyzer;
 
 #define DEFAULT_SEGMENTER "textwolf"
 
-TextProcessor::~TextProcessor()
+void TextProcessor::cleanup()
 {
 	std::map<std::string,SegmenterInterface*>::iterator si = m_segmenterMap.begin(), se = m_segmenterMap.end();
 	for (; si != se; ++si)
@@ -81,12 +82,18 @@ TextProcessor::~TextProcessor()
 	{
 		delete mi->second;
 	}
-	delete m_patterntermfeeder;
+	if (m_patterntermfeeder) delete m_patterntermfeeder;
+	if (m_postagger) delete m_postagger;
 	std::vector<DocumentClassDetectorInterface*>::iterator di = m_detectors.begin(), de = m_detectors.end();
 	for (; di != de; ++di)
 	{
 		delete *di;
 	}
+}
+
+TextProcessor::~TextProcessor()
+{
+	cleanup();
 }
 
 
@@ -657,9 +664,13 @@ private:
 };
 
 TextProcessor::TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_filelocator(filelocator_),m_patterntermfeeder(createPatternTermFeeder_default(errorhnd_))
+	:m_errorhnd(errorhnd_)
+	,m_filelocator(filelocator_)
+	,m_patterntermfeeder(createPatternTermFeeder_default(errorhnd_))
+	,m_postagger(strus::createPosTagger_standard(errorhnd_))
 {
-	if (!m_patterntermfeeder) throw std::runtime_error( _TXT("error creating default pattern term feeder interface for text processor"));
+	if (!m_patterntermfeeder) {cleanup(); throw std::runtime_error( _TXT("error creating default pattern term feeder interface for text processor"));}
+	if (!m_postagger) {cleanup(); throw std::runtime_error( _TXT("error creating POS tagger interface for text processor"));}
 	DocumentClassDetectorInterface* dtc;
 	if (0==(dtc = createDetector_std( this, m_errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
@@ -893,9 +904,9 @@ PosTaggerDataInterface* TextProcessor::createPosTaggerData( const std::string& t
 	return strus::createPosTaggerData_standard( this, tokenizerfunc, tokenizerarg, m_errorhnd);
 }
 
-PosTaggerInterface* TextProcessor::createPosTagger() const
+const PosTaggerInterface* TextProcessor::getPosTagger() const
 {
-	return strus::createPosTagger_standard( m_errorhnd);
+	return m_postagger;
 }
 
 TokenMarkupInstanceInterface* TextProcessor::createTokenMarkupInstance() const

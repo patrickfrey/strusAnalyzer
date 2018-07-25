@@ -28,8 +28,6 @@ class ErrorBufferInterface;
 /// \brief Forward declaration
 class DebugTraceContextInterface;
 /// \brief Forward declaration
-class PosTaggerContextInterface;
-/// \brief Forward declaration
 class PosTaggerDataInterface;
 
 /// \brief Implementation of the POS tagger instance for creating the input for POS tagging to build the data and to create to context for tagging with the data build from the POS tagging output
@@ -47,7 +45,7 @@ public:
 
 	virtual std::string getPosTaggerInput( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
-	virtual PosTaggerContextInterface* createContext( const PosTaggerDataInterface* data) const;
+	virtual std::string markupDocument( const PosTaggerDataInterface* data, int docno, const analyzer::DocumentClass& dclass, const std::string& content) const;
 
 private:
 	void cleanup();

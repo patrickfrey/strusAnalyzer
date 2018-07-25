@@ -24,6 +24,8 @@
 #include "strus/contentStatisticsInterface.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/queryAnalyzerInstanceInterface.hpp"
+#include "strus/posTaggerInterface.hpp"
+#include "strus/posTaggerInstanceInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
 #include "private/internationalization.hpp"
@@ -116,6 +118,13 @@ public:
 			}
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to get document segmenter: '%s'"), *m_errorhnd, 0);
+	}
+
+	virtual PosTaggerInstanceInterface* createPosTaggerInstance( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const
+	{
+		const PosTaggerInterface* postagger = m_textproc->getPosTagger();
+		if (!postagger) return NULL;
+		return postagger->createInstance( segmenter, opts);
 	}
 
 	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzer( const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts) const

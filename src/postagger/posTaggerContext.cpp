@@ -19,6 +19,7 @@
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
+#error DEPRECATED
 using namespace strus;
 
 #define COMPONENT_NAME "POS tagger instance"
@@ -34,35 +35,5 @@ PosTaggerContext::PosTaggerContext( const SegmenterInstanceInterface* segmenter_
 PosTaggerContext::~PosTaggerContext()
 {
 	if (m_debugtrace) delete m_debugtrace;
-}
-
-std::string PosTaggerContext::markupDocument( int docno, const analyzer::DocumentClass& dclass, const std::string& content) const
-{
-	try
-	{
-		strus::local_ptr<SegmenterContextInterface> segctx( m_segmenter->createContext( dclass));
-		strus::local_ptr<TokenMarkupContextInterface> markupContext( m_markup->createContext( m_segmenter));
-		if (!segctx.get()) throw std::runtime_error( m_errorhnd->fetchError());
-
-		segctx->putInput( content.c_str(), content.size(), true/*eof*/);
-		int id = 0;
-		int docitr = 0;
-		SegmenterPosition pos = 0;
-		const char* segment = 0;
-		std::size_t segmentsize = 0;
-		std::string rt;
-
-		while (segctx->getNext( id, pos, segment, segmentsize))
-		{
-			if (id == 1)
-			{
-				m_data->markupSegment( markupContext.get(), docno, docitr, pos, segment, segmentsize);
-			}
-		}
-		rt.append( markupContext->markupDocument( dclass, content));
-		if (m_errorhnd->hasError()) return std::string();
-		return rt;
-	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error mapping to input in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd, std::string());
 }
 

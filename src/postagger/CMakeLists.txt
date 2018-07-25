@@ -6,7 +6,6 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR )
 set( source_files
 	posTaggerData.cpp
 	posTaggerInstance.cpp
-	posTaggerContext.cpp
 	posTagger.cpp
 	libstrus_postagger_std.cpp
 )

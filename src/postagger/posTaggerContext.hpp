@@ -12,6 +12,8 @@
 #include "strus/posTaggerContextInterface.hpp"
 #include <string>
 
+#error DEPRECATED
+
 /// \brief strus toplevel namespace
 namespace strus
 {

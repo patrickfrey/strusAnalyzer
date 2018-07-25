@@ -47,7 +47,7 @@ public:
 
 	virtual PosTaggerDataInterface* createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const;
 
-	virtual PosTaggerInterface* createPosTagger() const;
+	virtual const PosTaggerInterface* getPosTagger() const;
 
 	virtual TokenMarkupInstanceInterface* createTokenMarkupInstance() const;
 
@@ -72,6 +72,9 @@ public:
 	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
+	void cleanup();
+
+private:
 	ErrorBufferInterface* m_errorhnd;
 	const FileLocatorInterface* m_filelocator;
 	std::map<std::string,SegmenterInterface*> m_segmenterMap;		///< map of defined document segmenters (key is segmenter name)
@@ -83,6 +86,7 @@ private:
 	std::map<std::string,PatternLexerInterface*> m_patternlexer_map;
 	std::map<std::string,PatternMatcherInterface*> m_patternmatcher_map;
 	PatternTermFeederInterface* m_patterntermfeeder;
+	PosTaggerInterface* m_postagger;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
 };

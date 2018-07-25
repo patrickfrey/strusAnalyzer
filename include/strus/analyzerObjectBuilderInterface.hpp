@@ -25,6 +25,8 @@ class DocumentAnalyzerMapInterface;
 /// \brief Forward declaration
 class DocumentClassDetectorInterface;
 /// \brief Forward declaration
+class PosTaggerInstanceInterface;
+/// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
 class QueryAnalyzerInstanceInterface;
@@ -43,10 +45,18 @@ public:
 	virtual const TextProcessorInterface* getTextProcessor() const=0;
 
 	/// \brief Creates a document analyzer object
-	/// \param[in] segmenter the document segmenter to use (ownership passed)
+	/// \param[in] segmenter the document segmenter to use
 	/// \param[in] opts (optional) options for the creation of the segmenter instance
 	/// \return the document analyzer (ownership returned)
 	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzer(
+			const SegmenterInterface* segmenter,
+			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
+
+	/// \brief Creates a POS tagger instance
+	/// \param[in] segmenter the document segmenter to use
+	/// \param[in] opts (optional) options for the creation of the segmenter instance
+	/// \return the POS tagger interface (ownership returned)
+	virtual PosTaggerInstanceInterface* createPosTaggerInstance(
 			const SegmenterInterface* segmenter,
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
 
