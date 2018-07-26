@@ -24,11 +24,11 @@ CharTable::CharTable( const char* op)
 		m_ar[(unsigned char)(op[ii])] = true;
 	}
 }
+static const CharTable g_wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+static const UnicodeWordDelimiters g_unicodeWordDelimiters;
 
 bool strus::wordBoundaryDelimiter( char const* si, const char* se)
 {
-	static const CharTable wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-	static const UnicodeWordDelimiters unicodeWordDelimiters;
 	if ((unsigned char)*si <= 32)
 	{
 		return true;
@@ -36,10 +36,10 @@ bool strus::wordBoundaryDelimiter( char const* si, const char* se)
 	else if ((unsigned char)*si >= 128)
 	{
 		unsigned int chr = utf8decode( si, utf8charlen(*si));
-		if (unicodeWordDelimiters.find( chr) != unicodeWordDelimiters.end()) return true;
+		if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end()) return true;
 		return false;
 	}
-	else if (wordCharacter[ *si])
+	else if (g_wordCharacter[ *si])
 	{
 		return false;
 	}
@@ -72,4 +72,70 @@ bool strus::whiteSpaceDelimiter( char const* si, const char* se)
 		return false;
 	}
 }
+
+SourceSpan strus::getNextPosTaggingEntity( char const* src, int len, int& pos)
+{
+	char const* si = src + pos;
+	const char* se = src + len;
+	for (; si < se && (unsigned char)*si <= 32; ++si){}
+	if (si >= se) return SourceSpan();
+
+	const char* start = si;
+	while (si < se)
+	{
+		if ((unsigned char)*si >= 128)
+		{
+			int chrlen = utf8charlen(*si);
+			unsigned int chr = utf8decode( si, chrlen);
+			if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end())
+			{
+				if (si - start == chrlen)
+				{
+					//... one delimiter character only, return the character
+					pos = (si-src) + chrlen;
+					return SourceSpan( si-src, chrlen);
+				}
+				else
+				{
+					//... delimiter character and a non empty sequence of non space characters passed, return the sequence
+					pos = si - src;
+					return SourceSpan( pos, si-start);
+				}
+			}
+			else
+			{
+				si += chrlen;
+			}
+		}
+		else if (g_wordCharacter[ *si])
+		{
+			++si;
+			continue;
+		}
+		else if ((unsigned char)*si <= 32)
+		{
+			// ... space, return the sequence passed till now
+			pos = si - src;
+			return SourceSpan( pos, si-start);
+		}
+		else
+		{
+			if (si - start == 1)
+			{
+				//... one single byte delimiter character only, return the character
+				pos = (si-src) + 1;
+				return SourceSpan( si-src, 1);
+			}
+			else
+			{
+				//... delimiter character and a non empty sequence of non space characters passed, return the sequence
+				pos = si - src;
+				return SourceSpan( pos, si-start);
+			}
+		}
+	}
+	pos = si - src;
+	return SourceSpan( pos, si-start);
+}
+
 

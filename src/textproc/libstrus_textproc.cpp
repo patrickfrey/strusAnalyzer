@@ -143,6 +143,12 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineTokenizer( "split", tkn);
+	if (0==(tkn = createTokenizer_langtoken( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineTokenizer( "langtoken", tkn);
 	if (0==(tkn = createTokenizer_textcat( rt, errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

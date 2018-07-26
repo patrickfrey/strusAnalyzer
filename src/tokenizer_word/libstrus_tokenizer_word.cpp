@@ -93,7 +93,6 @@ private:
 };
 
 
-
 const char* SeparationTokenizerInstance::skipToToken( char const* si, const char* se) const
 {
 	for (; si < se && m_delim->func( si, se); si = skipChar( si)){}
@@ -123,6 +122,75 @@ std::vector<Token> SeparationTokenizerInstance::tokenize( const char* src, std::
 }
 
 
+class LangTokenTokenizerInstance
+	:public TokenizerFunctionInstanceInterface
+{
+public:
+	explicit LangTokenTokenizerInstance( ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
+
+	virtual std::vector<Token> tokenize( const char* src, std::size_t srcsize) const
+	{
+		std::vector<Token> rt;
+		int pos = 0;
+		int ordpos = 0;
+		SourceSpan item;
+		while ((item=getNextPosTaggingEntity( src, srcsize, pos)).defined())
+		{
+			rt.push_back( Token( ++ordpos, analyzer::Position( 0/*seg*/, item.pos), item.len));
+		}
+		return rt;
+	}
+
+	virtual bool concatBeforeTokenize() const
+	{
+		return false;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "langtoken");
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+class LangTokenTokenizerFunction
+	:public TokenizerFunctionInterface
+{
+public:
+	explicit LangTokenTokenizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size())
+		{
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for tokenizer"));
+			return 0;
+		}
+		try
+		{
+			return new LangTokenTokenizerInstance( m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "langtoken", *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Tokenizer returning all sequences of alphanumeric characters as words and word boundary delimiters as single characters");
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+
 static bool g_intl_initialized = false;
 
 DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferInterface* errorhnd)
@@ -137,7 +205,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferI
 		}
 		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries"), &delim, errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create word tokenizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "word", *errorhnd, 0);
 }
 
 DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( ErrorBufferInterface* errorhnd)
@@ -152,7 +220,21 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( ErrorB
 		}
 		return new SeparationTokenizerFunction( _TXT( "Tokenizer splitting tokens separated by whitespace characters"), &delim, errorhnd);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("cannot create whitespace tokenizer: %s"), *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "split", *errorhnd, 0);
+}
+
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_langtoken( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new LangTokenTokenizerFunction( errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "langtoken", *errorhnd, 0);
 }
 
 

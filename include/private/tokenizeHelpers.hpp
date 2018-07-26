@@ -43,6 +43,19 @@ private:
 	bool m_ar[128];
 };
 
+struct SourceSpan
+{
+	int pos;
+	int len;
+
+	bool defined() const	{return len > 0;}
+
+	SourceSpan() :pos(0),len(0){}
+	SourceSpan( int pos_, int len_) :pos(pos_),len(len_){}
+	SourceSpan( const SourceSpan& o) :pos(o.pos),len(o.len){}
+};
+
+SourceSpan getNextPosTaggingEntity( char const* src, int len, int& pos);
 
 bool wordBoundaryDelimiter( char const* si, const char* se);
 bool whiteSpaceDelimiter( char const* si, const char* se);

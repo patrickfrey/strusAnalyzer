@@ -84,6 +84,7 @@ static void testTokenizer( strus::TextProcessorInterface* textproc, unsigned int
 		{"content",(const char*)0},
 		{"word",(const char*)0},
 		{"split",(const char*)0},
+		{"langtoken",(const char*)0},
 		{"regex","[a-zA-Z][a-zA-Z0-9]+\b", (const char*)0},
 		{(const char*)0,(const char*)0}
 	};
