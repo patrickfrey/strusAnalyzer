@@ -45,7 +45,7 @@ public:
 
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const;
 
-	virtual PosTaggerDataInterface* createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const;
+	virtual PosTaggerDataInterface* createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const;
 
 	virtual const PosTaggerInterface* getPosTagger() const;
 

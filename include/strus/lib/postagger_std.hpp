@@ -17,7 +17,7 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class TextProcessorInterface;
+class TokenizerFunctionInstanceInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
 /// \brief Forward declaration
@@ -27,12 +27,10 @@ class PosTaggerInterface;
 
 
 /// \brief Create an interface for building up the data to tag documents with
-/// \param[in] textproc text processor interface
-/// \param[in] tokenizerfunc function used for tokenization in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
-/// \param[in] tokenizerarg arguments of the tokenizer function passed 
+/// \param[in] tokenizer tokenizer interface to use (passed with ownership)
 /// \param[in] errorhnd error buffer interface for exceptions thrown
 /// \return the structure to collect POS tagging output
-PosTaggerDataInterface* createPosTaggerData_standard( const TextProcessorInterface* textproc, const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd);
+PosTaggerDataInterface* createPosTaggerData_standard( TokenizerFunctionInstanceInterface* tokenizer, ErrorBufferInterface* errorhnd);
 
 /// \brief Create an interface for the construction of a POS tagger instance for a specified segmenter
 /// \param[in] errorhnd error buffer interface for exceptions thrown

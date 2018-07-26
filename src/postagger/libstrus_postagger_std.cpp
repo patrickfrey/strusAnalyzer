@@ -30,7 +30,7 @@ using namespace strus;
 
 #define COMPONENT_NAME "POS tagger"
 
-DLL_PUBLIC PosTaggerDataInterface* strus::createPosTaggerData_standard( const TextProcessorInterface* textproc, const std::string& tokenizername, const std::vector<std::string>& tokenizerarg, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC PosTaggerDataInterface* strus::createPosTaggerData_standard( TokenizerFunctionInstanceInterface* tokenizer, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -39,12 +39,7 @@ DLL_PUBLIC PosTaggerDataInterface* strus::createPosTaggerData_standard( const Te
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		const TokenizerFunctionInterface* tokenizerfunc = textproc->getTokenizer( tokenizername);
-		if (!tokenizerfunc) throw std::runtime_error( errorhnd->fetchError());
-		strus::local_ptr<TokenizerFunctionInstanceInterface> tokenizer( tokenizerfunc->createInstance( tokenizerarg, textproc));
-		PosTaggerDataInterface* rt = new PosTaggerData( tokenizer.get(), errorhnd);
-		tokenizer.release();
-		return rt;
+		return new PosTaggerData( tokenizer, errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating data for \"%s\": %s"), COMPONENT_NAME, *errorhnd, NULL);
 }

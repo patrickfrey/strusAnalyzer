@@ -26,6 +26,8 @@ class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
+class TokenizerFunctionInstanceInterface;
+/// \brief Forward declaration
 class AggregatorFunctionInterface;
 /// \brief Forward declaration
 class PatternLexerInterface;
@@ -93,10 +95,10 @@ public:
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const=0;
 
 	/// \brief Create a data structure to feed with POS tagging info
-	/// \param[in] tokenizerfunc function used for tokenization in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
-	/// \param[in] tokenizerarg arguments of the tokenizer function passed 
+	/// \param[in] tokenizer tokenizer to use to split POS tagging entities (with ownership)
+	/// \remark the tokenization has to be in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
 	/// \return the POS tagger data interface (with ownership)
-	virtual PosTaggerDataInterface* createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const=0;
+	virtual PosTaggerDataInterface* createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const=0;
 
 	/// \brief Get the default POS tagger interface to do POS tagging of documents
 	/// \return the POS tagger interface (with ownership)

@@ -899,9 +899,9 @@ const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
 	return m_patterntermfeeder;
 }
 
-PosTaggerDataInterface* TextProcessor::createPosTaggerData( const std::string& tokenizerfunc, const std::vector<std::string>& tokenizerarg) const
+PosTaggerDataInterface* TextProcessor::createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const
 {
-	return strus::createPosTaggerData_standard( this, tokenizerfunc, tokenizerarg, m_errorhnd);
+	return strus::createPosTaggerData_standard( tokenizer, m_errorhnd);
 }
 
 const PosTaggerInterface* TextProcessor::getPosTagger() const
