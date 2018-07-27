@@ -89,17 +89,19 @@ SourceSpan strus::getNextPosTaggingEntity( char const* src, int len, int& pos)
 			unsigned int chr = utf8decode( si, chrlen);
 			if (g_unicodeWordDelimiters.find( chr) != g_unicodeWordDelimiters.end())
 			{
-				if (si - start == chrlen)
+				if (si == start)
 				{
 					//... one delimiter character only, return the character
-					pos = (si-src) + chrlen;
-					return SourceSpan( si-src, chrlen);
+					SourceSpan rt( start - src, chrlen);
+					pos = si - src + chrlen;
+					return rt;
 				}
 				else
 				{
 					//... delimiter character and a non empty sequence of non space characters passed, return the sequence
+					SourceSpan rt( start - src, si - start);
 					pos = si - src;
-					return SourceSpan( pos, si-start);
+					return rt;
 				}
 			}
 			else
@@ -115,27 +117,31 @@ SourceSpan strus::getNextPosTaggingEntity( char const* src, int len, int& pos)
 		else if ((unsigned char)*si <= 32)
 		{
 			// ... space, return the sequence passed till now
+			SourceSpan rt( start - src, si - start);
 			pos = si - src;
-			return SourceSpan( pos, si-start);
+			return rt;
 		}
 		else
 		{
-			if (si - start == 1)
+			if (si == start)
 			{
 				//... one single byte delimiter character only, return the character
-				pos = (si-src) + 1;
-				return SourceSpan( si-src, 1);
+				SourceSpan rt( start - src, 1);
+				pos = si - src + 1;
+				return rt;
 			}
 			else
 			{
 				//... delimiter character and a non empty sequence of non space characters passed, return the sequence
+				SourceSpan rt( start - src, si - start);
 				pos = si - src;
-				return SourceSpan( pos, si-start);
+				return rt;
 			}
 		}
 	}
+	SourceSpan rt( start - src, si - start);
 	pos = si - src;
-	return SourceSpan( pos, si-start);
+	return rt;
 }
 
 
