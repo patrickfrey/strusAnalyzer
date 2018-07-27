@@ -82,11 +82,11 @@ std::vector<PosTaggerDataInterface::Element> PosTaggerData::tokenize( const std:
 
 static bool isDelim( const char* tg)
 {
-	return !tg && tg[0] == '.' && !tg[1];
+	return tg && tg[0] == '.' && !tg[1];
 }
 static bool isBound( const char* tg)
 {
-	return !tg && *tg == '\0';
+	return tg && *tg == '\0';
 }
 
 void PosTaggerData::defineTag( const std::string& posentity, const std::string& tag)
@@ -107,8 +107,8 @@ void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 	try
 	{
 		if (!docno) throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("docno zero 0 not allowed"));
-		m_docs.push_back( DocAssignment());
 		m_docnoDocMap[ docno] = m_docs.size();
+		m_docs.push_back( DocAssignment());
 		std::vector<Element> elements = tokenize( elements_);
 		std::vector<Element>::const_iterator ei = elements.begin(), ee = elements.end();
 		for (; ei != ee; ++ei)
@@ -157,20 +157,18 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			int pos;
 		} state;
 		state.tag = 0;
+		state.pos = 0;
 
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 		for (; ti != te; ++ti,++docitr)
 		{
 			int vlidx = m_symtab.get( segmentptr + ti->origpos().ofs(), ti->origsize());
 			if (!vlidx) throw std::runtime_error( _TXT( "undefined value, failed to POS tag document"));
-			if (docitr < (int)tgar.size() && tgar[ docitr].value != vlidx) break;
+			if (docitr >= (int)tgar.size() || tgar[ docitr].value != vlidx) break;
 
+			/*[-]*/std::cerr << "TOK " << std::string( segmentptr + ti->origpos().ofs(), ti->origsize()) << std::endl;
 			if (isBound( tgar[ docitr].tag))
 			{
-				if (!state.tag)
-				{
-					throw std::runtime_error( _TXT( "bound element without tag context"));
-				}
 				continue;
 			}
 			if (state.tag)
@@ -184,19 +182,21 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			}
 			if (tgar[ docitr].tag)
 			{
+				/*[-]*/std::cerr << "++TAG " << tgar[ docitr].tag << std::endl;
 				state.tag = tgar[ docitr].tag;
 				state.pos = ti->origpos().ofs();
 			}
 		}
 		if (ti != te)
 		{
+			std::string tokenval( segmentptr + ti->origpos().ofs(), ti->origsize());
 			if (docitr >= (int)tgar.size())
 			{
-				throw std::runtime_error( _TXT( "unexpected token after end of document"));
+				throw strus::runtime_error( _TXT( "unexpected token '%s' after end of document"), tokenval.c_str());
 			}
 			else
 			{
-				throw std::runtime_error( _TXT( "unexpected token in document"));
+				throw strus::runtime_error( _TXT( "unexpected token '%s' in document"), tokenval.c_str());
 			}
 		}
 		if (state.tag)
