@@ -48,10 +48,10 @@ public:
 	virtual ~PosTaggerDataInterface(){}
 
 	/// \brief Define the tag to be used for a specific POS entity type
-	/// \param[in] type POS entity type
+	/// \param[in] posentity POS entity type
 	/// \param[in] tag to use for 'type'
 	/// \remark Not allowed anymore after first insert
-	virtual void defineTag( const std::string& type, const std::string& tag)=0;
+	virtual void defineTag( const std::string& posentity, const std::string& tag)=0;
 
 	/// \brief Add a tagged text chunk
 	/// \param[in] sequence tagged text chunk

@@ -85,15 +85,15 @@ static bool isBound( const char* tg)
 	return !tg && *tg == '\0';
 }
 
-void PosTaggerData::defineTag( const std::string& type, const std::string& tag)
+void PosTaggerData::defineTag( const std::string& posentity, const std::string& tag)
 {
 	try
 	{
-		if (type.empty()) throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("assigned entity type not allowed to be empty"));
+		if (posentity.empty()) throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("assigned POS entity type not allowed to be empty"));
 		if (isBound( tag.c_str()) || isDelim( tag.c_str())) throw strus::runtime_error_ec( ErrorCodeInvalidArgument, _TXT("assigned tag '%s' of POS entity reserved for internal use"), ".");
 		if (!m_docs.empty()) throw strus::runtime_error_ec( ErrorCodeOperationOrder, _TXT("define tags after first insert"));
-		if (m_typeTagMap.find( type) != m_typeTagMap.end()) throw std::runtime_error(_TXT("duplicate definition"));
-		m_typeTagMap[ type] = tag;
+		if (m_typeTagMap.find( posentity) != m_typeTagMap.end()) throw std::runtime_error(_TXT("duplicate definition"));
+		m_typeTagMap[ posentity] = tag;
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error defining a POS entity to tag mapping in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
 }

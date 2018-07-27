@@ -67,6 +67,8 @@ std::string TokenMarkupContext::markupDocument(
 		std::vector<MarkupElement> markupar = m_markupar;
 		std::sort( markupar.begin(), markupar.end());
 		std::vector<MarkupElement>::iterator mp = markupar.begin(), mi = markupar.begin(), me = markupar.end();
+		if (markupar.empty()) return content;
+
 		// Resolve conflicts:
 		for (++mi; mi != me; mp=mi,++mi)
 		{
