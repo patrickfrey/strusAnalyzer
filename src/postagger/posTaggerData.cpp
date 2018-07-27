@@ -154,10 +154,12 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		struct
 		{
 			const char* tag;
-			int pos;
+			int startofs;
+			int endofs;
 		} state;
 		state.tag = 0;
-		state.pos = 0;
+		state.startofs = 0;
+		state.endofs = 0;
 
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 		for (; ti != te; ++ti,++docitr)
@@ -166,25 +168,26 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			if (!vlidx) throw std::runtime_error( _TXT( "undefined value, failed to POS tag document"));
 			if (docitr >= (int)tgar.size() || tgar[ docitr].value != vlidx) break;
 
-			/*[-]*/std::cerr << "TOK " << std::string( segmentptr + ti->origpos().ofs(), ti->origsize()) << std::endl;
 			if (isBound( tgar[ docitr].tag))
 			{
+				state.endofs = ti->origpos().ofs() + ti->origsize();
 				continue;
 			}
 			if (state.tag)
 			{
 				// Close previously opened tag:
-				analyzer::Position startpos( segmentpos, state.pos);
-				analyzer::Position endpos( segmentpos, ti->origpos().ofs() + ti->origsize());
+				analyzer::Position startpos( segmentpos, state.startofs);
+				analyzer::Position endpos( segmentpos, state.endofs);
 				markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
 				state.tag = 0;
-				state.pos = 0;
+				state.startofs = 0;
+				state.endofs = 0;
 			}
 			if (tgar[ docitr].tag)
 			{
-				/*[-]*/std::cerr << "++TAG " << tgar[ docitr].tag << std::endl;
 				state.tag = tgar[ docitr].tag;
-				state.pos = ti->origpos().ofs();
+				state.startofs = ti->origpos().ofs();
+				state.endofs = state.startofs + ti->origsize();
 			}
 		}
 		if (ti != te)
@@ -202,8 +205,8 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		if (state.tag)
 		{
 			// Close previously opened tag:
-			analyzer::Position startpos( segmentpos, state.pos);
-			analyzer::Position endpos( segmentpos, ti->origpos().ofs() + ti->origsize());
+			analyzer::Position startpos( segmentpos, state.startofs);
+			analyzer::Position endpos( segmentpos, state.endofs);
 			markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
 		}
 	}
