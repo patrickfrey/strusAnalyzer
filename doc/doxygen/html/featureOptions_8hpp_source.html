@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/featureOptions.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/featureOptions.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,38 +79,44 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">   25</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">FeatureOptions</a>()</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                :m_opt(0){}</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">   28</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">FeatureOptions</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; o)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                :m_opt(o.m_opt){}</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a12d9e047e6cef57541b1d6becb2f1646">   31</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a12d9e047e6cef57541b1d6becb2f1646">FeatureOptions</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> opt_)</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                :m_opt(opt_){}</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">   35</a></span>&#160;        <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">positionBind</a>()<span class="keyword"> const             </span>{<span class="keywordflow">return</span> (<a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a>)(m_opt &amp; 0x3);}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">   38</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">definePositionBind</a>( <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> b)      {m_opt &amp;= ~0x3; m_opt |= (<span class="keywordtype">unsigned</span> int)b;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">   41</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">opt</a>()<span class="keyword"> const                                </span>{<span class="keywordflow">return</span> m_opt;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_opt;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">FeatureOptions</a>( <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">FeatureOptions</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">   34</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">FeatureOptions</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html">FeatureOptions</a>&amp; o)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_opt(o.m_opt){}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">FeatureOptions</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> opt_)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                :m_opt(opt_){}</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">   42</a></span>&#160;        <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">positionBind</a>()<span class="keyword"> const             </span>{<span class="keywordflow">return</span> (<a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a>)(m_opt &amp; 0x3);}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">   45</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">definePositionBind</a>( <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> b)      {m_opt &amp;= ~0x3; m_opt |= (<span class="keywordtype">unsigned</span> int)b;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">   48</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">opt</a>()<span class="keyword"> const                                </span>{<span class="keywordflow">return</span> m_opt;}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_opt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a38695b704b5dc3b651437e4d0162e5de"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a38695b704b5dc3b651437e4d0162e5de">strus::analyzer::FeatureOptions::FeatureOptions</a></div><div class="ttdeci">FeatureOptions()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:25</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html">strus::analyzer::FeatureOptions</a></div><div class="ttdoc">Options to stear the creation of terms in the analyzer. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:21</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a12d9e047e6cef57541b1d6becb2f1646"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a12d9e047e6cef57541b1d6becb2f1646">strus::analyzer::FeatureOptions::FeatureOptions</a></div><div class="ttdeci">FeatureOptions(unsigned int opt_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:31</div></div>
 <div class="ttc" id="positionBind_8hpp_html"><div class="ttname"><a href="positionBind_8hpp.html">positionBind.hpp</a></div></div>
 <div class="ttc" id="namespacestrus_1_1analyzer_html_af8cd4c940fb34936d0f9cf0ced3258c5"><div class="ttname"><a href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">strus::analyzer::PositionBind</a></div><div class="ttdeci">PositionBind</div><div class="ttdoc">Determines how document ordinal positions are assigned to terms. </div><div class="ttdef"><b>Definition:</b> positionBind.hpp:20</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a9cc9aead9417187e8f166530faba7286"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">strus::analyzer::FeatureOptions::FeatureOptions</a></div><div class="ttdeci">FeatureOptions(const FeatureOptions &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:28</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_ab5696e20d13f79281d8c775528cc46d8"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">strus::analyzer::FeatureOptions::opt</a></div><div class="ttdeci">unsigned int opt() const </div><div class="ttdoc">Get the options transacription as integer. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:41</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a26d68a66f955c981671f40fe8937937e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">strus::analyzer::FeatureOptions::definePositionBind</a></div><div class="ttdeci">void definePositionBind(analyzer::PositionBind b)</div><div class="ttdoc">Define the PositionBind value. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:38</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a0b5365b29f464a37687be74c2dd33d13"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">strus::analyzer::FeatureOptions::positionBind</a></div><div class="ttdeci">analyzer::PositionBind positionBind() const </div><div class="ttdoc">Get the PositionBind value set. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:35</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a9cc9aead9417187e8f166530faba7286"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a9cc9aead9417187e8f166530faba7286">strus::analyzer::FeatureOptions::FeatureOptions</a></div><div class="ttdeci">FeatureOptions(const FeatureOptions &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:34</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_ab5696e20d13f79281d8c775528cc46d8"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">strus::analyzer::FeatureOptions::opt</a></div><div class="ttdeci">unsigned int opt() const </div><div class="ttdoc">Get the options transacription as integer. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:48</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a26d68a66f955c981671f40fe8937937e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">strus::analyzer::FeatureOptions::definePositionBind</a></div><div class="ttdeci">void definePositionBind(analyzer::PositionBind b)</div><div class="ttdoc">Define the PositionBind value. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:45</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FeatureOptions_html_a0b5365b29f464a37687be74c2dd33d13"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FeatureOptions.html#a0b5365b29f464a37687be74c2dd33d13">strus::analyzer::FeatureOptions::positionBind</a></div><div class="ttdeci">analyzer::PositionBind positionBind() const </div><div class="ttdoc">Get the PositionBind value set. </div><div class="ttdef"><b>Definition:</b> featureOptions.hpp:42</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/documentTerm.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/documentTerm.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,54 +79,60 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">   25</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">DocumentTerm</a>()</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                :m_type(),m_value(),m_pos(0){}</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">   28</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">DocumentTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; o)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                :m_type(o.m_type),m_value(o.m_value),m_pos(o.m_pos){}</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a87067796003e5b7a3e61fd7256a6d696">   35</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a87067796003e5b7a3e61fd7256a6d696">DocumentTerm</a>( <span class="keyword">const</span> std::string&amp; t, <span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p)</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                :m_type(t),m_value(v),m_pos(p){}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">   40</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">type</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_type;}</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">   43</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">value</a>()<span class="keyword"> const        </span>{<span class="keywordflow">return</span> m_value;}</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">   46</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">pos</a>()<span class="keyword"> const                </span>{<span class="keywordflow">return</span> m_pos;}</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">   50</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">setPos</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> pos_)         {m_pos = pos_;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">   52</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; o)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordflow">if</span> (m_pos == o.m_pos)</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <span class="keywordflow">return</span> (m_type == o.m_type)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                                ? m_value &lt; o.m_value</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                                : m_type &lt; o.m_type;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        <span class="keywordflow">return</span> m_pos &lt; o.m_pos;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        std::string m_type;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::string m_value;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_pos;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_a79662920d8ed25ebabe71435028a40b7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">strus::analyzer::DocumentTerm::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const DocumentTerm &amp;o) const </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:52</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_ae50bfb212c34f2473b10618b65e4b0f7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">strus::analyzer::DocumentTerm::DocumentTerm</a></div><div class="ttdeci">DocumentTerm(const DocumentTerm &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:28</div></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">DocumentTerm</a>( <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">DocumentTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">   34</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">DocumentTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; o)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_type(o.m_type),m_value(o.m_value),m_pos(o.m_pos){}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">DocumentTerm</a>( <span class="keyword">const</span> std::string&amp; t, <span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> p)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                :m_type(t),m_value(v),m_pos(p){}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">   47</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">type</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_type;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">   50</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">value</a>()<span class="keyword"> const        </span>{<span class="keywordflow">return</span> m_value;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">   53</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">pos</a>()<span class="keyword"> const                </span>{<span class="keywordflow">return</span> m_pos;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">   57</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">setPos</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> pos_)         {m_pos = pos_;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">   59</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentTerm.html">DocumentTerm</a>&amp; o)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                <span class="keywordflow">if</span> (m_pos == o.m_pos)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keywordflow">return</span> (m_type == o.m_type)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                ? m_value &lt; o.m_value</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                                : m_type &lt; o.m_type;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordflow">return</span> m_pos &lt; o.m_pos;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        std::string m_type;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        std::string m_value;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_pos;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_a79662920d8ed25ebabe71435028a40b7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">strus::analyzer::DocumentTerm::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const DocumentTerm &amp;o) const </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:59</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_ae50bfb212c34f2473b10618b65e4b0f7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#ae50bfb212c34f2473b10618b65e4b0f7">strus::analyzer::DocumentTerm::DocumentTerm</a></div><div class="ttdeci">DocumentTerm(const DocumentTerm &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:34</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_abf4da919b95169c044d2a44ac6943c7f"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#abf4da919b95169c044d2a44ac6943c7f">strus::analyzer::DocumentTerm::DocumentTerm</a></div><div class="ttdeci">DocumentTerm()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_a1043adbb87a789209c305302bf89e03a"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">strus::analyzer::DocumentTerm::setPos</a></div><div class="ttdeci">void setPos(unsigned int pos_)</div><div class="ttdoc">Set the word position of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:50</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aca27ab46f0f24e5ae5a45ac21d853856"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">strus::analyzer::DocumentTerm::type</a></div><div class="ttdeci">const std::string &amp; type() const </div><div class="ttdoc">Get the type name of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:40</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aaf32f5a13a98d0b70a11f2143b209e31"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">strus::analyzer::DocumentTerm::pos</a></div><div class="ttdeci">unsigned int pos() const </div><div class="ttdoc">Get the position of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:46</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_a87067796003e5b7a3e61fd7256a6d696"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#a87067796003e5b7a3e61fd7256a6d696">strus::analyzer::DocumentTerm::DocumentTerm</a></div><div class="ttdeci">DocumentTerm(const std::string &amp;t, const std::string &amp;v, unsigned int p)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:35</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aee0772026a434d1440ef9be337aa2665"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">strus::analyzer::DocumentTerm::value</a></div><div class="ttdeci">const std::string &amp; value() const </div><div class="ttdoc">Get the value of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:43</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_a1043adbb87a789209c305302bf89e03a"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#a1043adbb87a789209c305302bf89e03a">strus::analyzer::DocumentTerm::setPos</a></div><div class="ttdeci">void setPos(unsigned int pos_)</div><div class="ttdoc">Set the word position of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:57</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aca27ab46f0f24e5ae5a45ac21d853856"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aca27ab46f0f24e5ae5a45ac21d853856">strus::analyzer::DocumentTerm::type</a></div><div class="ttdeci">const std::string &amp; type() const </div><div class="ttdoc">Get the type name of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:47</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aaf32f5a13a98d0b70a11f2143b209e31"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aaf32f5a13a98d0b70a11f2143b209e31">strus::analyzer::DocumentTerm::pos</a></div><div class="ttdeci">unsigned int pos() const </div><div class="ttdoc">Get the position of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:53</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html_aee0772026a434d1440ef9be337aa2665"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html#aee0772026a434d1440ef9be337aa2665">strus::analyzer::DocumentTerm::value</a></div><div class="ttdeci">const std::string &amp; value() const </div><div class="ttdoc">Get the value of the term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:50</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1DocumentTerm_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentTerm.html">strus::analyzer::DocumentTerm</a></div><div class="ttdoc">Structure describing a typed document term. </div><div class="ttdef"><b>Definition:</b> documentTerm.hpp:21</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

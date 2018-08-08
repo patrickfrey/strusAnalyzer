@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.14</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -73,11 +73,23 @@ Files</h2></td></tr>
 <tr class="memitem:analyzerObjectBuilderInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="analyzerObjectBuilderInterface_8hpp.html">analyzerObjectBuilderInterface.hpp</a> <a href="analyzerObjectBuilderInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:analyzerObjectBuilderInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builder object for all toplevel interfaces related to the analyzer. Used by components acting as proxy (calling strus with RPC) or by components that build the analyzer universe from external components (loading objects from dynamically loadable modules) <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:contentIteratorInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="contentIteratorInterface_8hpp.html">contentIteratorInterface.hpp</a> <a href="contentIteratorInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:contentIteratorInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for content chunks for collecting statistics. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:contentStatisticsContextInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="contentStatisticsContextInterface_8hpp.html">contentStatisticsContextInterface.hpp</a> <a href="contentStatisticsContextInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:contentStatisticsContextInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for context for collecting content statistics. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:contentStatisticsInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="contentStatisticsInterface_8hpp.html">contentStatisticsInterface.hpp</a> <a href="contentStatisticsInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:contentStatisticsInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for document content statistics. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:documentAnalyzerContextInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="documentAnalyzerContextInterface_8hpp.html">documentAnalyzerContextInterface.hpp</a> <a href="documentAnalyzerContextInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:documentAnalyzerContextInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the execution context of a document analyzer. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:documentAnalyzerInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="documentAnalyzerInterface_8hpp.html">documentAnalyzerInterface.hpp</a> <a href="documentAnalyzerInterface_8hpp_source.html">[code]</a></td></tr>
-<tr class="memdesc:documentAnalyzerInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for a parametrizable document analyzer instance. <br/></td></tr>
+<tr class="memitem:documentAnalyzerInstanceInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="documentAnalyzerInstanceInterface_8hpp.html">documentAnalyzerInstanceInterface.hpp</a> <a href="documentAnalyzerInstanceInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:documentAnalyzerInstanceInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for a parametrizable document analyzer instance. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:documentAnalyzerMapInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="documentAnalyzerMapInterface_8hpp.html">documentAnalyzerMapInterface.hpp</a> <a href="documentAnalyzerMapInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:documentAnalyzerMapInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for a parametrizable document analyzer instance able to process many different document types. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:documentClassDetectorInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="documentClassDetectorInterface_8hpp.html">documentClassDetectorInterface.hpp</a> <a href="documentClassDetectorInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:documentClassDetectorInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for detecting the document class of a content. <br/></td></tr>
@@ -111,11 +123,23 @@ Files</h2></td></tr>
 <tr class="memitem:patternTermFeederInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="patternTermFeederInterface_8hpp.html">patternTermFeederInterface.hpp</a> <a href="patternTermFeederInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:patternTermFeederInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for defining a mapping of terms of the document analysis outout as lexems used as basic entities by pattern matching. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:posTaggerContextInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="posTaggerContextInterface_8hpp.html">posTaggerContextInterface.hpp</a> <a href="posTaggerContextInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:posTaggerContextInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Context to markup documents with tags derived from POS tagging. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:posTaggerDataInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="posTaggerDataInterface_8hpp.html">posTaggerDataInterface.hpp</a> <a href="posTaggerDataInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:posTaggerDataInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the data built by a POS tagger. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:posTaggerInstanceInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="posTaggerInstanceInterface_8hpp.html">posTaggerInstanceInterface.hpp</a> <a href="posTaggerInstanceInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:posTaggerInstanceInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface to define a POS tagger instance for creating the input for POS tagging to build the data and to create to context for tagging with the data build from the POS tagging output. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:posTaggerInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="posTaggerInterface_8hpp.html">posTaggerInterface.hpp</a> <a href="posTaggerInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:posTaggerInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the construction of a POS tagger instance for a specified segmenter. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:queryAnalyzerContextInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="queryAnalyzerContextInterface_8hpp.html">queryAnalyzerContextInterface.hpp</a> <a href="queryAnalyzerContextInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:queryAnalyzerContextInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the execution context of a query analyzer. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:queryAnalyzerInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="queryAnalyzerInterface_8hpp.html">queryAnalyzerInterface.hpp</a> <a href="queryAnalyzerInterface_8hpp_source.html">[code]</a></td></tr>
-<tr class="memdesc:queryAnalyzerInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameterizable query analyzer interface. <br/></td></tr>
+<tr class="memitem:queryAnalyzerInstanceInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="queryAnalyzerInstanceInterface_8hpp.html">queryAnalyzerInstanceInterface.hpp</a> <a href="queryAnalyzerInstanceInterface_8hpp_source.html">[code]</a></td></tr>
+<tr class="memdesc:queryAnalyzerInstanceInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameterizable query analyzer interface. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:segmenterContextInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="segmenterContextInterface_8hpp.html">segmenterContextInterface.hpp</a> <a href="segmenterContextInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:segmenterContextInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for the execution context of a document segmenter. <br/></td></tr>
@@ -144,15 +168,12 @@ Files</h2></td></tr>
 <tr class="memitem:tokenMarkupInstanceInterface_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tokenMarkupInstanceInterface_8hpp.html">tokenMarkupInstanceInterface.hpp</a> <a href="tokenMarkupInstanceInterface_8hpp_source.html">[code]</a></td></tr>
 <tr class="memdesc:tokenMarkupInstanceInterface_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for putting annotations into text documents. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:versionAnalyzer_8hpp"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="versionAnalyzer_8hpp.html">versionAnalyzer.hpp</a> <a href="versionAnalyzer_8hpp_source.html">[code]</a></td></tr>
-<tr class="memdesc:versionAnalyzer_8hpp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Version of the strus analyzer project. <br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 16 2017 12:24:11 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

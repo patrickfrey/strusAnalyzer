@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -91,6 +91,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8decdd99259fd45af1c110c7501767af"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html#a8decdd99259fd45af1c110c7501767af">getSymbol</a> (unsigned int lexemid, const std::string &amp;name) const =0</td></tr>
 <tr class="memdesc:a8decdd99259fd45af1c110c7501767af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the identifier of a defined symbol.  <a href="#a8decdd99259fd45af1c110c7501767af">More...</a><br/></td></tr>
 <tr class="separator:a8decdd99259fd45af1c110c7501767af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca1ca2d1f0eb82def1925ea120731f68"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html#aca1ca2d1f0eb82def1925ea120731f68">view</a> () const =0</td></tr>
+<tr class="memdesc:aca1ca2d1f0eb82def1925ea120731f68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the definition of the function as structure for introspection.  <a href="#aca1ca2d1f0eb82def1925ea120731f68">More...</a><br/></td></tr>
+<tr class="separator:aca1ca2d1f0eb82def1925ea120731f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Instance interface for defining a mapping of terms of the document analysis outout as lexems used as basic entities by pattern matching. </p>
@@ -321,14 +324,40 @@ For performance it may be significantly better to define rules without resultInd
 
 </div>
 </div>
+<a class="anchor" id="aca1ca2d1f0eb82def1925ea120731f68"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> strus::PatternTermFeederInstanceInterface::view </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the definition of the function as structure for introspection. </p>
+<dl class="section return"><dt>Returns</dt><dd>structure for introspection </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="patternTermFeederInstanceInterface_8hpp_source.html">patternTermFeederInstanceInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="patternTermFeederInstanceInterface_8hpp_source.html">patternTermFeederInstanceInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

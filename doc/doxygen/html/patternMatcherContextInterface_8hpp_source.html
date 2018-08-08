@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/patternMatcherContextInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/patternMatcherContextInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -83,7 +83,7 @@
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternMatcherContextInterface.html#a373f52a2ad384718c43eccef437c5c8e">putInput</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">analyzer::PatternLexem</a>&amp; token)=0;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::PatternMatcherResult&gt; <a class="code" href="classstrus_1_1PatternMatcherContextInterface.html#a4a43291d8447f476c7dc94102634a9c6">fetchResults</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">virtual</span> std::vector&lt;analyzer::PatternMatcherResult&gt; <a class="code" href="classstrus_1_1PatternMatcherContextInterface.html#a54939a4f2d9731f9281246bca351c55c">fetchResults</a>()=0;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">analyzer::PatternMatcherStatistics</a> <a class="code" href="classstrus_1_1PatternMatcherContextInterface.html#a345d6864a2be326b16a7717c05a222bc">getStatistics</a>() <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
@@ -94,21 +94,21 @@
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="patternMatcherStatistics_8hpp_html"><div class="ttname"><a href="patternMatcherStatistics_8hpp.html">patternMatcherStatistics.hpp</a></div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html">strus::analyzer::PatternLexem</a></div><div class="ttdoc">Structure describing a token with an id used for pattern matching. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:19</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html">strus::analyzer::PatternLexem</a></div><div class="ttdoc">Structure describing a token with an id used for pattern matching. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:20</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">strus::analyzer::PatternMatcherStatistics</a></div><div class="ttdoc">Object descriping the statistics of a token pattern match run for runtime analysis. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:18</div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a373f52a2ad384718c43eccef437c5c8e"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a373f52a2ad384718c43eccef437c5c8e">strus::PatternMatcherContextInterface::putInput</a></div><div class="ttdeci">virtual void putInput(const analyzer::PatternLexem &amp;token)=0</div><div class="ttdoc">Feed the next input token. </div></div>
+<div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a54939a4f2d9731f9281246bca351c55c"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a54939a4f2d9731f9281246bca351c55c">strus::PatternMatcherContextInterface::fetchResults</a></div><div class="ttdeci">virtual std::vector&lt; analyzer::PatternMatcherResult &gt; fetchResults()=0</div><div class="ttdoc">Get the list of matches detected in the current document. </div></div>
 <div class="ttc" id="patternMatcherResult_8hpp_html"><div class="ttname"><a href="patternMatcherResult_8hpp.html">patternMatcherResult.hpp</a></div><div class="ttdoc">Structure desribing a result of a token pattern matcher. </div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a345d6864a2be326b16a7717c05a222bc"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a345d6864a2be326b16a7717c05a222bc">strus::PatternMatcherContextInterface::getStatistics</a></div><div class="ttdeci">virtual analyzer::PatternMatcherStatistics getStatistics() const =0</div><div class="ttdoc">Get the statistics for global analysis. </div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a6604256b7c6f42b96d50ee9eb2516d70"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a6604256b7c6f42b96d50ee9eb2516d70">strus::PatternMatcherContextInterface::reset</a></div><div class="ttdeci">virtual void reset()=0</div><div class="ttdoc">Reset the pattern matching context for a reuse within another document or query. </div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html">strus::PatternMatcherContextInterface</a></div><div class="ttdoc">Interface for detecting patterns (structures formed by atomic tokens) in one document. </div><div class="ttdef"><b>Definition:</b> patternMatcherContextInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a968fe1261c1d5d1592fc1bf152a8df4b"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a968fe1261c1d5d1592fc1bf152a8df4b">strus::PatternMatcherContextInterface::~PatternMatcherContextInterface</a></div><div class="ttdeci">virtual ~PatternMatcherContextInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherContextInterface.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1PatternMatcherContextInterface_html_a4a43291d8447f476c7dc94102634a9c6"><div class="ttname"><a href="classstrus_1_1PatternMatcherContextInterface.html#a4a43291d8447f476c7dc94102634a9c6">strus::PatternMatcherContextInterface::fetchResults</a></div><div class="ttdeci">virtual std::vector&lt; analyzer::PatternMatcherResult &gt; fetchResults() const =0</div><div class="ttdoc">Get the list of matches detected in the current document. </div></div>
 <div class="ttc" id="patternLexem_8hpp_html"><div class="ttname"><a href="patternLexem_8hpp.html">patternLexem.hpp</a></div><div class="ttdoc">Structure describing a token with id (an output item of char regex matching and an input item for tok...</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

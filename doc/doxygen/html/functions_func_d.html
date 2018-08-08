@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -56,6 +56,7 @@
     <ul class="tablist">
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
@@ -71,6 +72,7 @@
       <li><a href="functions_func_f.html#index_f"><span>f</span></a></li>
       <li><a href="functions_func_g.html#index_g"><span>g</span></a></li>
       <li><a href="functions_func_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_func_j.html#index_j"><span>j</span></a></li>
       <li><a href="functions_func_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_func_m.html#index_m"><span>m</span></a></li>
       <li><a href="functions_func_n.html#index_n"><span>n</span></a></li>
@@ -93,22 +95,29 @@
 : <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">strus::analyzer::PatternMatcherStatistics</a>
 </li>
 <li>defineAggregatedMetaData()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a42e6f262d31c51248c32005d49aa19a4">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a1ee88c10fb6bcf4176f6a86b9323dd07">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineAggregator()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a0842bf29493616cbd5bceff842ad8485">strus::TextProcessorInterface</a>
 </li>
 <li>defineAttribute()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a2f661f39c2018d7e49cfa4edb385c658">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a8f49737ab71a00a9d39906cc685d90e7">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineAttributeFromPatternMatch()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a7a2535348e5e0ffb3d19dbbc3996ae89">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#acd1e158df3f2dd754e7d371b1c792033">strus::DocumentAnalyzerInstanceInterface</a>
+</li>
+<li>defineContentPatternMatcher()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a5cb28b302442bf88e320aa6947e249f2">strus::DocumentAnalyzerInstanceInterface</a>
+, <a class="el" href="classstrus_1_1QueryAnalyzerInstanceInterface.html#ac16c91c62f25312ec7867ae68839a060">strus::QueryAnalyzerInstanceInterface</a>
 </li>
 <li>defined()
 : <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html#ada72d0e31d43b44e60c689e9346af864">strus::analyzer::DocumentClass</a>
 </li>
 <li>defineDocumentClassDetector()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#adc5841797633ff7b733198f8db1bfe81">strus::TextProcessorInterface</a>
+</li>
+<li>defineDocumentSchemeDetector()
+: <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html#ab32f58eb970a21b544fd3248ed3e68eb">strus::DocumentClassDetectorInterface</a>
 </li>
 <li>defineLexem()
 : <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html#ac372642dd230a148fbf1b1c45f23d45b">strus::PatternLexerInstanceInterface</a>
@@ -118,10 +127,10 @@
 : <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html#a4bbec3bf011c62604a4307afdeaef1ac">strus::PatternLexerInstanceInterface</a>
 </li>
 <li>defineMetaData()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a4e949ad94c67b440d6bd64e4b6866371">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a99dab3afef76d4ec2369d345339dab63">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineMetaDataFromPatternMatch()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ae26ffb95c18a22b770bfe88764d4b4e3">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#ad4a58fcf850e961174d8ae52c26f5ac6">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineNormalizer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#ac1fcf22e648de50b7c2897a0ab9da4e2">strus::TextProcessorInterface</a>
@@ -131,21 +140,13 @@
 , <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a0bd7670ef59211a82b8e87a85dadbf70">strus::PatternMatcherInstanceInterface</a>
 </li>
 <li>definePattern()
-: <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a3df8ff854b850b2cefd91888a5f27d37">strus::PatternMatcherInstanceInterface</a>
+: <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#af70c9a3a938cef50514ec9aa8dfaac76">strus::PatternMatcherInstanceInterface</a>
 </li>
 <li>definePatternLexer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a4e6fa4df35bf72dfa07481ed2b5a6d46">strus::TextProcessorInterface</a>
 </li>
 <li>definePatternMatcher()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a1fda0b706443f2cc574cc6e3084ca23a">strus::TextProcessorInterface</a>
-</li>
-<li>definePatternMatcherPostProc()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#af15540e918b77e078842ed38b1e93e05">strus::DocumentAnalyzerInterface</a>
-, <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a0eb4d8a3e0756e5851c592a54f09d9b8">strus::QueryAnalyzerInterface</a>
-</li>
-<li>definePatternMatcherPreProc()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a8a63b2dfd8dd0046df1ec3c15611ab81">strus::DocumentAnalyzerInterface</a>
-, <a class="el" href="classstrus_1_1QueryAnalyzerInterface.html#a280669662ba72a6cf2a7a94952970117">strus::QueryAnalyzerInterface</a>
 </li>
 <li>definePositionBind()
 : <a class="el" href="classstrus_1_1analyzer_1_1FeatureOptions.html#a26d68a66f955c981671f40fe8937937e">strus::analyzer::FeatureOptions</a>
@@ -160,10 +161,10 @@
 : <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a8991ee271bea5f4ba141da4d820ddb00">strus::SegmenterInstanceInterface</a>
 </li>
 <li>defineSubContent()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#a852c61c9bd07aad416e406edce3cc9b1">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a1fc843ef6e0dab24c76a21f684538163">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineSubDocument()
-: <a class="el" href="classstrus_1_1DocumentAnalyzerInterface.html#ac0029a1e451c9183fb28f7a3f74612f7">strus::DocumentAnalyzerInterface</a>
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#a72acbca9077c7b4d57f3f90ccc8111e5">strus::DocumentAnalyzerInstanceInterface</a>
 </li>
 <li>defineSubSection()
 : <a class="el" href="classstrus_1_1SegmenterInstanceInterface.html#a6c694fddf3e1f380dd473da802163f29">strus::SegmenterInstanceInterface</a>
@@ -172,26 +173,51 @@
 : <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html#a09efd6e743fa3da88fc3122e2e392773">strus::PatternLexerInstanceInterface</a>
 , <a class="el" href="classstrus_1_1PatternTermFeederInstanceInterface.html#a83fe36c9c31257a0adc4f897599e672f">strus::PatternTermFeederInstanceInterface</a>
 </li>
+<li>defineTag()
+: <a class="el" href="classstrus_1_1PosTaggerDataInterface.html#affbfdc479fc89ea2e600f9a0034afe16">strus::PosTaggerDataInterface</a>
+</li>
 <li>defineTermFrequency()
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a58723fcca1e40005bffc4759187e075c">strus::PatternMatcherInstanceInterface</a>
 </li>
 <li>defineTokenizer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a18948ae7b281702ed4982aedf3c7726b">strus::TextProcessorInterface</a>
 </li>
+<li>defineTokenPatternMatcher()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerInstanceInterface.html#ab3f2dd47293973c8da0b8184c35da86d">strus::DocumentAnalyzerInstanceInterface</a>
+, <a class="el" href="classstrus_1_1QueryAnalyzerInstanceInterface.html#ac677d32845f5b110c87efffbb3247748">strus::QueryAnalyzerInstanceInterface</a>
+</li>
+<li>definitions()
+: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAnalyzerMapView.html#af9b23daaf0b204049e7a844e1477ce95">strus::analyzer::DocumentAnalyzerMapView</a>
+</li>
 <li>detect()
-: <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html#a69db3adec6809af0ca8ebaa706904da0">strus::DocumentClassDetectorInterface</a>
+: <a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html#a64a9bc22c993810997eabaecec16b5d1">strus::DocumentClassDetectorInterface</a>
 </li>
 <li>detectDocumentClass()
-: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ac84e1fc3ccd8a49079643aa8b9cae024">strus::TextProcessorInterface</a>
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab3468d97f6a8a157cdec4d71b120dd48">strus::TextProcessorInterface</a>
+</li>
+<li>df()
+: <a class="el" href="classstrus_1_1analyzer_1_1ContentStatisticsItem.html#aea52a0080690e3eea13285f10d39e014">strus::analyzer::ContentStatisticsItem</a>
 </li>
 <li>Document()
-: <a class="el" href="classstrus_1_1analyzer_1_1Document.html#aafbf6d7087dd1d33dfc466a5e653b826">strus::analyzer::Document</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1Document.html#ae6d17571b5ebd50f19df0c1cff3a42a8">strus::analyzer::Document</a>
+</li>
+<li>DocumentAnalyzerMapElementView()
+: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAnalyzerMapElementView.html#ac826ee9196b2c85292631d4d351a89fb">strus::analyzer::DocumentAnalyzerMapElementView</a>
+</li>
+<li>DocumentAnalyzerMapView()
+: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAnalyzerMapView.html#a6002d4a486b75b68f56e3d41ea06403b">strus::analyzer::DocumentAnalyzerMapView</a>
+</li>
+<li>DocumentAnalyzerView()
+: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAnalyzerView.html#a71616a014f138d6f89b869745a175a84">strus::analyzer::DocumentAnalyzerView</a>
 </li>
 <li>DocumentAttribute()
-: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAttribute.html#a9571a364c9bb47afc2e755b45ebc3953">strus::analyzer::DocumentAttribute</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1DocumentAttribute.html#a55593ddef50e91d34ca878761abaaae2">strus::analyzer::DocumentAttribute</a>
 </li>
 <li>DocumentClass()
 : <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html#a0b54025951a7aa712f0c61f3534b4881">strus::analyzer::DocumentClass</a>
+</li>
+<li>documentClass()
+: <a class="el" href="classstrus_1_1analyzer_1_1SubContentDefinitionView.html#ad8501875edee12de453e2e88c95baa4c">strus::analyzer::SubContentDefinitionView</a>
 </li>
 <li>DocumentMetaData()
 : <a class="el" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">strus::analyzer::DocumentMetaData</a>
@@ -204,7 +230,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

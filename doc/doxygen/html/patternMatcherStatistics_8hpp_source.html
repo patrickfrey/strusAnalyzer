@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/patternMatcherStatistics.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/patternMatcherStatistics.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -93,39 +93,46 @@
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                <span class="keywordtype">double</span> m_value;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        };</div>
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#afe892ead0a8b77a3e82974195156994b">   44</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#afe892ead0a8b77a3e82974195156994b">PatternMatcherStatistics</a>(){}</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">   46</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">PatternMatcherStatistics</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; o)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                :m_items(o.m_items){}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">   52</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">define</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">double</span> value)</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                m_items.push_back( <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html">Item</a>( name, value));</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">   59</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;Item&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">items</a>()<span class="keyword"> const  </span>{<span class="keywordflow">return</span> m_items;}</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        std::vector&lt;Item&gt; m_items;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}} <span class="comment">//namespace</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#afe892ead0a8b77a3e82974195156994b">PatternMatcherStatistics</a>( <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#afe892ead0a8b77a3e82974195156994b">PatternMatcherStatistics</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">   52</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">PatternMatcherStatistics</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">PatternMatcherStatistics</a>&amp; o)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                :m_items(o.m_items){}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">   59</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">define</a>( <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">double</span> value)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                m_items.push_back( <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html">Item</a>( name, value));</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">   66</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;Item&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">items</a>()<span class="keyword"> const  </span>{<span class="keywordflow">return</span> m_items;}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        std::vector&lt;Item&gt; m_items;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}} <span class="comment">//namespace</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html_aff1aabcb7e8159faacad041038eb11dc"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html#aff1aabcb7e8159faacad041038eb11dc">strus::analyzer::PatternMatcherStatistics::Item::Item</a></div><div class="ttdeci">Item(const char *name_, double value_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:31</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html">strus::analyzer::PatternMatcherStatistics</a></div><div class="ttdoc">Object descriping the statistics of a token pattern match run for runtime analysis. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:18</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_ab48f029200d4e28e8fd0e638c8c8318e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">strus::analyzer::PatternMatcherStatistics::PatternMatcherStatistics</a></div><div class="ttdeci">PatternMatcherStatistics(const PatternMatcherStatistics &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:46</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_ab48f029200d4e28e8fd0e638c8c8318e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ab48f029200d4e28e8fd0e638c8c8318e">strus::analyzer::PatternMatcherStatistics::PatternMatcherStatistics</a></div><div class="ttdeci">PatternMatcherStatistics(const PatternMatcherStatistics &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:52</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html_ad4c756129a6521faaac49c29dc9afe95"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html#ad4c756129a6521faaac49c29dc9afe95">strus::analyzer::PatternMatcherStatistics::Item::Item</a></div><div class="ttdeci">Item(const Item &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:34</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_ad2bb16ea024d18deea55d6fc5d76fdec"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">strus::analyzer::PatternMatcherStatistics::items</a></div><div class="ttdeci">const std::vector&lt; Item &gt; &amp; items() const </div><div class="ttdoc">Get all statistics items defined. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:59</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_ad2bb16ea024d18deea55d6fc5d76fdec"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#ad2bb16ea024d18deea55d6fc5d76fdec">strus::analyzer::PatternMatcherStatistics::items</a></div><div class="ttdeci">const std::vector&lt; Item &gt; &amp; items() const </div><div class="ttdoc">Get all statistics items defined. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:66</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html_abf6436fd7b0208a3005263d91512bf88"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html#abf6436fd7b0208a3005263d91512bf88">strus::analyzer::PatternMatcherStatistics::Item::name</a></div><div class="ttdeci">const char * name() const </div><div class="ttdoc">Name of the item. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:26</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html_ad146a9993a01c24834076b399a19c692"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html#ad146a9993a01c24834076b399a19c692">strus::analyzer::PatternMatcherStatistics::Item::value</a></div><div class="ttdeci">double value() const </div><div class="ttdoc">Value of the item. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:28</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html">strus::analyzer::PatternMatcherStatistics::Item</a></div><div class="ttdoc">Statistics item. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:22</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_afe892ead0a8b77a3e82974195156994b"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#afe892ead0a8b77a3e82974195156994b">strus::analyzer::PatternMatcherStatistics::PatternMatcherStatistics</a></div><div class="ttdeci">PatternMatcherStatistics()</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:44</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_a799d5f5602a2e858758f2d9d60e216f4"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">strus::analyzer::PatternMatcherStatistics::define</a></div><div class="ttdeci">void define(const char *name, double value)</div><div class="ttdoc">Define statistics item. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:52</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_html_a799d5f5602a2e858758f2d9d60e216f4"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics.html#a799d5f5602a2e858758f2d9d60e216f4">strus::analyzer::PatternMatcherStatistics::define</a></div><div class="ttdeci">void define(const char *name, double value)</div><div class="ttdoc">Define statistics item. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:59</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item_html_a9e5c26a195527ed373821405832e7f07"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherStatistics_1_1Item.html#a9e5c26a195527ed373821405832e7f07">strus::analyzer::PatternMatcherStatistics::Item::setValue</a></div><div class="ttdeci">void setValue(double value_)</div><div class="ttdoc">Update the statistics value. </div><div class="ttdef"><b>Definition:</b> patternMatcherStatistics.hpp:38</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

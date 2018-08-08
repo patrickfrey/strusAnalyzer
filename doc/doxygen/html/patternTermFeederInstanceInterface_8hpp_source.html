@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/patternTermFeederInstanceInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/patternTermFeederInstanceInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -70,11 +70,11 @@
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="patternLexem_8hpp.html">strus/analyzer/patternLexem.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="patternMatcherResult_8hpp.html">strus/analyzer/patternMatcherResult.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="functionView_8hpp.html">strus/analyzer/functionView.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classstrus_1_1PatternTermFeederInstanceInterface.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1PatternTermFeederInstanceInterface.html">PatternTermFeederInstanceInterface</a></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
@@ -97,15 +97,20 @@
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1PatternTermFeederInstanceInterface.html#a8decdd99259fd45af1c110c7501767af">getSymbol</a>(</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lexemid,</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keyword">const</span> std::string&amp; name) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;} <span class="comment">//namespace</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> <a class="code" href="classstrus_1_1PatternTermFeederInstanceInterface.html#aca1ca2d1f0eb82def1925ea120731f68">view</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;} <span class="comment">//namespace</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_aadcd24261315ed0dcd59595e4fc4b060"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#aadcd24261315ed0dcd59595e4fc4b060">strus::PatternTermFeederInstanceInterface::lexemTypes</a></div><div class="ttdeci">virtual std::vector&lt; std::string &gt; lexemTypes() const =0</div><div class="ttdoc">Get the list of lexem types defined. </div></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html">strus::PatternTermFeederInstanceInterface</a></div><div class="ttdoc">Instance interface for defining a mapping of terms of the document analysis outout as lexems used as ...</div><div class="ttdef"><b>Definition:</b> patternTermFeederInstanceInterface.hpp:20</div></div>
+<div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_aca1ca2d1f0eb82def1925ea120731f68"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#aca1ca2d1f0eb82def1925ea120731f68">strus::PatternTermFeederInstanceInterface::view</a></div><div class="ttdeci">virtual analyzer::FunctionView view() const =0</div><div class="ttdoc">Get the definition of the function as structure for introspection. </div></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_aa626d68456b8483606254029acfb9c35"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#aa626d68456b8483606254029acfb9c35">strus::PatternTermFeederInstanceInterface::getLexem</a></div><div class="ttdeci">virtual unsigned int getLexem(const std::string &amp;type) const =0</div><div class="ttdoc">Get the value of a defined lexem by type. </div></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_a5de97a87f25642a1ed4516ca6743ef6c"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#a5de97a87f25642a1ed4516ca6743ef6c">strus::PatternTermFeederInstanceInterface::~PatternTermFeederInstanceInterface</a></div><div class="ttdeci">virtual ~PatternTermFeederInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternTermFeederInstanceInterface.hpp:24</div></div>
+<div class="ttc" id="functionView_8hpp_html"><div class="ttname"><a href="functionView_8hpp.html">functionView.hpp</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FunctionView_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FunctionView.html">strus::analyzer::FunctionView</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div><div class="ttdef"><b>Definition:</b> functionView.hpp:29</div></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_a83fe36c9c31257a0adc4f897599e672f"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#a83fe36c9c31257a0adc4f897599e672f">strus::PatternTermFeederInstanceInterface::defineSymbol</a></div><div class="ttdeci">virtual void defineSymbol(unsigned int id, unsigned int lexemid, const std::string &amp;name)=0</div><div class="ttdoc">Define a symbol, an instance of a basic lexem, that gets a different id than the basic lexem...</div></div>
 <div class="ttc" id="patternMatcherResult_8hpp_html"><div class="ttname"><a href="patternMatcherResult_8hpp.html">patternMatcherResult.hpp</a></div><div class="ttdoc">Structure desribing a result of a token pattern matcher. </div></div>
 <div class="ttc" id="classstrus_1_1PatternTermFeederInstanceInterface_html_a8decdd99259fd45af1c110c7501767af"><div class="ttname"><a href="classstrus_1_1PatternTermFeederInstanceInterface.html#a8decdd99259fd45af1c110c7501767af">strus::PatternTermFeederInstanceInterface::getSymbol</a></div><div class="ttdeci">virtual unsigned int getSymbol(unsigned int lexemid, const std::string &amp;name) const =0</div><div class="ttdoc">Get the identifier of a defined symbol. </div></div>
@@ -115,7 +120,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

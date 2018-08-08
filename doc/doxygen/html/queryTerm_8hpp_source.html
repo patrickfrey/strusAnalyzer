@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/queryTerm.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/queryTerm.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,39 +79,45 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">   25</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">QueryTerm</a>()</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                :m_type(),m_value(),m_len(0){}</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">   28</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">QueryTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; o)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                :m_type(o.m_type),m_value(o.m_value),m_len(o.m_len){}</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#aa93ea02bb75f5a110da785ca8e860fc7">   34</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#aa93ea02bb75f5a110da785ca8e860fc7">QueryTerm</a>( <span class="keyword">const</span> std::string&amp; t, <span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> l)</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_type(t),m_value(v),m_len(l){}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">   39</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">type</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_type;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">   42</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">value</a>()<span class="keyword"> const        </span>{<span class="keywordflow">return</span> m_value;}</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#adc79abc30bf5b58b13804dd9ff6e8f79">   45</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#adc79abc30bf5b58b13804dd9ff6e8f79">len</a>()<span class="keyword"> const                </span>{<span class="keywordflow">return</span> m_len;}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a80f9c59ba91280c3cd3de5c1ca4e08ae">   49</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a80f9c59ba91280c3cd3de5c1ca4e08ae">setLen</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> len_)         {m_len = len_;}</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        std::string m_type;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        std::string m_value;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_len;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_ac85c34e2e19ce2c3cb13efd0bbfbf0d1"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">strus::analyzer::QueryTerm::value</a></div><div class="ttdeci">const std::string &amp; value() const </div><div class="ttdoc">Get the value of the term. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:42</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a6f8e142582b238d959775cd02c33c26d"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">strus::analyzer::QueryTerm::type</a></div><div class="ttdeci">const std::string &amp; type() const </div><div class="ttdoc">Get the type name of the term. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:39</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_adc79abc30bf5b58b13804dd9ff6e8f79"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#adc79abc30bf5b58b13804dd9ff6e8f79">strus::analyzer::QueryTerm::len</a></div><div class="ttdeci">unsigned int len() const </div><div class="ttdoc">Get the length of the term (ordinal position count) </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:45</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a33fa1995d9d0aec922530fa08cc02201"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">strus::analyzer::QueryTerm::QueryTerm</a></div><div class="ttdeci">QueryTerm(const QueryTerm &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:28</div></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">QueryTerm</a>( <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">QueryTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">   34</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">QueryTerm</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html">QueryTerm</a>&amp; o)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_type(o.m_type),m_value(o.m_value),m_len(o.m_len){}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">QueryTerm</a>( <span class="keyword">const</span> std::string&amp; t, <span class="keyword">const</span> std::string&amp; v, <span class="keywordtype">int</span> l)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                :m_type(t),m_value(v),m_len(l){}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">   46</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">type</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_type;}</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">   49</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">value</a>()<span class="keyword"> const        </span>{<span class="keywordflow">return</span> m_value;}</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a73609cd69f2a96d9c5af68cb2e34e980">   52</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a73609cd69f2a96d9c5af68cb2e34e980">len</a>()<span class="keyword"> const                         </span>{<span class="keywordflow">return</span> m_len;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1QueryTerm.html#a36b47197c3ec76032f5a920d357665b5">   56</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTerm.html#a36b47197c3ec76032f5a920d357665b5">setLen</a>( <span class="keywordtype">int</span> len_)                  {m_len = len_;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        std::string m_type;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        std::string m_value;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">int</span> m_len;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_ac85c34e2e19ce2c3cb13efd0bbfbf0d1"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#ac85c34e2e19ce2c3cb13efd0bbfbf0d1">strus::analyzer::QueryTerm::value</a></div><div class="ttdeci">const std::string &amp; value() const </div><div class="ttdoc">Get the value of the term. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:49</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a36b47197c3ec76032f5a920d357665b5"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a36b47197c3ec76032f5a920d357665b5">strus::analyzer::QueryTerm::setLen</a></div><div class="ttdeci">void setLen(int len_)</div><div class="ttdoc">Set the length of the term (ordinal position count) </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:56</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a6f8e142582b238d959775cd02c33c26d"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a6f8e142582b238d959775cd02c33c26d">strus::analyzer::QueryTerm::type</a></div><div class="ttdeci">const std::string &amp; type() const </div><div class="ttdoc">Get the type name of the term. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:46</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a73609cd69f2a96d9c5af68cb2e34e980"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a73609cd69f2a96d9c5af68cb2e34e980">strus::analyzer::QueryTerm::len</a></div><div class="ttdeci">int len() const </div><div class="ttdoc">Get the length of the term (ordinal position count) </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:52</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a33fa1995d9d0aec922530fa08cc02201"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a33fa1995d9d0aec922530fa08cc02201">strus::analyzer::QueryTerm::QueryTerm</a></div><div class="ttdeci">QueryTerm(const QueryTerm &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:34</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a4ea2d8c479a519bf996b2f6fcff36220"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a4ea2d8c479a519bf996b2f6fcff36220">strus::analyzer::QueryTerm::QueryTerm</a></div><div class="ttdeci">QueryTerm()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_aa93ea02bb75f5a110da785ca8e860fc7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#aa93ea02bb75f5a110da785ca8e860fc7">strus::analyzer::QueryTerm::QueryTerm</a></div><div class="ttdeci">QueryTerm(const std::string &amp;t, const std::string &amp;v, unsigned int l)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:34</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html_a80f9c59ba91280c3cd3de5c1ca4e08ae"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html#a80f9c59ba91280c3cd3de5c1ca4e08ae">strus::analyzer::QueryTerm::setLen</a></div><div class="ttdeci">void setLen(unsigned int len_)</div><div class="ttdoc">Set the length of the term (ordinal position count) </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:49</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1QueryTerm_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTerm.html">strus::analyzer::QueryTerm</a></div><div class="ttdoc">Structure describing a typed query term. </div><div class="ttdef"><b>Definition:</b> queryTerm.hpp:21</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -56,6 +56,7 @@
     <ul class="tablist">
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
@@ -90,17 +91,20 @@
 <div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
+<li>ofs()
+: <a class="el" href="structstrus_1_1analyzer_1_1Position.html#abefc94bd4446d845d4fe36feb2534479">strus::analyzer::Position</a>
+</li>
 <li>OpAnd
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997aac03e462ddcc4916e54d7b891ae328f3e">strus::PatternMatcherInstanceInterface</a>
 </li>
 <li>OpAny
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997aa290adaae8378e767a55d6b669f890dd0">strus::PatternMatcherInstanceInterface</a>
 </li>
-<li>opCode()
-: <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression_1_1Instruction.html#abc79d803a6d6aac8ed8164a491e6d733">strus::analyzer::QueryTermExpression::Instruction</a>
-</li>
 <li>OpCode
 : <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression_1_1Instruction.html#ac0f86ab696082a7a628c168ed1683117">strus::analyzer::QueryTermExpression::Instruction</a>
+</li>
+<li>opCode()
+: <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression_1_1Instruction.html#abc79d803a6d6aac8ed8164a491e6d733">strus::analyzer::QueryTermExpression::Instruction</a>
 </li>
 <li>opCodeName()
 : <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression_1_1Instruction.html#a014a4c60164f2ddf5310b5135ea62d7d">strus::analyzer::QueryTermExpression::Instruction</a>
@@ -109,13 +113,24 @@
 : <a class="el" href="classstrus_1_1analyzer_1_1QueryTermExpression_1_1Instruction.html#ac0f86ab696082a7a628c168ed1683117af3613184a354d603b40f97d85d0ea3f4">strus::analyzer::QueryTermExpression::Instruction</a>
 </li>
 <li>operator()()
-: <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#abb9dda46ad128512d5e2bb47bb166a27">strus::analyzer::SegmenterOptions</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html#a1558e0cc8036e17e2c3ab7e3a7801ad1">strus::analyzer::FunctionView</a>
+, <a class="el" href="classstrus_1_1analyzer_1_1SegmenterOptions.html#abb9dda46ad128512d5e2bb47bb166a27">strus::analyzer::SegmenterOptions</a>
 , <a class="el" href="classstrus_1_1analyzer_1_1TokenMarkup.html#acc90b6b2ce4437b04e147d7f1a1f63b9">strus::analyzer::TokenMarkup</a>
 </li>
 <li>operator&lt;()
 : <a class="el" href="classstrus_1_1analyzer_1_1DocumentTerm.html#a79662920d8ed25ebabe71435028a40b7">strus::analyzer::DocumentTerm</a>
 , <a class="el" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">strus::analyzer::PatternLexem</a>
+, <a class="el" href="structstrus_1_1analyzer_1_1Position.html#ab2582bcb2682eddfee05fb11502a8d7e">strus::analyzer::Position</a>
 , <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">strus::analyzer::Token</a>
+</li>
+<li>operator&lt;=()
+: <a class="el" href="structstrus_1_1analyzer_1_1Position.html#a69811fe98eb9add989a9961d42ce9c09">strus::analyzer::Position</a>
+</li>
+<li>operator==()
+: <a class="el" href="structstrus_1_1analyzer_1_1Position.html#ae17e42b5387c86e59412a84dbebeac88">strus::analyzer::Position</a>
+</li>
+<li>operator&gt;()
+: <a class="el" href="structstrus_1_1analyzer_1_1Position.html#a8f92001ef754ace8bd2efc7115522848">strus::analyzer::Position</a>
 </li>
 <li>OpSequence
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997aa894272ac53c9f452d3c1fdfe11a333c7">strus::PatternMatcherInstanceInterface</a>
@@ -129,30 +144,38 @@
 <li>opt()
 : <a class="el" href="classstrus_1_1analyzer_1_1FeatureOptions.html#ab5696e20d13f79281d8c775528cc46d8">strus::analyzer::FeatureOptions</a>
 </li>
+<li>options()
+: <a class="el" href="classstrus_1_1analyzer_1_1FeatureView.html#aa282a5d77d2d00432307fa803b3d1158">strus::analyzer::FeatureView</a>
+</li>
 <li>OpWithin
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997aa147a7a7413282421d6304427915f0be3">strus::PatternMatcherInstanceInterface</a>
 </li>
 <li>OpWithinStruct
 : <a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997aa3f52b2415bf909cfc89f848faab95bb4">strus::PatternMatcherInstanceInterface</a>
 </li>
+<li>ordend()
+: <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a59a16720b8af59bb52dc888177249935">strus::analyzer::PatternMatcherResultItem</a>
+</li>
 <li>ordpos()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a3cf0523794230e193a9ef7744eee8b34">strus::analyzer::Token</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#ae6ef637dc5ff55f1c7b54d959997dbd5">strus::analyzer::PatternMatcherResultItem</a>
+, <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a2408a440dd6105fd9dada9abeb258780">strus::analyzer::Token</a>
+</li>
+<li>origend()
+: <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a313f109556bafab57ffebe6341328a4b">strus::analyzer::PatternMatcherResultItem</a>
 </li>
 <li>origpos()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">strus::analyzer::Token</a>
-</li>
-<li>origseg()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">strus::analyzer::Token</a>
+: <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a0daed094056b2e2b46f0716d9eaded2d">strus::analyzer::PatternMatcherResultItem</a>
+, <a class="el" href="structstrus_1_1analyzer_1_1Token.html#ad772eca4ca74931ec922a931b2a38452">strus::analyzer::Token</a>
 </li>
 <li>origsize()
-: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">strus::analyzer::Token</a>
+: <a class="el" href="structstrus_1_1analyzer_1_1Token.html#aba953fed166cce6a30b58a8f85ca846d">strus::analyzer::Token</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

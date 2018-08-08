@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/lib/tokenizer_textcat.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/lib/tokenizer_textcat.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_35070828f9ca81e0ca44b8badc62fb53.html">lib</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_34a3d69fc0edbd883437b52adfca797b.html">lib</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,20 +72,21 @@
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>strus</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>TokenizerFunctionInterface;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;TokenizerFunctionInterface* <a class="code" href="namespacestrus.html#adf1b53419b3440255e84814b1f00e377">createTokenizer_textcat</a>( ErrorBufferInterface* errorhnd);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="namespacestrus_html_adf1b53419b3440255e84814b1f00e377"><div class="ttname"><a href="namespacestrus.html#adf1b53419b3440255e84814b1f00e377">strus::createTokenizer_textcat</a></div><div class="ttdeci">TokenizerFunctionInterface * createTokenizer_textcat(ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Get the tokenizer type that creates the tokenization of words in a recognized language. </div></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>TextProcessorInterface;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>TokenizerFunctionInterface;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;TokenizerFunctionInterface* <a class="code" href="namespacestrus.html#ab02012ea5060d489577af29225eb352e">createTokenizer_textcat</a>( <span class="keyword">const</span> TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="namespacestrus_html_ab02012ea5060d489577af29225eb352e"><div class="ttname"><a href="namespacestrus.html#ab02012ea5060d489577af29225eb352e">strus::createTokenizer_textcat</a></div><div class="ttdeci">TokenizerFunctionInterface * createTokenizer_textcat(const TextProcessorInterface *textproc, ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Get the tokenizer type that creates the tokenization of words in a recognized language. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

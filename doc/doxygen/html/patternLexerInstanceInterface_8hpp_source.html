@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/patternLexerInstanceInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/patternLexerInstanceInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,53 +69,58 @@
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="positionBind_8hpp.html">strus/analyzer/positionBind.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">class </span>PatternLexerContextInterface;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classstrus_1_1PatternLexerInstanceInterface.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">   26</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">~PatternLexerInstanceInterface</a>(){}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a6de5935a6ccd1b4394f0534bfb93fd7f">defineOption</a>( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span> value)=0;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a4bbec3bf011c62604a4307afdeaef1ac">defineLexemName</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>, <span class="keyword">const</span> std::string&amp; name)=0;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#ac372642dd230a148fbf1b1c45f23d45b">defineLexem</a>(</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        <span class="keyword">const</span> std::string&amp; expression,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> resultIndex,</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> level,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> posbind)=0;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a09efd6e743fa3da88fc3122e2e392773">defineSymbol</a>(</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lexemid,</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keyword">const</span> std::string&amp; name)=0;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a348e9e4465af230b312f0de96d9328f6">getSymbol</a>(</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lexemid,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keyword">const</span> std::string&amp; name) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a83dc9572a1c277e1ba81343d3e641a99">getLexemName</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a9cc7e12c64a6516f18e1d4882f493310">compile</a>()=0;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1PatternLexerContextInterface.html">PatternLexerContextInterface</a>* <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a13c94a46e10553b529e7730b25e0e916">createContext</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;};</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="functionView_8hpp.html">strus/analyzer/functionView.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>PatternLexerContextInterface;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classstrus_1_1PatternLexerInstanceInterface.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html">PatternLexerInstanceInterface</a></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">   27</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">~PatternLexerInstanceInterface</a>(){}</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a6de5935a6ccd1b4394f0534bfb93fd7f">defineOption</a>( <span class="keyword">const</span> std::string&amp; name, <span class="keywordtype">double</span> value)=0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a4bbec3bf011c62604a4307afdeaef1ac">defineLexemName</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>, <span class="keyword">const</span> std::string&amp; name)=0;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#ac372642dd230a148fbf1b1c45f23d45b">defineLexem</a>(</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        <span class="keyword">const</span> std::string&amp; expression,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> resultIndex,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> level,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <a class="code" href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">analyzer::PositionBind</a> posbind)=0;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a09efd6e743fa3da88fc3122e2e392773">defineSymbol</a>(</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lexemid,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        <span class="keyword">const</span> std::string&amp; name)=0;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a348e9e4465af230b312f0de96d9328f6">getSymbol</a>(</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lexemid,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keyword">const</span> std::string&amp; name) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">virtual</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a83dc9572a1c277e1ba81343d3e641a99">getLexemName</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <span class="keywordtype">id</span>) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a9cc7e12c64a6516f18e1d4882f493310">compile</a>()=0;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1PatternLexerContextInterface.html">PatternLexerContextInterface</a>* <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a13c94a46e10553b529e7730b25e0e916">createContext</a>() <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;} <span class="comment">//namespace</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> <a class="code" href="classstrus_1_1PatternLexerInstanceInterface.html#a4c793b49e9e0bf1e3d8eb2ca68da4464">view</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;};</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;} <span class="comment">//namespace</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="positionBind_8hpp_html"><div class="ttname"><a href="positionBind_8hpp.html">positionBind.hpp</a></div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a83dc9572a1c277e1ba81343d3e641a99"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a83dc9572a1c277e1ba81343d3e641a99">strus::PatternLexerInstanceInterface::getLexemName</a></div><div class="ttdeci">virtual const char * getLexemName(unsigned int id) const =0</div><div class="ttdoc">Retrieve the name given to a lexem or symbol. </div></div>
-<div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html">strus::PatternLexerInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting lexems used as basic entities by pattern matching ...</div><div class="ttdef"><b>Definition:</b> patternLexerInstanceInterface.hpp:22</div></div>
+<div class="ttc" id="functionView_8hpp_html"><div class="ttname"><a href="functionView_8hpp.html">functionView.hpp</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div></div>
+<div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html">strus::PatternLexerInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting lexems used as basic entities by pattern matching ...</div><div class="ttdef"><b>Definition:</b> patternLexerInstanceInterface.hpp:23</div></div>
 <div class="ttc" id="namespacestrus_1_1analyzer_html_af8cd4c940fb34936d0f9cf0ced3258c5"><div class="ttname"><a href="namespacestrus_1_1analyzer.html#af8cd4c940fb34936d0f9cf0ced3258c5">strus::analyzer::PositionBind</a></div><div class="ttdeci">PositionBind</div><div class="ttdoc">Determines how document ordinal positions are assigned to terms. </div><div class="ttdef"><b>Definition:</b> positionBind.hpp:20</div></div>
-<div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a3c1fad4359fb5a67fbc9dc63021c67a6"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">strus::PatternLexerInstanceInterface::~PatternLexerInstanceInterface</a></div><div class="ttdeci">virtual ~PatternLexerInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternLexerInstanceInterface.hpp:26</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FunctionView_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FunctionView.html">strus::analyzer::FunctionView</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div><div class="ttdef"><b>Definition:</b> functionView.hpp:29</div></div>
+<div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a3c1fad4359fb5a67fbc9dc63021c67a6"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a3c1fad4359fb5a67fbc9dc63021c67a6">strus::PatternLexerInstanceInterface::~PatternLexerInstanceInterface</a></div><div class="ttdeci">virtual ~PatternLexerInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternLexerInstanceInterface.hpp:27</div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a9cc7e12c64a6516f18e1d4882f493310"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a9cc7e12c64a6516f18e1d4882f493310">strus::PatternLexerInstanceInterface::compile</a></div><div class="ttdeci">virtual bool compile()=0</div><div class="ttdoc">Compile all patterns and symbols defined. </div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a4bbec3bf011c62604a4307afdeaef1ac"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a4bbec3bf011c62604a4307afdeaef1ac">strus::PatternLexerInstanceInterface::defineLexemName</a></div><div class="ttdeci">virtual void defineLexemName(unsigned int id, const std::string &amp;name)=0</div><div class="ttdoc">Assign a name to a lexem or symbol identifier. </div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a09efd6e743fa3da88fc3122e2e392773"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a09efd6e743fa3da88fc3122e2e392773">strus::PatternLexerInstanceInterface::defineSymbol</a></div><div class="ttdeci">virtual void defineSymbol(unsigned int id, unsigned int lexemid, const std::string &amp;name)=0</div><div class="ttdoc">Define a symbol, an instance of a basic lexem, that gets a different id than the basic lexem...</div></div>
@@ -124,11 +129,12 @@
 <div class="ttc" id="classstrus_1_1PatternLexerContextInterface_html"><div class="ttname"><a href="classstrus_1_1PatternLexerContextInterface.html">strus::PatternLexerContextInterface</a></div><div class="ttdoc">Interface for detecting lexems used as basic entities by pattern matching in text. </div><div class="ttdef"><b>Definition:</b> patternLexerContextInterface.hpp:19</div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a13c94a46e10553b529e7730b25e0e916"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a13c94a46e10553b529e7730b25e0e916">strus::PatternLexerInstanceInterface::createContext</a></div><div class="ttdeci">virtual PatternLexerContextInterface * createContext() const =0</div><div class="ttdoc">Create the context to process a chunk of text with this text matcher. </div></div>
 <div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_ac372642dd230a148fbf1b1c45f23d45b"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#ac372642dd230a148fbf1b1c45f23d45b">strus::PatternLexerInstanceInterface::defineLexem</a></div><div class="ttdeci">virtual void defineLexem(unsigned int id, const std::string &amp;expression, unsigned int resultIndex, unsigned int level, analyzer::PositionBind posbind)=0</div><div class="ttdoc">Define a pattern for detecting a basic lexem of this pattern matching lexer. </div></div>
+<div class="ttc" id="classstrus_1_1PatternLexerInstanceInterface_html_a4c793b49e9e0bf1e3d8eb2ca68da4464"><div class="ttname"><a href="classstrus_1_1PatternLexerInstanceInterface.html#a4c793b49e9e0bf1e3d8eb2ca68da4464">strus::PatternLexerInstanceInterface::view</a></div><div class="ttdeci">virtual analyzer::FunctionView view() const =0</div><div class="ttdoc">Get the definition of the function as structure for introspection. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

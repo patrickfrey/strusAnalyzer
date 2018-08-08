@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -79,7 +79,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a51026fdd4e0cc32b5215f420256e4ddc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterContextInterface.html#a51026fdd4e0cc32b5215f420256e4ddc">putInput</a> (const char *chunk, std::size_t chunksize, bool eof)=0</td></tr>
 <tr class="memdesc:a51026fdd4e0cc32b5215f420256e4ddc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Feed the segmenter with the next chunk of input to process.  <a href="#a51026fdd4e0cc32b5215f420256e4ddc">More...</a><br/></td></tr>
 <tr class="separator:a51026fdd4e0cc32b5215f420256e4ddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1afbc0c4571a656e839ad98355b9232b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">getNext</a> (int &amp;id, <a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;pos, const char *&amp;segment, std::size_t &amp;segmentsize)=0</td></tr>
+<tr class="memitem:a1afbc0c4571a656e839ad98355b9232b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">getNext</a> (int &amp;id, <a class="el" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a> &amp;pos, const char *&amp;segment, std::size_t &amp;segmentsize)=0</td></tr>
 <tr class="memdesc:a1afbc0c4571a656e839ad98355b9232b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetch the next text segment.  <a href="#a1afbc0c4571a656e839ad98355b9232b">More...</a><br/></td></tr>
 <tr class="separator:a1afbc0c4571a656e839ad98355b9232b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -128,7 +128,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a> &amp;&#160;</td>
           <td class="paramname"><em>pos</em>, </td>
         </tr>
         <tr>
@@ -167,9 +167,8 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true, if a valid segment could be returned, false in case of no segments left or more required to be fed </dd></dl>
-<dl class="section remark"><dt>Remarks</dt><dd>throws on error </dd>
-<dd>
-the segments must be delivered in ascending order of positions. Segments with same position can be returned in any order </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>the segments must be delivered in ascending order of positions. Segments with same position can be returned in any order </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>returned chunks only valid after the call, owned by the segmenter </dd></dl>
 
 </div>
 </div>
@@ -225,13 +224,13 @@ the segments must be delivered in ascending order of positions. Segments with sa
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="segmenterContextInterface_8hpp_source.html">segmenterContextInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="segmenterContextInterface_8hpp_source.html">segmenterContextInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

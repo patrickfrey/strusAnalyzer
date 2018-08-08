@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -70,12 +70,24 @@
  <a href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="patternMatcherResultItem_8hpp_source.html">patternMatcherResultItem.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for strus::analyzer::PatternMatcherResultItem:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classstrus_1_1analyzer_1_1PatternMatcherResultItem.png" usemap="#strus::analyzer::PatternMatcherResultItem_map" alt=""/>
+  <map id="strus::analyzer::PatternMatcherResultItem_map" name="strus::analyzer::PatternMatcherResultItem_map">
+<area href="classstrus_1_1analyzer_1_1PatternMatcherResult.html" title="Structure desribing a result of a token pattern matcher. " alt="strus::analyzer::PatternMatcherResult" shape="rect" coords="0,56,243,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4ae1ab236717100dc65c24f1ac742c76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a4ae1ab236717100dc65c24f1ac742c76">PatternMatcherResultItem</a> (const char *name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_)</td></tr>
-<tr class="memdesc:a4ae1ab236717100dc65c24f1ac742c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a4ae1ab236717100dc65c24f1ac742c76">More...</a><br/></td></tr>
-<tr class="separator:a4ae1ab236717100dc65c24f1ac742c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06f780a25e7edb16e7fba6ecc42421d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a06f780a25e7edb16e7fba6ecc42421d1">PatternMatcherResultItem</a> ()</td></tr>
+<tr class="memdesc:a06f780a25e7edb16e7fba6ecc42421d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a06f780a25e7edb16e7fba6ecc42421d1">More...</a><br/></td></tr>
+<tr class="separator:a06f780a25e7edb16e7fba6ecc42421d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a496325feb4c6d442aee4377328bce575"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a496325feb4c6d442aee4377328bce575">PatternMatcherResultItem</a> (const char *name_, const char *value_, int ordpos_, int ordend_, const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;origpos_, const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;origend_)</td></tr>
+<tr class="memdesc:a496325feb4c6d442aee4377328bce575"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a496325feb4c6d442aee4377328bce575">More...</a><br/></td></tr>
+<tr class="separator:a496325feb4c6d442aee4377328bce575"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a5a958c9fedd69abf069d2e8f757a0ebf">PatternMatcherResultItem</a> (const <a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html">PatternMatcherResultItem</a> &amp;o)</td></tr>
 <tr class="memdesc:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#a5a958c9fedd69abf069d2e8f757a0ebf">More...</a><br/></td></tr>
 <tr class="separator:a5a958c9fedd69abf069d2e8f757a0ebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -85,29 +97,51 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa6cbe0aa1787d4c1a823a1433ac635ea"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#aa6cbe0aa1787d4c1a823a1433ac635ea">name</a> () const </td></tr>
 <tr class="memdesc:aa6cbe0aa1787d4c1a823a1433ac635ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the item, defined by the variable assigned to the match.  <a href="#aa6cbe0aa1787d4c1a823a1433ac635ea">More...</a><br/></td></tr>
 <tr class="separator:aa6cbe0aa1787d4c1a823a1433ac635ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a659d7292f62574a9d23076fb5a367c8a"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a659d7292f62574a9d23076fb5a367c8a">start_ordpos</a> () const </td></tr>
-<tr class="memdesc:a659d7292f62574a9d23076fb5a367c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ordinal (counting) position of the match (resp. the first term of the match)  <a href="#a659d7292f62574a9d23076fb5a367c8a">More...</a><br/></td></tr>
-<tr class="separator:a659d7292f62574a9d23076fb5a367c8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d83ef56f9a7a86743c0943c2c684c75"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a9d83ef56f9a7a86743c0943c2c684c75">end_ordpos</a> () const </td></tr>
-<tr class="memdesc:a9d83ef56f9a7a86743c0943c2c684c75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ordinal (counting) end position of the match.  <a href="#a9d83ef56f9a7a86743c0943c2c684c75">More...</a><br/></td></tr>
-<tr class="separator:a9d83ef56f9a7a86743c0943c2c684c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af917969639bd8ec7c9c7f04b4be508e5"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#af917969639bd8ec7c9c7f04b4be508e5">start_origseg</a> () const </td></tr>
-<tr class="memdesc:af917969639bd8ec7c9c7f04b4be508e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Original segment index of the start of the result item in the source.  <a href="#af917969639bd8ec7c9c7f04b4be508e5">More...</a><br/></td></tr>
-<tr class="separator:af917969639bd8ec7c9c7f04b4be508e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f839057c2bc9c0f12597257b817f831"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a3f839057c2bc9c0f12597257b817f831">start_origpos</a> () const </td></tr>
-<tr class="memdesc:a3f839057c2bc9c0f12597257b817f831"><td class="mdescLeft">&#160;</td><td class="mdescRight">Original byte position start of the result item in the source segment as UTF-8 specified with start_origseg.  <a href="#a3f839057c2bc9c0f12597257b817f831">More...</a><br/></td></tr>
-<tr class="separator:a3f839057c2bc9c0f12597257b817f831"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd5e1efbe7c64960d9017a305fd040d5"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#acd5e1efbe7c64960d9017a305fd040d5">end_origseg</a> () const </td></tr>
-<tr class="memdesc:acd5e1efbe7c64960d9017a305fd040d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Original segment index of the end of the result item in the source.  <a href="#acd5e1efbe7c64960d9017a305fd040d5">More...</a><br/></td></tr>
-<tr class="separator:acd5e1efbe7c64960d9017a305fd040d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a244c6cc635d568bc5077bb9c0e9c22c8">end_origpos</a> () const </td></tr>
-<tr class="memdesc:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Original byte position end of the result item in the source segment as UTF-8 specified with start_origseg.  <a href="#a244c6cc635d568bc5077bb9c0e9c22c8">More...</a><br/></td></tr>
-<tr class="separator:a244c6cc635d568bc5077bb9c0e9c22c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09f09b51558e89bac845ef6e6a05689a"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a09f09b51558e89bac845ef6e6a05689a">value</a> () const </td></tr>
+<tr class="memdesc:a09f09b51558e89bac845ef6e6a05689a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to value of the item.  <a href="#a09f09b51558e89bac845ef6e6a05689a">More...</a><br/></td></tr>
+<tr class="separator:a09f09b51558e89bac845ef6e6a05689a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6ef637dc5ff55f1c7b54d959997dbd5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#ae6ef637dc5ff55f1c7b54d959997dbd5">ordpos</a> () const </td></tr>
+<tr class="memdesc:ae6ef637dc5ff55f1c7b54d959997dbd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ordinal (counting) position of the match (resp. the first term of the match)  <a href="#ae6ef637dc5ff55f1c7b54d959997dbd5">More...</a><br/></td></tr>
+<tr class="separator:ae6ef637dc5ff55f1c7b54d959997dbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59a16720b8af59bb52dc888177249935"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a59a16720b8af59bb52dc888177249935">ordend</a> () const </td></tr>
+<tr class="memdesc:a59a16720b8af59bb52dc888177249935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ordinal (counting) end position of the match.  <a href="#a59a16720b8af59bb52dc888177249935">More...</a><br/></td></tr>
+<tr class="separator:a59a16720b8af59bb52dc888177249935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0daed094056b2e2b46f0716d9eaded2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a0daed094056b2e2b46f0716d9eaded2d">origpos</a> () const </td></tr>
+<tr class="memdesc:a0daed094056b2e2b46f0716d9eaded2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start of the result item in the original source.  <a href="#a0daed094056b2e2b46f0716d9eaded2d">More...</a><br/></td></tr>
+<tr class="separator:a0daed094056b2e2b46f0716d9eaded2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a313f109556bafab57ffebe6341328a4b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html#a313f109556bafab57ffebe6341328a4b">origend</a> () const </td></tr>
+<tr class="memdesc:a313f109556bafab57ffebe6341328a4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">End of the result item in the original source (first byte after the item)  <a href="#a313f109556bafab57ffebe6341328a4b">More...</a><br/></td></tr>
+<tr class="separator:a313f109556bafab57ffebe6341328a4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Result item structure of a pattern match result. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a4ae1ab236717100dc65c24f1ac742c76"></a>
+<a class="anchor" id="a06f780a25e7edb16e7fba6ecc42421d1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">strus::analyzer::PatternMatcherResultItem::PatternMatcherResultItem </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+
+</div>
+</div>
+<a class="anchor" id="a496325feb4c6d442aee4377328bce575"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -123,38 +157,32 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>start_ordpos_</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>value_</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>end_ordpos_</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ordpos_</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>start_origseg_</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ordend_</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>start_origpos_</em>, </td>
+          <td class="paramtype">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;&#160;</td>
+          <td class="paramname"><em>origpos_</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>end_origseg_</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>end_origpos_</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a> &amp;&#160;</td>
+          <td class="paramname"><em>origend_</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -225,81 +253,6 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a9d83ef56f9a7a86743c0943c2c684c75"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t strus::analyzer::PatternMatcherResultItem::end_ordpos </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Ordinal (counting) end position of the match. </p>
-
-</div>
-</div>
-<a class="anchor" id="a244c6cc635d568bc5077bb9c0e9c22c8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t strus::analyzer::PatternMatcherResultItem::end_origpos </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Original byte position end of the result item in the source segment as UTF-8 specified with start_origseg. </p>
-
-</div>
-</div>
-<a class="anchor" id="acd5e1efbe7c64960d9017a305fd040d5"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t strus::analyzer::PatternMatcherResultItem::end_origseg </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Original segment index of the end of the result item in the source. </p>
-
-</div>
-</div>
 <a class="anchor" id="aa6cbe0aa1787d4c1a823a1433ac635ea"></a>
 <div class="memitem">
 <div class="memproto">
@@ -325,7 +278,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a659d7292f62574a9d23076fb5a367c8a"></a>
+<a class="anchor" id="a59a16720b8af59bb52dc888177249935"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -333,7 +286,32 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t strus::analyzer::PatternMatcherResultItem::start_ordpos </td>
+          <td class="memname">int strus::analyzer::PatternMatcherResultItem::ordend </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Ordinal (counting) end position of the match. </p>
+
+</div>
+</div>
+<a class="anchor" id="ae6ef637dc5ff55f1c7b54d959997dbd5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int strus::analyzer::PatternMatcherResultItem::ordpos </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -350,7 +328,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3f839057c2bc9c0f12597257b817f831"></a>
+<a class="anchor" id="a313f109556bafab57ffebe6341328a4b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -358,7 +336,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::size_t strus::analyzer::PatternMatcherResultItem::start_origpos </td>
+          <td class="memname">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a>&amp; strus::analyzer::PatternMatcherResultItem::origend </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -371,11 +349,11 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Original byte position start of the result item in the source segment as UTF-8 specified with start_origseg. </p>
+<p>End of the result item in the original source (first byte after the item) </p>
 
 </div>
 </div>
-<a class="anchor" id="af917969639bd8ec7c9c7f04b4be508e5"></a>
+<a class="anchor" id="a0daed094056b2e2b46f0716d9eaded2d"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -383,7 +361,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::size_t strus::analyzer::PatternMatcherResultItem::start_origseg </td>
+          <td class="memname">const <a class="el" href="structstrus_1_1analyzer_1_1Position.html">Position</a>&amp; strus::analyzer::PatternMatcherResultItem::origpos </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -396,18 +374,44 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Original segment index of the start of the result item in the source. </p>
+<p>Start of the result item in the original source. </p>
+
+</div>
+</div>
+<a class="anchor" id="a09f09b51558e89bac845ef6e6a05689a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* strus::analyzer::PatternMatcherResultItem::value </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pointer to value of the item. </p>
+<dl class="section note"><dt>Note</dt><dd>The value is a null terminated string containing a constructed value of the result string or NULL if no such construction (format string) is defined. </dd></dl>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/analyzer/<a class="el" href="patternMatcherResultItem_8hpp_source.html">patternMatcherResultItem.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/<a class="el" href="patternMatcherResultItem_8hpp_source.html">patternMatcherResultItem.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

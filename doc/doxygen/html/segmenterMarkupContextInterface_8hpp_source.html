@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/segmenterMarkupContextInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/segmenterMarkupContextInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,27 +79,27 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1">   25</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a071efcc9caaf8ccb44d9649f699312a1">~SegmenterMarkupContextInterface</a>(){}</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c">getNext</a>( <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos, <span class="keyword">const</span> <span class="keywordtype">char</span>*&amp; segment, std::size_t&amp; segmentsize)=0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c">getNext</a>( <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos, <span class="keyword">const</span> <span class="keywordtype">char</span>*&amp; segment, std::size_t&amp; segmentsize)=0;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b">segmentSize</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos)=0;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b">segmentSize</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos)=0;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb">tagName</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a8ceefe23b33f5292abd56d7ce252f1fb">tagName</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos) <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58">tagLevel</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a7744553f053766a802d048f679a54c58">tagLevel</a>( <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos) <span class="keyword">const</span>=0;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01">putOpenTag</a>(</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos,</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        std::size_t ofs,</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        <span class="keyword">const</span> std::string&amp; name)=0;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#a85fa782b100a47a2190094ccac121c0b">putAttribute</a>(</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos,</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        std::size_t ofs,</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                        <span class="keyword">const</span> std::string&amp; name,</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        <span class="keyword">const</span> std::string&amp; value)=0;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9">putCloseTag</a>(</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">SegmenterPosition</a>&amp; segpos,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="keyword">const</span> <a class="code" href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">SegmenterPosition</a>&amp; segpos,</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                        std::size_t ofs,</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                        <span class="keyword">const</span> std::string&amp; name)=0;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
@@ -109,7 +109,7 @@
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}<span class="comment">//namespace</span></div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="namespacestrus_html_a05fcc28752b8350a51a94f3149f38dfd"><div class="ttname"><a href="namespacestrus.html#a05fcc28752b8350a51a94f3149f38dfd">strus::SegmenterPosition</a></div><div class="ttdeci">int64_t SegmenterPosition</div><div class="ttdoc">Byte position in scanned source. </div><div class="ttdef"><b>Definition:</b> segmenterContextInterface.hpp:27</div></div>
+<div class="ttc" id="namespacestrus_html_a734f67a9aca14b59ef4a58e1372b928a"><div class="ttname"><a href="namespacestrus.html#a734f67a9aca14b59ef4a58e1372b928a">strus::SegmenterPosition</a></div><div class="ttdeci">int SegmenterPosition</div><div class="ttdoc">Position of a segment in the original source. </div><div class="ttdef"><b>Definition:</b> segmenterContextInterface.hpp:20</div></div>
 <div class="ttc" id="classstrus_1_1SegmenterMarkupContextInterface_html_af5943580580e4867533e9b27ab1b1b01"><div class="ttname"><a href="classstrus_1_1SegmenterMarkupContextInterface.html#af5943580580e4867533e9b27ab1b1b01">strus::SegmenterMarkupContextInterface::putOpenTag</a></div><div class="ttdeci">virtual void putOpenTag(const SegmenterPosition &amp;segpos, std::size_t ofs, const std::string &amp;name)=0</div><div class="ttdoc">Define an open tag markup in the text. </div></div>
 <div class="ttc" id="classstrus_1_1SegmenterMarkupContextInterface_html_a802a99dea76481924dc9497f6573693b"><div class="ttname"><a href="classstrus_1_1SegmenterMarkupContextInterface.html#a802a99dea76481924dc9497f6573693b">strus::SegmenterMarkupContextInterface::segmentSize</a></div><div class="ttdeci">virtual unsigned int segmentSize(const SegmenterPosition &amp;segpos)=0</div><div class="ttdoc">Get the size in bytes of a segment converted to UTF-8. </div></div>
 <div class="ttc" id="classstrus_1_1SegmenterMarkupContextInterface_html_ae4765e633b1ee5d8790396e054b0d7c9"><div class="ttname"><a href="classstrus_1_1SegmenterMarkupContextInterface.html#ae4765e633b1ee5d8790396e054b0d7c9">strus::SegmenterMarkupContextInterface::putCloseTag</a></div><div class="ttdeci">virtual void putCloseTag(const SegmenterPosition &amp;segpos, std::size_t ofs, const std::string &amp;name)=0</div><div class="ttdoc">Define a close tag markup in the text. </div></div>
@@ -125,7 +125,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

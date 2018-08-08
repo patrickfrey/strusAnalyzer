@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/queryAnalyzerContextInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/queryAnalyzerContextInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,7 +80,7 @@
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4efa9610beeb0afd58e3c258bcd2e72">   25</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4efa9610beeb0afd58e3c258bcd2e72">~QueryAnalyzerContextInterface</a>(){}</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8">putField</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> fieldno, <span class="keyword">const</span> std::string&amp; fieldtype, <span class="keyword">const</span> std::string&amp; content)=0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#ac0987db6d718487398458d342184c44f">putField</a>( <span class="keywordtype">int</span> fieldno, <span class="keyword">const</span> std::string&amp; fieldtype, <span class="keyword">const</span> std::string&amp; content)=0;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">   34</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">GroupBy</a></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        {</div>
@@ -90,7 +90,7 @@
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beaf14f3a723a567ad3decbaa67428ed2ae">   39</a></span>&#160;                <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beaf14f3a723a567ad3decbaa67428ed2ae">GroupUnique</a>             </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        };</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#afd45fe8bd1f60f1ba2796322d98ba3b4">groupElements</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> groupid, <span class="keyword">const</span> std::vector&lt;unsigned int&gt;&amp; fieldnoList, <span class="keyword">const</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">GroupBy</a>&amp; groupBy, <span class="keywordtype">bool</span> groupSingle)=0;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a2f8d4bc1621f0924c4dd25a00982d05d">groupElements</a>( <span class="keywordtype">int</span> groupid, <span class="keyword">const</span> std::vector&lt;int&gt;&amp; fieldnoList, <span class="keyword">const</span> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">GroupBy</a>&amp; groupBy, <span class="keywordtype">bool</span> groupSingle)=0;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1QueryTermExpression.html">analyzer::QueryTermExpression</a> <a class="code" href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4b796b0b0daed50295cf46d62ea96b7">analyze</a>()=0;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
@@ -99,8 +99,9 @@
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a8cd543840390d38e06db37e9396926be"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926be">strus::QueryAnalyzerContextInterface::GroupBy</a></div><div class="ttdeci">GroupBy</div><div class="ttdoc">Descriptor that tells how to group elements together. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:34</div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_ac0987db6d718487398458d342184c44f"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#ac0987db6d718487398458d342184c44f">strus::QueryAnalyzerContextInterface::putField</a></div><div class="ttdeci">virtual void putField(int fieldno, const std::string &amp;fieldtype, const std::string &amp;content)=0</div><div class="ttdoc">Feed the analyzer with the a field of the query. </div></div>
+<div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a2f8d4bc1621f0924c4dd25a00982d05d"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a2f8d4bc1621f0924c4dd25a00982d05d">strus::QueryAnalyzerContextInterface::groupElements</a></div><div class="ttdeci">virtual void groupElements(int groupid, const std::vector&lt; int &gt; &amp;fieldnoList, const GroupBy &amp;groupBy, bool groupSingle)=0</div><div class="ttdoc">Group elements of the query together. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_aa4efa9610beeb0afd58e3c258bcd2e72"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4efa9610beeb0afd58e3c258bcd2e72">strus::QueryAnalyzerContextInterface::~QueryAnalyzerContextInterface</a></div><div class="ttdeci">virtual ~QueryAnalyzerContextInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:25</div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_afd45fe8bd1f60f1ba2796322d98ba3b4"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#afd45fe8bd1f60f1ba2796322d98ba3b4">strus::QueryAnalyzerContextInterface::groupElements</a></div><div class="ttdeci">virtual void groupElements(unsigned int groupid, const std::vector&lt; unsigned int &gt; &amp;fieldnoList, const GroupBy &amp;groupBy, bool groupSingle)=0</div><div class="ttdoc">Group elements of the query together. </div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a8cd543840390d38e06db37e9396926bea0c7a7da4be77e79bbba12606f3f5e481"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea0c7a7da4be77e79bbba12606f3f5e481">strus::QueryAnalyzerContextInterface::GroupByPosition</a></div><div class="ttdoc">Elements with same position are grouped together. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:36</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html">strus::QueryAnalyzerContextInterface</a></div><div class="ttdoc">Defines the context for analyzing queries for the strus IR engine. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a8cd543840390d38e06db37e9396926beac1188a7620dbfaa7beaa3ff6933786f6"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beac1188a7620dbfaa7beaa3ff6933786f6">strus::QueryAnalyzerContextInterface::GroupEvery</a></div><div class="ttdoc">Every element gets its own group. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:37</div></div>
@@ -109,12 +110,11 @@
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63">strus::QueryAnalyzerContextInterface::GroupAll</a></div><div class="ttdoc">All elements are grouped together. </div><div class="ttdef"><b>Definition:</b> queryAnalyzerContextInterface.hpp:38</div></div>
 <div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_aa4b796b0b0daed50295cf46d62ea96b7"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#aa4b796b0b0daed50295cf46d62ea96b7">strus::QueryAnalyzerContextInterface::analyze</a></div><div class="ttdeci">virtual analyzer::QueryTermExpression analyze()=0</div><div class="ttdoc">Analyze the term expression feeded with putField(unsigned int,const std::string&amp;,const std::string&amp;) ...</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1QueryTermExpression_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1QueryTermExpression.html">strus::analyzer::QueryTermExpression</a></div><div class="ttdoc">Expression of a query terms as result of a query analysis. </div><div class="ttdef"><b>Definition:</b> queryTermExpression.hpp:22</div></div>
-<div class="ttc" id="classstrus_1_1QueryAnalyzerContextInterface_html_a616bd4564101ce54be3d410abf33eff8"><div class="ttname"><a href="classstrus_1_1QueryAnalyzerContextInterface.html#a616bd4564101ce54be3d410abf33eff8">strus::QueryAnalyzerContextInterface::putField</a></div><div class="ttdeci">virtual void putField(unsigned int fieldno, const std::string &amp;fieldtype, const std::string &amp;content)=0</div><div class="ttdoc">Feed the analyzer with the a field of the query. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

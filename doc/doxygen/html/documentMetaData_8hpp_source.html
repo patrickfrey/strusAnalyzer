@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/documentMetaData.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/documentMetaData.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -78,35 +78,40 @@
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">   25</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">DocumentMetaData</a>(){}</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">   27</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">DocumentMetaData</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; o)</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                :m_name(o.m_name),m_value(o.m_value){}</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2e8d958ced6c7b93ca84fb61393a884a">   33</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2e8d958ced6c7b93ca84fb61393a884a">DocumentMetaData</a>( <span class="keyword">const</span> std::string&amp; n, <span class="keyword">const</span> NumericVariant&amp; v)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                :m_name(n),m_value(v){}</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">   38</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">name</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_name;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">   42</a></span>&#160;        <span class="keyword">const</span> NumericVariant&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">value</a>()<span class="keyword"> const     </span>{<span class="keywordflow">return</span> m_value;}</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        std::string m_name;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        NumericVariant m_value;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_ac958bd28eb1f13b431804c513a158a32"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">strus::analyzer::DocumentMetaData::name</a></div><div class="ttdeci">const std::string &amp; name() const </div><div class="ttdoc">Get the name of the meta data element. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:38</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_a2e8d958ced6c7b93ca84fb61393a884a"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2e8d958ced6c7b93ca84fb61393a884a">strus::analyzer::DocumentMetaData::DocumentMetaData</a></div><div class="ttdeci">DocumentMetaData(const std::string &amp;n, const NumericVariant &amp;v)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:33</div></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">DocumentMetaData</a>( <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">DocumentMetaData</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">   33</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">DocumentMetaData</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html">DocumentMetaData</a>&amp; o)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                :m_name(o.m_name),m_value(o.m_value){}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">DocumentMetaData</a>( <span class="keyword">const</span> std::string&amp; n, <span class="keyword">const</span> NumericVariant&amp; v)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                :m_name(n),m_value(v){}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">   44</a></span>&#160;        <span class="keyword">const</span> std::string&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">name</a>()<span class="keyword"> const         </span>{<span class="keywordflow">return</span> m_name;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">   48</a></span>&#160;        <span class="keyword">const</span> NumericVariant&amp; <a class="code" href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">value</a>()<span class="keyword"> const     </span>{<span class="keywordflow">return</span> m_value;}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        std::string m_name;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        NumericVariant m_value;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_ac958bd28eb1f13b431804c513a158a32"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ac958bd28eb1f13b431804c513a158a32">strus::analyzer::DocumentMetaData::name</a></div><div class="ttdeci">const std::string &amp; name() const </div><div class="ttdoc">Get the name of the meta data element. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:44</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_a2786e5a99532f1a850f0ecd3c5a2862d"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a2786e5a99532f1a850f0ecd3c5a2862d">strus::analyzer::DocumentMetaData::DocumentMetaData</a></div><div class="ttdeci">DocumentMetaData()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:25</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html">strus::analyzer::DocumentMetaData</a></div><div class="ttdoc">Structure describing a document meta data element. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:21</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_ae0b73439bbde626c28ebb9f0b22ee8f2"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">strus::analyzer::DocumentMetaData::DocumentMetaData</a></div><div class="ttdeci">DocumentMetaData(const DocumentMetaData &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:27</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_a22e5ec10050047d02a952471bfb9306e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">strus::analyzer::DocumentMetaData::value</a></div><div class="ttdeci">const NumericVariant &amp; value() const </div><div class="ttdoc">Get the value of the meta data element. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:42</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_ae0b73439bbde626c28ebb9f0b22ee8f2"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#ae0b73439bbde626c28ebb9f0b22ee8f2">strus::analyzer::DocumentMetaData::DocumentMetaData</a></div><div class="ttdeci">DocumentMetaData(const DocumentMetaData &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:33</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1DocumentMetaData_html_a22e5ec10050047d02a952471bfb9306e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentMetaData.html#a22e5ec10050047d02a952471bfb9306e">strus::analyzer::DocumentMetaData::value</a></div><div class="ttdeci">const NumericVariant &amp; value() const </div><div class="ttdoc">Get the value of the meta data element. </div><div class="ttdef"><b>Definition:</b> documentMetaData.hpp:48</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

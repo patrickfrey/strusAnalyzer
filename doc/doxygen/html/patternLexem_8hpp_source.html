@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/analyzer/patternLexem.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/analyzer/patternLexem.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_c88a5d577140394ff4b314f8a595a8dc.html">analyzer</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_dff573762f5b99c68532f4966257252f.html">analyzer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,65 +69,64 @@
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_PATTERN_LEXEM_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="token_8hpp.html">strus/analyzer/token.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>strus {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>analyzer {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        :<span class="keyword">public</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">   24</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">PatternLexem</a>()</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(),m_id(0){}</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a667db17960cbcce250c7fbef68834907">   27</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a667db17960cbcce250c7fbef68834907">PatternLexem</a>( <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> id_, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(ordpos_,origseg_,origpos_,origsize_),m_id(id_){}</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">   30</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">PatternLexem</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; o)</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(o),m_id(o.m_id){}</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a42de74752bd3affcd920f7f24df87310">   33</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a42de74752bd3affcd920f7f24df87310">~PatternLexem</a>(){}</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a73cfedca0085165e0076bd9067b367cd">   36</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a73cfedca0085165e0076bd9067b367cd">id</a>()<span class="keyword"> const                         </span>{<span class="keywordflow">return</span> m_id;}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">   38</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; o)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keywordflow">return</span> (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a>() == o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a>())</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        ? (</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a>() == o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a>())</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                ? (</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                        (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a>() == o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a>())</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                        ? (m_id &lt; o.m_id)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                        : (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a>() &lt; o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">origsize</a>())</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                )</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                : (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a>() &lt; o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">origpos</a>())</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                        )</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        : (<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a>() &lt; o.<a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">origseg</a>());</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_id;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="position_8hpp.html">strus/analyzer/position.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>strus {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>analyzer {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        :<span class="keyword">public</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">   25</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">PatternLexem</a>()</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(),m_id(0){}</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1460570dd34bf3e77022d08268cd68c8">   28</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1460570dd34bf3e77022d08268cd68c8">PatternLexem</a>( <span class="keywordtype">int</span> id_, <span class="keywordtype">int</span> ordpos_, <span class="keyword">const</span> <a class="code" href="structstrus_1_1analyzer_1_1Position.html">Position</a>&amp; origpos_, <span class="keywordtype">int</span> origsize_)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(ordpos_,origpos_,origsize_),m_id(id_){}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">PatternLexem</a>( <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">PatternLexem</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; operator= ( <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp;&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; ) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">   37</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">PatternLexem</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; o)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                :<a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>(o),m_id(o.m_id){}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a42de74752bd3affcd920f7f24df87310">~PatternLexem</a>(){}</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a5f681d0fb6031e5bafdf7fccf97bf579">   44</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a5f681d0fb6031e5bafdf7fccf97bf579">id</a>()<span class="keyword"> const                          </span>{<span class="keywordflow">return</span> m_id;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">   46</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternLexem.html">PatternLexem</a>&amp; o)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <span class="keywordtype">int</span> cmp = <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">Token::compare</a>( o);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                <span class="keywordflow">return</span> (cmp == 0) ? m_id &lt; o.m_id : cmp &lt; 0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordtype">int</span> m_id;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}} <span class="comment">//namespace</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a42de74752bd3affcd920f7f24df87310"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a42de74752bd3affcd920f7f24df87310">strus::analyzer::PatternLexem::~PatternLexem</a></div><div class="ttdeci">~PatternLexem()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:33</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a1d0fcebde5a66e868648e9201bdefcac"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">strus::analyzer::PatternLexem::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const PatternLexem &amp;o) const </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:38</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a73cfedca0085165e0076bd9067b367cd"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a73cfedca0085165e0076bd9067b367cd">strus::analyzer::PatternLexem::id</a></div><div class="ttdeci">unsigned int id() const </div><div class="ttdoc">Internal identifier of the term. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:36</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html">strus::analyzer::PatternLexem</a></div><div class="ttdoc">Structure describing a token with an id used for pattern matching. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:19</div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a8f3ebb8eca9fb0c99c2ff1dd3bea8e14"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a8f3ebb8eca9fb0c99c2ff1dd3bea8e14">strus::analyzer::Token::origseg</a></div><div class="ttdeci">unsigned int origseg() const </div><div class="ttdoc">Get the start byte position of the document segment of this token. </div><div class="ttdef"><b>Definition:</b> token.hpp:41</div></div>
-<div class="ttc" id="token_8hpp_html"><div class="ttname"><a href="token_8hpp.html">token.hpp</a></div><div class="ttdoc">Structure describing a token in the document by its start and end position. </div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a9643bea0f8acaabcbe01aea74fffd4a1"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a9643bea0f8acaabcbe01aea74fffd4a1">strus::analyzer::Token::origpos</a></div><div class="ttdeci">unsigned int origpos() const </div><div class="ttdoc">Get the start byte position of the token string in the translated document segment (UTF-8) ...</div><div class="ttdef"><b>Definition:</b> token.hpp:43</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a8ddb25cb754794ef70e78a492a453ec7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem(const PatternLexem &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:30</div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a0a3f814384688bc85a8b1e41baf9812a"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a0a3f814384688bc85a8b1e41baf9812a">strus::analyzer::Token::origsize</a></div><div class="ttdeci">unsigned int origsize() const </div><div class="ttdoc">Get the byte size of the translated token string (UTF-8) in the original document segment...</div><div class="ttdef"><b>Definition:</b> token.hpp:45</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a4a4206c9d15faf4c639a483f48fb4883"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:24</div></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}} <span class="comment">//namespace</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a42de74752bd3affcd920f7f24df87310"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a42de74752bd3affcd920f7f24df87310">strus::analyzer::PatternLexem::~PatternLexem</a></div><div class="ttdeci">~PatternLexem()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:41</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a1d0fcebde5a66e868648e9201bdefcac"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a1d0fcebde5a66e868648e9201bdefcac">strus::analyzer::PatternLexem::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const PatternLexem &amp;o) const </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:46</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html">strus::analyzer::PatternLexem</a></div><div class="ttdoc">Structure describing a token with an id used for pattern matching. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:20</div></div>
+<div class="ttc" id="token_8hpp_html"><div class="ttname"><a href="token_8hpp.html">token.hpp</a></div><div class="ttdoc">Structure describing a token in the document by its start position and size. </div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a8ddb25cb754794ef70e78a492a453ec7"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a8ddb25cb754794ef70e78a492a453ec7">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem(const PatternLexem &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:37</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a8a7694a5f6ae09793a24811f93a76525"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">strus::analyzer::Token::compare</a></div><div class="ttdeci">int compare(const Token &amp;o) const </div><div class="ttdoc">Compare with another token. </div><div class="ttdef"><b>Definition:</b> token.hpp:68</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a4a4206c9d15faf4c639a483f48fb4883"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a4a4206c9d15faf4c639a483f48fb4883">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:25</div></div>
+<div class="ttc" id="position_8hpp_html"><div class="ttname"><a href="position_8hpp.html">position.hpp</a></div><div class="ttdoc">Structure describing a position in a document source by segment and offset. </div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a5f681d0fb6031e5bafdf7fccf97bf579"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a5f681d0fb6031e5bafdf7fccf97bf579">strus::analyzer::PatternLexem::id</a></div><div class="ttdeci">int id() const </div><div class="ttdoc">Internal identifier of the term. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:44</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a1460570dd34bf3e77022d08268cd68c8"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a1460570dd34bf3e77022d08268cd68c8">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem(int id_, int ordpos_, const Position &amp;origpos_, int origsize_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:28</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Position_html"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Position.html">strus::analyzer::Position</a></div><div class="ttdoc">Structure describing a position in a document source by segment and offset. </div><div class="ttdef"><b>Definition:</b> position.hpp:22</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></div><div class="ttdoc">Structure describing a token in the document by its start and end position. </div><div class="ttdef"><b>Definition:</b> token.hpp:21</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1PatternLexem_html_a667db17960cbcce250c7fbef68834907"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternLexem.html#a667db17960cbcce250c7fbef68834907">strus::analyzer::PatternLexem::PatternLexem</a></div><div class="ttdeci">PatternLexem(unsigned int id_, unsigned int ordpos_, std::size_t origseg_, std::size_t origpos_, std::size_t origsize_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> patternLexem.hpp:27</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

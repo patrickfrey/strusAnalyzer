@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -61,6 +61,7 @@
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classstrus_1_1TextProcessorInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">strus::TextProcessorInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -92,12 +93,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a72b5be9507463bb7af2cc4442e9ba58f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a72b5be9507463bb7af2cc4442e9ba58f">~TextProcessorInterface</a> ()</td></tr>
 <tr class="memdesc:a72b5be9507463bb7af2cc4442e9ba58f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Desructor.  <a href="#a72b5be9507463bb7af2cc4442e9ba58f">More...</a><br/></td></tr>
 <tr class="separator:a72b5be9507463bb7af2cc4442e9ba58f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06cfcdb70457021ba311dec67e7bc55e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a06cfcdb70457021ba311dec67e7bc55e">addResourcePath</a> (const std::string &amp;path)=0</td></tr>
-<tr class="memdesc:a06cfcdb70457021ba311dec67e7bc55e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a path for locating resource files.  <a href="#a06cfcdb70457021ba311dec67e7bc55e">More...</a><br/></td></tr>
-<tr class="separator:a06cfcdb70457021ba311dec67e7bc55e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35eeab2013e6c2d60e93a7d4463f7821"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">getResourcePath</a> (const std::string &amp;filename) const =0</td></tr>
-<tr class="memdesc:a35eeab2013e6c2d60e93a7d4463f7821"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute path of a resource file.  <a href="#a35eeab2013e6c2d60e93a7d4463f7821">More...</a><br/></td></tr>
-<tr class="separator:a35eeab2013e6c2d60e93a7d4463f7821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a7b93ff04d7af8ddcab7734e3b2974f"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a9a7b93ff04d7af8ddcab7734e3b2974f">getResourceFilePath</a> (const std::string &amp;filename) const =0</td></tr>
+<tr class="memdesc:a9a7b93ff04d7af8ddcab7734e3b2974f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the absolute path of a resource file.  <a href="#a9a7b93ff04d7af8ddcab7734e3b2974f">More...</a><br/></td></tr>
+<tr class="separator:a9a7b93ff04d7af8ddcab7734e3b2974f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae026d50dcab9030e6891c9e6fbad89fb"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ae026d50dcab9030e6891c9e6fbad89fb">getSegmenterByName</a> (const std::string &amp;segmenterName) const =0</td></tr>
 <tr class="memdesc:ae026d50dcab9030e6891c9e6fbad89fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document segmenter object reference.  <a href="#ae026d50dcab9030e6891c9e6fbad89fb">More...</a><br/></td></tr>
 <tr class="separator:ae026d50dcab9030e6891c9e6fbad89fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -131,9 +129,19 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1PatternTermFeederInterface.html">PatternTermFeederInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a06b632e7bccff2d8e7b1ab4219f53a1c">getPatternTermFeeder</a> () const =0</td></tr>
 <tr class="memdesc:a06b632e7bccff2d8e7b1ab4219f53a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the default pattern term feeder interface for post processing pattern matching on analyzer output.  <a href="#a06b632e7bccff2d8e7b1ab4219f53a1c">More...</a><br/></td></tr>
 <tr class="separator:a06b632e7bccff2d8e7b1ab4219f53a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac84e1fc3ccd8a49079643aa8b9cae024"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ac84e1fc3ccd8a49079643aa8b9cae024">detectDocumentClass</a> (<a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;dclass, const char *contentBegin, std::size_t contentBeginSize) const =0</td></tr>
-<tr class="memdesc:ac84e1fc3ccd8a49079643aa8b9cae024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect the document class from a document start chunk and set the content description attributes.  <a href="#ac84e1fc3ccd8a49079643aa8b9cae024">More...</a><br/></td></tr>
-<tr class="separator:ac84e1fc3ccd8a49079643aa8b9cae024"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28ddb29b890ebd0d555df41e73dcbf96"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1PosTaggerDataInterface.html">PosTaggerDataInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a28ddb29b890ebd0d555df41e73dcbf96">createPosTaggerData</a> (<a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer) const =0</td></tr>
+<tr class="memdesc:a28ddb29b890ebd0d555df41e73dcbf96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a data structure to feed with POS tagging info.  <a href="#a28ddb29b890ebd0d555df41e73dcbf96">More...</a><br/></td></tr>
+<tr class="separator:a28ddb29b890ebd0d555df41e73dcbf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dc04902d2e3504a13f138c4e598ab9b"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classstrus_1_1PosTaggerInterface.html">PosTaggerInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#a9dc04902d2e3504a13f138c4e598ab9b">getPosTagger</a> () const =0</td></tr>
+<tr class="memdesc:a9dc04902d2e3504a13f138c4e598ab9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the default POS tagger interface to do POS tagging of documents.  <a href="#a9dc04902d2e3504a13f138c4e598ab9b">More...</a><br/></td></tr>
+<tr class="separator:a9dc04902d2e3504a13f138c4e598ab9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba7f338707e6f32ef1a00cbd28a202e5"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
+<a class="el" href="classstrus_1_1TokenMarkupInstanceInterface.html">TokenMarkupInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#aba7f338707e6f32ef1a00cbd28a202e5">createTokenMarkupInstance</a> () const =0</td></tr>
+<tr class="memdesc:aba7f338707e6f32ef1a00cbd28a202e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an interface for markup of content.  <a href="#aba7f338707e6f32ef1a00cbd28a202e5">More...</a><br/></td></tr>
+<tr class="separator:aba7f338707e6f32ef1a00cbd28a202e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3468d97f6a8a157cdec4d71b120dd48"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ab3468d97f6a8a157cdec4d71b120dd48">detectDocumentClass</a> (<a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;dclass, const char *contentBegin, std::size_t contentBeginSize, bool isComplete) const =0</td></tr>
+<tr class="memdesc:ab3468d97f6a8a157cdec4d71b120dd48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detect the document class from a document start chunk and set the content description attributes.  <a href="#ab3468d97f6a8a157cdec4d71b120dd48">More...</a><br/></td></tr>
+<tr class="separator:ab3468d97f6a8a157cdec4d71b120dd48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc5841797633ff7b733198f8db1bfe81"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#adc5841797633ff7b733198f8db1bfe81">defineDocumentClassDetector</a> (<a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *detector)=0</td></tr>
 <tr class="memdesc:adc5841797633ff7b733198f8db1bfe81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a content detector.  <a href="#adc5841797633ff7b733198f8db1bfe81">More...</a><br/></td></tr>
 <tr class="separator:adc5841797633ff7b733198f8db1bfe81"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,6 +169,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0fd28a5a046a167d8b050a871911a77"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ad0fd28a5a046a167d8b050a871911a77">getFunctionList</a> (const <a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> &amp;type) const =0</td></tr>
 <tr class="memdesc:ad0fd28a5a046a167d8b050a871911a77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a list of all functions of a specific type available.  <a href="#ad0fd28a5a046a167d8b050a871911a77">More...</a><br/></td></tr>
 <tr class="separator:ad0fd28a5a046a167d8b050a871911a77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ac60f4f01e3fe2e3c4ad6f264462f28d6"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ac60f4f01e3fe2e3c4ad6f264462f28d6">functionTypeName</a> (<a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a> t)</td></tr>
+<tr class="separator:ac60f4f01e3fe2e3c4ad6f264462f28d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics. </p>
@@ -226,7 +239,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a06cfcdb70457021ba311dec67e7bc55e"></a>
+<a class="anchor" id="a28ddb29b890ebd0d555df41e73dcbf96"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -234,11 +247,11 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void strus::TextProcessorInterface::addResourcePath </td>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1PosTaggerDataInterface.html">PosTaggerDataInterface</a>* strus::TextProcessorInterface::createPosTaggerData </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *&#160;</td>
+          <td class="paramname"><em>tokenizer</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -248,13 +261,41 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Declare a path for locating resource files. </p>
+<p>Create a data structure to feed with POS tagging info. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>path to add </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokenizer</td><td>tokenizer to use to split POS tagging entities (with ownership) </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section remark"><dt>Remarks</dt><dd>the tokenization has to be in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the POS tagger data interface (with ownership) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aba7f338707e6f32ef1a00cbd28a202e5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1TokenMarkupInstanceInterface.html">TokenMarkupInstanceInterface</a>* strus::TextProcessorInterface::createTokenMarkupInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create an interface for markup of content. </p>
+<dl class="section return"><dt>Returns</dt><dd>the token markup instance interface </dd></dl>
 
 </div>
 </div>
@@ -591,7 +632,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac84e1fc3ccd8a49079643aa8b9cae024"></a>
+<a class="anchor" id="ab3468d97f6a8a157cdec4d71b120dd48"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -614,7 +655,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>contentBeginSize</em>&#160;</td>
+          <td class="paramname"><em>contentBeginSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isComplete</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -633,11 +680,37 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">dclass</td><td>content document class </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">contentBegin</td><td>start chunk of the document with a reasonable size (e.g. max 1K) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">contentBegin</td><td>start chunk of the document with a reasonable size </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">contentBeginSize</td><td>size of chunk passed </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">isComplete</td><td>true, of the chunk passed is the whole document (this might influence the result) </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true, if the document format was recognized, false else </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac60f4f01e3fe2e3c4ad6f264462f28d6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char* strus::TextProcessorInterface::functionTypeName </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1TextProcessorInterface.html#ab187472640084bc0d62da1d04a9de353">FunctionType</a>&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -808,7 +881,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a35eeab2013e6c2d60e93a7d4463f7821"></a>
+<a class="anchor" id="a9dc04902d2e3504a13f138c4e598ab9b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -816,7 +889,33 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::string strus::TextProcessorInterface::getResourcePath </td>
+          <td class="memname">virtual const <a class="el" href="classstrus_1_1PosTaggerInterface.html">PosTaggerInterface</a>* strus::TextProcessorInterface::getPosTagger </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the default POS tagger interface to do POS tagging of documents. </p>
+<dl class="section return"><dt>Returns</dt><dd>the POS tagger interface (with ownership) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a9a7b93ff04d7af8ddcab7734e3b2974f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string strus::TextProcessorInterface::getResourceFilePath </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
@@ -966,13 +1065,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="textProcessorInterface_8hpp_source.html">textProcessorInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="textProcessorInterface_8hpp_source.html">textProcessorInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

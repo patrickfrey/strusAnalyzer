@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -61,6 +61,7 @@
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classstrus_1_1PatternMatcherInstanceInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">strus::PatternMatcherInstanceInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -111,9 +112,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#aa2890cb3c55ee6b3fa9800b5d3b4779e">attachVariable</a> (const std::string &amp;name)=0</td></tr>
 <tr class="memdesc:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attaches a variable to the top expression or term on the stack.  <a href="#aa2890cb3c55ee6b3fa9800b5d3b4779e">More...</a><br/></td></tr>
 <tr class="separator:aa2890cb3c55ee6b3fa9800b5d3b4779e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3df8ff854b850b2cefd91888a5f27d37"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a3df8ff854b850b2cefd91888a5f27d37">definePattern</a> (const std::string &amp;name, bool visible)=0</td></tr>
-<tr class="memdesc:a3df8ff854b850b2cefd91888a5f27d37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pattern that can be referenced by the given name and can be declared as part of the result.  <a href="#a3df8ff854b850b2cefd91888a5f27d37">More...</a><br/></td></tr>
-<tr class="separator:a3df8ff854b850b2cefd91888a5f27d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af70c9a3a938cef50514ec9aa8dfaac76"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#af70c9a3a938cef50514ec9aa8dfaac76">definePattern</a> (const std::string &amp;name, const std::string &amp;formatstring, bool visible)=0</td></tr>
+<tr class="memdesc:af70c9a3a938cef50514ec9aa8dfaac76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a pattern that can be referenced by the given name and can be declared as part of the result.  <a href="#af70c9a3a938cef50514ec9aa8dfaac76">More...</a><br/></td></tr>
+<tr class="separator:af70c9a3a938cef50514ec9aa8dfaac76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08299db8c5fcc72b3cdbd3ae20e971d0"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a08299db8c5fcc72b3cdbd3ae20e971d0">compile</a> ()=0</td></tr>
 <tr class="memdesc:a08299db8c5fcc72b3cdbd3ae20e971d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile all patterns defined.  <a href="#a08299db8c5fcc72b3cdbd3ae20e971d0">More...</a><br/></td></tr>
 <tr class="separator:a08299db8c5fcc72b3cdbd3ae20e971d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,6 +122,14 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classstrus_1_1PatternMatcherContextInterface.html">PatternMatcherContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a2916b85320d98149e9960a40f4f5a6a7">createContext</a> () const =0</td></tr>
 <tr class="memdesc:a2916b85320d98149e9960a40f4f5a6a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the context to process a document with the pattern matcher.  <a href="#a2916b85320d98149e9960a40f4f5a6a7">More...</a><br/></td></tr>
 <tr class="separator:a2916b85320d98149e9960a40f4f5a6a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abccfaed6e1e993e30dcc4cc14d8cd00d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#abccfaed6e1e993e30dcc4cc14d8cd00d">view</a> () const =0</td></tr>
+<tr class="memdesc:abccfaed6e1e993e30dcc4cc14d8cd00d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the definition of the function as structure for introspection.  <a href="#abccfaed6e1e993e30dcc4cc14d8cd00d">More...</a><br/></td></tr>
+<tr class="separator:abccfaed6e1e993e30dcc4cc14d8cd00d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a3891020a836755783ce2cefa505d9a3d"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a3891020a836755783ce2cefa505d9a3d">joinOperationName</a> (<a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997a">JoinOperation</a> op)</td></tr>
+<tr class="separator:a3891020a836755783ce2cefa505d9a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for building the automaton for detecting patterns in text. </p>
@@ -324,7 +333,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3df8ff854b850b2cefd91888a5f27d37"></a>
+<a class="anchor" id="af70c9a3a938cef50514ec9aa8dfaac76"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -336,6 +345,12 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>formatstring</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -360,6 +375,7 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>name of the pattern and the result if declared as visible </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">formatstring</td><td>format string for the value associated with the pattern (empty if undefined). The formatstring contains variable references to pattern parts in curly brackets '{' '}'. A variable reference is an identifier optionally followed by an or '|' and a separator value used for separate multiple occurrencies of the referenced variable. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">visible</td><td>true, if the pattern result should be exported (be visible in the final result) </td></tr>
   </table>
   </dd>
@@ -407,6 +423,30 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a3891020a836755783ce2cefa505d9a3d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char* strus::PatternMatcherInstanceInterface::joinOperationName </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classstrus_1_1PatternMatcherInstanceInterface.html#a1a3d6a3e5f7af837b5f3044d1bc8997a">JoinOperation</a>&#160;</td>
+          <td class="paramname"><em>op</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -532,14 +572,40 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="abccfaed6e1e993e30dcc4cc14d8cd00d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> strus::PatternMatcherInstanceInterface::view </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the definition of the function as structure for introspection. </p>
+<dl class="section return"><dt>Returns</dt><dd>structure for introspection </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="patternMatcherInstanceInterface_8hpp_source.html">patternMatcherInstanceInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="patternMatcherInstanceInterface_8hpp_source.html">patternMatcherInstanceInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

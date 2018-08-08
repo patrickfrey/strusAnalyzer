@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/tokenMarkupInstanceInterface.hpp Source File</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/tokenMarkupInstanceInterface.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -68,35 +68,42 @@
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_TOKEN_MARKUP_INSTANCE_INTERFACE_HPP_INCLUDED</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>strus</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>TokenMarkupContextInterface;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>SegmenterMarkupContextInterface;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenMarkupInstanceInterface.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html">TokenMarkupInstanceInterface</a></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">   27</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">~TokenMarkupInstanceInterface</a>(){}</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenMarkupContextInterface.html">TokenMarkupContextInterface</a>* <a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html#ab544d12891031862627492fed289caa3">createContext</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;} <span class="comment">//namespace</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html">strus::TokenMarkupInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting patterns of tokens in a document stream...</div><div class="ttdef"><b>Definition:</b> tokenMarkupInstanceInterface.hpp:23</div></div>
-<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html_a8aa688cf6ec9e4b0159b7fbdc1dd5526"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">strus::TokenMarkupInstanceInterface::~TokenMarkupInstanceInterface</a></div><div class="ttdeci">virtual ~TokenMarkupInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> tokenMarkupInstanceInterface.hpp:27</div></div>
-<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html_ab544d12891031862627492fed289caa3"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html#ab544d12891031862627492fed289caa3">strus::TokenMarkupInstanceInterface::createContext</a></div><div class="ttdeci">virtual TokenMarkupContextInterface * createContext() const =0</div><div class="ttdoc">Create the context to markup tokens or spans in a document. </div></div>
-<div class="ttc" id="classstrus_1_1TokenMarkupContextInterface_html"><div class="ttname"><a href="classstrus_1_1TokenMarkupContextInterface.html">strus::TokenMarkupContextInterface</a></div><div class="ttdoc">Interface for annotation of text in one document. </div><div class="ttdef"><b>Definition:</b> tokenMarkupContextInterface.hpp:24</div></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="functionView_8hpp.html">strus/analyzer/functionView.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>strus</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">class </span>TokenMarkupContextInterface;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">class </span>SegmenterMarkupContextInterface;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenMarkupInstanceInterface.html">   24</a></span>&#160;<span class="keyword">class </span><a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html">TokenMarkupInstanceInterface</a></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;{</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">   28</a></span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">~TokenMarkupInstanceInterface</a>(){}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1TokenMarkupContextInterface.html">TokenMarkupContextInterface</a>* <a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html#a03a21d75811894bcae49cc79b6451dec">createContext</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1SegmenterInstanceInterface.html">SegmenterInstanceInterface</a>* segmenter) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> <a class="code" href="classstrus_1_1TokenMarkupInstanceInterface.html#a1ee89192d864daf0381ece7fc591d9a9">view</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;} <span class="comment">//namespace</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="ttc" id="classstrus_1_1SegmenterInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1SegmenterInstanceInterface.html">strus::SegmenterInstanceInterface</a></div><div class="ttdoc">Defines a program for splitting a source text it into chunks with an id correspoding to a selecting e...</div><div class="ttdef"><b>Definition:</b> segmenterInstanceInterface.hpp:25</div></div>
+<div class="ttc" id="functionView_8hpp_html"><div class="ttname"><a href="functionView_8hpp.html">functionView.hpp</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1FunctionView_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1FunctionView.html">strus::analyzer::FunctionView</a></div><div class="ttdoc">Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the...</div><div class="ttdef"><b>Definition:</b> functionView.hpp:29</div></div>
+<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html">strus::TokenMarkupInstanceInterface</a></div><div class="ttdoc">Interface for building the automaton for detecting patterns of tokens in a document stream...</div><div class="ttdef"><b>Definition:</b> tokenMarkupInstanceInterface.hpp:24</div></div>
+<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html_a8aa688cf6ec9e4b0159b7fbdc1dd5526"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html#a8aa688cf6ec9e4b0159b7fbdc1dd5526">strus::TokenMarkupInstanceInterface::~TokenMarkupInstanceInterface</a></div><div class="ttdeci">virtual ~TokenMarkupInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> tokenMarkupInstanceInterface.hpp:28</div></div>
+<div class="ttc" id="classstrus_1_1TokenMarkupContextInterface_html"><div class="ttname"><a href="classstrus_1_1TokenMarkupContextInterface.html">strus::TokenMarkupContextInterface</a></div><div class="ttdoc">Interface for annotation of text in one document. </div><div class="ttdef"><b>Definition:</b> tokenMarkupContextInterface.hpp:25</div></div>
+<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html_a03a21d75811894bcae49cc79b6451dec"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html#a03a21d75811894bcae49cc79b6451dec">strus::TokenMarkupInstanceInterface::createContext</a></div><div class="ttdeci">virtual TokenMarkupContextInterface * createContext(const SegmenterInstanceInterface *segmenter) const =0</div><div class="ttdoc">Create the context to markup tokens or spans in a document. </div></div>
+<div class="ttc" id="classstrus_1_1TokenMarkupInstanceInterface_html_a1ee89192d864daf0381ece7fc591d9a9"><div class="ttname"><a href="classstrus_1_1TokenMarkupInstanceInterface.html#a1ee89192d864daf0381ece7fc591d9a9">strus::TokenMarkupInstanceInterface::view</a></div><div class="ttdeci">virtual analyzer::FunctionView view() const =0</div><div class="ttdoc">Get the definition of the function as structure for introspection. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

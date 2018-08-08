@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -56,6 +56,7 @@
     <ul class="tablist">
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
       <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
@@ -93,6 +94,9 @@
 <li>getAggregator()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a91caaf2e2f07a840efa507c080ef9383">strus::TextProcessorInterface</a>
 </li>
+<li>getAnalyzer()
+: <a class="el" href="classstrus_1_1DocumentAnalyzerMapInterface.html#a2a17dc164db08c9dede5e1113d9fdd8e">strus::DocumentAnalyzerMapInterface</a>
+</li>
 <li>getCompileOptionNames()
 : <a class="el" href="classstrus_1_1PatternLexerInterface.html#aee9016f10de11b33bfee589396cda010">strus::PatternLexerInterface</a>
 , <a class="el" href="classstrus_1_1PatternMatcherInterface.html#af5458ac1be80882418707239a8340ce3">strus::PatternMatcherInterface</a>
@@ -118,7 +122,8 @@
 : <a class="el" href="classstrus_1_1PatternLexerInstanceInterface.html#a83dc9572a1c277e1ba81343d3e641a99">strus::PatternLexerInstanceInterface</a>
 </li>
 <li>getNext()
-: <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
+: <a class="el" href="classstrus_1_1ContentIteratorInterface.html#a1ad281a376e7f9508223faa0e49aa242">strus::ContentIteratorInterface</a>
+, <a class="el" href="classstrus_1_1SegmenterContextInterface.html#a1afbc0c4571a656e839ad98355b9232b">strus::SegmenterContextInterface</a>
 , <a class="el" href="classstrus_1_1SegmenterMarkupContextInterface.html#ad6ac6fa135f2e8a64c1b864409cc979c">strus::SegmenterMarkupContextInterface</a>
 </li>
 <li>getNormalizer()
@@ -133,8 +138,14 @@
 <li>getPatternTermFeeder()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a06b632e7bccff2d8e7b1ab4219f53a1c">strus::TextProcessorInterface</a>
 </li>
-<li>getResourcePath()
-: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35eeab2013e6c2d60e93a7d4463f7821">strus::TextProcessorInterface</a>
+<li>getPosTagger()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a9dc04902d2e3504a13f138c4e598ab9b">strus::TextProcessorInterface</a>
+</li>
+<li>getPosTaggerInput()
+: <a class="el" href="classstrus_1_1PosTaggerInstanceInterface.html#a7f9210d735c09b2e6f24c26424337e4e">strus::PosTaggerInstanceInterface</a>
+</li>
+<li>getResourceFilePath()
+: <a class="el" href="classstrus_1_1TextProcessorInterface.html#a9a7b93ff04d7af8ddcab7734e3b2974f">strus::TextProcessorInterface</a>
 </li>
 <li>getSegmenterByMimeType()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a35addad7758700a5eb4d130c7aaa4be2">strus::TextProcessorInterface</a>
@@ -158,6 +169,9 @@
 <li>getTokenizer()
 : <a class="el" href="classstrus_1_1TextProcessorInterface.html#a12be7c7a76632607dad91d8208c120c3">strus::TextProcessorInterface</a>
 </li>
+<li>getVariable()
+: <a class="el" href="classstrus_1_1PatternResultFormatVariableMap.html#a13d1f2b9604b4c0e774a5127b745cac6">strus::PatternResultFormatVariableMap</a>
+</li>
 <li>GroupAll
 : <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea284d03ccfd44dc23ccc84ba1b6ea2b63">strus::QueryAnalyzerContextInterface</a>
 </li>
@@ -168,7 +182,7 @@
 : <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926bea0c7a7da4be77e79bbba12606f3f5e481">strus::QueryAnalyzerContextInterface</a>
 </li>
 <li>groupElements()
-: <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#afd45fe8bd1f60f1ba2796322d98ba3b4">strus::QueryAnalyzerContextInterface</a>
+: <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a2f8d4bc1621f0924c4dd25a00982d05d">strus::QueryAnalyzerContextInterface</a>
 </li>
 <li>GroupEvery
 : <a class="el" href="classstrus_1_1QueryAnalyzerContextInterface.html#a8cd543840390d38e06db37e9396926beac1188a7620dbfaa7beaa3ff6933786f6">strus::QueryAnalyzerContextInterface</a>
@@ -181,7 +195,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

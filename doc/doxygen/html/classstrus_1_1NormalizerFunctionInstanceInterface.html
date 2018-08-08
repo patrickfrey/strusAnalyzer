@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1b6778490d80494efdbec4b601a391ff"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html#a1b6778490d80494efdbec4b601a391ff">normalize</a> (const char *src, std::size_t srcsize) const =0</td></tr>
 <tr class="memdesc:a1b6778490d80494efdbec4b601a391ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalization of a token.  <a href="#a1b6778490d80494efdbec4b601a391ff">More...</a><br/></td></tr>
 <tr class="separator:a1b6778490d80494efdbec4b601a391ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3157acea349b0dd6980d809ac537667"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html#af3157acea349b0dd6980d809ac537667">view</a> () const =0</td></tr>
+<tr class="memdesc:af3157acea349b0dd6980d809ac537667"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the definition of the function as structure for introspection.  <a href="#af3157acea349b0dd6980d809ac537667">More...</a><br/></td></tr>
+<tr class="separator:af3157acea349b0dd6980d809ac537667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for a parameterized normalization function. </p>
@@ -153,14 +156,40 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af3157acea349b0dd6980d809ac537667"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classstrus_1_1analyzer_1_1FunctionView.html">analyzer::FunctionView</a> strus::NormalizerFunctionInstanceInterface::view </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the definition of the function as structure for introspection. </p>
+<dl class="section return"><dt>Returns</dt><dd>structure for introspection </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/patrick/tmp/strusAnalyzer/include/strus/<a class="el" href="normalizerFunctionInstanceInterface_8hpp_source.html">normalizerFunctionInstanceInterface.hpp</a></li>
+<li>/home/patrick/Projects/github/strusAnalyzer/include/strus/<a class="el" href="normalizerFunctionInstanceInterface_8hpp_source.html">normalizerFunctionInstanceInterface.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

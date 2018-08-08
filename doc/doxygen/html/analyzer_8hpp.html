@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>strusAnalyzer: /home/patrick/tmp/strusAnalyzer/include/strus/lib/analyzer.hpp File Reference</title>
+<title>strusAnalyzer: /home/patrick/Projects/github/strusAnalyzer/include/strus/lib/analyzer.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.15</span>
+   &#160;<span id="projectnumber">0.16</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,7 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_059b4049049125418ea100bc2b2a9449.html">include</a></li><li class="navelem"><a class="el" href="dir_a7e7c4226d428983640322e791988e47.html">strus</a></li><li class="navelem"><a class="el" href="dir_35070828f9ca81e0ca44b8badc62fb53.html">lib</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_c93669fd18fe7fc7eacbfdf912bbfd8c.html">include</a></li><li class="navelem"><a class="el" href="dir_765f02bad354491fd4019810618720a0.html">strus</a></li><li class="navelem"><a class="el" href="dir_34a3d69fc0edbd883437b52adfca797b.html">lib</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -78,12 +78,15 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a03c450c5bf273cdea26aa326c8830169"><td class="memItemLeft" align="right" valign="top">DocumentAnalyzerInterface *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a03c450c5bf273cdea26aa326c8830169">strus::createDocumentAnalyzer</a> (const TextProcessorInterface *textproc, const SegmenterInterface *segmenter, const analyzer::SegmenterOptions &amp;opts, ErrorBufferInterface *errorhnd)</td></tr>
-<tr class="memdesc:a03c450c5bf273cdea26aa326c8830169"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing documents.  <a href="#a03c450c5bf273cdea26aa326c8830169">More...</a><br/></td></tr>
-<tr class="separator:a03c450c5bf273cdea26aa326c8830169"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab44bf498faf162d411fc08f3cfc45632"><td class="memItemLeft" align="right" valign="top">QueryAnalyzerInterface *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#ab44bf498faf162d411fc08f3cfc45632">strus::createQueryAnalyzer</a> (ErrorBufferInterface *errorhnd)</td></tr>
-<tr class="memdesc:ab44bf498faf162d411fc08f3cfc45632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing queries.  <a href="#ab44bf498faf162d411fc08f3cfc45632">More...</a><br/></td></tr>
-<tr class="separator:ab44bf498faf162d411fc08f3cfc45632"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5afad90678542a74a8108f1a806ece5c"><td class="memItemLeft" align="right" valign="top">DocumentAnalyzerInstanceInterface *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a5afad90678542a74a8108f1a806ece5c">strus::createDocumentAnalyzer</a> (const TextProcessorInterface *textproc, const SegmenterInterface *segmenter, const analyzer::SegmenterOptions &amp;opts, ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a5afad90678542a74a8108f1a806ece5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing documents.  <a href="#a5afad90678542a74a8108f1a806ece5c">More...</a><br/></td></tr>
+<tr class="separator:a5afad90678542a74a8108f1a806ece5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2cf0d6bca596234e4ca9e401d3d9633"><td class="memItemLeft" align="right" valign="top">QueryAnalyzerInstanceInterface *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#af2cf0d6bca596234e4ca9e401d3d9633">strus::createQueryAnalyzer</a> (ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:af2cf0d6bca596234e4ca9e401d3d9633"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a parameterizable analyzer instance for analyzing queries.  <a href="#af2cf0d6bca596234e4ca9e401d3d9633">More...</a><br/></td></tr>
+<tr class="separator:af2cf0d6bca596234e4ca9e401d3d9633"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b8e6d3491eb6c40223a2df5eed973ac"><td class="memItemLeft" align="right" valign="top">DocumentAnalyzerMapInterface *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a6b8e6d3491eb6c40223a2df5eed973ac">strus::createDocumentAnalyzerMap</a> (const AnalyzerObjectBuilderInterface *objbuilder, ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a6b8e6d3491eb6c40223a2df5eed973ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a analyzer map for bundling different instances of analyzers for different classes of documents.  <a href="#a6b8e6d3491eb6c40223a2df5eed973ac">More...</a><br/></td></tr>
+<tr class="separator:a6b8e6d3491eb6c40223a2df5eed973ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Exported functions of the strus analyzer library. </p>
@@ -91,7 +94,7 @@ Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2017 22:51:42 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
