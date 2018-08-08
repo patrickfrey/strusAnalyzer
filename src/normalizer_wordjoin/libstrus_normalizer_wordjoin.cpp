@@ -28,6 +28,6 @@ DLL_PUBLIC NormalizerFunctionInterface* strus::createNormalizer_wordjoin( ErrorB
 		}
 		return new WordJoinNormalizerFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), "wordjoin", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create \"%s\" normalizer: %s"), "wordjoin", *errorhnd, 0);
 }
 

@@ -1,8 +1,0 @@
-Library dependencies of strusAnalyzer:
-	- boost (headers and -lboost_system)
-	- textwolf (http://textwolf.net,  included in strusAnalyzer)
-	- snowball stemers (http://snowball.tartarus.org,  included in strusAnalyzer)
-
-Ubuntu:
-	sudo apt-get install liboost-all-dev
-

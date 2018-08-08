@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <algorithm>
 #include <iostream>
 #include <setjmp.h>
 
@@ -72,7 +73,7 @@ public:
 			segmentsize = m_segmentitr->second.segsize;
 			return true;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
 	}
 
 	virtual unsigned int segmentSize( const SegmenterPosition& segpos)
@@ -104,8 +105,15 @@ public:
 
 		MarkupElement( Type type_, std::size_t pos_, std::size_t idx_, const std::string& value_)
 			:type(type_),pos(pos_),idx(idx_),value(value_){}
+#if __cplusplus >= 201103L
+		MarkupElement( MarkupElement&& ) = default;
+		MarkupElement( const MarkupElement& ) = default;
+		MarkupElement& operator= ( MarkupElement&& ) = default;
+		MarkupElement& operator= ( const MarkupElement& ) = default;
+#else
 		MarkupElement( const MarkupElement& o)
 			:type(o.type),pos(o.pos),idx(o.idx),value(o.value){}
+#endif
 
 		bool operator < (const MarkupElement& o) const
 		{
@@ -124,7 +132,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined"));
+				throw std::runtime_error( _TXT("segment with this position not defined"));
 			}
 			else
 			{
@@ -132,7 +140,7 @@ public:
 				return std::string( m_strings.c_str()+tagidx);
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag name of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get tag name of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, std::string());
 	}
 
 	virtual int tagLevel( const SegmenterPosition& segpos) const
@@ -142,14 +150,14 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined"));
+				throw std::runtime_error( _TXT("segment with this position not defined"));
 			}
 			else
 			{
 				return segitr->second.taglevel;
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get tag hierarchy level of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get tag hierarchy level of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd, 0);
 	}
 
 	virtual void putOpenTag(
@@ -181,7 +189,7 @@ public:
 			typename SegmentMap::const_iterator segitr = findSegment( segpos);
 			if (segitr == m_segmentmap.end())
 			{
-				throw strus::runtime_error( "%s", _TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
+				throw std::runtime_error( _TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
 			}
 			std::size_t pos = getOrigPosition( segpos, ofs);
 			if (m_markups.size() && m_markups.back().pos == pos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
@@ -195,7 +203,7 @@ public:
 				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, segitr->second.origpos, m_markups.size(), value));
 			}
 		}
-		CATCH_ERROR_MAP_ARG1( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
+		CATCH_ERROR_ARG1_MAP( _TXT("error in put attribute of '%s' segmenter markup context: %s"), "textwolf", *m_errorhnd);
 	}
 
 	virtual std::string getContent() const
@@ -243,7 +251,7 @@ public:
 						}
 						break;
 					case MarkupElement::AttributeValue:
-						throw strus::runtime_error( "%s", _TXT("logic error: unexpected attribute value"));
+						throw std::runtime_error( _TXT("logic error: unexpected attribute value"));
 					case MarkupElement::CloseTag:
 					{
 						bool foundOpenTag = false;
@@ -280,7 +288,7 @@ public:
 			rt.append( m_source.c_str() + prevpos, m_source.size() - prevpos);
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, std::string());
 	}
 
 private:
@@ -294,8 +302,15 @@ private:
 
 		SegmentDef( std::size_t segidx_, std::size_t segsize_, std::size_t tagidx_, std::size_t origpos_, int taglevel_)
 			:segidx(segidx_),segsize(segsize_),tagidx(tagidx_),origpos(origpos_),taglevel(taglevel_){}
+#if __cplusplus >= 201103L
+		SegmentDef( SegmentDef&& ) = default;
+		SegmentDef( const SegmentDef& ) = default;
+		SegmentDef& operator= ( SegmentDef&& ) = default;
+		SegmentDef& operator= ( const SegmentDef& ) = default;
+#else
 		SegmentDef( const SegmentDef& o)
 			:segidx(o.segidx),segsize(o.segsize),tagidx(o.tagidx),origpos(o.origpos),taglevel(o.taglevel){}
+#endif
 	};
 	typedef std::map<SegmenterPosition,SegmentDef> SegmentMap;
 
@@ -374,7 +389,7 @@ private:
 				case MyXMLScanner::CloseTagIm:
 				case MyXMLScanner::CloseTag:
 				{
-					if (stack.empty()) throw strus::runtime_error( "%s", _TXT("tags not balanced in XML"));
+					if (stack.empty()) throw std::runtime_error( _TXT("tags not balanced in XML"));
 					segmentDef = stack.back();
 					stack.pop_back();
 					break;
@@ -398,7 +413,7 @@ private:
 				}
 				case MyXMLScanner::Exit:
 				{
-					if (!stack.empty()) throw strus::runtime_error( "%s", _TXT("tags not balanced in XML"));
+					if (!stack.empty()) throw std::runtime_error( _TXT("tags not balanced in XML"));
 					return;
 				}
 			}
@@ -410,11 +425,11 @@ private:
 		typename SegmentMap::const_iterator segitr = findSegment( segpos);
 		if (segitr == m_segmentmap.end()) 
 		{
-			throw strus::runtime_error( "%s", _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
+			throw std::runtime_error( _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
 		}
 		if (segitr->second.segsize < ofs) 
 		{
-			throw strus::runtime_error( "%s", _TXT("offset in this segment out of range"));
+			throw std::runtime_error( _TXT("offset in this segment out of range"));
 		}
 		typedef textwolf::TextScanner<char*,CharsetEncoding> OrigTextScanner;
 		typedef textwolf::TextScanner<textwolf::CStringIterator,textwolf::charset::UTF8> ConvTextScanner;
@@ -472,6 +487,15 @@ private:
 
 		PositionInfo()
 			:segpos(0),ofs(0),pos(0){}
+#if __cplusplus >= 201103L
+		PositionInfo( PositionInfo&& ) = default;
+		PositionInfo( const PositionInfo& ) = default;
+		PositionInfo& operator= ( PositionInfo&& ) = default;
+		PositionInfo& operator= ( const PositionInfo& ) = default;
+#else
+		PositionInfo( const PositionInfo& o)
+			:segpos(o.segpos),ofs(o.ofs),pos(o.pos){}
+#endif
 	};
 	mutable PositionInfo lastPositionInfo;
 	ErrorBufferInterface* m_errorhnd;

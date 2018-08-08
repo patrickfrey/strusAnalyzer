@@ -26,6 +26,8 @@ class NormalizerFunctionInterface;
 /// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
+class TokenizerFunctionInstanceInterface;
+/// \brief Forward declaration
 class AggregatorFunctionInterface;
 /// \brief Forward declaration
 class PatternLexerInterface;
@@ -35,7 +37,12 @@ class PatternMatcherInterface;
 class PatternMatcherProgramInterface;
 /// \brief Forward declaration
 class PatternTermFeederInterface;
-
+/// \brief Forward declaration
+class PosTaggerDataInterface;
+/// \brief Forward declaration
+class PosTaggerInterface;
+/// \brief Forward declaration
+class TokenMarkupInstanceInterface;
 
 /// \class TextProcessorInterface
 /// \brief Interface for the object providing tokenizers and normalizers used for creating terms from segments of text and functions for collecting overall document statistics
@@ -45,13 +52,9 @@ public:
 	/// \brief Desructor
 	virtual ~TextProcessorInterface(){}
 
-	/// \brief Declare a path for locating resource files
-	/// \param[in] path path to add
-	virtual void addResourcePath( const std::string& path)=0;
-
 	/// \brief Get the absolute path of a resource file
 	/// \param[in] filename name of the resource file
-	virtual std::string getResourcePath( const std::string& filename) const=0;
+	virtual std::string getResourceFilePath( const std::string& filename) const=0;
 
 	/// \brief Get a document segmenter object reference
 	/// \param[in] segmenterName name of the segmenter used (if empty, find the first one loaded or the default one)
@@ -91,11 +94,27 @@ public:
 	/// \return the pattern term feeder
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const=0;
 
+	/// \brief Create a data structure to feed with POS tagging info
+	/// \param[in] tokenizer tokenizer to use to split POS tagging entities (with ownership)
+	/// \remark the tokenization has to be in a granularity smaller than the POS tagger possibly splits. This means that the POS tagger used must not split tokens provided by the tokenizer.
+	/// \return the POS tagger data interface (with ownership)
+	virtual PosTaggerDataInterface* createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const=0;
+
+	/// \brief Get the default POS tagger interface to do POS tagging of documents
+	/// \return the POS tagger interface (with ownership)
+	virtual const PosTaggerInterface* getPosTagger() const=0;
+
+	/// \brief Create an interface for markup of content
+	/// \return the token markup instance interface
+	virtual TokenMarkupInstanceInterface* createTokenMarkupInstance() const=0;
+
 	/// \brief Detect the document class from a document start chunk and set the content description attributes 
 	/// \param[in,out] dclass content document class
-	/// \param[in] contentBegin start chunk of the document with a reasonable size (e.g. max 1K)
+	/// \param[in] contentBegin start chunk of the document with a reasonable size
+	/// \param[in] contentBeginSize size of chunk passed
+	/// \param[in] isComplete true, of the chunk passed is the whole document (this might influence the result)
 	/// \return true, if the document format was recognized, false else
-	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const=0;
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const=0;
 
 	/// \brief Define a content detector
 	/// \param[in] tokenizer a tokenizer object (pass ownership)
@@ -146,6 +165,11 @@ public:
 		PatternLexer,			///< Addresses a pattern lexer
 		PatternMatcher			///< Addresses a pattern matcher
 	};
+	static const char* functionTypeName( FunctionType t)
+	{
+		const char* ar[] = {"Segmenter","Tokenizer","Normalizer","Aggregator","PatternLexer","PatternMatcher",0};
+		return ar[t];
+	}
 
 	/// \brief Get a list of all functions of a specific type available
 	/// \param[in] type type of the function

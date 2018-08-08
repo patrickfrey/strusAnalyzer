@@ -8,7 +8,6 @@
 #include "patternFeatureConfig.hpp"
 #include "featureConfig.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 
@@ -17,9 +16,12 @@ using namespace strus;
 PatternFeatureConfig::PatternFeatureConfig(
 		const std::string& name_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority_,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
+	,m_normalizerlist()
+	,m_priority(priority_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

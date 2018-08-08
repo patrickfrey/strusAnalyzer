@@ -9,9 +9,11 @@
 #include "strus/errorBufferInterface.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/base/numstring.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -85,6 +87,20 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in normalize: %s"), *m_errorhnd, std::string());
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+				( "width", m_config.width)
+				( "withEnd", m_config.withEnd)
+				( "withStart", m_config.withStart)
+				( "roundRobin", m_config.roundRobin)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
 private:
 	NgramConfiguration m_config;
 	ErrorBufferInterface* m_errorhnd;
@@ -98,17 +114,17 @@ NormalizerFunctionInstanceInterface* NgramNormalizerFunction::createInstance( co
 	{
 		if ((*ai)[0] >= '0' && ((*ai)[0] <= '9'))
 		{
-			config.width = utils::toint( *ai);
+			config.width = numstring_conv::touint( *ai, 256);
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "RoundRobin"))
+		else if (strus::caseInsensitiveEquals( *ai, "RoundRobin"))
 		{
 			config.roundRobin = true;
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "WithEnd"))
+		else if (strus::caseInsensitiveEquals( *ai, "WithEnd"))
 		{
 			config.withEnd = true;
 		}
-		else if (utils::caseInsensitiveEquals( *ai, "WithStart"))
+		else if (strus::caseInsensitiveEquals( *ai, "WithStart"))
 		{
 			config.withStart = true;
 		}

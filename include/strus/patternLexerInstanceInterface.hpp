@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_LEXER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/positionBind.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 namespace strus
@@ -38,7 +39,7 @@ public:
 
 	/// \brief Define a pattern for detecting a basic lexem of this pattern matching lexer
 	/// \param[in] id identifier given to the lexem, 0 if the lexem is not part of the output (only used for assigning ordinal positions).
-	/// \param[in] expression expression string defining the lexem
+	/// \param[in] expression expression string defining the lexem (usually a regular expression, appromaxitive matching with edit distance is declared by convenience with a '~' followed by the edit distance, e.g. "[Hh]ello [Ww]orld ~2")
 	/// \param[in] resultIndex index of subexpression that defines the result lexem, 0 for the whole match
 	/// \param[in] level weight of this lexical pattern. A lexical pattern match causes the suppressing of all lexems of lower level that are completely covered by one lexem of this pattern
 	/// \param[in] posbind defines how the ordinal position is assigned to the result lexem
@@ -83,6 +84,10 @@ public:
 	/// \return the lexer context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual PatternLexerContextInterface* createContext() const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 };
 
 } //namespace

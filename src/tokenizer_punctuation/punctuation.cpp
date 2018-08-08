@@ -9,7 +9,7 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "punctuation_de.hpp"
@@ -20,8 +20,6 @@
 
 using namespace strus;
 using namespace strus::analyzer;
-
-#undef STRUS_LOWLEVEL_DEBUG
 
 class PunctuationTokenizerFunction
 	:public TokenizerFunctionInterface
@@ -36,12 +34,12 @@ public:
 		{
 			if (args.size() > 2)
 			{
-				m_errorhnd->report( _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
+				m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for punctuation tokenizer (1st language 2nd optional punctuation characters)"));
 				return 0;
 			}
 			if (args.size() < 1)
 			{
-				m_errorhnd->report( _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
+				m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("too few arguments for punctuation tokenizer (language as mandatory argument expected)"));
 				return 0;
 			}
 			const char* punctChar = 0;
@@ -49,17 +47,17 @@ public:
 			{
 				punctChar = args[1].c_str();
 			}
-			if (utils::caseInsensitiveEquals( args[0], "de"))
+			if (strus::caseInsensitiveEquals( args[0], "de"))
 			{
 				return new PunctuationTokenizerInstance_de( punctChar, m_errorhnd);
 			}
-			else if (utils::caseInsensitiveEquals( args[0], "en"))
+			else if (strus::caseInsensitiveEquals( args[0], "en"))
 			{
 				return new PunctuationTokenizerInstance_en( punctChar, m_errorhnd);
 			}
 			else
 			{
-				m_errorhnd->report( _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("unsupported language passed to punctuation tokenizer ('%s')"), args[0].c_str());
 				return 0;
 			}
 		}

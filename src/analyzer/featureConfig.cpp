@@ -7,7 +7,6 @@
  */
 #include "featureConfig.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 
@@ -15,17 +14,23 @@ using namespace strus;
 
 const char* strus::featureClassName( FeatureClass i)
 {
-	static const char* ar[] = {"MetaData", "Attribute", "SearchIndexTerm", "ForwardIndexTerm", "PatternLexem"};
+	static const char* ar[] = {"metadata", "attribute", "searchindex", "forwardindex", "patternlexem"};
 	return  ar[i];
 }
 
 FeatureConfig::FeatureConfig(
 		const std::string& name_,
+		const std::string& selectexpr_,
 		TokenizerFunctionInstanceInterface* tokenizer_,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers_,
+		int priority_,
 		FeatureClass featureClass_,
 		const analyzer::FeatureOptions& options_)
 	:m_name(name_)
+	,m_selectexpr(selectexpr_)
+	,m_tokenizer()
+	,m_normalizerlist()
+	,m_priority(priority_)
 	,m_featureClass(featureClass_)
 	,m_options(options_)
 {

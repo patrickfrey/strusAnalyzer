@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Some utility helper functions for tokenization/normalization
-/// \file normalizer_ngram.hpp
+/// \file tokenizeHelpers.hpp
 #ifndef _STRUS_ANALYZER_TOKENIZER_HELPERS_HPP_INCLUDED
 #define _STRUS_ANALYZER_TOKENIZER_HELPERS_HPP_INCLUDED
 #include "strus/base/utf8.hpp"
@@ -43,6 +43,19 @@ private:
 	bool m_ar[128];
 };
 
+struct SourceSpan
+{
+	int pos;
+	int len;
+
+	bool defined() const	{return len > 0;}
+
+	SourceSpan() :pos(0),len(0){}
+	SourceSpan( int pos_, int len_) :pos(pos_),len(len_){}
+	SourceSpan( const SourceSpan& o) :pos(o.pos),len(o.len){}
+};
+
+SourceSpan getNextPosTaggingEntity( char const* src, int len, int& pos);
 
 bool wordBoundaryDelimiter( char const* si, const char* se);
 bool whiteSpaceDelimiter( char const* si, const char* se);

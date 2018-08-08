@@ -9,6 +9,7 @@
 #include "punctuation_utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "strus/errorBufferInterface.hpp"
 #include <iostream>
 
 using namespace strus;
@@ -151,7 +152,7 @@ std::vector<analyzer::Token>
 						continue;
 					}
 				}
-				rt.push_back( analyzer::Token( pos/*ordpos*/, 0/*seg*/, pos, 1));
+				rt.push_back( analyzer::Token( pos/*ordpos*/, analyzer::Position(0/*seg*/, pos), 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::cout << "PUNKT " << (int)__LINE__ << ":" << scanner.tostring() << std::endl;
 				std::size_t endpos = pos;
@@ -162,7 +163,7 @@ std::vector<analyzer::Token>
 			else if (isPunctuation(ch0))
 			{
 				pos = scanner.itrpos();
-				rt.push_back( analyzer::Token( pos/*ordpos*/, 0, pos, 1));
+				rt.push_back( analyzer::Token( pos/*ordpos*/, analyzer::Position(0, pos), 1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 				std::size_t endpos = pos;
 				std::size_t startpos = (endpos > 16)?(endpos-16):0;
@@ -173,5 +174,18 @@ std::vector<analyzer::Token>
 		return rt;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
+}
+
+
+analyzer::FunctionView PunctuationTokenizerInstance_de::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "punctuation")
+			( "language", "de")
+			( "charlist", m_punctuation_charlist)
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 }
 

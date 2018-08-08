@@ -34,7 +34,7 @@ add_library( strus_stemmer SHARED ${snowball_source_files})
 set_target_properties(
     strus_stemmer
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

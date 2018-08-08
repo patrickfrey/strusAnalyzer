@@ -11,192 +11,250 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/textEncoder.hpp"
+#include "strus/errorBufferInterface.hpp"
+#include "strus/debugTraceInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
+#include "strus/segmenterInterface.hpp"
+#include "strus/segmenterContextInterface.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/base/stdint.h"
+#include "strus/base/local_ptr.hpp"
+#include "detectDocumentType.hpp"
 #include <cstring>
 #include <stdexcept>
 
 using namespace strus;
 
-enum State
+#define STRUS_DBGTRACE_COMPONENT_NAME "doctype"
+
+StandardDocumentClassDetector::StandardDocumentClassDetector( const TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_debugtrace(0),m_textproc(textproc_)
+	,m_schemes(),m_xmlSegmenter(),m_jsonSegmenter(),m_tsvSegmenter()
 {
-	ParseStart,
-	ParseXMLHeader0,
-	ParseXMLHeader,
-	ParseXMLTag
+	DebugTraceInterface* dbgi = m_errorhnd->debugTrace();
+	if (dbgi) m_debugtrace = dbgi->createTraceContext( STRUS_DBGTRACE_COMPONENT_NAME);
+}
+
+static bool caseInsensitiveStringSearch( char const* src, const char* needle)
+{
+	char const* si = src;
+	for (; *si; ++si)
+	{
+		if ((*si|32) == (*needle|32))
+		{
+			char const* ni = needle;
+			for (++si,++ni; *ni && ((*si|32) == (*ni|32)); ++si,++ni){}
+			if (!*ni) return true;
+		}
+	}
+	return false;
+}
+
+static bool isMimeXml( const std::string& mimeType)
+{
+	return caseInsensitiveStringSearch( mimeType.c_str(), "xml");
+}
+
+static bool isMimeJson( const std::string& mimeType)
+{
+	return caseInsensitiveStringSearch( mimeType.c_str(), "json");
+}
+
+static bool isMimeTsv( const std::string& mimeType)
+{
+	return caseInsensitiveStringSearch( mimeType.c_str(), "tab");
+}
+
+SegmenterInstanceInterface* StandardDocumentClassDetector::getSegmenterInstance( const std::string& mimeType)
+{
+	if (isMimeXml( mimeType))
+	{
+		if (!m_xmlSegmenter.get())
+		{
+			const SegmenterInterface* sg = m_textproc->getSegmenterByMimeType( mimeType);
+			if (!sg) return NULL;
+			m_xmlSegmenter.reset( sg->createInstance());
+		}
+		return m_xmlSegmenter.get();
+	}
+	else if (isMimeJson( mimeType))
+	{
+		if (!m_jsonSegmenter.get())
+		{
+			const SegmenterInterface* sg = m_textproc->getSegmenterByMimeType( mimeType);
+			if (!sg) return NULL;
+			m_jsonSegmenter.reset( sg->createInstance());
+		}
+		return m_jsonSegmenter.get();
+	}
+	else if (isMimeTsv( mimeType))
+	{
+		if (!m_tsvSegmenter.get())
+		{
+			const SegmenterInterface* sg = m_textproc->getSegmenterByMimeType( mimeType);
+			if (!sg) return NULL;
+			m_tsvSegmenter.reset( sg->createInstance());
+		}
+		return m_tsvSegmenter.get();
+	}
+	return NULL;
+}
+
+enum {	MaxExpressions = 31, MaxSchemes = 256 };
+
+struct Event
+{
+	bool select;
+	int schemeidx;
+	int expridx;
+
+	Event( bool select_, int schemeidx_, int expridx_)
+		:select(select_),schemeidx(schemeidx_),expridx(expridx_){}
+#if __cplusplus >= 201103L
+	Event( Event&& ) = default;
+	Event( const Event& ) = default;
+	Event& operator= ( Event&& ) = default;
+	Event& operator= ( const Event& ) = default;
+#else
+	Event( const Event& o)
+		:select(o.select),schemeidx(o.schemeidx),expridx(o.expridx){}
+#endif
 };
 
-static void initDocumentClass( analyzer::DocumentClass& dclass, const char* mimeType, const char* encoding)
+static inline Event getEvent( unsigned int evid)
 {
-	dclass.setMimeType( mimeType);
-	if (encoding)
-	{
-		dclass.setEncoding( encoding);
-	}
+	return Event( (evid >> 24), (evid & 0x00FFffFF) >> 16, evid & 0xffFF);
+}
+static unsigned int getEventId( bool select, unsigned int schemeidx, unsigned int expridx)
+{
+	return select ? ((schemeidx << 16) + expridx) : ((1 << 24) + (schemeidx << 16) + expridx);
 }
 
 
-static bool isDocumentJson( char const* ci, const char* ce)
-{
-	static const char* tokchr = "[]{}E-+0123456789.\'\"";
-	if (ci != ce && *ci == '{')
-	{
-		for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
-		if (ci != ce && *ci == '"')
-		{
-			for (++ci; ci != ce && (unsigned char)*ci != '"'; ++ci){}
-			if (ci != ce)
-			{
-				for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
-				if (ci != ce && *ci == ':')
-				{
-					for (++ci; ci != ce && (unsigned char)*ci <= 32; ++ci){}
-					if (ci != ce && std::strchr( tokchr, *ci) != 0)
-					{
-						return true;
-					}
-				}
-			}
-		}
-	}
-	return false;
-}
-
-static bool isDocumentTSV( const char* ci, const char* ce)
-{
-	unsigned int seps[2];
-	unsigned int nofSeps = 0;
-	unsigned int nofLines = 0;
-	
-	for (; ci != ce && nofLines < 2; ++ci)
-	{
-		switch (*ci)
-		{
-			case '\n':
-				seps[nofLines] = nofSeps;
-				nofLines++;
-				nofSeps = 0;
-				break;
-			
-			case '\t':
-				nofSeps++;
-				break;
-		}
-		if (nofLines > 2)
-		{
-			break;
-		}
-	}
-
-	if ( nofLines >= 2)
-	{
-		nofSeps = seps[0];
-		for (unsigned int i = 1; i < 2; i++)
-		{
-			if (nofSeps != seps[i])
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	return false;
-}
-
-bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+void StandardDocumentClassDetector::defineDocumentSchemeDetector(
+		const std::string& scheme,
+		const std::string& mimeType,
+		const std::vector<std::string>& select_expressions,
+		const std::vector<std::string>& reject_expressions)
 {
 	try
 	{
-		char const* ci = contentBegin;
-		char const* ce = contentBegin + contentBeginSize;
-		std::string hdr;
-		State state = ParseStart;
-		std::size_t BOMsize = 0;
-		std::string encoding_buf;
-		const char* encoding = utils::detectBOM( contentBegin, contentBeginSize, BOMsize);
+		if ((std::size_t)MaxSchemes <= m_schemes.size()) throw std::runtime_error(_TXT("to many schemes defined"));
+		if ((std::size_t)MaxExpressions < select_expressions.size()) throw std::runtime_error(_TXT("to many expressions defined"));
+		if ((std::size_t)MaxExpressions < reject_expressions.size()) throw std::runtime_error(_TXT("to many expressions defined"));
 
-		for (ci+=BOMsize; ci != ce; ++ci)
+		m_schemes.push_back( SchemeDef( scheme, select_expressions, reject_expressions));
+		unsigned int schemeIndex = m_schemes.size();
+
+		SegmenterInstanceInterface* segmenter = getSegmenterInstance( mimeType);
+		if (!segmenter)
 		{
-			if (*ci == 0) continue;
+			throw strus::runtime_error(_TXT("cannot define scheme detector for mime type '%s'"), mimeType.c_str());
+		}
+		std::vector<std::string>::const_iterator si = select_expressions.begin(), se = select_expressions.end();
+		for (int sidx=1; si != se; ++si,++sidx)
+		{
+			unsigned int ev = getEventId( true, schemeIndex, sidx);
+			segmenter->defineSelectorExpression( ev, *si);
+		}
+		std::vector<std::string>::const_iterator ri = reject_expressions.begin(), re = reject_expressions.end();
+		for (int ridx=1; ri != re; ++ri,++ridx)
+		{
+			unsigned int ev = getEventId( false/*select*/, schemeIndex, ridx);
+			segmenter->defineSelectorExpression( ev, *ri);
+		}
+	}
+	CATCH_ERROR_MAP( _TXT("error in standard document class detector: %s"), *m_errorhnd);
+}
 
-			switch (state)
+int StandardDocumentClassDetector::detectScheme( const SegmenterInstanceInterface* segmenter, analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
+{
+	enum {RejectFlag = 0xFFffFFff};
+	uint32_t select_flags[ MaxSchemes];
+	std::size_t sidx=0;
+	for (; sidx < m_schemes.size(); ++sidx)
+	{
+		select_flags[ sidx] = ((1 << m_schemes[ sidx].nofEvents()) - 1) << 1;
+		// ... bit at position 0 is for the reject event that can never be masked out
+	}
+	strus::local_ptr<SegmenterContextInterface> ctx( segmenter->createContext( dclass));
+
+	if (!ctx.get()) throw strus::runtime_error(_TXT("unable to create segmenter for document type detection"));
+	ctx->putInput( contentBegin, contentBeginSize, isComplete);
+	int evid = 0;
+	SegmenterPosition pos;
+	const char* segment;
+	std::size_t segmentsize;
+	while (ctx->getNext( evid, pos, segment, segmentsize))
+	{
+		Event ev = getEvent( evid);
+		if (ev.select)
+		{
+			select_flags[ ev.schemeidx-1] &= ~(1 << ev.expridx);
+			if (m_debugtrace) m_debugtrace->event( "match", "scheme %s expression %s set %x", m_schemes[ ev.schemeidx-1].name.c_str(), m_schemes[ ev.schemeidx-1].select_expressions[ ev.expridx-1].c_str(), (unsigned int)select_flags[ ev.schemeidx-1]);
+		}
+		else
+		{
+			select_flags[ ev.schemeidx-1] |= 1;
+			if (m_debugtrace) m_debugtrace->event( "reject", "scheme %s expression %s set %x", m_schemes[ ev.schemeidx-1].name.c_str(), m_schemes[ ev.schemeidx-1].reject_expressions[ ev.expridx-1].c_str(), (unsigned int)select_flags[ ev.schemeidx-1]);
+		}
+	}
+	for (sidx=0; sidx < m_schemes.size(); ++sidx)
+	{
+		if (select_flags[ sidx] == 0)
+		{
+			if (m_debugtrace) m_debugtrace->event( "decide", "scheme %s", m_schemes[ sidx].name.c_str());
+			dclass.setScheme( m_schemes[ sidx].name);
+			return true;
+		}
+	}
+	if (m_debugtrace) m_debugtrace->event( "decide", "scheme %s", "<unknown>");
+	return false;
+}
+
+bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
+{
+	try
+	{
+		if (m_debugtrace) m_debugtrace->open( "documentclass");
+		DocumentType doctype = strus::detectDocumentType( contentBegin, contentBeginSize, isComplete);
+		if (!doctype.mimetype)
+		{
+			std::runtime_error(_TXT("MIME type detection failed"));
+		}
+		else
+		{
+			if (m_debugtrace) m_debugtrace->event( "mime-type", "%s", doctype.mimetype);
+			dclass = analyzer::DocumentClass( doctype.mimetype, doctype.encoding?doctype.encoding:"utf-8");
+			switch (doctype.mimetypeid)
 			{
-				case ParseStart:
-					if (*ci == '<')
+				case DocumentType::MimeBinary:
+					break;
+				case DocumentType::MimeXML:
+					if (m_xmlSegmenter.get())
 					{
-						state = ParseXMLHeader0;
-					}
-					else
-					{
-						if (!encoding)
-						{
-							encoding = strus::utils::detectCharsetEncoding( ci+BOMsize, contentBeginSize-BOMsize);
-						}
-						// Try to find out if its JSON:
-						for (; ci != ce && (unsigned char)*ci < 32; ++ci){}
-						if (ci != ce && *ci == '{' && isDocumentJson(ci,ce))
-						{
-							initDocumentClass( dclass, "application/json", encoding);
-							return true;
-						}
-						ci = contentBegin + BOMsize;
-						if (isDocumentTSV(ci,ce))
-						{
-							initDocumentClass( dclass, "text/tab-separated-values", encoding);
-							return true;
-						}
-						// Give up:
-						return false;
+						(void)detectScheme( m_xmlSegmenter.get(), dclass, contentBegin, contentBeginSize, isComplete);
 					}
 					break;
-	
-				case ParseXMLHeader0:
-					if (*ci == '?')
+				case DocumentType::MimeJSON:
+					if (m_jsonSegmenter.get())
 					{
-						state = ParseXMLHeader;
-					}
-					else
-					{
-						state = ParseXMLTag;
+						(void)detectScheme( m_jsonSegmenter.get(), dclass, contentBegin, contentBeginSize, isComplete);
 					}
 					break;
-	
-				case ParseXMLHeader:
-					if (*ci == '<') return false;
-					if (*ci == '>')
+				case DocumentType::MimeTSV:
+					if (m_tsvSegmenter.get())
 					{
-						char const* ei = std::strstr( hdr.c_str(), "encoding=");
-						if (ei)
-						{
-							ei += 9;
-							if (*ei == '\"' || *ei == '\'')
-							{
-								char eb = *ei++;
-								char const* ee = std::strchr( ei, eb);
-								if (ee)
-								{
-									encoding_buf.append( ei, ee-ei);
-									encoding = encoding_buf.c_str();
-								}
-							}
-						}
-						initDocumentClass( dclass, "application/xml", encoding);
-						return true;
-					}
-					else if ((unsigned char)*ci > 32)
-					{
-						hdr.push_back(*ci);
+						(void)detectScheme( m_tsvSegmenter.get(), dclass, contentBegin, contentBeginSize, isComplete);
 					}
 					break;
-	
-				case ParseXMLTag:
-					if (*ci == '<') return false;
-					if (*ci == '>')
-					{
-						initDocumentClass( dclass, "application/xml", encoding);
-						return true;
-					}
+				case DocumentType::MimeTEXT:
 					break;
 			}
+			if (m_debugtrace) m_debugtrace->close();
+			return true;
 		}
+		if (m_debugtrace) m_debugtrace->close();
 		return false;
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in standard document class detector: %s"), *m_errorhnd, false);

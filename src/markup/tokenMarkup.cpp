@@ -20,24 +20,23 @@
 using namespace strus;
 
 TokenMarkupContext::TokenMarkupContext(
+		const SegmenterInstanceInterface* segmenter_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_)
+	:m_segmenter(segmenter_),m_errorhnd(errorhnd_)
 {}
 
 TokenMarkupContext::~TokenMarkupContext()
 {}
 
 void TokenMarkupContext::putMarkup(
-		const SegmenterPosition& start_segpos,
-		std::size_t start_ofs,
-		const SegmenterPosition& end_segpos,
-		std::size_t end_ofs,
+		const analyzer::Position& start,
+		const analyzer::Position& end,
 		const analyzer::TokenMarkup& markup,
 		unsigned int level)
 {
 	try
 	{
-		m_markupar.push_back( MarkupElement( start_segpos, start_ofs, end_segpos, end_ofs, markup, level, m_markupar.size()));
+		m_markupar.push_back( MarkupElement( start, end, markup, level, m_markupar.size()));
 	}
 	CATCH_ERROR_MAP( _TXT("failed to put token markup in document: %s"), *m_errorhnd);
 }
@@ -57,42 +56,40 @@ void TokenMarkupContext::writeOpenMarkup( SegmenterMarkupContextInterface* marku
 }
 
 std::string TokenMarkupContext::markupDocument(
-		const SegmenterInstanceInterface* segmenter,
 		const analyzer::DocumentClass& dclass,
 		const std::string& content) const
 {
 	try
 	{
-		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( segmenter->createMarkupContext( dclass, content));
-		if (!markupdoc.get()) throw strus::runtime_error( "%s", _TXT("failed to create markup document context"));
+		strus::local_ptr<SegmenterMarkupContextInterface> markupdoc( m_segmenter->createMarkupContext( dclass, content));
+		if (!markupdoc.get()) throw std::runtime_error( _TXT("failed to create markup document context"));
 
 		std::vector<MarkupElement> markupar = m_markupar;
 		std::sort( markupar.begin(), markupar.end());
 		std::vector<MarkupElement>::iterator mp = markupar.begin(), mi = markupar.begin(), me = markupar.end();
+		if (markupar.empty()) return content;
+
 		// Resolve conflicts:
 		for (++mi; mi != me; mp=mi,++mi)
 		{
-			if (mp->end_segpos > mi->end_segpos || (mp->end_segpos == mi->end_segpos && mp->end_ofs >= mi->end_ofs))
+			if (mp->end.seg() > mi->end.seg() || (mp->end.seg() == mi->end.seg() && mp->end.ofs() >= mi->end.ofs()))
 			{
 				//... previous overlaps current, resolve conflict:
 				if (mp->level >= mi->level)
 				{
 					MarkupElement newelem( *mp);
-					newelem.start_segpos = mi->end_segpos;
-					newelem.start_ofs = mi->end_ofs;
-					mp->end_segpos = mi->start_segpos;
-					mp->end_ofs = mi->start_ofs;
-					if (newelem.end_segpos > newelem.start_segpos || newelem.end_ofs > newelem.start_ofs)
+					newelem.start = mi->end;
+					mp->end = mi->start;
+					if (newelem.end > newelem.start)
 					{
 						mi = markupar.insert( mi+1, newelem);
 						--mi;
 						--mi;
 					}
 				}
-				else if (mp->level < mi->level)
+				else// if (mp->level < mi->level)
 				{
-					mi->start_segpos = mp->end_segpos;
-					mi->start_ofs = mp->end_ofs;
+					mi->start = mp->end;
 				}
 			}
 		}
@@ -100,15 +97,15 @@ std::string TokenMarkupContext::markupDocument(
 		mi = markupar.begin(), me = markupar.end();
 		for (; mi != me; ++mi)
 		{
-			writeOpenMarkup( markupdoc.get(), mi->start_segpos, mi->start_ofs, mi->markup);
-			if (mi->start_segpos != mi->end_segpos)
+			writeOpenMarkup( markupdoc.get(), mi->start.seg(), mi->start.ofs(), mi->markup);
+			if (mi->start.seg() != mi->end.seg())
 			{
 				// If markup is overlapping more than one segment, we iterate through the 
 				// touched segments and insert a close markup at every end of a touched 
 				// segment a reopen the markup at the start of the follow segment:
-				SegmenterPosition itr_segpos = mi->start_segpos;
+				SegmenterPosition itr_segpos = mi->start.seg();
 				std::size_t itr_size = markupdoc->segmentSize( itr_segpos);
-				while (itr_segpos != mi->end_segpos)
+				while (itr_segpos != mi->end.seg())
 				{
 					markupdoc->putCloseTag( itr_segpos, itr_size, mi->markup.name());
 					const char* segment;
@@ -119,20 +116,29 @@ std::string TokenMarkupContext::markupDocument(
 					writeOpenMarkup( markupdoc.get(), itr_segpos, 0, mi->markup);
 				}
 			}
-			markupdoc->putCloseTag( mi->end_segpos, mi->end_ofs, mi->markup.name());
+			markupdoc->putCloseTag( mi->end.seg(), mi->end.ofs(), mi->markup.name());
 		}
 		return markupdoc->getContent();
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create document with markups inserted: %s"), *m_errorhnd, std::string());
 }
 
-
-TokenMarkupContextInterface* TokenMarkupInstance::createContext() const
+TokenMarkupContextInterface* TokenMarkupInstance::createContext( const SegmenterInstanceInterface* segmenter) const
 {
 	try
 	{
-		return new TokenMarkupContext( m_errorhnd);
+		return new TokenMarkupContext( segmenter, m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create token markup: %s"), *m_errorhnd, 0);
+}
+
+analyzer::FunctionView TokenMarkupInstance::view() const
+{
+	try
+	{
+		return analyzer::FunctionView( "std")
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 }
 

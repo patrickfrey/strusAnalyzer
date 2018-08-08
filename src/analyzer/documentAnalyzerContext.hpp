@@ -7,7 +7,7 @@
  */
 #ifndef _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
 #define _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
-#include "documentAnalyzer.hpp"
+#include "documentAnalyzerInstance.hpp"
 #include "segmentProcessor.hpp"
 #include "patternMatchContextMap.hpp"
 #include "patternFeatureConfigMap.hpp"
@@ -18,17 +18,17 @@ namespace strus
 {
 /// \brief Forward declaration
 class ErrorBufferInterface;
-
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 class DocumentAnalyzerContext
 	:public DocumentAnalyzerContextInterface
 {
 public:
 	DocumentAnalyzerContext(
-			const DocumentAnalyzer* analyzer_,
+			const DocumentAnalyzerInstance* analyzer_,
 			const analyzer::DocumentClass& dclass,
 			ErrorBufferInterface* errorhnd);
-
 	virtual ~DocumentAnalyzerContext();
 
 	virtual void putInput(const char* chunk, std::size_t chunksize, bool eof);
@@ -48,15 +48,22 @@ private:
 
 		SegmenterStackElement( SegmenterPosition start_position_, SegmenterPosition curr_position_ofs_, SegmenterContextInterface* segmenter_)
 			:start_position(start_position_),curr_position_ofs(curr_position_ofs_),segmenter(segmenter_){}
+#if __cplusplus >= 201103L
+		SegmenterStackElement( SegmenterStackElement&& ) = default;
+		SegmenterStackElement( const SegmenterStackElement& ) = default;
+		SegmenterStackElement& operator= ( SegmenterStackElement&& ) = default;
+		SegmenterStackElement& operator= ( const SegmenterStackElement& ) = default;
+#else
 		SegmenterStackElement( const SegmenterStackElement& o)
 			:start_position(o.start_position),curr_position_ofs(o.curr_position_ofs),segmenter(o.segmenter){}
+#endif
 	};
 
 private:
 	SegmentProcessor m_segmentProcessor;
 	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
 	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
-	const DocumentAnalyzer* m_analyzer;
+	const DocumentAnalyzerInstance* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
 	std::vector<SegmenterStackElement> m_segmenterstack;
 	bool m_eof;
@@ -66,6 +73,7 @@ private:
 	unsigned int m_nof_segments;
 	std::string m_subdocTypeName;
 	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

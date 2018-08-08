@@ -7,7 +7,7 @@
  */
 #include "featureConfigMap.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 
 using namespace strus;
 
@@ -15,7 +15,7 @@ const FeatureConfig& FeatureConfigMap::featureConfig( int featidx) const
 {
 	if (featidx <= 0 || (std::size_t)featidx > m_ar.size())
 	{
-		throw strus::runtime_error( "%s", _TXT("internal: unknown index of feature"));
+		throw std::runtime_error( _TXT("internal: unknown index of feature"));
 	}
 	return m_ar[ featidx-1];
 }
@@ -33,25 +33,35 @@ static void freeNormalizers( const std::vector<NormalizerFunctionInstanceInterfa
 unsigned int FeatureConfigMap::defineFeature(
 		FeatureClass featureClass,
 		const std::string& featType,
+		const std::string& selectexpr,
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+		int priority,
 		const analyzer::FeatureOptions& options)
 {
 	try
 	{
+		if (priority < 0)
+		{
+			throw std::runtime_error( _TXT("negative priority is not allowed"));
+		}
+		if (priority < m_minPriority)
+		{
+			m_minPriority = priority;
+		}
 		if (m_ar.size()+1 >= MaxNofFeatures)
 		{
-			throw strus::runtime_error( "%s", _TXT("number of features defined exceeds maximum limit"));
+			throw std::runtime_error( _TXT("number of features defined exceeds maximum limit"));
 		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( FeatureConfig( utils::tolower( featType), tokenizer, normalizers, featureClass, options));
+		m_ar.push_back( FeatureConfig( string_conv::tolower( featType), selectexpr, tokenizer, normalizers, priority, featureClass, options));
 		return m_ar.size();
 	}
 	catch (const std::bad_alloc&)
 	{
 		freeNormalizers( normalizers);
 		delete tokenizer;
-		throw strus::runtime_error( "%s", _TXT("memory allocation error defining feature"));
+		throw std::runtime_error( _TXT("memory allocation error defining feature"));
 	}
 	catch (const std::runtime_error& err)
 	{

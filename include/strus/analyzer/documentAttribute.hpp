@@ -22,14 +22,21 @@ class DocumentAttribute
 public:
 	/// \brief Default constructor
 	DocumentAttribute(){}
-	/// \brief Copy constructor
-	DocumentAttribute( const DocumentAttribute& o)
-		:m_name(o.m_name),m_value(o.m_value){}
 	/// \brief Constructor
 	/// \param[in] n name of the attribute
 	/// \param[in] v value of the attribute
 	DocumentAttribute( const std::string& n, const std::string& v)
 		:m_name(n),m_value(v){}
+	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	DocumentAttribute( DocumentAttribute&& ) = default;
+	DocumentAttribute( const DocumentAttribute& ) = default;
+	DocumentAttribute& operator= ( DocumentAttribute&& ) = default;
+	DocumentAttribute& operator= ( const DocumentAttribute& ) = default;
+#else
+	DocumentAttribute( const DocumentAttribute& o)
+		:m_name(o.m_name),m_value(o.m_value){}
+#endif
 
 	/// \brief Get the name of the attribute
 	/// \return Name of the attribute

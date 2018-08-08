@@ -8,6 +8,7 @@
 /// \brief Conversion of character set encodings to UTF-8
 #ifndef _STRUS_UTILS_TEXT_ENCODER_HPP_INCLUDED
 #define _STRUS_UTILS_TEXT_ENCODER_HPP_INCLUDED
+#include <string>
 
 namespace strus {
 namespace utils {

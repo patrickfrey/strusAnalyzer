@@ -12,25 +12,12 @@
 #include <utility>
 #include <string>
 
-#ifdef _MSC_VER
-#include <BaseTsd.h>
-namespace strus {
-	///\typedef SegmenterPosition
-	///\brief Byte position in scanned source
-	typedef INT64 SegmenterPosition;
-}//namespace
-#else
-#include <stdint.h>
-namespace strus {
-	///\typedef SegmenterPosition
-	///\brief Byte position in scanned source
-	typedef int64_t SegmenterPosition;
-}//namespace
-#endif
-
 /// \brief strus toplevel namespace
 namespace strus
 {
+
+/// \brief Position of a segment in the original source
+typedef int SegmenterPosition;
 
 /// \class SegmenterContextInterface
 /// \brief Defines the context for segmenting one document
@@ -53,8 +40,8 @@ public:
 	/// \param[out] segment pointer to the start of the segment.
 	/// \param[out] segmentsize size of segment in bytes
 	/// \return true, if a valid segment could be returned, false in case of no segments left or more required to be fed
-	/// \remark throws on error
 	/// \remark the segments must be delivered in ascending order of positions. Segments with same position can be returned in any order
+	/// \note returned chunks only valid after the call, owned by the segmenter
 	virtual bool getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)=0;
 };
 

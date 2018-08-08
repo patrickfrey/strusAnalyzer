@@ -20,17 +20,28 @@
 
 namespace strus
 {
+/// \brief Forward declaration
+class ErrorBufferInterface;
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 struct SegPosDef
 {
-	std::size_t start_strpos;
-	std::size_t end_strpos;
-	std::size_t segpos;
+	int start_strpos;
+	int end_strpos;
+	int segpos;
 
-	SegPosDef( std::size_t start_strpos_, std::size_t end_strpos_, std::size_t segpos_)
+	SegPosDef( int start_strpos_, int end_strpos_, int segpos_)
 		:start_strpos(start_strpos_),end_strpos(end_strpos_),segpos(segpos_){}
+#if __cplusplus >= 201103L
+	SegPosDef( SegPosDef&& ) = default;
+	SegPosDef( const SegPosDef& ) = default;
+	SegPosDef& operator= ( SegPosDef&& ) = default;
+	SegPosDef& operator= ( const SegPosDef& ) = default;
+#else
 	SegPosDef( const SegPosDef& o)
 		:start_strpos(o.start_strpos),end_strpos(o.end_strpos),segpos(o.segpos){}
+#endif
 };
 
 class SegmentProcessor
@@ -38,11 +49,9 @@ class SegmentProcessor
 public:
 	SegmentProcessor(
 			const FeatureConfigMap& featureConfigMap_,
-			const PatternFeatureConfigMap& patternFeatureConfigMap_)
-		:m_featureConfigMap(&featureConfigMap_)
-		,m_patternFeatureConfigMap(&patternFeatureConfigMap_)
-		,m_concatenatedMap(){}
-	~SegmentProcessor(){}
+			const PatternFeatureConfigMap& patternFeatureConfigMap_,
+			ErrorBufferInterface* errorhnd_);
+	~SegmentProcessor();
 
 	void clearTermMaps();
 	void processDocumentSegment(
@@ -57,6 +66,8 @@ public:
 			std::size_t segmentsize);
 
 	void processConcatenated();
+	void eliminateCovered();
+
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
@@ -66,17 +77,47 @@ public:
 		:public analyzer::QueryTerm
 	{
 	public:
+		QueryElement( int fieldno_, int pos_, int priority_, const analyzer::QueryTerm& term_)
+			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_priority(priority_),m_pos(pos_){}
+#if __cplusplus >= 201103L
+		QueryElement( QueryElement&& ) = default;
+		QueryElement( const QueryElement& ) = default;
+		QueryElement& operator= ( QueryElement&& ) = default;
+		QueryElement& operator= ( const QueryElement& ) = default;
+#else
 		QueryElement( const QueryElement& o)
-			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_pos(o.m_pos){}
-		QueryElement( unsigned int fieldno_, unsigned int pos_, const analyzer::QueryTerm& term_)
-			:analyzer::QueryTerm(term_),m_fieldno(fieldno_),m_pos(pos_){}
+			:analyzer::QueryTerm(o),m_fieldno(o.m_fieldno),m_priority(o.m_priority),m_pos(o.m_pos){}
+#endif
 
-		unsigned int fieldno() const	{return m_fieldno;}
-		unsigned int pos() const	{return m_pos;}
+		int fieldno() const		{return m_fieldno;}
+		int priority() const		{return m_priority;}
+		int pos() const			{return m_pos;}
+		int endpos() const		{return m_pos+len();}
+
+		static bool orderPosition( const QueryElement& a, const QueryElement& b)
+		{
+			// Order in a way that an element can only be covered by an element with a higher priority
+			// if this element is appearing before it. So we have only to look to predecessor elements
+			// when calculating if an element is ousted by a covering element with higher prio.
+			if (a.m_fieldno == b.m_fieldno)
+			{
+				if (a.m_pos == b.m_pos)
+				{
+					if (a.m_priority == b.m_priority)
+					{
+						return (a.len() > b.len());
+					}
+					else return (a.m_priority > b.m_priority);
+				}
+				else return (a.m_pos < b.m_pos);
+			}
+			else return (a.m_fieldno < b.m_fieldno);
+		}
 
 	private:
-		unsigned int m_fieldno;
-		unsigned int m_pos;
+		int m_fieldno;
+		int m_priority;
+		int m_pos;
 	};
 
 	/// \brief Fetch the currently processed query
@@ -100,9 +141,15 @@ private:
 		{
 			concatposmap.push_back( SegPosDef( 0, content.size(), segpos));
 		}
+#if __cplusplus >= 201103L
+		Chunk( Chunk&& ) = default;
+		Chunk( const Chunk& ) = default;
+		Chunk& operator= ( Chunk&& ) = default;
+		Chunk& operator= ( const Chunk& ) = default;
+#else
 		Chunk( const Chunk& o)
 			:content(o.content),concatposmap(o.concatposmap){}
-	
+#endif
 		std::string content;
 		std::vector<SegPosDef> concatposmap;
 	};
@@ -122,6 +169,8 @@ private:
 	std::vector<BindTerm> m_metadataTerms;
 	std::vector<BindTerm> m_attributeTerms;
 	std::vector<BindTerm> m_patternLexemTerms;
+	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

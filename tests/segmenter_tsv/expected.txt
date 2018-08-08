@@ -1,3 +1,17 @@
+iter lineno = [1]
+iter lastname = [Largo]
+iter firstname = [Hugo]
+iter street = [Heinrichstr. 7]
+iter zip = [80331]
+iter city = [München]
+iter country = [Deutschland]
+iter lineno = [2]
+iter lastname = [Toenz]
+iter firstname = [Konrad]
+iter street = [Bahnhofstr. 7]
+iter zip = [8001]
+iter city = [Zürich]
+iter country = [Schweiz]
 [4] 1
 [6] 1
 [2] Largo

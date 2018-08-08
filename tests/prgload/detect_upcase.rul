@@ -1,0 +1,18 @@
+LOCASE ^1 : /\b[a-z][^\s;-@!-\/]*/;
+UPCASE ^1 : /\b[A-Z][^\s;-@!-\/]*/;
+
+upcase            = UC=UPCASE;
+locase            = LOCASE;
+simply_software   = sequence_imm( LOCASE "simply", LOCASE "software" );
+encoded_information = sequence( LOCASE "encoded", LOCASE "information" | 2);
+computer_instructions = sequence_imm( LOCASE "computer", LOCASE "instructions" );
+encoded_information_or = sequence( encoded_information, LOCASE "or" | 10 );
+combined1         = sequence( 
+			sequence_imm(
+				sequence( LOCASE "encoded", LOCASE "information" | 2),
+				LOCASE "or"
+			),
+			sequence_imm( LOCASE "computer", LOCASE "instructions" ) );
+application_interfaces = sequence( LOCASE "application", LOCASE "interfaces" | 3 );
+Why_Source        = sequence_imm( UPCASE "Why", UPCASE "Source" );
+Open_Source       = sequence_imm( UPCASE "Open", UPCASE "Source" );

@@ -11,11 +11,11 @@
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/patternMatcherResult.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 namespace strus
 {
-
 /// \brief Instance interface for defining a mapping of terms of the document analysis outout as lexems used as basic entities by pattern matching
 class PatternTermFeederInstanceInterface
 {
@@ -59,6 +59,10 @@ public:
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
 			const std::string& name) const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 };
 
 } //namespace

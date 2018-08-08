@@ -15,13 +15,15 @@ namespace strus
 {
 
 /// \brief Forward declaration
+class TextProcessorInterface;
+/// \brief Forward declaration
 class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
 
 /// \brief Get the tokenizer type that creates the tokenization of words in a recognized language
 /// \return the tokenization function
-TokenizerFunctionInterface* createTokenizer_textcat( ErrorBufferInterface* errorhnd);
+TokenizerFunctionInterface* createTokenizer_textcat( const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

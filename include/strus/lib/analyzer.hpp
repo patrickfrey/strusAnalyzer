@@ -16,24 +16,39 @@
 namespace strus {
 
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class DocumentAnalyzerInstanceInterface;
 /// \brief Forward declaration
-class QueryAnalyzerInterface;
+class DocumentAnalyzerMapInterface;
+/// \brief Forward declaration
+class QueryAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class AnalyzerObjectBuilderInterface;
 
 /// \brief Creates a parameterizable analyzer instance for analyzing documents
 /// \param[in] segmenter segmenter type to be used by the created analyzer.
+/// \param[in] textproc text processor for creating functions and resources needed for analysis
+/// \param[in] segmenter segmenter type
+/// \param[in] opts options for the segmenter
+/// \param[in] errorhnd error buffer interface
 /// \return the analyzer program (with ownership)
-DocumentAnalyzerInterface* createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
+DocumentAnalyzerInstanceInterface* createDocumentAnalyzer( const TextProcessorInterface* textproc, const SegmenterInterface* segmenter, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd);
 
 /// \brief Creates a parameterizable analyzer instance for analyzing queries
+/// \param[in] errorhnd error buffer interface
 /// \return the analyzer program (with ownership)
-QueryAnalyzerInterface* createQueryAnalyzer( ErrorBufferInterface* errorhnd);
+QueryAnalyzerInstanceInterface* createQueryAnalyzer( ErrorBufferInterface* errorhnd);
+
+/// \brief Creates a analyzer map for bundling different instances of analyzers for different classes of documents
+/// \param[in] objbuilder analyzer object builder interface
+/// \param[in] errorhnd error buffer interface
+/// \return the analyzer program (with ownership)
+DocumentAnalyzerMapInterface* createDocumentAnalyzerMap( const AnalyzerObjectBuilderInterface* objbuilder, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

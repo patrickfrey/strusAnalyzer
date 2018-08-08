@@ -27,12 +27,14 @@ public:
 	PatternFeatureConfig(
 			const std::string& name_,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+			int priority_,
 			FeatureClass featureClass_,
 			const analyzer::FeatureOptions& options_);
 
 	PatternFeatureConfig( const PatternFeatureConfig& o)
 		:m_name(o.m_name)
 		,m_normalizerlist(o.m_normalizerlist)
+		,m_priority(o.m_priority)
 		,m_featureClass(o.m_featureClass)
 		,m_options(o.m_options){}
 
@@ -40,6 +42,7 @@ public:
 
 	const std::string& name() const					{return m_name;}
 	const std::vector<NormalizerReference>& normalizerlist() const	{return m_normalizerlist;}
+	int priority() const						{return m_priority;}
 	FeatureClass featureClass() const				{return m_featureClass;}
 	analyzer::FeatureOptions options() const			{return m_options;}
 
@@ -48,6 +51,7 @@ public:
 private:
 	std::string m_name;
 	std::vector<NormalizerReference> m_normalizerlist;
+	int m_priority;
 	FeatureClass m_featureClass;
 	analyzer::FeatureOptions m_options;
 };

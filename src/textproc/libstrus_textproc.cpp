@@ -13,6 +13,8 @@
 #include "strus/lib/normalizer_ngram.hpp"
 #include "strus/lib/normalizer_regex.hpp"
 #include "strus/lib/normalizer_wordjoin.hpp"
+#include "strus/lib/normalizer_trim.hpp"
+#include "strus/lib/normalizer_substrindex.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/tokenizer_regex.hpp"
@@ -30,14 +32,14 @@
 using namespace strus;
 
 DLL_PUBLIC strus::TextProcessorInterface*
-	strus::createTextProcessor( ErrorBufferInterface* errorhnd)
+	strus::createTextProcessor( const FileLocatorInterface* filelocator, ErrorBufferInterface* errorhnd)
 {
 	TextProcessor* rt = 0;
 	NormalizerFunctionInterface* nrm;
 	TokenizerFunctionInterface* tkn;
 	AggregatorFunctionInterface* agr;
 
-	rt = new TextProcessor( errorhnd);
+	rt = new TextProcessor( filelocator, errorhnd);
 	if (0==(nrm = createNormalizer_snowball( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
@@ -98,6 +100,25 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "wordjoin", nrm);
+	if (0==(nrm = createNormalizer_trim( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "trim", nrm);
+	if (0==(nrm = createNormalizer_substrindex( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "substrindex", nrm);
+	if (0==(nrm = createNormalizer_substrmap( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "substrmap", nrm);
+
 	if (0==(tkn = createTokenizer_punctuation( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
@@ -122,7 +143,13 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineTokenizer( "split", tkn);
-	if (0==(tkn = createTokenizer_textcat( errorhnd)))
+	if (0==(tkn = createTokenizer_langtoken( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineTokenizer( "langtoken", tkn);
+	if (0==(tkn = createTokenizer_textcat( rt, errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));
 		return 0;

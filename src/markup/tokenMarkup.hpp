@@ -12,6 +12,7 @@
 #include "strus/tokenMarkupContextInterface.hpp"
 #include "strus/tokenMarkupInstanceInterface.hpp"
 #include "strus/analyzer/tokenMarkup.hpp"
+#include "strus/analyzer/functionView.hpp"
 
 namespace strus
 {
@@ -26,23 +27,22 @@ class TokenMarkupContext
 {
 public:
 	/// \brief Constructor
+	/// \param[in] segmenter to used for markup
 	/// \param[in] errorhnd_ error buffer interface
-	explicit TokenMarkupContext(
+	TokenMarkupContext(
+			const SegmenterInstanceInterface* segmenter_,
 			ErrorBufferInterface* errorhnd_);
 
 	/// \brief Destructor
 	virtual ~TokenMarkupContext();
 
 	virtual void putMarkup(
-			const SegmenterPosition& start_segpos,
-			std::size_t start_ofs,
-			const SegmenterPosition& end_segpos,
-			std::size_t end_ofs,
+			const analyzer::Position& start,
+			const analyzer::Position& end,
 			const analyzer::TokenMarkup& markup,
 			unsigned int level);
 
 	virtual std::string markupDocument(
-			const SegmenterInstanceInterface* segmenter,
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const;
 
@@ -54,29 +54,30 @@ private:
 private:
 	struct MarkupElement
 	{
-		SegmenterPosition start_segpos;		///< segment byte address of the start of the markup in the original document
-		std::size_t start_ofs;			///< segment byte offset of the start of the markup in the processed segment
-		SegmenterPosition end_segpos;		///< segment byte address of the end of the markup in the original document
-		std::size_t end_ofs;			///< segment byte offset of the end of the markup in the processed segment
+		analyzer::Position start;		///< start of the item to mark
+		analyzer::Position end;			///< end of the item to mark
 		analyzer::TokenMarkup markup;		///< tag for markup in document
 		unsigned int level;			///< level deciding what markup superseds others when they are overlapping
 		unsigned int orderidx;			///< index to keep deterministic, stable ordering in sorted array
 
-		MarkupElement( SegmenterPosition start_segpos_, std::size_t start_ofs_, SegmenterPosition end_segpos_, std::size_t end_ofs_, const analyzer::TokenMarkup& markup_, unsigned int level_, unsigned int orderidx_)
-			:start_segpos(start_segpos_),start_ofs(start_ofs_),end_segpos(end_segpos_),end_ofs(end_ofs_),markup(markup_),level(level_),orderidx(orderidx_){}
+		MarkupElement( const analyzer::Position& start_, const analyzer::Position& end_, const analyzer::TokenMarkup& markup_, unsigned int level_, unsigned int orderidx_)
+			:start(start_),end(end_),markup(markup_),level(level_),orderidx(orderidx_){}
+#if __cplusplus >= 201103L
+		MarkupElement( MarkupElement&& ) = default;
+		MarkupElement( const MarkupElement& ) = default;
+		MarkupElement& operator= ( MarkupElement&& ) = default;
+		MarkupElement& operator= ( const MarkupElement& ) = default;
+#else
 		MarkupElement( const MarkupElement& o)
-			:start_segpos(o.start_segpos),start_ofs(o.start_ofs),end_segpos(o.end_segpos),end_ofs(o.end_ofs),markup(o.markup),level(o.level),orderidx(o.orderidx){}
+			:start(o.start),end(o.end),markup(o.markup),level(o.level),orderidx(o.orderidx){}
+#endif
 
 		bool operator<( const MarkupElement& o) const
 		{
-			if (start_segpos < o.start_segpos) return true;
-			if (start_segpos > o.start_segpos) return false;
-			if (start_ofs < o.start_ofs) return true;
-			if (start_ofs > o.start_ofs) return false;
-			if (end_segpos < o.end_segpos) return true;
-			if (end_segpos > o.end_segpos) return false;
-			if (end_ofs < o.end_ofs) return true;
-			if (end_ofs > o.end_ofs) return false;
+			if (start < o.start) return true;
+			if (start > o.start) return false;
+			if (end < o.end) return true;
+			if (end > o.end) return false;
 			if (level < o.level) return true;
 			if (level > o.level) return false;
 			if (orderidx < o.orderidx) return true;
@@ -86,6 +87,7 @@ private:
 	};
 
 private:
+	const SegmenterInstanceInterface* m_segmenter;
 	std::vector<MarkupElement> m_markupar;
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -102,7 +104,9 @@ public:
 	/// \brief Destructor
 	virtual ~TokenMarkupInstance(){}
 
-	virtual TokenMarkupContextInterface* createContext() const;
+	virtual TokenMarkupContextInterface* createContext( const SegmenterInstanceInterface* segmenter) const;
+
+	virtual analyzer::FunctionView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

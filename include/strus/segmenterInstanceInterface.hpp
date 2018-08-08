@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 /// \brief strus toplevel namespace
@@ -50,6 +51,10 @@ public:
 	virtual SegmenterMarkupContextInterface* createMarkupContext(
 			const analyzer::DocumentClass& dclass,
 			const std::string& content) const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 };
 
 }//namespace

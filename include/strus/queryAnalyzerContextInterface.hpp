@@ -28,7 +28,7 @@ public:
 	/// \param[in] fieldno number of the field
 	/// \param[in] fieldtype type of the field
 	/// \param[in] content content of the field
-	virtual void putField( unsigned int fieldno, const std::string& fieldtype, const std::string& content)=0;
+	virtual void putField( int fieldno, const std::string& fieldtype, const std::string& content)=0;
 
 	/// \brief Descriptor that tells how to group elements together
 	enum GroupBy
@@ -45,7 +45,7 @@ public:
 	/// \param[in] groupBy how to group elements together
 	/// \param[in] groupSingle true, if this operator should also be applied on single elements, false, if the operator is not applied on single argument elements and the elements apear as they are
 	/// \note This method influences how a query is iterated on
-	virtual void groupElements( unsigned int groupid, const std::vector<unsigned int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
+	virtual void groupElements( int groupid, const std::vector<int>& fieldnoList, const GroupBy& groupBy, bool groupSingle)=0;
 
 	/// \brief Analyze the term expression feeded with putField(unsigned int,const std::string&,const std::string&) and groupElements(const std::string&,const std::vector<unsigned int>&,const GroupBy&)
 	/// \return the term expression structure

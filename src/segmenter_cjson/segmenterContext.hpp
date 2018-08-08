@@ -50,10 +50,17 @@ public:
 		const char* segment;
 		std::size_t segmentsize;
 
-		Item( int id_, SegmenterPosition pos_, const char* segment_, std::size_t segmentsize_)
-			:id(id_),pos(pos_),segment(segment_),segmentsize(segmentsize_){}
+#if __cplusplus >= 201103L
+		Item( Item&& ) = default;
+		Item( const Item& ) = default;
+		Item& operator= ( Item&& ) = default;
+		Item& operator= ( const Item& ) = default;
+#else
 		Item( const Item& o)
 			:id(o.id),pos(o.pos),segment(o.segment),segmentsize(o.segmentsize){}
+#endif
+		Item( int id_, SegmenterPosition pos_, const char* segment_, std::size_t segmentsize_)
+			:id(id_),pos(pos_),segment(segment_),segmentsize(segmentsize_){}
 	};
 
 private:

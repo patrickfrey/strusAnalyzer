@@ -9,6 +9,7 @@
 /// \file "patternMatcherInstanceInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_MATCHER_INSTANCE_INTERFACE_HPP_INCLUDED
+#include "strus/analyzer/functionView.hpp"
 #include <string>
 
 namespace strus
@@ -49,6 +50,11 @@ public:
 		OpAny,			///< At least one of the argument patterns must appear for the completion of the rule.
 		OpAnd			///< All of the argument patterns must appear for the completion of the rule at the same ordinal position.
 	};
+	static const char* joinOperationName( JoinOperation op)
+	{
+		static const char* ar[] = {"sequence","sequence_imm","sequence_struct","within","within_struct","any","and",0};
+		return ar[ op];
+	}
 
 	/// \brief Take the topmost elements from the stack, build an expression out of them and replace the argument elements with the created element on the stack
 	/// \param[in] operation identifier of the operation to perform as string
@@ -71,8 +77,12 @@ public:
 
 	/// \brief Create a pattern that can be referenced by the given name and can be declared as part of the result
 	/// \param[in] name name of the pattern and the result if declared as visible
+	/// \param[in] formatstring format string for the value associated with the pattern (empty if undefined).
+	///		The formatstring contains variable references to pattern parts in curly brackets '{' '}'.
+	///		A variable reference is an identifier optionally followed by an or '|' and a separator value
+	///		used for separate multiple occurrencies of the referenced variable.
 	/// \param[in] visible true, if the pattern result should be exported (be visible in the final result)
-	virtual void definePattern( const std::string& name, bool visible)=0;
+	virtual void definePattern( const std::string& name, const std::string& formatstring, bool visible)=0;
 
 	/// \brief Compile all patterns defined
 	/// \param[in] opt optimization options
@@ -83,6 +93,10 @@ public:
 	/// \return the pattern matcher context
 	/// \remark The context cannot be reset. So the context has to be recreated for every processed unit (document)
 	virtual PatternMatcherContextInterface* createContext() const=0;
+
+	/// \brief Get the definition of the function as structure for introspection
+	/// \return structure for introspection
+	virtual analyzer::FunctionView view() const=0;
 };
 
 } //namespace

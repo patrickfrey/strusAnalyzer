@@ -9,7 +9,7 @@
 #include "featureConfig.hpp"
 #include "featureConfigMap.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
 
 using namespace strus;
 
@@ -28,18 +28,27 @@ void PatternFeatureConfigMap::defineFeature(
 	const std::string& name,
 	const std::string& patternTypeName,
 	const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
+	int priority,
 	const analyzer::FeatureOptions& options)
 {
 	try
 	{
-		m_map[ patternTypeName] = m_ar.size();
+		if (priority < 0)
+		{
+			throw std::runtime_error( _TXT("negative priority is not allowed"));
+		}
+		if (priority < m_minPriority)
+		{
+			m_minPriority = priority;
+		}
 		m_ar.reserve( m_ar.size()+1);
-		m_ar.push_back( PatternFeatureConfig( utils::tolower( name), normalizers, featureClass, options));
+		m_map.insert( typename PatternNameConfigMap::value_type( patternTypeName, m_ar.size()));
+		m_ar.push_back( PatternFeatureConfig( string_conv::tolower( name), normalizers, priority, featureClass, options));
 	}
 	catch (const std::bad_alloc&)
 	{
 		freeNormalizers( normalizers);
-		throw strus::runtime_error( "%s", _TXT("memory allocation error defining feature"));
+		throw std::runtime_error( _TXT("memory allocation error defining feature"));
 	}
 	catch (const std::runtime_error& err)
 	{
@@ -48,10 +57,15 @@ void PatternFeatureConfigMap::defineFeature(
 	}
 }
 
-const PatternFeatureConfig* PatternFeatureConfigMap::getConfig( const std::string& patternTypeName) const
+std::vector<const PatternFeatureConfig*> PatternFeatureConfigMap::getConfigs( const std::string& patternTypeName) const
 {
-	std::map<std::string,std::size_t>::const_iterator mi = m_map.find( patternTypeName);
-	if (mi == m_map.end()) return 0;
-	return &m_ar[ mi->second];
+	std::vector<const PatternFeatureConfig*> rt;
+	std::pair<PatternNameConfigMap::const_iterator,PatternNameConfigMap::const_iterator> range = m_map.equal_range( patternTypeName);
+	PatternNameConfigMap::const_iterator ci = range.first, ce = range.second;
+	for (; ci != ce; ++ci)
+	{
+		rt.push_back( &m_ar[ ci->second]);
+	}
+	return rt;
 }
 

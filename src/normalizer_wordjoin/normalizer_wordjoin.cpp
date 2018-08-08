@@ -7,10 +7,10 @@
  */
 #include "normalizer_wordjoin.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -55,7 +55,18 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+				( "jointoken", m_jointoken)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -67,7 +78,7 @@ NormalizerFunctionInstanceInterface* WordJoinNormalizerFunction::createInstance(
 {
 	try
 	{
-		if (args.size() > 1) throw strus::runtime_error( "%s", _TXT("too many arguments"));
+		if (args.size() > 1) throw std::runtime_error( _TXT("too many arguments"));
 		if (args.size() == 1)
 		{
 			return new WordJoinNormalizerInstance( args[0], m_errorhnd);
@@ -77,6 +88,6 @@ NormalizerFunctionInstanceInterface* WordJoinNormalizerFunction::createInstance(
 			return new WordJoinNormalizerInstance( " ", m_errorhnd);
 		}
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
 

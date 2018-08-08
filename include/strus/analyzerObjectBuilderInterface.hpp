@@ -17,11 +17,19 @@ namespace strus
 {
 
 /// \brief Forward declaration
-class DocumentAnalyzerInterface;
+class ContentStatisticsInterface;
+/// \brief Forward declaration
+class DocumentAnalyzerInstanceInterface;
+/// \brief Forward declaration
+class DocumentAnalyzerMapInterface;
+/// \brief Forward declaration
+class DocumentClassDetectorInterface;
+/// \brief Forward declaration
+class PosTaggerInstanceInterface;
 /// \brief Forward declaration
 class SegmenterInterface;
 /// \brief Forward declaration
-class QueryAnalyzerInterface;
+class QueryAnalyzerInstanceInterface;
 /// \brief Forward declaration
 class TextProcessorInterface;
 
@@ -37,16 +45,36 @@ public:
 	virtual const TextProcessorInterface* getTextProcessor() const=0;
 
 	/// \brief Creates a document analyzer object
-	/// \param[in] segmenter the document segmenter to use (ownership passed)
+	/// \param[in] segmenter the document segmenter to use
 	/// \param[in] opts (optional) options for the creation of the segmenter instance
 	/// \return the document analyzer (ownership returned)
-	virtual DocumentAnalyzerInterface* createDocumentAnalyzer(
+	virtual DocumentAnalyzerInstanceInterface* createDocumentAnalyzer(
+			const SegmenterInterface* segmenter,
+			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
+
+	/// \brief Creates a POS tagger instance
+	/// \param[in] segmenter the document segmenter to use
+	/// \param[in] opts (optional) options for the creation of the segmenter instance
+	/// \return the POS tagger interface (ownership returned)
+	virtual PosTaggerInstanceInterface* createPosTaggerInstance(
 			const SegmenterInterface* segmenter,
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
 
 	/// \brief Creates a query analyzer object
 	/// \return the query analyzer (ownership returned)
-	virtual QueryAnalyzerInterface* createQueryAnalyzer() const=0;
+	virtual QueryAnalyzerInstanceInterface* createQueryAnalyzer() const=0;
+
+	/// \brief Creates a document analyzer map object
+	/// \return the document analyzer map (ownership returned)
+	virtual DocumentAnalyzerMapInterface* createDocumentAnalyzerMap() const=0;
+
+	/// \brief Creates a document class detector object
+	/// \return the document class detector (ownership returned)
+	virtual DocumentClassDetectorInterface* createDocumentClassDetector() const=0;
+
+	/// \brief Creates an object for content statistics analyzer
+	/// \return the content statistics analyzer (ownership returned)
+	virtual ContentStatisticsInterface* createContentStatistics() const=0;
 };
 
 }//namespace

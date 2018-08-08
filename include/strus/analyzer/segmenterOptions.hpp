@@ -20,6 +20,8 @@ namespace analyzer {
 /// \class SegmenterOptions
 /// \brief Options to stear the segmenter behaviour or the structure of input if not self defined in the documents processed
 /// \note Available options defined as key value pairs depend on the segmenter implementation
+/// \note Options should not be needed and many facets of content analysis and document type detection are not possible with parts of the document content type defined outside of the segmenter. 
+///		They are used as hack to handle some TSV formats with a structure definition that is not part of the document.
 class SegmenterOptions
 {
 public:
@@ -27,8 +29,15 @@ public:
 	SegmenterOptions()
 		:m_optar(0){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	SegmenterOptions( SegmenterOptions&& ) = default;
+	SegmenterOptions( const SegmenterOptions& ) = default;
+	SegmenterOptions& operator= ( SegmenterOptions&& ) = default;
+	SegmenterOptions& operator= ( const SegmenterOptions& ) = default;
+#else
 	SegmenterOptions( const SegmenterOptions& o)
 		:m_optar(o.m_optar){}
+#endif
 
 	/// \brief One option item. Interpretation depends on the segmenter implementation
 	typedef std::pair<std::string,std::string> Item;

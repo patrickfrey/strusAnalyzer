@@ -9,7 +9,9 @@
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -41,7 +43,7 @@ class TextcatTokenizerInstance
 {
 public:
 	TextcatTokenizerInstance( const std::string& config, const std::string& language, ErrorBufferInterface* errorhnd)
-		:m_language(language), m_errorhnd(errorhnd)
+		:m_language(language), m_errorhnd(errorhnd), m_textcat(0)
 	{
 		initialize( config );
 	}
@@ -59,6 +61,17 @@ public:
 	virtual bool concatBeforeTokenize() const
 	{
 		return true;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "textcat")
+				( "language", m_language)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -160,7 +173,7 @@ std::vector<Token> TextcatTokenizerInstance::tokenize( const char* src, std::siz
 			{
 				si = skipChar( si);
 			}
-			Token token( start-src/*ord*/, 0/*seg*/, start-src, si-start);
+			Token token( start-src/*ord*/, analyzer::Position(0/*seg*/, start-src), si-start);
 			rt.push_back( token);
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cout << "textcat: " << m_language << " "
@@ -180,29 +193,34 @@ class TextcatTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	TextcatTokenizerFunction( const char* description_, ErrorBufferInterface* errorhnd_)
-		:m_description(description_),m_errorhnd(errorhnd_){}
+	TextcatTokenizerFunction( const char* description_, const TextProcessorInterface* textproc_, ErrorBufferInterface* errorhnd_)
+		:m_description(description_),m_textproc(textproc_),m_errorhnd(errorhnd_){}
 
 	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("name of textcat config file expected as first argument for the 'textcat' tokenizer"));
+			m_errorhnd->report(  ErrorCodeIncompleteDefinition, _TXT("name of textcat config file expected as first argument for the 'textcat' tokenizer"));
 			return 0;
 		}
 		if (args.size() == 1)
 		{
-			m_errorhnd->report( _TXT("filter language expected as second parameter of the textcat tokenizer"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("filter language expected as second parameter of the textcat tokenizer"));
 			return 0;
 		}
 		if (args.size() > 2)
 		{
-			m_errorhnd->report( _TXT("too many arguments for 'textcat' tokenizer"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for 'textcat' tokenizer"));
 			return 0;
 		}
 		try
 		{
-			return new TextcatTokenizerInstance( args[0], args[1], m_errorhnd);
+			std::string resolvedConfigFilename = m_textproc->getResourceFilePath( args[0]);
+			if (resolvedConfigFilename.empty() && m_errorhnd->hasError())
+			{
+				throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), args[0].c_str(), m_errorhnd->fetchError());
+			}
+			return new TextcatTokenizerInstance( resolvedConfigFilename, args[1]/*language*/, m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, 0);
 	}
@@ -214,12 +232,13 @@ public:
 
 private:
 	const char* m_description;
+	const TextProcessorInterface* m_textproc;
 	ErrorBufferInterface* m_errorhnd;
 };
 
 static bool g_intl_initialized = false;
 
-DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_textcat( ErrorBufferInterface* errorhnd)
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_textcat( const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
@@ -228,7 +247,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_textcat( ErrorBuff
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new TextcatTokenizerFunction( _TXT("Tokenizer splitting tokens by recognized language"), errorhnd);
+		return new TextcatTokenizerFunction( _TXT("Tokenizer splitting tokens by recognized language"), textproc, errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot create textcat tokenizer: %s"), *errorhnd, 0);
 }

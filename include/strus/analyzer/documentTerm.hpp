@@ -25,8 +25,15 @@ public:
 	DocumentTerm()
 		:m_type(),m_value(),m_pos(0){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	DocumentTerm( DocumentTerm&& ) = default;
+	DocumentTerm( const DocumentTerm& ) = default;
+	DocumentTerm& operator= ( DocumentTerm&& ) = default;
+	DocumentTerm& operator= ( const DocumentTerm& ) = default;
+#else
 	DocumentTerm( const DocumentTerm& o)
 		:m_type(o.m_type),m_value(o.m_value),m_pos(o.m_pos){}
+#endif
 	/// \brief Constructor
 	/// \param[in] t name of the term
 	/// \param[in] v value of the term

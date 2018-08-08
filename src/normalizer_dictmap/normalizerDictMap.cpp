@@ -12,6 +12,8 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "strus/analyzer/functionView.hpp"
+#include "compactNodeTrie.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
@@ -69,7 +71,8 @@ bool DictMap::get( const std::string& key, std::string& value) const
 class HashMap :public KeyMap
 {
 public:
-	HashMap(){}
+	explicit HashMap( ErrorBufferInterface* errorhnd)
+		:m_symtab(errorhnd),m_value_refs(),m_value_strings(){}
 	virtual ~HashMap(){}
 
 	virtual bool set( const std::string& key, const std::string& value);
@@ -86,7 +89,7 @@ bool HashMap::set( const std::string& key, const std::string& value)
 {
 	uint32_t id = m_symtab.getOrCreate( key);
 	if (!m_symtab.isNew()) throw strus::runtime_error(_TXT("duplicate definition of symbol '%s'"), key.c_str());
-	if (id != m_value_refs.size()+1) throw strus::runtime_error( "%s", _TXT("internal: inconsistency in data"));
+	if (id != m_value_refs.size()+1) throw std::runtime_error( _TXT("internal: inconsistency in data"));
 	m_value_strings.push_back('\0');
 	m_value_refs.push_back( m_value_strings.size());
 	m_value_strings.append( value);
@@ -144,21 +147,21 @@ class DictMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	DictMapNormalizerInstance( const std::string& filename, const std::string& defaultResult_, bool defaultOrig_, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_defaultOrig(defaultOrig_)
+	DictMapNormalizerInstance( const std::string& filename_, const std::string& defaultResult_, bool defaultOrig_, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_map(0),m_defaultResult(defaultResult_),m_filename(filename_),m_defaultOrig(defaultOrig_)
 	{
 		std::size_t sz;
-		std::string resolvedFilename = textproc->getResourcePath( filename);
+		std::string resolvedFilename = textproc->getResourceFilePath( m_filename);
 		if (resolvedFilename.empty() && m_errorhnd->hasError())
 		{
-			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), filename.c_str(), m_errorhnd->fetchError());
+			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), m_filename.c_str(), m_errorhnd->fetchError());
 		}
 		unsigned int ec = readFileSize( resolvedFilename, sz);
-		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), filename.c_str(), ::strerror(ec));
+		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), m_filename.c_str(), ::strerror(ec));
 		strus::local_ptr<KeyMap> map;
 		if (sz > 2000000)
 		{
-			map.reset( new HashMap());
+			map.reset( new HashMap(m_errorhnd));
 		}
 		else
 		{
@@ -195,13 +198,27 @@ public:
 				return m_defaultResult;
 			}
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( NORMALIZER_NAME)
+				( "defaultorig", m_defaultOrig)
+				( "default", m_defaultResult)
+				( "filename", m_filename)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
 	ErrorBufferInterface* m_errorhnd;
 	KeyMap* m_map;
 	std::string m_defaultResult;
+	std::string m_filename;
 	bool m_defaultOrig;
 };
 
@@ -212,7 +229,7 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("name of file with key values expected as argument for '%s' normalizer"), NORMALIZER_NAME);
 			return 0;
 		}
 		std::string defaultValue;
@@ -224,13 +241,13 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 
 			if (args.size() > 2)
 			{
-				m_errorhnd->report( _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
+				m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments for '%s' normalizer"), NORMALIZER_NAME);
 				return 0;
 			}
 		}
 		return new DictMapNormalizerInstance( args[0], defaultValue, defaultOrig, textproc, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
 }
 
 

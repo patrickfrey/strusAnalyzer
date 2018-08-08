@@ -36,7 +36,14 @@ public:
 			const std::string& encoding_,
 			const std::string& scheme_)		:m_mimeType(mimeType_),m_scheme(scheme_),m_encoding(encoding_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	DocumentClass( DocumentClass&& ) = default;
+	DocumentClass( const DocumentClass& ) = default;
+	DocumentClass& operator= ( DocumentClass&& ) = default;
+	DocumentClass& operator= ( const DocumentClass& ) = default;
+#else
 	DocumentClass( const DocumentClass& o)			:m_mimeType(o.m_mimeType),m_scheme(o.m_scheme),m_encoding(o.m_encoding){}
+#endif
 
 	/// \brief Set the MIME type of the document class
 	/// \param[in] the document MIME type string
@@ -64,7 +71,7 @@ public:
 	/// \brief Evaluate the level of definition of the document class
 	/// \return level of definition
 	/// \note this method is used to weight different oppinions of document class detection
-	unsigned int level() const				{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
+	int level() const					{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
 
 private:
 	std::string m_mimeType;

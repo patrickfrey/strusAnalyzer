@@ -15,16 +15,17 @@ namespace strus {
 
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class FileLocatorInterface;
 
 class TextProcessor
 	:public TextProcessorInterface
 {
 public:
-	explicit TextProcessor( ErrorBufferInterface* errorhnd);
+	explicit TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_);
 	virtual ~TextProcessor();
 
-	virtual void addResourcePath( const std::string& path);
-	virtual std::string getResourcePath( const std::string& filename) const;
+	virtual std::string getResourceFilePath( const std::string& filename) const;
 
 	virtual const SegmenterInterface* getSegmenterByName( const std::string& segmenterName) const;
 
@@ -44,7 +45,13 @@ public:
 
 	virtual const PatternTermFeederInterface* getPatternTermFeeder() const;
 
-	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const;
+	virtual PosTaggerDataInterface* createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const;
+
+	virtual const PosTaggerInterface* getPosTagger() const;
+
+	virtual TokenMarkupInstanceInterface* createTokenMarkupInstance() const;
+
+	virtual bool detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const;
 
 	virtual void defineDocumentClassDetector( DocumentClassDetectorInterface* detector);
 
@@ -65,6 +72,11 @@ public:
 	virtual std::vector<std::string> getFunctionList( const FunctionType& type) const;
 
 private:
+	void cleanup();
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	const FileLocatorInterface* m_filelocator;
 	std::map<std::string,SegmenterInterface*> m_segmenterMap;		///< map of defined document segmenters (key is segmenter name)
 	std::map<std::string,SegmenterInterface*> m_mimeSegmenterMap;		///< map of defined document segmenters (key is MIME type)
 	std::map<std::string,analyzer::SegmenterOptions> m_schemeSegmenterOptions_map;
@@ -74,9 +86,9 @@ private:
 	std::map<std::string,PatternLexerInterface*> m_patternlexer_map;
 	std::map<std::string,PatternMatcherInterface*> m_patternmatcher_map;
 	PatternTermFeederInterface* m_patterntermfeeder;
+	PosTaggerInterface* m_postagger;
 	std::vector<std::string> m_resourcePaths;
 	std::vector<DocumentClassDetectorInterface*> m_detectors;
-	ErrorBufferInterface* m_errorhnd;
 };
 
 }//namespace

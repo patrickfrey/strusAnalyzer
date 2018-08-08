@@ -8,11 +8,13 @@
 /// \brief Test of document analysis with a focus of binding terms to ordinal positions
 #include "strus/lib/analyzer_objbuild.hpp"
 #include "strus/lib/error.hpp"
+#include "strus/lib/filelocator.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/fileLocatorInterface.hpp"
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
-#include "strus/documentAnalyzerInterface.hpp"
+#include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/textProcessorInterface.hpp"
@@ -35,15 +37,17 @@
 #include <iostream>
 #include <sstream>
 
-#undef STRUS_LOWLEVEL_DEBUG
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
+static strus::FileLocatorInterface* g_fileLocator = 0;
 
 static void printUsage( int argc, const char* argv[])
 {
-	std::cerr << "usage: " << argv[0] << " <inputfile> <expectedfile>" << std::endl;
+	std::cerr << "usage: " << argv[0] << "[options] <inputfile> <expectedfile>" << std::endl;
 	std::cerr << "<inputfile> = file containing documents to analyze" << std::endl;
 	std::cerr << "<expectedfile> = file containing the result expected" << std::endl;
+	std::cerr << "options: -h|--help      :show this usage" << std::endl;
+	std::cerr << "         -V|--verbose   :verbose output" << std::endl;
 }
 
 
@@ -80,7 +84,7 @@ struct FuncDef
 	}
 };
 
-static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, const strus::TextProcessorInterface* textproc)
+static void loadAnalyzerConfig( strus::DocumentAnalyzerInstanceInterface* analyzer, const strus::TextProcessorInterface* textproc)
 {
 	static const ConfigItem config[32] =
 	{
@@ -142,10 +146,10 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 				analyzer->defineAttribute( ci->name, ci->path, tki.release(), normalizers);
 				break;
 			case ConfigItem::SearchIndex:
-				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
+				analyzer->addSearchIndexFeature( ci->name, ci->path, tki.release(), normalizers, 0/*priority*/, opt);
 				break;
 			case ConfigItem::ForwardIndex:
-				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers, opt);
+				analyzer->addForwardIndexFeature( ci->name, ci->path, tki.release(), normalizers, 0/*priority*/, opt);
 				break;
 		}
 	}
@@ -153,18 +157,38 @@ static void loadAnalyzerConfig( strus::DocumentAnalyzerInterface* analyzer, cons
 
 int main( int argc, const char* argv[])
 {
-	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
+	int argi = 1;
+	bool verbose = false;
+	for (; argi < argc && argv[argi][0] == '-'; ++argi)
 	{
-		printUsage( argc, argv);
-		return 0;
+		if (std::strcmp( argv[argi], "-h") == 0 || std::strcmp( argv[argi], "--help") == 0)
+		{
+			printUsage( argc, argv);
+			return 0;
+		}
+		else if (std::strcmp( argv[argi], "-v") == 0 || std::strcmp( argv[argi], "--verbose") == 0)
+		{
+			verbose = true;
+		}
+		else if (std::strcmp( argv[argi], "--") == 0)
+		{
+			argi++;
+			break;
+		}
+		else
+		{
+			std::cerr << "ERROR unknown option " << argv[argi] << std::endl;
+			printUsage( argc, argv);
+			return 1;
+		}
 	}
-	else if (argc < 3)
+	if (argc-argi < 2)
 	{
 		std::cerr << "ERROR too few parameters" << std::endl;
 		printUsage( argc, argv);
 		return 1;
 	}
-	else if (argc > 3)
+	else if (argc-argi > 2)
 	{
 		std::cerr << "ERROR too many parameters" << std::endl;
 		printUsage( argc, argv);
@@ -172,13 +196,23 @@ int main( int argc, const char* argv[])
 	}
 	try
 	{
-		g_errorhnd = strus::createErrorBuffer_standard( 0, 2);
-		if (!g_errorhnd)
+		strus::DebugTraceInterface* debugtrace = NULL;
+		if (verbose)
 		{
-			throw std::runtime_error("failed to create error buffer object");
+			debugtrace = strus::createDebugTrace_standard( 2);
+			if (!debugtrace)
+			{
+				std::cerr << "ERROR failed to create debug trace interface" << std::endl;
+			}
+			debugtrace->enable( "pattern");
 		}
-		std::string inputfile( argv[1]);
-		std::string expectedfile( argv[2]);
+		g_errorhnd = strus::createErrorBuffer_standard( 0, 2, debugtrace);
+		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");
+		g_fileLocator = strus::createFileLocator_std( g_errorhnd);
+		if (!g_fileLocator) throw std::runtime_error("failed to create file locator");
+
+		std::string inputfile( argv[ argi]);
+		std::string expectedfile( argv[ argi+1]);
 		std::string outputfile;
 		char const* xi = argv[2];
 		char const* xn = std::strchr( xi,'.');
@@ -192,10 +226,10 @@ int main( int argc, const char* argv[])
 			outputfile.append( std::string( argv[2]) + ".out");
 		}
 		strus::local_ptr<strus::AnalyzerObjectBuilderInterface> objbuild(
-			strus::createAnalyzerObjectBuilder_default( g_errorhnd));
+			strus::createAnalyzerObjectBuilder_default( g_fileLocator, g_errorhnd));
 		const strus::TextProcessorInterface* textproc = objbuild->getTextProcessor();
 		const strus::SegmenterInterface* segmenter = textproc->getSegmenterByName( "textwolf");
-		strus::local_ptr<strus::DocumentAnalyzerInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
+		strus::local_ptr<strus::DocumentAnalyzerInstanceInterface> analyzer( objbuild->createDocumentAnalyzer( segmenter));
 		loadAnalyzerConfig( analyzer.get(), textproc);
 
 		std::string inputsrc;
@@ -242,9 +276,10 @@ int main( int argc, const char* argv[])
 				output << "ForwardIndex term " << ti->type() << " '" << ti->value() << "' at " << ti->pos() << std::endl;
 			}
 		}
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << output.str();
-#endif
+		if (verbose)
+		{
+			std::cout << output.str();
+		}
 		if (g_errorhnd->hasError())
 		{
 			throw std::runtime_error( g_errorhnd->fetchError());

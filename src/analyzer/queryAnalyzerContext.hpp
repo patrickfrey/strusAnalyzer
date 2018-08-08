@@ -19,22 +19,24 @@
 namespace strus
 {
 /// \brief Forward declaration
-class QueryAnalyzer;
+class QueryAnalyzerInstance;
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class DebugTraceContextInterface;
 
 /// \brief Implementation of the context for analyzing queries for the strus IR engine
 class QueryAnalyzerContext
 	:public QueryAnalyzerContextInterface
 {
 public:
-	QueryAnalyzerContext( const QueryAnalyzer* analyzer_, ErrorBufferInterface* errorhnd_);
+	QueryAnalyzerContext( const QueryAnalyzerInstance* analyzer_, ErrorBufferInterface* errorhnd_);
 
-	virtual ~QueryAnalyzerContext(){}
+	virtual ~QueryAnalyzerContext();
 
-	virtual void putField( unsigned int fieldNo, const std::string& fieldType, const std::string& content);
+	virtual void putField( int fieldNo, const std::string& fieldType, const std::string& content);
 
-	virtual void groupElements( unsigned int groupId, const std::vector<unsigned int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
+	virtual void groupElements( int groupId, const std::vector<int>& fieldNoList, const GroupBy& groupBy, bool groupSingle);
 
 	virtual analyzer::QueryTermExpression analyze();
 
@@ -44,33 +46,44 @@ private:
 public:
 	struct Field
 	{
-		unsigned int fieldNo;
+		int fieldNo;
 		std::string fieldType;
 		std::string content;
 
-		Field( unsigned int fieldNo_, const std::string& fieldType_, const std::string& content_)
+		Field( int fieldNo_, const std::string& fieldType_, const std::string& content_)
 			:fieldNo(fieldNo_), fieldType(fieldType_), content(content_) {}
+#if __cplusplus >= 201103L
+		Field( Field&& ) = default;
+		Field( const Field& ) = default;
+		Field& operator= ( Field&& ) = default;
+		Field& operator= ( const Field& ) = default;
+#else
 		Field( const Field& o)
 			:fieldNo(o.fieldNo), fieldType(o.fieldType), content(o.content) {}
+#endif
 	};
 	struct Group
 	{
-		unsigned int groupId;
+		int groupId;
 		GroupBy groupBy;
 		bool groupSingle;
-		std::vector<unsigned int> fieldNoList;
+		std::vector<int> fieldNoList;
 
-		Group( unsigned int groupId_, const std::vector<unsigned int>& fieldNoList_, const GroupBy& groupBy_, bool groupSingle_)
+		Group( int groupId_, const std::vector<int>& fieldNoList_, const GroupBy& groupBy_, bool groupSingle_)
 			:groupId(groupId_), groupBy(groupBy_), groupSingle(groupSingle_), fieldNoList(fieldNoList_) {}
 		Group( const Group& o)
 			:groupId(o.groupId), groupBy(o.groupBy), groupSingle(o.groupSingle), fieldNoList(o.fieldNoList) {}
+#if __cplusplus >= 201103L
+		Group( Group&& o) = default;
+#endif
 	};
 
 private:
-	const QueryAnalyzer* m_analyzer;
+	const QueryAnalyzerInstance* m_analyzer;
 	std::vector<Field> m_fields;
 	std::vector<Group> m_groups;
 	ErrorBufferInterface* m_errorhnd;
+	DebugTraceContextInterface* m_debugtrace;
 };
 
 }//namespace

@@ -16,19 +16,6 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}/src )
 # -------------------------------------------
 # CONFIGURATION
 # -------------------------------------------
-
-# copied from build_rules.cmake, removed C99 standard (because of compilation issues)
-if(CMAKE_COMPILER_IS_GNUCXX)
-set( STRUS_OPTIMIZATION_LEVEL "3" )
-set( CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -fvisibility=hidden -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-set( CMAKE_C_FLAGS "-Wall -pedantic -Wfatal-errors -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-endif()
-if(CMAKE_CXX_COMPILER MATCHES ".*clang")
-set( STRUS_OPTIMIZATION_LEVEL "3" )
-set( CMAKE_CXX_FLAGS "-std=c++98  -Wall -pedantic -g -Wfatal-errors -fvisibility=hidden -Wno-unused-private-field -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-set( CMAKE_C_FLAGS "-Wall -pedantic -Wfatal-errors -fPIC -O${STRUS_OPTIMIZATION_LEVEL}" )
-endif()
-
 set( PACKAGE_VERSION "2.2" )
 
 include( CheckIncludeFiles )
@@ -60,11 +47,13 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINA
 # -------------------------------------------
 # TEXTCAT LANGUAGE DETECTION LIBRARY
 # -------------------------------------------
+add_cppcheck( strus_textcat ${textcat_source_files} )
+
 add_library( strus_textcat SHARED ${textcat_source_files})
 set_target_properties(
     strus_textcat
     PROPERTIES
-    DEBUG_POSTFIX "_d"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
     VERSION ${STRUS_VERSION}
 )

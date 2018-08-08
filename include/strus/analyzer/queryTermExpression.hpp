@@ -25,9 +25,16 @@ public:
 	/// \brief Default constructor
 	QueryTermExpression(){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	QueryTermExpression( QueryTermExpression&& ) = default;
+	QueryTermExpression( const QueryTermExpression& ) = default;
+	QueryTermExpression& operator= ( QueryTermExpression&& ) = default;
+	QueryTermExpression& operator= ( const QueryTermExpression& ) = default;
+#else
 	QueryTermExpression( const QueryTermExpression& o)
 		:m_terms(o.m_terms)
 		,m_instructions(o.m_instructions){}
+#endif
 
 	/// \brief Query instruction
 	class Instruction
@@ -40,23 +47,23 @@ public:
 			return ar[i];
 		}
 
-		Instruction( OpCode opCode_, std::size_t idx_, std::size_t nofOperands_=0)
+		Instruction( OpCode opCode_, int idx_, std::size_t nofOperands_=0)
 			:m_opCode(opCode_),m_idx(idx_),m_nofOperands(nofOperands_){}
 		Instruction( const Instruction& o)
 			:m_opCode(o.m_opCode),m_idx(o.m_idx),m_nofOperands(o.m_nofOperands){}
 
 		/// \brief Opcode identifier
 		OpCode opCode() const				{return m_opCode;}
-		/// \brief Index of the element in the associated list to retrieve with searchIndexTerm(std::size_t),metadata(std::size_t) of the operatorId
-		unsigned int idx() const			{return m_idx;}
+		/// \brief Index of the element in the associated list to retrieve with term(std::size_t) or the operator group id
+		int idx() const					{return m_idx;}
 		/// \brief Number of operands
-		unsigned int nofOperands() const		{return m_nofOperands;}
+		int nofOperands() const				{return m_nofOperands;}
 
 	private:
 		friend class QueryTermExpression;
 		OpCode m_opCode;
-		unsigned int m_idx;
-		unsigned int m_nofOperands;
+		int m_idx;
+		int m_nofOperands;
 	};
 
 	/// \brief Get the list of query instructions
@@ -65,23 +72,23 @@ public:
 
 	/// \brief Get the argument of a term instruction
 	/// \param[in] idx index of instruction refering to a term (Instruction::idx)
-	const analyzer::QueryTerm& term( unsigned int idx) const
+	const analyzer::QueryTerm& term( int idx) const
 	{
 		return m_terms[ idx];
 	}
 
 	/// \brief Add a search index term to the query
 	/// \param[in] term term to add
-	void pushTerm( const analyzer::QueryTerm& term)
+	void pushTerm( const analyzer::QueryTerm& term_)
 	{
 		m_instructions.push_back( Instruction( Instruction::Term, m_terms.size()));
-		m_terms.push_back( term);
+		m_terms.push_back( term_);
 	}
 
 	/// \brief Add an instruction
 	/// \param[in] operatorId id of the operator
 	/// \param[in] nofOperands number of operands
-	void pushOperator( unsigned int operatorId, unsigned int nofOperands)
+	void pushOperator( int operatorId, int nofOperands)
 	{
 		m_instructions.push_back( Instruction( Instruction::Operator, operatorId, nofOperands));
 	}

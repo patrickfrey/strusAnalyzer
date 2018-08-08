@@ -19,44 +19,34 @@ namespace analyzer {
 
 /// \brief Structure desribing a result of a token pattern matcher
 class PatternMatcherResult
+	:public PatternMatcherResultItem
 {
 public:
 	typedef analyzer::PatternMatcherResultItem Item;
 
+	/// \brief Default constructor
+	PatternMatcherResult()
+		:PatternMatcherResultItem(),m_itemlist(){}
 	/// \brief Constructor
-	PatternMatcherResult( const char* name_, uint32_t start_ordpos_, uint32_t end_ordpos_, uint32_t start_origseg_, uint32_t start_origpos_, uint32_t end_origseg_, uint32_t end_origpos_, const std::vector<Item>& itemlist_=std::vector<Item>())
-		:m_name(name_),m_start_ordpos(start_ordpos_),m_end_ordpos(end_ordpos_),m_start_origseg(start_origseg_),m_end_origseg(end_origseg_),m_start_origpos(start_origpos_),m_end_origpos(end_origpos_),m_itemlist(itemlist_){}
+	PatternMatcherResult( const char* name_, const char* value_, int ordpos_, int ordend_, const Position& origpos_, const Position& origend_, const std::vector<Item>& itemlist_=std::vector<Item>())
+		:PatternMatcherResultItem(name_,value_,ordpos_,ordend_,origpos_,origend_),m_itemlist(itemlist_){}
 	/// \brief Copy constructor
+#if __cplusplus >= 201103L
+	PatternMatcherResult( PatternMatcherResult&& ) = default;
+	PatternMatcherResult( const PatternMatcherResult& ) = default;
+	PatternMatcherResult& operator= ( PatternMatcherResult&& ) = default;
+	PatternMatcherResult& operator= ( const PatternMatcherResult& ) = default;
+#else
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:m_name(o.m_name),m_start_ordpos(o.m_start_ordpos),m_end_ordpos(o.m_end_ordpos),m_start_origseg(o.m_start_origseg),m_end_origseg(o.m_end_origseg),m_start_origpos(o.m_start_origpos),m_end_origpos(o.m_end_origpos),m_itemlist(o.m_itemlist){}
+		:PatternMatcherResult(o),m_itemlist(o.m_itemlist){}
+#endif
 	/// \brief Destructor
 	~PatternMatcherResult(){}
 
-	/// \brief Name of the result, defined by the name of the pattern of the match
-	const char* name() const			{return m_name;}
-	/// \brief Ordinal (counting) position of the match (resp. the first term of the match)
-	uint32_t start_ordpos() const			{return m_start_ordpos;}
-	/// \brief Ordinal (counting) end position of the match
-	uint32_t end_ordpos() const			{return m_end_ordpos;}
-	/// \brief Original segment index of the start of the result in the source
-	std::size_t start_origseg() const		{return m_start_origseg;}
-	/// \brief Original byte position start of the result in the source segment as UTF-8 specified with start_origseg
-	std::size_t start_origpos() const		{return m_start_origpos;}
-	/// \brief Original segment index of the end of the result in the source
-	std::size_t end_origseg() const			{return m_end_origseg;}
-	/// \brief Original byte position end of the result in the source segment as UTF-8 specified with start_origseg
-	std::size_t end_origpos() const			{return m_end_origpos;}
 	/// \brief List of result items defined by variables assigned to nodes of the pattern of the match
 	const std::vector<Item>& items() const		{return m_itemlist;}
 
 private:
-	const char* m_name;
-	uint32_t m_start_ordpos;
-	uint32_t m_end_ordpos;
-	uint32_t m_start_origseg;
-	uint32_t m_end_origseg;
-	uint32_t m_start_origpos;
-	uint32_t m_end_origpos;
 	std::vector<Item> m_itemlist;
 };
 

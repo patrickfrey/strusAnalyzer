@@ -7,32 +7,48 @@
  */
 #include "normalizerCharConv.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
-#include "private/utils.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <cstring>
 
 using namespace strus;
+///\note The tables in this module have been generated with scripts/printCharTable.py
 
 class CharMap
 {
 public:
 	enum ConvType {Diacritical, Lowercase, Uppercase};
+	static const CharMap* getMap( ConvType type)
+	{
+		static const CharMap rt_Diacritical( Diacritical, "convdia");
+		static const CharMap rt_Lowercase( Lowercase, "lc");
+		static const CharMap rt_Uppercase( Uppercase, "uc");
+		switch (type)
+		{
+			case Diacritical: return &rt_Diacritical;
+			case Lowercase: return &rt_Lowercase;
+			case Uppercase: return &rt_Uppercase;
+		}
+		throw  std::logic_error("bad enum value");
+	}
 
+	typedef const char* (*ExceptionsF)( unsigned int chr);
+	std::string rewrite( const char* src, std::size_t srcsize, ExceptionsF exceptions, ErrorBufferInterface* errorhnd) const;
+	const char* name() const	{return m_name;}
+
+private:
 	CharMap(){}
-	explicit CharMap( ConvType type)
+	CharMap( ConvType type, const char* name_)
+		:m_map(),m_name(name_),m_strings()
 	{
 		load( type);
 	}
 
 	void load( ConvType type);
-
-	typedef const char* (*ExceptionsF)( unsigned int chr);
-	std::string rewrite( const char* src, std::size_t srcsize, ExceptionsF exceptions, ErrorBufferInterface* errorhnd) const;
-
-private:
 	void set( unsigned int chr, const char* value);
 	void set( unsigned int chr, unsigned int mapchr);
 
@@ -42,6 +58,7 @@ private:
 
 private:
 	std::map<unsigned int,std::size_t> m_map;
+	const char* m_name;
 	std::string m_strings;
 };
 
@@ -50,17 +67,27 @@ class CharMapNormalizerInstance
 {
 public:
 	CharMapNormalizerInstance( CharMap::ConvType maptype_, CharMap::ExceptionsF exceptions_, ErrorBufferInterface* errorhnd_)
-		:m_map(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
+		:m_map(CharMap::getMap(maptype_)),m_maptype(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize(
 			const char* src,
 			std::size_t srcsize) const
 	{
-		return m_map.rewrite( src, srcsize, m_exceptions, m_errorhnd);
+		return m_map->rewrite( src, srcsize, m_exceptions, m_errorhnd);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( m_map->name());
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
-	CharMap m_map;
+	const CharMap* m_map;
+	CharMap::ConvType m_maptype;
 	CharMap::ExceptionsF m_exceptions;
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -4370,7 +4397,7 @@ std::string CharMap::rewrite( const char* src, std::size_t srcsize, CharMap::Exc
 			{
 				if (value == textwolf::charset::UTF8::MaxChar)
 				{
-					throw strus::runtime_error( "%s", _TXT( "illegal UTF-8 character in input"));
+					throw std::runtime_error( _TXT( "illegal UTF-8 character in input"));
 				}
 				rt.append( buf, bufpos);
 			}
@@ -4388,7 +4415,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
+		m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("unexpected arguments passed to normalizer '%s'"), "lc");
 		return 0;
 	}
 	try
@@ -4397,7 +4424,7 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "lc");
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
 }
@@ -4406,7 +4433,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 {
 	if (args.size())
 	{
-		m_errorhnd->report( _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
+		m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("unexpected arguments passed to normalizer '%s'"), "uc");
 		return 0;
 	}
 	try
@@ -4415,7 +4442,7 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory in normalizer '%s'"), "uc");
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
 }
@@ -4440,7 +4467,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	{
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to normalizer '%s'"), "convdia");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to normalizer '%s'"), "convdia");
 			return 0;
 		}
 		if (args.size() == 0)
@@ -4449,7 +4476,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 		}
 		else
 		{
-			std::string language_lo = utils::tolower( args[0]);
+			std::string language_lo = string_conv::tolower( args[0]);
 			if (language_lo == "de")
 			{
 				return new CharMapNormalizerInstance( CharMap::Diacritical, germanUmlautExceptions, m_errorhnd);
@@ -4462,7 +4489,7 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( "out of memory");
+		m_errorhnd->report( ErrorCodeOutOfMem, "out of memory");
 		return 0;
 	}
 }
@@ -4476,7 +4503,7 @@ public:
 		std::vector<std::string>::const_iterator si = setnames.begin(), se = setnames.end();
 		for (; si != se; ++si)
 		{
-			std::string name = utils::tolower( *si);
+			std::string name = string_conv::tolower( *si);
 			if (name == "punct_en" || name == "punct_de")
 			{
 				addRange( 44, 47);
@@ -4537,27 +4564,40 @@ public:
 	bool isMember( uint32_t chr) const
 	{
 		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
-		for (; ri != re; ++ri)
-		{
-			if (chr >= ri->first && chr <= ri->second) return true;
-		}
-		return false;
+		for (; ri != re && chr > ri->second; ++ri){}
+		return ri != re && chr >= ri->first;
 	}
 
 	void addRange( uint32_t first, uint32_t second)
 	{
 		if (first > second) throw strus::runtime_error(_TXT("illegal character range defined: %u..%u"), first, second);
-		std::vector<Range>::const_iterator ri = m_ranges.begin(), re = m_ranges.end();
-		for (; ri != re; ++ri)
+		std::vector<Range>::iterator ri = m_ranges.begin(), re = m_ranges.end();
+		for (; ri != re && first < ri->first; ++ri){}
+		m_ranges.insert( ri, Range( first,second));	//... inserts new range before ri, so the ranges are sorted ascending by first
+
+		ri = m_ranges.begin(), re = m_ranges.end();
+		std::vector<Range>::iterator next = ri+1;
+		// Iterate through the list of ranges sorted ascending by first and resolve overlappings with all successor elements:
+		while (next != re)
 		{
-			if (first >= ri->first && second <= ri->second) return;
+			if (ri->second >= next->first)
+			{
+				if (ri->second < next->second)
+				{
+					ri->second = next->second;
+				}
+				m_ranges.erase( next);
+				next = ri+1;
+				continue;
+			}
+			++ri;
+			++next;
 		}
-		m_ranges.push_back( Range( first,second));
 	}
 
 private:
 	typedef std::pair<uint32_t,uint32_t> Range;
-	std::vector<Range> m_ranges;
+	std::vector<Range> m_ranges;			///< list of ranges sorted ascending by first
 };
 
 class CharSelectNormalizerInstance
@@ -4600,11 +4640,23 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "charselect")
+				( "sets", m_setnames)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
 	CharSet m_set;
+	std::vector<std::string> m_setnames;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -4614,7 +4666,7 @@ NormalizerFunctionInstanceInterface* CharSelectNormalizerFunction::createInstanc
 	{
 		return new CharSelectNormalizerInstance( args, m_errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
 }
 
 

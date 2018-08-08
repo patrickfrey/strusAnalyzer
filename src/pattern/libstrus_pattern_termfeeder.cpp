@@ -13,12 +13,14 @@
 #include "strus/patternTermFeederInstanceInterface.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/symbolTable.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
-#include "private/utils.hpp"
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace strus;
 
@@ -29,7 +31,7 @@ class PatternTermFeederInstance
 {
 public:
 	explicit PatternTermFeederInstance( ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_typeTable(),m_symbolTable(){}
+		:m_errorhnd(errorhnd_),m_typeTable(),m_symbolTable(errorhnd_){}
 
 	virtual ~PatternTermFeederInstance(){}
 
@@ -39,9 +41,9 @@ public:
 	{
 		try
 		{
-			if (!id) throw strus::runtime_error( "%s", _TXT("used 0 as lexem identifier"));
+			if (!id) throw std::runtime_error( _TXT("used 0 as lexem identifier"));
 
-			m_typeTable[ utils::tolower(type)] = id;
+			m_typeTable[ string_conv::tolower(type)] = id;
 		}
 		CATCH_ERROR_MAP( _TXT("cannot define term feeder lexem: %s"), *m_errorhnd);
 	}
@@ -53,13 +55,13 @@ public:
 	{
 		try
 		{
-			if (!id) throw strus::runtime_error( "%s", _TXT("used 0 as symbol identifier"));
+			if (!id) throw std::runtime_error( _TXT("used 0 as symbol identifier"));
 
 			std::size_t idx = m_symbolTable.getOrCreate( name);
 			if (idx == 0) throw strus::runtime_error( "%s", m_errorhnd->fetchError());
 			if (m_symbolTable.isNew())
 			{
-				if (idx != m_syminfotab.size() +1) throw strus::runtime_error( "%s", _TXT("corrupt symbol table"));
+				if (idx != m_syminfotab.size() +1) throw std::runtime_error( _TXT("corrupt symbol table"));
 				m_syminfoar.push_back( SymbolInfo( lexemid, id, 0));
 				m_syminfotab.push_back( m_syminfoar.size());
 			}
@@ -109,6 +111,17 @@ public:
 			}
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to retrieve lexem symbol: %s"), *m_errorhnd, 0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "std")
+				( "type", m_typeTable)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:

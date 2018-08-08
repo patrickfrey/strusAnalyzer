@@ -10,10 +10,11 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -23,6 +24,8 @@ using namespace strus;
 using namespace strus::analyzer;
 
 static bool g_intl_initialized = false;
+
+#define MODULE_NAME "VSM aggregator"
 
 // Function types implemented for VSM aggregation
 typedef double (*AggregatorFunctionCall)( const std::vector<double>& input);
@@ -38,14 +41,13 @@ double sumSquareTfAggregatorFunctionCall( const std::vector<double>& input)
 	return sqrt( sum);
 }
 
-
 class VsmAggregatorFunctionInstance
 	:public AggregatorFunctionInstanceInterface
 {
 public:
 	/// \brief Constructor
-	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const char* name_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
+	VsmAggregatorFunctionInstance( const std::string& featuretype_, AggregatorFunctionCall call_, const std::string& name_, ErrorBufferInterface* errorhnd)
+		:m_featuretype( string_conv::tolower( featuretype_)),m_call(call_),m_name(name_),m_errorhnd(errorhnd){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -75,13 +77,31 @@ public:
 			}
 			return m_call( tfar);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, (NumericVariant::IntType)0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name.c_str(), *m_errorhnd, (NumericVariant::IntType)0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			const char* function = "";
+			if (m_call == &sumSquareTfAggregatorFunctionCall)
+			{
+				function = "sumsqaretf";
+			}
+			return analyzer::FunctionView( "vsm")
+				( "featuretype", m_featuretype)
+				( "aggregationtype", m_name)
+				( "function", function)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
 	std::string m_featuretype;
 	AggregatorFunctionCall m_call;
-	const char* m_name;
+	std::string m_name;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -96,19 +116,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), m_name);
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to '%s' aggregator function"), m_name);
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), m_name);
 			return 0;
 		}
 		try
 		{
 			return new VsmAggregatorFunctionInstance( args[0], m_call, m_name, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -135,7 +155,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_sumSquareTf( Err
 		}
 		return new VsmAggregatorFunction( &sumSquareTfAggregatorFunctionCall, "sumsqaretf", _TXT("aggregator for calculating the sum of the square of the tf of all selected elements"), errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s' aggregator: %s"), "sumsqaretf", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' aggregator: %s"), "sumsqaretf", *errorhnd, 0);
 }
 
 

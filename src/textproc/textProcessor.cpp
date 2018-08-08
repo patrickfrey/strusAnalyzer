@@ -10,6 +10,8 @@
 #include "strus/lib/segmenter_cjson.hpp"
 #include "strus/lib/segmenter_tsv.hpp"
 #include "strus/lib/segmenter_plain.hpp"
+#include "strus/lib/markup_std.hpp"
+#include "strus/lib/postagger_std.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "strus/segmenterInterface.hpp"
@@ -23,14 +25,17 @@
 #include "strus/patternMatcherInterface.hpp"
 #include "strus/patternTermFeederInterface.hpp"
 #include "strus/analyzer/token.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/fileLocatorInterface.hpp"
+#include "strus/posTaggerInterface.hpp"
 #include "strus/lib/detector_std.hpp"
 #include "strus/lib/pattern_termfeeder.hpp"
-#include "private/utils.hpp"
+#include "strus/base/string_conv.hpp"
+#include "strus/base/fileio.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "resourceDirectory.hpp"
 #include <stdexcept>
 #include <cstring>
 
@@ -45,7 +50,7 @@ using namespace strus::analyzer;
 
 #define DEFAULT_SEGMENTER "textwolf"
 
-TextProcessor::~TextProcessor()
+void TextProcessor::cleanup()
 {
 	std::map<std::string,SegmenterInterface*>::iterator si = m_segmenterMap.begin(), se = m_segmenterMap.end();
 	for (; si != se; ++si)
@@ -77,12 +82,18 @@ TextProcessor::~TextProcessor()
 	{
 		delete mi->second;
 	}
-	delete m_patterntermfeeder;
+	if (m_patterntermfeeder) delete m_patterntermfeeder;
+	if (m_postagger) delete m_postagger;
 	std::vector<DocumentClassDetectorInterface*>::iterator di = m_detectors.begin(), de = m_detectors.end();
 	for (; di != de; ++di)
 	{
 		delete *di;
 	}
+}
+
+TextProcessor::~TextProcessor()
+{
+	cleanup();
 }
 
 
@@ -96,6 +107,15 @@ public:
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
 		return std::string();
+	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "empty")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -113,7 +133,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( "no arguments expected for 'empty' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'empty' normalizer");
 			return 0;
 		}
 		try
@@ -144,6 +164,16 @@ public:
 	{
 		return m_value;
 	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "const")
+				("value",m_value)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -161,7 +191,7 @@ public:
 	{
 		if (args.size() != 1)
 		{
-			m_errorhnd->report( "one argument expected for 'const' normalizer");
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, "one argument expected for 'const' normalizer");
 			return 0;
 		}
 		try
@@ -210,6 +240,15 @@ public:
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "orig")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -226,7 +265,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
 			return 0;
 		}
 		try
@@ -250,8 +289,8 @@ class TextNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd)
-		:m_errorhnd(errorhnd){}
+	explicit TextNormalizerInstance( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize( const char* src, std::size_t srcsize) const
 	{
@@ -288,6 +327,16 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
 	}
 
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "text")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 };
@@ -303,7 +352,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
 			return 0;
 		}
 		try
@@ -336,7 +385,7 @@ public:
 		try
 		{
 			std::vector<analyzer::Token> rt;
-			rt.push_back( analyzer::Token( 0/*ord*/, 0/*seg*/, 0/*ofs*/, srcsize));
+			rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
 			return rt;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
@@ -345,6 +394,16 @@ public:
 	virtual bool concatBeforeTokenize() const
 	{
 		return false;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "content")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -362,7 +421,7 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report("no arguments expected for 'content' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'content' normalizer");
 			return 0;
 		}
 		try
@@ -388,7 +447,7 @@ class CountAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	CountAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -402,6 +461,17 @@ public:
 			if (si->type() == m_featuretype) ++rt;
 		}
 		return (NumericVariant::IntType)rt;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "count")
+				("type",m_featuretype)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -420,12 +490,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("feature type name as argument expected for 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'count' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'count' aggregator function"));
 			return 0;
 		}
 		try
@@ -450,7 +520,7 @@ class MaxPosAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, unsigned int incr_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -464,6 +534,18 @@ public:
 			if (si->type() == m_featuretype && rt < si->pos()) rt = si->pos();
 		}
 		return (NumericVariant::IntType)(rt + m_incr);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "maxpos")
+				("type",m_featuretype)
+				("incr",m_incr)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -483,12 +565,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'maxpos' aggregator function"));
 			return 0;
 		}
 		try
@@ -514,7 +596,7 @@ class MinPosAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	MinPosAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( utils::tolower( featuretype_)),m_errorhnd(0){}
+		:m_featuretype( string_conv::tolower( featuretype_)),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
@@ -528,6 +610,17 @@ public:
 			if (si->type() == m_featuretype && (!rt || rt > si->pos())) rt = si->pos();
 		}
 		return (NumericVariant::IntType)rt;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "minpos")
+				("type",m_featuretype)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
@@ -546,12 +639,12 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("feature type name as argument expected for 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'minpos' aggregator function"));
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( _TXT("too many arguments passed to 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'minpos' aggregator function"));
 			return 0;
 		}
 		try
@@ -570,12 +663,16 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 };
 
-TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
-	:m_patterntermfeeder(createPatternTermFeeder_default(errorhnd)),m_errorhnd(errorhnd)
+TextProcessor::TextProcessor( const FileLocatorInterface* filelocator_, ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_)
+	,m_filelocator(filelocator_)
+	,m_patterntermfeeder(createPatternTermFeeder_default(errorhnd_))
+	,m_postagger(strus::createPosTagger_standard(errorhnd_))
 {
-	if (!m_patterntermfeeder) throw strus::runtime_error( "%s", _TXT("error creating default pattern term feeder interface for text processor"));
+	if (!m_patterntermfeeder) {cleanup(); throw std::runtime_error( _TXT("error creating default pattern term feeder interface for text processor"));}
+	if (!m_postagger) {cleanup(); throw std::runtime_error( _TXT("error creating POS tagger interface for text processor"));}
 	DocumentClassDetectorInterface* dtc;
-	if (0==(dtc = createDetector_std( errorhnd))) throw strus::runtime_error( "%s", _TXT("error creating text processor"));
+	if (0==(dtc = createDetector_std( this, m_errorhnd))) throw std::runtime_error( _TXT("error creating text processor"));
 	defineDocumentClassDetector( dtc);
 
 	SegmenterInterface* segref = strus::createSegmenter_textwolf( m_errorhnd);
@@ -587,15 +684,15 @@ TextProcessor::TextProcessor( ErrorBufferInterface* errorhnd)
 	segref = strus::createSegmenter_plain( m_errorhnd);
 	if (segref) defineSegmenter( "plain", segref);
 
-	defineTokenizer( "content", new ContentTokenizerFunction( errorhnd));
-	defineNormalizer( "orig", new OrigNormalizerFunction(errorhnd));
-	defineNormalizer( "text", new TextNormalizerFunction(errorhnd));
-	defineNormalizer( "empty", new EmptyNormalizerFunction(errorhnd));
-	defineNormalizer( "const", new ConstNormalizerFunction(errorhnd));
-	defineAggregator( "count", new CountAggregatorFunction(errorhnd));
-	defineAggregator( "minpos", new MinPosAggregatorFunction(errorhnd));
-	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,errorhnd));
-	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,errorhnd));
+	defineTokenizer( "content", new ContentTokenizerFunction( m_errorhnd));
+	defineNormalizer( "orig", new OrigNormalizerFunction(m_errorhnd));
+	defineNormalizer( "text", new TextNormalizerFunction(m_errorhnd));
+	defineNormalizer( "empty", new EmptyNormalizerFunction(m_errorhnd));
+	defineNormalizer( "const", new ConstNormalizerFunction(m_errorhnd));
+	defineAggregator( "count", new CountAggregatorFunction(m_errorhnd));
+	defineAggregator( "minpos", new MinPosAggregatorFunction(m_errorhnd));
+	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,m_errorhnd));
+	defineAggregator( "nextpos", new MaxPosAggregatorFunction(1,m_errorhnd));
 }
 
 const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& name) const
@@ -609,7 +706,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 		}
 		else
 		{
-			ti = m_segmenterMap.find( utils::tolower( name));
+			ti = m_segmenterMap.find( string_conv::tolower( name));
 		}
 		if (ti == m_segmenterMap.end())
 		{
@@ -623,11 +720,11 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 					if (sidx) segmenterlist.append( ", ");
 					segmenterlist.append( si->first);
 				}
-				m_errorhnd->report( _TXT("no segmenter defined with name '%s' (is none of {%s})"), name.c_str(), segmenterlist.c_str());
+				m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("no segmenter defined with name '%s' (is none of {%s})"), name.c_str(), segmenterlist.c_str());
 			}
 			else
 			{
-				m_errorhnd->report( _TXT("no segmenter defined with name '%s'"), name.c_str());
+				m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no segmenter defined with name '%s'"), name.c_str());
 			}
 			return 0;
 		}
@@ -635,7 +732,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByName( const std::string& 
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting segmenter by name '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting segmenter by name '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -645,7 +742,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	try
 	{
 		std::map<std::string,SegmenterInterface*>::const_iterator
-			ti = m_mimeSegmenterMap.find( utils::tolower( mimetype));
+			ti = m_mimeSegmenterMap.find( string_conv::tolower( mimetype));
 		if (ti == m_mimeSegmenterMap.end())
 		{
 			if (m_mimeSegmenterMap.size() < 8)
@@ -658,11 +755,11 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 					if (sidx) segmenterlist.append( ", ");
 					segmenterlist.append( si->second->mimeType());
 				}
-				m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s' (is none of {%s})"), mimetype.c_str(), segmenterlist.c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("no segmenter defined for MIME type '%s' (is none of {%s})"), mimetype.c_str(), segmenterlist.c_str());
 			}
 			else
 			{
-				m_errorhnd->report( _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
+				m_errorhnd->report( ErrorCodeNotImplemented, _TXT("no segmenter defined for MIME type '%s'"), mimetype.c_str());
 			}
 			return 0;
 		}
@@ -670,7 +767,7 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting segmenter by MIME type '%s'"), mimetype.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting segmenter by MIME type '%s'"), mimetype.c_str());
 		return 0;
 	}
 }
@@ -680,7 +777,7 @@ analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string
 	try
 	{
 		std::map<std::string,analyzer::SegmenterOptions>::const_iterator
-			oi = m_schemeSegmenterOptions_map.find(utils::tolower(scheme));
+			oi = m_schemeSegmenterOptions_map.find( string_conv::tolower(scheme));
 		if (oi == m_schemeSegmenterOptions_map.end())
 		{
 			return analyzer::SegmenterOptions();
@@ -692,7 +789,7 @@ analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 		return analyzer::SegmenterOptions();
 	}
 }
@@ -702,17 +799,17 @@ const TokenizerFunctionInterface* TextProcessor::getTokenizer( const std::string
 	try
 	{
 		std::map<std::string,TokenizerFunctionInterface*>::const_iterator
-			ti = m_tokenizer_map.find( utils::tolower( name));
+			ti = m_tokenizer_map.find( string_conv::tolower( name));
 		if (ti == m_tokenizer_map.end())
 		{
-			m_errorhnd->report( _TXT("no tokenizer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no tokenizer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ti->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting tokenizer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting tokenizer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -722,17 +819,17 @@ const NormalizerFunctionInterface* TextProcessor::getNormalizer( const std::stri
 	try
 	{
 		std::map<std::string,NormalizerFunctionInterface*>::const_iterator
-			ni = m_normalizer_map.find( utils::tolower( name));
+			ni = m_normalizer_map.find( string_conv::tolower( name));
 		if (ni == m_normalizer_map.end())
 		{
-			m_errorhnd->report( _TXT("no normalizer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no normalizer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting normalizer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting normalizer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -742,17 +839,17 @@ const AggregatorFunctionInterface* TextProcessor::getAggregator( const std::stri
 	try
 	{
 		std::map<std::string,AggregatorFunctionInterface*>::const_iterator
-			ni = m_aggregator_map.find( utils::tolower( name));
+			ni = m_aggregator_map.find( string_conv::tolower( name));
 		if (ni == m_aggregator_map.end())
 		{
-			m_errorhnd->report( _TXT("no aggregator function defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no aggregator function defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting aggregator '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting aggregator '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -762,17 +859,17 @@ const PatternLexerInterface* TextProcessor::getPatternLexer( const std::string& 
 	try
 	{
 		std::map<std::string,PatternLexerInterface*>::const_iterator
-			ni = m_patternlexer_map.find( utils::tolower( name));
+			ni = m_patternlexer_map.find( string_conv::tolower( name));
 		if (ni == m_patternlexer_map.end())
 		{
-			m_errorhnd->report( _TXT("no pattern lexer defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no pattern lexer defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting pattern lexer '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting pattern lexer '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -782,17 +879,17 @@ const PatternMatcherInterface* TextProcessor::getPatternMatcher( const std::stri
 	try
 	{
 		std::map<std::string,PatternMatcherInterface*>::const_iterator
-			ni = m_patternmatcher_map.find( utils::tolower( name));
+			ni = m_patternmatcher_map.find( string_conv::tolower( name));
 		if (ni == m_patternmatcher_map.end())
 		{
-			m_errorhnd->report( _TXT("no pattern matcher defined with name '%s'"), name.c_str());
+			m_errorhnd->report( ErrorCodeUnknownIdentifier, _TXT("no pattern matcher defined with name '%s'"), name.c_str());
 			return 0;
 		}
 		return ni->second;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory getting pattern matcher '%s'"), name.c_str());
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory getting pattern matcher '%s'"), name.c_str());
 		return 0;
 	}
 }
@@ -802,14 +899,29 @@ const PatternTermFeederInterface* TextProcessor::getPatternTermFeeder() const
 	return m_patterntermfeeder;
 }
 
-bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize) const
+PosTaggerDataInterface* TextProcessor::createPosTaggerData( TokenizerFunctionInstanceInterface* tokenizer) const
 {
-	unsigned int level = 0;
+	return strus::createPosTaggerData_standard( tokenizer, m_errorhnd);
+}
+
+const PosTaggerInterface* TextProcessor::getPosTagger() const
+{
+	return m_postagger;
+}
+
+TokenMarkupInstanceInterface* TextProcessor::createTokenMarkupInstance() const
+{
+	return strus::createTokenMarkupInstance_standard( m_errorhnd);
+}
+
+bool TextProcessor::detectDocumentClass( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const
+{
+	int level = 0;
 	std::vector<DocumentClassDetectorInterface*>::const_iterator ci = m_detectors.begin(), ce = m_detectors.end();
 	for (; ci != ce; ++ci)
 	{
 		analyzer::DocumentClass dclass_candidate;
-		if ((*ci)->detect( dclass_candidate, contentBegin, contentBeginSize))
+		if ((*ci)->detect( dclass_candidate, contentBegin, contentBeginSize, isComplete))
 		{
 			if (dclass_candidate.level() >= level)
 			{
@@ -834,7 +946,7 @@ void TextProcessor::defineDocumentClassDetector( DocumentClassDetectorInterface*
 	catch (const std::bad_alloc&)
 	{
 		delete detector;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -842,19 +954,19 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 {
 	try
 	{
-		std::string mimeid( utils::tolower(segmenter->mimeType()));
+		std::string mimeid( string_conv::tolower(segmenter->mimeType()));
 		m_mimeSegmenterMap[ mimeid] = segmenter;
 		const char* mimeid2 = std::strchr( mimeid.c_str(), '/');
 		if (mimeid2 && m_mimeSegmenterMap.find( mimeid2+1) == m_mimeSegmenterMap.end())
 		{
 			m_mimeSegmenterMap[ mimeid2+1] = segmenter;
 		}
-		m_segmenterMap[ utils::tolower(name)] = segmenter;
+		m_segmenterMap[ string_conv::tolower(name)] = segmenter;
 	}
 	catch (const std::bad_alloc&)
 	{
 		delete segmenter;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -862,11 +974,11 @@ void TextProcessor::defineSegmenterOptions( const std::string& scheme, const ana
 {
 	try
 	{
-		m_schemeSegmenterOptions_map[ utils::tolower(scheme)] = options;
+		m_schemeSegmenterOptions_map[ string_conv::tolower(scheme)] = options;
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -874,7 +986,7 @@ void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionI
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,TokenizerFunctionInterface*>::iterator ti = m_tokenizer_map.find(id);
 		if (ti != m_tokenizer_map.end())
 		{
@@ -889,7 +1001,7 @@ void TextProcessor::defineTokenizer( const std::string& name, TokenizerFunctionI
 	catch (const std::bad_alloc&)
 	{
 		delete tokenizer;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -897,7 +1009,7 @@ void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctio
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,NormalizerFunctionInterface*>::iterator ni = m_normalizer_map.find(id);
 		if (ni != m_normalizer_map.end())
 		{
@@ -912,7 +1024,7 @@ void TextProcessor::defineNormalizer( const std::string& name, NormalizerFunctio
 	catch (const std::bad_alloc&)
 	{
 		delete normalizer;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -920,7 +1032,7 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,AggregatorFunctionInterface*>::iterator ai = m_aggregator_map.find(id);
 		if (ai != m_aggregator_map.end())
 		{
@@ -935,7 +1047,7 @@ void TextProcessor::defineAggregator( const std::string& name, AggregatorFunctio
 	catch (const std::bad_alloc&)
 	{
 		delete statfunc;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -943,7 +1055,7 @@ void TextProcessor::definePatternLexer( const std::string& name, PatternLexerInt
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,PatternLexerInterface*>::iterator ai = m_patternlexer_map.find(id);
 		if (ai != m_patternlexer_map.end())
 		{
@@ -958,7 +1070,7 @@ void TextProcessor::definePatternLexer( const std::string& name, PatternLexerInt
 	catch (const std::bad_alloc&)
 	{
 		delete func;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
@@ -966,7 +1078,7 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 {
 	try
 	{
-		std::string id( utils::tolower( name));
+		std::string id( string_conv::tolower( name));
 		std::map<std::string,PatternMatcherInterface*>::iterator ai = m_patternmatcher_map.find(id);
 		if (ai != m_patternmatcher_map.end())
 		{
@@ -981,51 +1093,17 @@ void TextProcessor::definePatternMatcher( const std::string& name, PatternMatche
 	catch (const std::bad_alloc&)
 	{
 		delete func;
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 }
 
-void TextProcessor::addResourcePath( const std::string& path)
+std::string TextProcessor::getResourceFilePath( const std::string& filename) const
 {
 	try
 	{
-		char const* cc = path.c_str();
-		char const* ee = std::strchr( cc, STRUS_RESOURCE_PATHSEP);
-		for (; ee!=0; cc=ee+1,ee=std::strchr( cc, STRUS_RESOURCE_PATHSEP))
-		{
-			m_resourcePaths.push_back( utils::trim( std::string( cc, ee)));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
-#endif
-		}
-		m_resourcePaths.push_back( utils::trim( std::string( cc)));
-#ifdef STRUS_LOWLEVEL_DEBUG
-		std::cout << "add resource path '" << m_resourcePaths.back() << "'" << std::endl;
-#endif
+		return m_filelocator->getResourceFilePath( filename);
 	}
-	CATCH_ERROR_MAP( _TXT("error in 'TextProcessor::addResourcePath': %s"), *m_errorhnd);
-}
-
-std::string TextProcessor::getResourcePath( const std::string& filename) const
-{
-	try
-	{
-		std::vector<std::string>::const_iterator
-			pi = m_resourcePaths.begin(), pe = m_resourcePaths.end();
-		for (; pi != pe; ++pi)
-		{
-			std::string absfilename( *pi + STRUS_RESOURCE_DIRSEP + filename);
-#ifdef STRUS_LOWLEVEL_DEBUG
-			std::cout << "check resource path '" << absfilename << "'" << std::endl;
-#endif
-			if (utils::isFile( absfilename))
-			{
-				return absfilename;
-			}
-		}
-		throw strus::runtime_error( _TXT("resource file '%s' not found"), filename.c_str());
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourcePath': %s"), *m_errorhnd, std::string());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in 'TextProcessor::getResourceFilePath': %s"), *m_errorhnd, std::string());
 }
 
 template <class Map>
@@ -1062,7 +1140,7 @@ std::vector<std::string> TextProcessor::getFunctionList( const FunctionType& typ
 	}
 	catch (const std::bad_alloc&)
 	{
-		m_errorhnd->report( _TXT("out of memory"));
+		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory"));
 	}
 	return std::vector<std::string>();
 }

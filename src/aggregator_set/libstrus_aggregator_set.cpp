@@ -10,10 +10,11 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
+#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
+#include "strus/base/string_conv.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "private/utils.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -32,7 +33,7 @@ class SetAggregatorFunctionInstance
 public:
 	/// \brief Constructor
 	SetAggregatorFunctionInstance( const std::string& type, const std::vector<std::string>& items, ErrorBufferInterface* errorhnd)
-		:m_type(utils::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
+		:m_type(string_conv::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
 	{
 		if (items.size() >= (8 * sizeof(unsigned int)))
 		{
@@ -84,12 +85,25 @@ public:
 			}
 			return NumericVariant( (NumericVariant::IntType)rt);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "set")
+				( "featuretype", m_type)
+				( "set", m_itemmap)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
 	std::string m_type;
-	std::map<std::string,unsigned int> m_itemmap;
+	typedef std::map<std::string,unsigned int> ItemMap;
+	ItemMap m_itemmap;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -104,14 +118,14 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("at least one feature type name expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try
 		{
 			return new SetAggregatorFunctionInstance( std::string(), args, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -135,14 +149,14 @@ public:
 	{
 		if (args.size() < 2)
 		{
-			m_errorhnd->report( _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("at least one feature type name and a value expected as argument for '%s' function"), MODULE_NAME);
 			return 0;
 		}
 		try
 		{
 			return new SetAggregatorFunctionInstance( args[0], std::vector<std::string>( args.begin()+1, args.end()), m_errorhnd);
 		}
-		CATCH_ERROR_MAP_ARG1_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -167,7 +181,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_typeset( ErrorBu
 		}
 		return new TypeSetAggregatorFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s': %s"), "aggregator typeset", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s': %s"), "aggregator typeset", *errorhnd, 0);
 }
 
 DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_valueset( ErrorBufferInterface* errorhnd)
@@ -181,7 +195,7 @@ DLL_PUBLIC AggregatorFunctionInterface* strus::createAggregator_valueset( ErrorB
 		}
 		return new ValueSetAggregatorFunction( errorhnd);
 	}
-	CATCH_ERROR_MAP_ARG1_RETURN( _TXT("cannot create '%s': %s"), "aggregator valueset", *errorhnd, 0);
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s': %s"), "aggregator valueset", *errorhnd, 0);
 }
 
 

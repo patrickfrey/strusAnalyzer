@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/segmenterOptions.hpp"
+#include "strus/analyzer/documentClass.hpp"
 #include <vector>
 #include <string>
 #include <utility>
@@ -20,6 +21,8 @@ namespace strus
 
 /// \brief Forward declaration
 class SegmenterInstanceInterface;
+/// \brief Forward declaration
+class ContentIteratorInterface;
 
 /// \class SegmenterInterface
 /// \brief Defines an interface for creating instances of programs for document segmentation
@@ -34,9 +37,20 @@ public:
 	virtual const char* mimeType() const=0;
 
 	/// \brief Create a parameterizable segmenter instance
-	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual SegmenterInstanceInterface* createInstance(
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const=0;
+
+	/// \brief Create an iterator on content for statistics
+	/// \param[in] content pointer to content
+	/// \param[in] contentsize size of content in bytes
+	/// \param[in] dclass document class (encoding)
+	/// \param[in] opts segmenter options
+	/// \return content iterator interface (with ownership)
+	virtual ContentIteratorInterface* createContentIterator(
+			const char* content,
+			std::size_t contentsize,
+			const analyzer::DocumentClass& dclass,
+			const analyzer::SegmenterOptions &opts=analyzer::SegmenterOptions()) const=0;
 
 	/// \brief Get a description of the function for user help
 	/// \return the description string
