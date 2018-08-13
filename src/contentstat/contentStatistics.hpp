@@ -13,6 +13,7 @@
 #include "strus/contentStatisticsContextInterface.hpp"
 #include "contentStatisticsLibrary.hpp"
 #include "contentStatisticsData.hpp"
+#include "strus/base/thread.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -36,6 +37,8 @@ public:
 			ErrorBufferInterface* errorhnd_);
 	/// \brief Destructor
 	virtual ~ContentStatistics();
+
+	virtual void addCollectedAttribute( const std::string& name);
 
 	virtual void addLibraryElement(
 			const std::string& type,
@@ -77,6 +80,8 @@ public:
 	virtual int nofDocuments() const;
 
 private:
+	/// \brief Note: we have to have a mutex because the context is possibly used by many clients, contrary to the context name that should indicate privacy. A little mis-design here.
+	mutable strus::mutex m_mutex;
 	ErrorBufferInterface* m_errorhnd;
 	const TextProcessorInterface* m_textproc;
 	const ContentStatisticsLibrary* m_library;

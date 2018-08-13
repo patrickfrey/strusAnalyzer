@@ -43,12 +43,14 @@ public:
 	/// \brief Create an iterator on content for statistics
 	/// \param[in] content pointer to content
 	/// \param[in] contentsize size of content in bytes
+	/// \param[in] attributes attributes that should be included in the path expressions of the result
 	/// \param[in] dclass document class (encoding)
 	/// \param[in] opts segmenter options
 	/// \return content iterator interface (with ownership)
 	virtual ContentIteratorInterface* createContentIterator(
 			const char* content,
 			std::size_t contentsize,
+			const std::vector<std::string>& attributes,
 			const analyzer::DocumentClass& dclass,
 			const analyzer::SegmenterOptions &opts=analyzer::SegmenterOptions()) const=0;
 

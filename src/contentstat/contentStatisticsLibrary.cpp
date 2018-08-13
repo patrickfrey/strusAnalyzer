@@ -12,9 +12,23 @@
 #include "strus/errorBufferInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
+#include <algorithm>
 
 /// \brief strus toplevel namespace
 using namespace strus;
+
+void ContentStatisticsLibrary::addCollectedAttribute( const std::string& name)
+{
+	strus::scoped_lock lock( m_mutex);
+	if (std::find( m_attributes.begin(), m_attributes.end(), name) == m_attributes.end()) return;
+	m_attributes.push_back( name);
+}
+
+std::vector<std::string> ContentStatisticsLibrary::collectedAttributes() const
+{
+	strus::scoped_lock lock( m_mutex);
+	return m_attributes;
+}
 
 void ContentStatisticsLibrary::addElement(
 		const std::string& type,
@@ -25,6 +39,7 @@ void ContentStatisticsLibrary::addElement(
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
+	strus::scoped_lock lock( m_mutex);
 	TokenizerFunctionReference tk;
 	std::vector<NormalizerFunctionReference> na;
 	try
@@ -67,6 +82,7 @@ void ContentStatisticsLibrary::addElement(
 
 std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, std::size_t inputsize) const
 {
+	strus::scoped_lock lock( m_mutex);
 	try
 	{
 		std::vector<std::string> rt;
@@ -124,6 +140,8 @@ std::vector<analyzer::ContentStatisticsElementView> ContentStatisticsLibrary::vi
 {
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		std::vector<analyzer::ContentStatisticsElementView> rt;
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)

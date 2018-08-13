@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_CONTENT_STATISTICS_DATA_HPP_INCLUDED
 #include "strus/analyzer/contentStatisticsItem.hpp"
 #include "strus/contentStatisticsInterface.hpp"
+#include "strus/base/thread.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
@@ -42,6 +43,7 @@ public:
 	/// \param[in] example_ example that led to this decision
 	void addItem( const std::string& docid_, const std::string& select_, const std::string& type_, const std::string& example_)
 	{
+		strus::scoped_lock lock( m_mutex);
 		m_docidset.insert( docid_);
 		bool isnew = addMapItem( m_docselectmap, m_itemar, docid_ + "\1" + select_ + "\1" + type_, Item( select_, type_, example_, 1, 1));
 		addMapItem( m_globalselectmap, m_itemar, select_ + "\1" + type_, Item( select_, type_, example_, isnew?1:0, 1));
@@ -51,6 +53,7 @@ public:
 	/// \return items of global statistics
 	std::vector<Item> getGlobalStatistics()
 	{
+		strus::scoped_lock lock( m_mutex);
 		std::vector<Item> rt;
 		std::map<std::string,int>::const_iterator di = m_globalselectmap.begin(), de = m_globalselectmap.end();
 		for (; di != de; ++di)
@@ -62,6 +65,7 @@ public:
 
 	std::size_t nofDocuments() const
 	{
+		strus::scoped_lock lock( m_mutex);
 		return m_docidset.size();
 	}
 
@@ -84,7 +88,7 @@ private:
 			return false;
 		}
 	}
-
+	mutable strus::mutex m_mutex;
 	std::vector<Item> m_itemar;
 	std::set<std::string> m_docidset;
 	std::map<std::string,int> m_globalselectmap;

@@ -25,9 +25,11 @@ using namespace strus;
 ContentIterator::ContentIterator( 
 		const char* content_,
 		std::size_t contentsize_,
+		const std::vector<std::string>& attributes_,
 		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 		ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
+	,m_attributes(attributes_.begin(),attributes_.end())
 	,m_content()
 	,m_encoder(encoder_)
 	,m_ar()

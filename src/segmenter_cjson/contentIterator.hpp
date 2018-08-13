@@ -19,7 +19,8 @@
 #include "cjson/cJSON.h"
 #include "cjson2textwolf.hpp"
 #include <cstdlib>
-#include <list>
+#include <vector>
+#include <set>
 #include <setjmp.h>
 
 #define SEGMENTER_NAME "cjson"
@@ -34,6 +35,7 @@ public:
 	ContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
+			const std::vector<std::string>& attributes_,
 			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 			ErrorBufferInterface* errorhnd_);
 
@@ -51,6 +53,7 @@ private:
 
 private:
 	ErrorBufferInterface* m_errorhnd;
+	std::set<std::string> m_attributes;
 	std::string m_content;
 	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
 	std::vector<TextwolfItem> m_ar;

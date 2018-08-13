@@ -17,7 +17,8 @@
 #include "textwolf/sourceiterator.hpp"
 #include "textwolf/xmlscanner.hpp"
 #include <cstdlib>
-#include <list>
+#include <vector>
+#include <set>
 #include <setjmp.h>
 
 #define SEGMENTER_NAME "textwolf"
@@ -33,9 +34,11 @@ public:
 	ContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
+			const std::vector<std::string>& attributes_,
 			const CharsetEncoding& charset_,
 			ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
+		,m_attributes(attributes_.begin(),attributes_.end())
 		,m_content(content_,contentsize_)
 		,m_srciter()
 		,m_scanner(charset_,textwolf::SrcIterator())
@@ -97,6 +100,7 @@ private:
 		> XMLScanner;
 
 	ErrorBufferInterface* m_errorhnd;
+	std::set<std::string> m_attributes;
 	std::string m_content;
 	textwolf::SrcIterator m_srciter;
 	XMLScanner m_scanner;

@@ -23,6 +23,7 @@
 #include <string> 
 #include <vector> 
 #include <map>
+#include <set>
 #include <stdexcept>
 #include <sstream>
 
@@ -146,6 +147,7 @@ public:
 	TSVContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
+			const std::vector<std::string>& attributes_,
 			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
@@ -161,6 +163,7 @@ private:
 
 private:
 	strus::ErrorBufferInterface* m_errorhnd;
+	std::set<std::string> m_attributes;
 	std::string m_content;
 	TSVParser m_parser;
 	int m_pos;
@@ -181,6 +184,7 @@ class TSVSegmenter : public strus::SegmenterInterface
 		virtual strus::ContentIteratorInterface* createContentIterator(
 				const char* content,
 				std::size_t contentsize,
+				const std::vector<std::string>& attributes,
 				const strus::analyzer::DocumentClass& dclass,
 				const strus::analyzer::SegmenterOptions& opts) const;
 

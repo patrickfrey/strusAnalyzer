@@ -55,6 +55,7 @@ public:
 	ContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
+			const std::vector<std::string>& attributes,
 			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
@@ -75,6 +76,7 @@ public:
 
 private:
 	strus::ErrorBufferInterface* m_errorhnd;
+	const std::set<std::string> m_attributes;
 	std::string m_content;
 	bool m_eof;
 	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
@@ -99,6 +101,7 @@ public:
 	virtual strus::ContentIteratorInterface* createContentIterator(
 			const char* content,
 			std::size_t contentsize,
+			const std::vector<std::string>& attributes,
 			const strus::analyzer::DocumentClass& dclass,
 			const strus::analyzer::SegmenterOptions& opts) const;
 

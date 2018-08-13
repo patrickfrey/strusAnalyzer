@@ -85,9 +85,10 @@ const char* Segmenter::getDescription() const
 ContentIterator::ContentIterator( 
 		const char* content_,
 		std::size_t contentsize_,
+		const std::vector<std::string>& attributes_,
 		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_content(),m_eof(false),m_encoder(encoder_)
+	:m_errorhnd(errorhnd_),m_attributes(attributes_.begin(),attributes_.end()),m_content(),m_eof(false),m_encoder(encoder_)
 {
 	try
 	{
@@ -106,6 +107,7 @@ ContentIterator::ContentIterator(
 strus::ContentIteratorInterface* Segmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
+		const std::vector<std::string>& attributes,
 		const strus::analyzer::DocumentClass& dclass,
 		const strus::analyzer::SegmenterOptions& opts) const
 {
@@ -116,7 +118,7 @@ strus::ContentIteratorInterface* Segmenter::createContentIterator(
 		{
 			encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 		}
-		return new ContentIterator( content, contentsize, encoder, m_errorhnd);
+		return new ContentIterator( content, contentsize, attributes, encoder, m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, NULL);
 }

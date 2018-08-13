@@ -383,6 +383,7 @@ strus::SegmenterInstanceInterface* TSVSegmenter::createInstance( const strus::an
 strus::ContentIteratorInterface* TSVSegmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
+		const std::vector<std::string>& attributes,
 		const strus::analyzer::DocumentClass& dclass,
 		const strus::analyzer::SegmenterOptions& opts) const
 {
@@ -394,7 +395,7 @@ strus::ContentIteratorInterface* TSVSegmenter::createContentIterator(
 		{
 			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
 		}
-		return new TSVContentIterator( content, contentsize, encoder, m_errorhnd);
+		return new TSVContentIterator( content, contentsize, attributes, encoder, m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -407,9 +408,10 @@ const char* TSVSegmenter::getDescription() const
 TSVContentIterator::TSVContentIterator( 
 		const char* content_,
 		std::size_t contentsize_,
+		const std::vector<std::string>& attributes_,
 		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_content(),m_parser(),m_pos(-3),m_encoder(encoder_)
+	:m_errorhnd(errorhnd_),m_attributes(attributes_.begin(),attributes_.end()),m_content(),m_parser(),m_pos(-3),m_encoder(encoder_)
 {
 	try
 	{
