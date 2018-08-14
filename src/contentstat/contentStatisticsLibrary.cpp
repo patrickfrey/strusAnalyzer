@@ -19,15 +19,23 @@ using namespace strus;
 
 void ContentStatisticsLibrary::addVisibleAttribute( const std::string& name)
 {
-	strus::scoped_lock lock( m_mutex);
-	if (std::find( m_attributes.begin(), m_attributes.end(), name) == m_attributes.end()) return;
-	m_attributes.push_back( name);
+	try
+	{
+		strus::scoped_lock lock( m_mutex);
+		if (std::find( m_attributes.begin(), m_attributes.end(), name) == m_attributes.end()) return;
+		m_attributes.push_back( name);
+	}
+	CATCH_ERROR_MAP( _TXT("error in content statistics library: %s"), *m_errorhnd);
 }
 
 std::vector<std::string> ContentStatisticsLibrary::collectedAttributes() const
 {
-	strus::scoped_lock lock( m_mutex);
-	return m_attributes;
+	try
+	{
+		strus::scoped_lock lock( m_mutex);
+		return m_attributes;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in content statistics library: %s"), *m_errorhnd, std::vector<std::string>());
 }
 
 void ContentStatisticsLibrary::addElement(
@@ -39,15 +47,16 @@ void ContentStatisticsLibrary::addElement(
 		TokenizerFunctionInstanceInterface* tokenizer,
 		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
 {
-	strus::scoped_lock lock( m_mutex);
 	TokenizerFunctionReference tk;
 	std::vector<NormalizerFunctionReference> na;
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		if (priority < 0) throw std::runtime_error(_TXT("priority must be non-negative"));
 
 		RegexSearchReference regex;
-		if (!regexstr.empty())
+		if (!regexstr.empty() && regexstr != ".*")
 		{
 			regex.reset( new RegexSearch( regexstr, 0, m_errorhnd));
 		}
@@ -82,9 +91,10 @@ void ContentStatisticsLibrary::addElement(
 
 std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, std::size_t inputsize) const
 {
-	strus::scoped_lock lock( m_mutex);
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		std::vector<std::string> rt;
 		if (m_errorhnd->hasError()) return std::vector<std::string>();
 
