@@ -162,6 +162,9 @@ int main( int argc, const char* argv[])
 #endif
 		// [1] Test content iterator:
 		std::vector<std::string> attributes;
+		attributes.push_back( "Number");
+		attributes.push_back( "Type");
+		attributes.push_back( "PartNumber");
 		strus::local_ptr<strus::ContentIteratorInterface> contentiter(
 				segmenter->createContentIterator(
 					inputsrc.c_str(), inputsrc.size(), attributes, dclass, strus::analyzer::SegmenterOptions()));

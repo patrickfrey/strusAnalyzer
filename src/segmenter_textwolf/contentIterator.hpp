@@ -44,7 +44,7 @@ public:
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_eom()
 		,m_itr(),m_end()
-		,m_stm()
+		,m_stm(&m_attributes)
 		,m_path()
 		,m_eof(false)
 	{

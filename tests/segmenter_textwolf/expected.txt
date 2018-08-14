@@ -1,6 +1,6 @@
 iter /Order@Number = [12345]
 iter /Order@Date = [2016/02/03]
-iter /Order[@Number="12345",@Date="2016/02/03"] = [
+iter /Order[@Number="12345"] = [
   ]
 iter /Order/Address@Type = [Shipping]
 iter /Order/Address[@Type="Shipping"] = [

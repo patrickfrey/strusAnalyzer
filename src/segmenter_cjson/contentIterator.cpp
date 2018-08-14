@@ -34,7 +34,7 @@ ContentIterator::ContentIterator(
 	,m_encoder(encoder_)
 	,m_ar()
 	,m_tree(0)
-	,m_stm()
+	,m_stm(&m_attributes)
 	,m_path()
 	,m_eof(false)
 {
