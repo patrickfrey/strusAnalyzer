@@ -38,7 +38,7 @@ public:
 	/// \brief Destructor
 	virtual ~ContentStatistics();
 
-	virtual void addCollectedAttribute( const std::string& name);
+	virtual void addVisibleAttribute( const std::string& name);
 
 	virtual void addLibraryElement(
 			const std::string& type,

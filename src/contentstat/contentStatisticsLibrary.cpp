@@ -17,7 +17,7 @@
 /// \brief strus toplevel namespace
 using namespace strus;
 
-void ContentStatisticsLibrary::addCollectedAttribute( const std::string& name)
+void ContentStatisticsLibrary::addVisibleAttribute( const std::string& name)
 {
 	strus::scoped_lock lock( m_mutex);
 	if (std::find( m_attributes.begin(), m_attributes.end(), name) == m_attributes.end()) return;

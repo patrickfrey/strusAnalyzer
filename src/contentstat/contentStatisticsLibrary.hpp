@@ -40,9 +40,9 @@ public:
 	/// \brief Destructor
 	~ContentStatisticsLibrary(){}
 
-	/// \brief Add an attribute to be collected as path info
+	/// \brief Define an attribute to be visible as path info
 	/// \param[in] name name of the attribute to collect
-	void addCollectedAttribute( const std::string& name);
+	void addVisibleAttribute( const std::string& name);
 
 	/// \brief Check if an attribute is to be collected as path info
 	/// \param[in] name name of the candidate attribute

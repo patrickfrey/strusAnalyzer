@@ -28,9 +28,9 @@ ContentStatistics::ContentStatistics(
 
 ContentStatistics::~ContentStatistics(){}
 
-void ContentStatistics::addCollectedAttribute( const std::string& name)
+void ContentStatistics::addVisibleAttribute( const std::string& name)
 {
-	m_library.addCollectedAttribute( name);
+	m_library.addVisibleAttribute( name);
 }
 
 void ContentStatistics::addLibraryElement(
