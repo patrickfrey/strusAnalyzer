@@ -52,6 +52,10 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)=0;
 
+	/// \brief Define an attribute to be displayed as condition in a content statistics path
+	/// \param[in] name of the attribute to show in a path
+	virtual void addCollectedAttribute( const std::string& name)=0;
+
 	/// \brief Create the context used for collecting document statitics
 	/// \return the document content statistics context (with ownership)
 	virtual ContentStatisticsContextInterface* createContext() const=0;
