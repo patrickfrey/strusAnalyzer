@@ -69,6 +69,24 @@ void PosTaggerInstance::addPosTaggerInputPunctuation( const std::string& express
 	m_segmenter->defineSelectorExpression( idx, expression);
 }
 
+static void printContent( std::string& res, const char* segment, std::size_t segmentsize)
+{
+	char const* si = segment;
+	const char* se = si + segmentsize;
+	for (; si != se; ++si)
+	{
+		if (*si <= 32)
+		{
+			if (!res.empty() && res.back() == ' ') continue;
+			res.push_back( ' ');
+		}
+		else
+		{
+			res.push_back( *si);
+		}
+	}
+}
+
 std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
@@ -97,7 +115,7 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 			}
 			else
 			{
-				rt.append( segment, segmentsize);
+				printContent( rt, segment, segmentsize);
 			}
 		}
 		if (m_errorhnd->hasError()) return std::string();
