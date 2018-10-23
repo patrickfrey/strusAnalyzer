@@ -75,7 +75,7 @@ static void printContent( std::string& res, const char* segment, std::size_t seg
 	const char* se = si + segmentsize;
 	for (; si != se; ++si)
 	{
-		if (*si <= 32)
+		if ((unsigned char)*si <= 32)
 		{
 			if (!res.empty() && res.back() == ' ') continue;
 			res.push_back( ' ');
