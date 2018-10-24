@@ -24,34 +24,33 @@ class TokenMarkupContextInterface;
 class PosTaggerDataInterface
 {
 public:
-	/// \brief Output element of POS tagging
+	/// \brief Output element declaration for POS tagging
 	class Element
 	{
 	public:
-		const std::string& type() const {return m_type;}	///< Type of token (e.g. POS tag)
+		enum Type {Marker,Content,BoundToPrevious};
+
+		const Type type() const {return m_type;}		///< Type of mapping
+		const std::string& tag() const {return m_tag;}		///< Tag string
 		const std::string& value() const {return m_value;}	///< Value of token (tagged value)
 
 		/// \brief Constructor
-		/// \param[in] type type of token (e.g. POS tag)
+		/// \param[in] type type of output mapping
+		/// \param[in] tag name of tag
 		/// \param[in] value value of token (tagged value)
-		Element( const std::string& type_, const std::string& value_)
-			:m_type(type_),m_value(value_){}
+		Element( const Type& type_, const std::string& tag_, const std::string& value_)
+			:m_type(type_),m_tag(tag_),m_value(value_){}
 		/// \brief Copy constructor
 		Element( const Element& o)
-			:m_type(o.m_type),m_value(o.m_value){}
+			:m_type(o.m_type),m_tag(o.m_tag),m_value(o.m_value){}
 
 	private:
-		std::string m_type;	///< Type of token (e.g. POS tag)
+		Type m_type;
+		std::string m_tag;	///< Type of token (e.g. POS tag)
 		std::string m_value;	///< Value of token (tagged value)
 	};
 
 	virtual ~PosTaggerDataInterface(){}
-
-	/// \brief Define the tag to be used for a specific POS entity type
-	/// \param[in] posentity POS entity type
-	/// \param[in] tag to use for 'type'
-	/// \remark Not allowed anymore after first insert
-	virtual void defineTag( const std::string& posentity, const std::string& tag)=0;
 
 	/// \brief Add a tagged text chunk
 	/// \param[in] sequence tagged text chunk
