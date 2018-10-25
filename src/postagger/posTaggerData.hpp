@@ -60,10 +60,11 @@ private:
 	};
 
 private:
-	static std::string elementHeaderToString( const Element::Type& type, const std::string& value);
-	int elementHeaderToInt( const Element::Type& type, const std::string& tag);
 	int elementValueToInt( const std::string& value);
 	const char* elementValue( int valueidx) const;
+
+	static std::string elementHeaderToString( const Element::Type& type, const std::string& value);
+	int elementHeaderToInt( const Element::Type& type, const std::string& tag);
 	Element::Type elementType( int headeridx) const;
 	const char* elementTag( int headeridx) const;
 

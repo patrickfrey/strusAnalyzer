@@ -42,6 +42,18 @@ PosTaggerData::~PosTaggerData()
 	if (m_debugtrace) delete m_debugtrace;
 }
 
+int PosTaggerData::elementValueToInt( const std::string& value)
+{
+	int rt = m_elementValueMap.getOrCreate( value);
+	if (!rt) throw std::bad_alloc();
+	return rt;
+}
+
+const char* PosTaggerData::elementValue( int valueidx) const
+{
+	return m_elementValueMap.key( valueidx);
+}
+
 std::string PosTaggerData::elementHeaderToString( const Element::Type& type, const std::string& value)
 {
 	std::string rt;
@@ -49,6 +61,7 @@ std::string PosTaggerData::elementHeaderToString( const Element::Type& type, con
 	rt.append( value);
 	return rt;
 }
+
 int PosTaggerData::elementHeaderToInt( const Element::Type& type, const std::string& tag)
 {
 	std::string key( elementHeaderToString( type, tag));
@@ -56,26 +69,19 @@ int PosTaggerData::elementHeaderToInt( const Element::Type& type, const std::str
 	if (!rt) throw std::bad_alloc();
 	return rt;
 }
-int PosTaggerData::elementValueToInt( const std::string& value)
-{
-	int rt = m_elementValueMap.getOrCreate( value);
-	if (!rt) throw std::bad_alloc();
-	return rt;
-}
-const char* PosTaggerData::elementValue( int valueidx) const
-{
-	return m_elementValueMap.key( valueidx);
-}
+
 PosTaggerDataInterface::Element::Type PosTaggerData::elementType( int headeridx) const
 {
-	const char* rec = m_elementValueMap.key( headeridx);
+	const char* rec = m_elementHeaderMap.key( headeridx);
 	return rec ? (PosTaggerDataInterface::Element::Type)rec[0] : PosTaggerDataInterface::Element::Marker;
 }
+
 const char* PosTaggerData::elementTag( int headeridx) const
 {
-	const char* rec = m_elementValueMap.key( headeridx);
+	const char* rec = m_elementHeaderMap.key( headeridx);
 	return rec ? (rec+1) : 0;
 }
+
 PosTaggerData::DocAssignment PosTaggerData::createDocAssignment( const std::vector<Element>& elements)
 {
 	DocAssignment rt;
