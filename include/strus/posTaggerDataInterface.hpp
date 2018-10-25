@@ -29,7 +29,11 @@ public:
 	{
 	public:
 		enum Type {Marker,Content,BoundToPrevious};
-
+		static const char* typeName( Type t)
+		{
+			static const char* ar[] = {"Marker","Content","BoundToPrevious",0};
+			return ar[ t];
+		}
 		const Type type() const {return m_type;}		///< Type of mapping
 		const std::string& tag() const {return m_tag;}		///< Tag string
 		const std::string& value() const {return m_value;}	///< Value of token (tagged value)
