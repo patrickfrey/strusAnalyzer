@@ -164,6 +164,7 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			int startofs;
 			int endofs;
 		} state;
+		state.type = Element::Marker;
 		state.tag = 0;
 		state.startofs = 0;
 		state.endofs = 0;
