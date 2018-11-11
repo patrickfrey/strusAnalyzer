@@ -56,6 +56,11 @@ public:
 
 	virtual ~PosTaggerDataInterface(){}
 
+	/// \brief Declare a token to be ignored in the document elements, if it does not match
+	/// \param[in] value value of the token
+	/// \remark e.g. delimiter that might or might not be part of document segmentation because it belongs to the set of tokens potentially added in the input creation as delimiter.
+	virtual void declareIgnoredToken( const std::string& value)=0;
+
 	/// \brief Add a tagged text chunk
 	/// \param[in] sequence tagged text chunk
 	virtual void insert( int docno, const std::vector<Element>& sequence)=0;

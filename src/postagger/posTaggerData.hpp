@@ -34,6 +34,7 @@ public:
 	PosTaggerData( TokenizerFunctionInstanceInterface* tokenizer_, ErrorBufferInterface* errorhnd_);
 	virtual ~PosTaggerData();
 
+	virtual void declareIgnoredToken( const std::string& value);
 	virtual void insert( int docno, const std::vector<Element>& elements);
 
 	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const;
@@ -80,6 +81,7 @@ private:
 	SymbolTable m_elementHeaderMap;
 	SymbolTable m_elementValueMap;
 	std::vector<DocAssignment> m_docs;
+	std::vector<std::string> m_ignoredTokens;
 	std::map<int,int> m_docnoDocMap;
 };
 

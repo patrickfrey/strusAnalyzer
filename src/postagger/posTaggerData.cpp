@@ -128,6 +128,18 @@ std::vector<PosTaggerDataInterface::Element> PosTaggerData::tokenize( const std:
 	return rt;
 }
 
+void PosTaggerData::declareIgnoredToken( const std::string& value)
+{
+	try
+	{
+		if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), value) != m_ignoredTokens.end())
+		{
+			m_ignoredTokens.push_back( value);
+		}
+	}
+	CATCH_ERROR_ARG1_MAP( _TXT("error declaring token to ignore in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
+}
+
 void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 {
 	try
@@ -137,6 +149,13 @@ void PosTaggerData::insert( int docno, const std::vector<Element>& elements_)
 		m_docs.push_back( createDocAssignment( tokenize( elements_)));
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error insert elements in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
+}
+
+static bool compareTokenValue( const char* val, const char* tok, int toksize)
+{
+	int vi = 0;
+	for (; vi < toksize && val[vi] && val[vi] == tok[vi]; ++vi){}
+	return (!val[vi] && vi == toksize);
 }
 
 void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const
@@ -178,20 +197,20 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			Element::Type et = elementType( ai->headeridx);
 			const char* eg = elementTag( ai->headeridx);
 
-			// Test if token as expected:
-			int ei = 0;
-			for (; ev[ ei]; ++ei)
+			// Test if token as expected or if it can be ignored:
+			if (!compareTokenValue( ev, tv, ti->origsize()))
 			{
-				if (ev[ei] != tv[ei])
+				std::string tokval( tv, ti->origsize());
+				if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), tokval) != m_ignoredTokens.end())
 				{
-					std::string tok( tv, ti->origsize());
-					throw strus::runtime_error( _TXT( "unexpected token '%s' in document"), tok.c_str());
+					//... not found, but declared as to ignore if not found
+					--ti; //.. loop increment correction for token iterator, compare next token again
+					continue;
 				}
-			}
-			if (ei != ti->origsize())
-			{
-				std::string tok( tv, ti->origsize());
-				throw strus::runtime_error( _TXT( "unexpected token '%s' in document"), tok.c_str());
+				else
+				{
+					throw strus::runtime_error( _TXT( "unexpected token '%s' in document"), tokval.c_str());
+				}
 			}
 			// Extend current scope and continue if bound to previous:
 			if (et == Element::BoundToPrevious)
