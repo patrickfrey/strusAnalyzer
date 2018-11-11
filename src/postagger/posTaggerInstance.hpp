@@ -41,7 +41,7 @@ public:
 	virtual ~PosTaggerInstance();
 
 	virtual void addContentExpression( const std::string& expression);
-	virtual void addPosTaggerInputPunctuation( const std::string& expression, const std::string& value);
+	virtual void addPosTaggerInputPunctuation( const std::string& expression, const std::string& value, int priority);
 
 	virtual std::string getPosTaggerInput( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
@@ -51,11 +51,32 @@ private:
 	void cleanup();
 
 private:
+	class PunctuationDef
+	{
+	public:
+		PunctuationDef( const PunctuationDef& o)
+			:m_value(o.m_value),m_priority(o.m_priority){}
+		PunctuationDef( const std::string& value_, int priority_)
+			:m_value(value_),m_priority(priority_){}
+
+		const std::string& value() const	{return m_value;}
+		int priority() const			{return m_priority;}
+
+		bool operator==( const PunctuationDef& o) const
+		{
+			return m_value == o.m_value && m_priority == o.m_priority;
+		}
+	private:
+		std::string m_value;
+		int m_priority;
+	};
+
+private:
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 	SegmenterInstanceInterface* m_segmenter;
 	TokenMarkupInstanceInterface* m_markup;
-	std::vector<std::string> m_values;
+	std::vector<PunctuationDef> m_punctar;
 };
 
 }//namespace
