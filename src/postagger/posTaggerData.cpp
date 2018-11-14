@@ -215,7 +215,7 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 				}
 				else
 				{
-					throw strus::runtime_error( _TXT( "unexpected token '%s' in document, expected '%s'"), tokval.c_str(), ev);
+					throw strus::runtime_error( _TXT( "unexpected token '%s' in document, expected '%s' at token index %d"), tokval.c_str(), ev, docitr);
 				}
 			}
 			// Extend current scope and continue if bound to previous:
