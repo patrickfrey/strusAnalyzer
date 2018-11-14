@@ -127,6 +127,7 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 					{
 						rt.append( mrk);
 					}
+					pdef = 0;
 				}
 				printContent( rt, segment, segmentsize);
 			}
@@ -138,6 +139,7 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 			{
 				rt.append( mrk);
 			}
+			pdef = 0;
 		}
 		if (m_errorhnd->hasError()) return std::string();
 		return rt;
