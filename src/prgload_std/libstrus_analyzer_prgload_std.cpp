@@ -167,7 +167,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 	try
 	{
 		std::string source;
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty() && errorhnd->hasError()) throw std::runtime_error( errorhnd->fetchError());
 		int ec = strus::readFile( filepath, source);
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
@@ -224,7 +224,7 @@ DLL_PUBLIC bool strus::load_PatternMatcher_programfile(
 	try
 	{
 		std::string source;
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty() && errorhnd->hasError()) throw std::runtime_error( errorhnd->fetchError());
 		int ec = strus::readFile( filepath, source);
 		if (ec) throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
