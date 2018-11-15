@@ -55,7 +55,7 @@ static void printUsage( int argc, const char* argv[])
 
 static std::string getFilePath( const std::string& resourcedir, const std::string& filename)
 {
-	return (strus::isRelativePath( filename) && filename[0] != '.') ? strus::joinFilePath( resourcedir, filename) : filename;
+	return (strus::isExplicitPath( filename)) ? filename : strus::joinFilePath( resourcedir, filename);
 }
 
 static bool compareContent( const std::string& one, const std::string& two)
