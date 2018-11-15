@@ -132,7 +132,7 @@ void PosTaggerData::declareIgnoredToken( const std::string& value)
 {
 	try
 	{
-		if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), value) != m_ignoredTokens.end())
+		if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), value) == m_ignoredTokens.end())
 		{
 			m_ignoredTokens.push_back( value);
 		}
