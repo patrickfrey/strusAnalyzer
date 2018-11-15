@@ -203,14 +203,14 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 				if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), tokval) != m_ignoredTokens.end())
 				{
 					//... not found, but declared as to ignore if not found
-					--ti; //.. loop increment correction for token iterator, compare next document item again
-					continue;
+					--docitr,--ai;
+					continue; //.. loop increment correction for document iterator, compare next token again
 				}
 				else if (std::find( m_ignoredTokens.begin(), m_ignoredTokens.end(), ev) != m_ignoredTokens.end())
 				{
 					//... not found, but declared as to ignore if not found
-					--docitr,--ai;
-					continue; //.. loop increment correction for document iterator, compare next token again
+					--ti; //.. loop increment correction for token iterator, compare next document item again
+					continue;
 				}
 				else
 				{
