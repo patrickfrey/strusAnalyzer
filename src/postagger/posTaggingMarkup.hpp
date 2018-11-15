@@ -15,6 +15,8 @@
 #include <utility>
 #include "strus/base/symbolTable.hpp"
 
+#error DEPRECATED
+
 /// \brief strus toplevel namespace
 namespace strus {
 

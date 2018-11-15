@@ -37,21 +37,23 @@ public:
 		const Type type() const {return m_type;}		///< Type of mapping
 		const std::string& tag() const {return m_tag;}		///< Tag string
 		const std::string& value() const {return m_value;}	///< Value of token (tagged value)
+		const std::string& ref() const {return m_ref;}		///< Referenced translation value of token (id attribute of tagged value)
 
 		/// \brief Constructor
 		/// \param[in] type type of output mapping
 		/// \param[in] tag name of tag
 		/// \param[in] value value of token (tagged value)
-		Element( const Type& type_, const std::string& tag_, const std::string& value_)
-			:m_type(type_),m_tag(tag_),m_value(value_){}
+		Element( const Type& type_, const std::string& tag_, const std::string& value_, const std::string& ref_)
+			:m_type(type_),m_tag(tag_),m_value(value_),m_ref(ref_){}
 		/// \brief Copy constructor
 		Element( const Element& o)
-			:m_type(o.m_type),m_tag(o.m_tag),m_value(o.m_value){}
+			:m_type(o.m_type),m_tag(o.m_tag),m_value(o.m_value),m_ref(o.m_ref){}
 
 	private:
 		Type m_type;
 		std::string m_tag;	///< Type of token (e.g. POS tag)
 		std::string m_value;	///< Value of token (tagged value)
+		std::string m_ref;	///< Referenced translation value of token (id attribute of tagged value)
 	};
 
 	virtual ~PosTaggerDataInterface(){}

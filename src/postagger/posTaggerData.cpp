@@ -88,7 +88,7 @@ PosTaggerData::DocAssignment PosTaggerData::createDocAssignment( const std::vect
 	std::vector<Element>::const_iterator ei = elements.begin(), ee = elements.end();
 	for (; ei != ee; ++ei)
 	{
-		rt.ar.push_back( TagAssignment( elementHeaderToInt( ei->type(), ei->tag()), elementValueToInt(ei->value())));
+		rt.ar.push_back( TagAssignment( elementHeaderToInt( ei->type(), ei->tag()), elementValueToInt(ei->value()), ei->ref().empty()?0:elementValueToInt(ei->ref())));
 	}
 	return rt;
 }
@@ -110,15 +110,15 @@ std::vector<PosTaggerDataInterface::Element> PosTaggerData::tokenize( const std:
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 		if (ti != te)
 		{
-			rt.push_back( Element( ei->type(), ei->tag(), std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize())));
+			rt.push_back( Element( ei->type(), ei->tag(), std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize()), ei->ref()));
 			for (++ti; ti != te; ++ti)
 			{
-				rt.push_back( Element( Element::BoundToPrevious, "", std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize())));
+				rt.push_back( Element( Element::BoundToPrevious, "", std::string( ei->value().c_str() + ti->origpos().ofs(), ti->origsize()), ""));
 			}
 		}
 		else if (ei->value().empty())
 		{
-			rt.push_back( Element( ei->type(), ei->tag(), std::string()));
+			rt.push_back( Element( ei->type(), ei->tag(), std::string(), ei->ref()));
 		}
 		else
 		{
@@ -180,13 +180,10 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		{
 			Element::Type type;
 			const char* tag;
+			const char* ref;
 			int startofs;
 			int endofs;
-		} state;
-		state.type = Element::Marker;
-		state.tag = 0;
-		state.startofs = 0;
-		state.endofs = 0;
+		} state = {Element::Marker,0,0,0,0};
 
 		std::vector<analyzer::Token>::const_iterator ti = tokens.begin(), te = tokens.end();
 		for (; ti != te && docitr < (int)tgar.size(); ++ti,++docitr,++ai)
@@ -196,6 +193,8 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			const char* ev = elementValue( ai->valueidx);
 			Element::Type et = elementType( ai->headeridx);
 			const char* eg = elementTag( ai->headeridx);
+			const char* ref = 0;
+			if (ai->refidx) ref = elementValue( ai->refidx);
 
 			// Test if token as expected or if it can be ignored:
 			if (!compareTokenValue( ev, tv, ti->origsize()))
@@ -233,7 +232,16 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 				{
 					endpos = startpos;
 				}
-				markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
+				if (state.ref)
+				{
+					std::vector<analyzer::TokenMarkup::Attribute> attributes;
+					attributes.push_back( analyzer::TokenMarkup::Attribute( "id", state.ref));
+					markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag, attributes), 0/*level*/);
+				}
+				else
+				{
+					markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
+				}
 				state.tag = 0;
 				state.startofs = 0;
 				state.endofs = 0;
@@ -243,6 +251,7 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			{
 				state.type = et;
 				state.tag = eg;
+				state.ref = ref;
 				state.startofs = ti->origpos().ofs();
 				state.endofs = state.startofs + ti->origsize();
 			}
@@ -263,7 +272,16 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 			{
 				endpos = startpos;
 			}
-			markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
+			if (state.ref)
+			{
+				std::vector<analyzer::TokenMarkup::Attribute> attributes;
+				attributes.push_back( analyzer::TokenMarkup::Attribute( "id", state.ref));
+				markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag, attributes), 0/*level*/);
+			}
+			else
+			{
+				markupContext->putMarkup( startpos, endpos, analyzer::TokenMarkup( state.tag), 0/*level*/);
+			}
 		}
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error getting tags of segment in \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);

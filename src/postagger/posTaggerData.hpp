@@ -44,11 +44,12 @@ private:
 	{
 		int headeridx;
 		int valueidx;
+		int refidx;
 
-		TagAssignment( int headeridx_, int valueidx_)
-			:headeridx(headeridx_),valueidx(valueidx_){}
+		TagAssignment( int headeridx_, int valueidx_, int refidx_)
+			:headeridx(headeridx_),valueidx(valueidx_),refidx(refidx_){}
 		TagAssignment( const TagAssignment& o)
-			:headeridx(o.headeridx),valueidx(o.valueidx){}
+			:headeridx(o.headeridx),valueidx(o.valueidx),refidx(o.refidx){}
 	};
 	struct DocAssignment
 	{
