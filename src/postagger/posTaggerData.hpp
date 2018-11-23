@@ -39,7 +39,7 @@ public:
 
 	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const;
 
-private:
+public://local function getTagsExcerptString
 	struct TagAssignment
 	{
 		int headeridx;
@@ -51,6 +51,7 @@ private:
 		TagAssignment( const TagAssignment& o)
 			:headeridx(o.headeridx),valueidx(o.valueidx),refidx(o.refidx){}
 	};
+private:
 	struct DocAssignment
 	{
 		std::vector<TagAssignment> ar;

@@ -158,6 +158,106 @@ static bool compareTokenValue( const char* val, const char* tok, int toksize)
 	return (!val[vi] && vi == toksize);
 }
 
+static void splitToken( std::vector<analyzer::Token>& tokens, std::vector<analyzer::Token>::iterator tokitr, int splitlen)
+{
+	analyzer::Position splitpos( tokitr->origpos().seg(), tokitr->origpos().ofs() + splitlen);
+	analyzer::Token prefixtok( tokitr->ordpos(), tokitr->origpos(), splitlen);
+	tokitr->setOrigPosition( splitpos);
+	tokitr->setOrigSize( tokitr->origsize() - splitlen);
+	tokens.insert( tokitr, prefixtok);
+}
+
+static std::string getSegmentExcerptString( const char* segmentptr, int segmentsize, int ofs)
+{
+	int srcpos = 0;
+	int srcsize = 50;
+	if (ofs > 30)
+	{
+		srcpos = ofs - 20;
+		while (srcpos > 0 && strus::utf8midchr( segmentptr[ srcpos])) --srcpos;
+	}
+	if (srcpos + srcsize > (int)segmentsize)
+	{
+		srcsize = (int)segmentsize - srcpos;
+	}
+	else
+	{
+		while (srcpos + srcsize < (int)segmentsize && strus::utf8midchr( segmentptr[ srcpos + srcsize])) ++srcsize;
+	}
+	std::string srcstr;
+	if (srcpos > 0)
+	{
+		srcstr.append( "...");
+	}
+	char const* si = segmentptr + srcpos;
+	int sidx = 0;
+	for (; sidx < srcsize; ++sidx,++si)
+	{
+		if ((unsigned char)*si <= 32)
+		{
+			srcstr.push_back( ' ');
+		}
+		else
+		{
+			srcstr.push_back( *si);
+		}
+	}
+	if (srcpos + srcsize < (int)segmentsize)
+	{
+		srcstr.append( "...");
+	}
+	return srcstr;
+}
+
+static std::string getTokenListExcerptString( const char* segmentptr, const std::vector<analyzer::Token>& tokens, std::size_t tidx)
+{
+	std::string rt;
+	if (tidx > 5)
+	{
+		tidx -= 5;
+	}
+	else
+	{
+		tidx = 0;
+	}
+	int ii=0;
+	for (; ii<10 && tidx<tokens.size(); ++ii,++tidx)
+	{
+		if (ii) rt.append( ", ");
+		rt.push_back( '[');
+		rt.append( segmentptr + tokens[ tidx].origpos().ofs(), tokens[ tidx].origsize());
+		rt.push_back( ']');
+	}
+	return rt;
+}
+
+static std::string getTagsExcerptString( const SymbolTable& symtab, const std::vector<PosTaggerData::TagAssignment>& tgar, std::size_t docidx)
+{
+	int pos = 0;
+	int size = 10;
+	if (docidx > 5)
+	{
+		pos = docidx - 5;
+	}
+	if (pos + size > (int)tgar.size())
+	{
+		size = (int)tgar.size() - pos;
+	}
+	std::string rt;
+	int idx = 0;
+	for (; idx < size; ++idx)
+	{
+		if (idx)
+		{
+			rt.append(", ");
+		}
+		rt.push_back( '[');
+		rt.append( symtab.key( tgar[ pos+idx].valueidx));
+		rt.push_back( ']');
+	}
+	return rt;
+}
+
 void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const
 {
 	try
@@ -214,7 +314,22 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 				}
 				else
 				{
-					throw strus::runtime_error( _TXT( "unexpected token '%s' in document, expected '%s' at token index %d"), tokval.c_str(), ev, docitr);
+					int evlen = std::strlen( ev);
+					if (evlen < ti->origsize() && 0==std::memcmp( ev, tv, evlen))
+					{
+						// ... Here we handle the case the NLP tokenizer is splitting some tokens the tokenizer used here does not split.
+						std::size_t tidx = ti - tokens.begin();
+						splitToken( tokens, tokens.begin() + tidx, evlen);
+						ti = tokens.begin() + tidx;
+						te = tokens.end();
+					}
+					else
+					{
+						std::string srcstr = getSegmentExcerptString( segmentptr, segmentsize, ti->origpos().ofs());
+						std::string docstr = getTagsExcerptString( m_elementValueMap, tgar, docitr);
+						std::string tokstr = getTokenListExcerptString( segmentptr, tokens, ti - tokens.begin());
+						throw strus::runtime_error( _TXT( "unexpected token '%s' in document, expected '%s' at token index %d (in document at '%s', POS tokens '%s', tokens '%s')"), tokval.c_str(), ev, docitr, srcstr.c_str(), docstr.c_str(), tokstr.c_str());
+					}
 				}
 			}
 			// Extend current scope and continue if bound to previous:
