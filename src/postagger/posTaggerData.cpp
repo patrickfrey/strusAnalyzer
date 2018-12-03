@@ -120,10 +120,6 @@ std::vector<PosTaggerDataInterface::Element> PosTaggerData::tokenize( const std:
 		{
 			rt.push_back( Element( ei->type(), ei->tag(), std::string(), ei->ref()));
 		}
-		else
-		{
-			throw std::runtime_error(_TXT("empty tokenization of POS tagging element"));
-		}
 	}
 	return rt;
 }
