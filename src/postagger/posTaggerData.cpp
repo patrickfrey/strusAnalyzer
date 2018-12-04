@@ -17,6 +17,7 @@
 #include "private/errorUtils.hpp"
 #include <algorithm>
 #include <stdexcept>
+#include <cstdio>
 
 #define COMPONENT_NAME "POS tagger data"
 #define STRUS_DBGTRACE_COMPONENT_NAME "postag"
@@ -254,6 +255,42 @@ static std::string getTagsExcerptString( const SymbolTable& symtab, const std::v
 	return rt;
 }
 
+static std::string tokenStringForErrorMessage( const std::string& value)
+{
+	std::string rt = std::string("\'") + value + "\'";
+	char const* vi = value.c_str();
+	for (; *vi and (unsigned char)*vi < 128; ++vi){}
+	bool hasNonAscii = !!*vi;
+	if (hasNonAscii)
+	{
+		std::string encoded;
+		vi = value.c_str();
+		for (; *vi; vi += strus::utf8charlen(*vi))
+		{
+			if ((unsigned char)*vi >= 128)
+			{
+				int32_t ch = strus::utf8decode( vi, strus::utf8charlen(*vi));
+				char chstr[ 32];
+				if (ch <= 0xFFFF)
+				{
+					std::snprintf( chstr, sizeof(chstr), "\\u%04x", (unsigned int)ch);
+				}
+				else
+				{
+					std::snprintf( chstr, sizeof(chstr), "\\U%08x", (unsigned int)ch);
+				}
+				encoded.append( chstr);
+			}
+			else
+			{
+				encoded.push_back( *vi);
+			}
+		}
+		rt.append( " [" + encoded + "]");
+	}
+	return rt;
+}
+
 void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const
 {
 	try
@@ -321,10 +358,29 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 					}
 					else
 					{
-						std::string srcstr = getSegmentExcerptString( segmentptr, segmentsize, ti->origpos().ofs());
-						std::string docstr = getTagsExcerptString( m_elementValueMap, tgar, docitr);
-						std::string tokstr = getTokenListExcerptString( segmentptr, tokens, ti - tokens.begin());
-						throw strus::runtime_error( _TXT( "unexpected token '%s' in document, expected '%s' at token index %d (in document at '%s', POS tokens '%s', tokens '%s')"), tokval.c_str(), ev, docitr, srcstr.c_str(), docstr.c_str(), tokstr.c_str());
+						//... Try to tokenize current element
+						std::vector<analyzer::Token> ev_tokens = tokenize( ev, std::strlen(ev));
+						std::vector<analyzer::Token>::const_iterator ei = ev_tokens.begin(), ee = ev_tokens.end();
+						std::vector<analyzer::Token>::const_iterator nti = ti;
+						for (; ei != ee && nti != te; ++ei,++nti)
+						{
+							if (ei->origsize() != nti->origsize()) break;
+							if (0!=std::memcmp( ev + ei->origpos().ofs(), segmentptr+nti->origpos().ofs(), nti->origsize())) break;
+						}
+						if (ei == ee)
+						{
+							ti = nti;
+							--ti;
+						}
+						else
+						{
+							std::string srcstr = getSegmentExcerptString( segmentptr, segmentsize, ti->origpos().ofs());
+							std::string docstr = getTagsExcerptString( m_elementValueMap, tgar, docitr);
+							std::string tokstr = getTokenListExcerptString( segmentptr, tokens, ti - tokens.begin());
+							std::string tokval_errstr = tokenStringForErrorMessage( tokval);
+							std::string ev_errstr = tokenStringForErrorMessage( ev);
+							throw strus::runtime_error( _TXT( "unexpected token %s in document, expected %s at token index %d (in document at '%s', POS tokens '%s', tokens '%s')"), tokval_errstr.c_str(), ev_errstr.c_str(), docitr, srcstr.c_str(), docstr.c_str(), tokstr.c_str());
+						}
 					}
 				}
 			}
@@ -371,7 +427,8 @@ void PosTaggerData::markupSegment( TokenMarkupContextInterface* markupContext, i
 		{
 			const char* tv = segmentptr + ti->origpos().ofs();
 			std::string tok( tv, ti->origsize());
-			throw strus::runtime_error( _TXT( "unexpected token '%s' after end of document"), tok.c_str());
+			std::string tok_errstr = tokenStringForErrorMessage( tok);
+			throw strus::runtime_error( _TXT( "unexpected token %s after end of document"), tok_errstr.c_str());
 		}
 		// Close previously opened tag:
 		if (state.tag)
