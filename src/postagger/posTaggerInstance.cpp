@@ -120,10 +120,10 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 			}
 			else
 			{
-				if (pdef && rt.size() >= pdef->value().size())
+				if (pdef)
 				{
 					const std::string& mrk = pdef->value();
-					if (0!=std::memcmp( rt.c_str() + rt.size() - mrk.size(), mrk.c_str(), mrk.size()))
+					if ((!rt.empty() && rt.size() < pdef->value().size()) || 0!=std::memcmp( rt.c_str() + rt.size() - mrk.size(), mrk.c_str(), mrk.size()))
 					{
 						rt.append( mrk);
 					}
