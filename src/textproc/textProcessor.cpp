@@ -133,14 +133,14 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'empty' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for '%s' normalizer"), "empty");
 			return 0;
 		}
 		try
 		{
 			return new EmptyNormalizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'empty' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "empty", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -191,19 +191,142 @@ public:
 	{
 		if (args.size() != 1)
 		{
-			m_errorhnd->report( ErrorCodeIncompleteDefinition, "one argument expected for 'const' normalizer");
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("one argument expected for '%s' normalizer"), "const");
 			return 0;
 		}
 		try
 		{
 			return new ConstNormalizerInstance( args[0], m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'const' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "const", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
 	{
 		return _TXT("Normalizer mapping input tokens to a constant string");
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+
+class PrefixNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
+{
+public:
+	explicit PrefixNormalizerInstance( const std::string& value_, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_value(value_){}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	{
+		try
+		{
+			return m_value + std::string(src,srcsize);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "prefix", *m_errorhnd, std::string());
+	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "prefix")
+				("value",m_value)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::string m_value;
+};
+
+class PrefixNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit PrefixNormalizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size() != 1)
+		{
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("one argument expected for '%s' normalizer"), "prefix");
+			return 0;
+		}
+		try
+		{
+			return new PrefixNormalizerInstance( args[0], m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "prefix", *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Normalizer adding a prefix to the input tokens");
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+class SuffixNormalizerInstance
+	:public NormalizerFunctionInstanceInterface
+{
+public:
+	explicit SuffixNormalizerInstance( const std::string& value_, ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd),m_value(value_){}
+
+	virtual std::string normalize( const char* src, std::size_t srcsize) const
+	{
+		try
+		{
+			return std::string(src,srcsize) + m_value;
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "suffix", *m_errorhnd, std::string());
+	}
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "suffix")
+				("value",m_value)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+	std::string m_value;
+};
+
+class SuffixNormalizerFunction
+	:public NormalizerFunctionInterface
+{
+public:
+	explicit SuffixNormalizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
+	{
+		if (args.size() != 1)
+		{
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("one argument expected for '%s' normalizer"), "suffix");
+			return 0;
+		}
+		try
+		{
+			return new SuffixNormalizerInstance( args[0], m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "suffix", *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Normalizer adding a suffix to the input tokens");
 	}
 
 private:
@@ -238,7 +361,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, std::string());
 	}
 	virtual analyzer::FunctionView view() const
 	{
@@ -265,14 +388,14 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for '%s' normalizer"), "orig");
 			return 0;
 		}
 		try
 		{
 			return new OrigNormalizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -324,7 +447,7 @@ public:
 			}
 			return rt;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, std::string());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "text", *m_errorhnd, std::string());
 	}
 
 	virtual analyzer::FunctionView view() const
@@ -352,14 +475,14 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'orig' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for '%s' normalizer"), "orig");
 			return 0;
 		}
 		try
 		{
 			return new TextNormalizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'orig' normalizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -388,7 +511,7 @@ public:
 			rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
 			return rt;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "content", *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
 	virtual bool concatBeforeTokenize() const
@@ -421,14 +544,14 @@ public:
 	{
 		if (args.size())
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, "no arguments expected for 'content' normalizer");
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for '%s' normalizer"), "content");
 			return 0;
 		}
 		try
 		{
 			return new ContentTokenizerInstance( m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'content' tokenizer: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "content", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -490,19 +613,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), "count");
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'count' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), "count");
 			return 0;
 		}
 		try
 		{
 			return new CountAggregatorFunctionInstance( args[0], m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'count' aggregator: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "count", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -565,19 +688,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), "maxpos");
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'maxpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), "maxpos");
 			return 0;
 		}
 		try
 		{
 			return new MaxPosAggregatorFunctionInstance( args[0], m_incr, m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'maxpos' aggregator: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "maxpos", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -639,19 +762,19 @@ public:
 	{
 		if (args.size() == 0)
 		{
-			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), "minpos");
 			return 0;
 		}
 		if (args.size() > 1)
 		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to 'minpos' aggregator function"));
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), "minpos");
 			return 0;
 		}
 		try
 		{
 			return new MinPosAggregatorFunctionInstance( args[0], m_errorhnd);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in 'minpos' aggregator: %s"), *m_errorhnd, 0);
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "minpos", *m_errorhnd, 0);
 	}
 
 	virtual const char* getDescription() const
@@ -689,6 +812,8 @@ TextProcessor::TextProcessor( const FileLocatorInterface* filelocator_, ErrorBuf
 	defineNormalizer( "text", new TextNormalizerFunction(m_errorhnd));
 	defineNormalizer( "empty", new EmptyNormalizerFunction(m_errorhnd));
 	defineNormalizer( "const", new ConstNormalizerFunction(m_errorhnd));
+	defineNormalizer( "prefix", new PrefixNormalizerFunction(m_errorhnd));
+	defineNormalizer( "suffix", new SuffixNormalizerFunction(m_errorhnd));
 	defineAggregator( "count", new CountAggregatorFunction(m_errorhnd));
 	defineAggregator( "minpos", new MinPosAggregatorFunction(m_errorhnd));
 	defineAggregator( "maxpos", new MaxPosAggregatorFunction(0,m_errorhnd));
