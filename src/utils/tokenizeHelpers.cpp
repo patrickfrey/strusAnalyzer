@@ -74,6 +74,13 @@ bool strus::whiteSpaceDelimiter( char const* si, const char* se)
 // U+200B	ZERO WIDTH SPACE	foo​bar	0
 // U+200C	ZERO WIDTH NON-JOINER
 // U+200D	ZERO WIDTH JOINER
+// U+2028	LINE SEPARATOR	
+// U+2029	PARAGRAPH SEPARATOR	
+// U+202A	LEFT-TO-RIGHT EMBEDDING
+// U+202B	RIGHT-TO-LEFT EMBEDDING
+// U+202C	POP DIRECTIONAL FORMATTING
+// U+202D	LEFT-TO-RIGHT OVERRIDE
+// U+202E	RIGHT-TO-LEFT OVERRIDE
 // U+202F	NARROW NO-BREAK SPACE	foo bar	Narrower than NO-BREAK SPACE (or SPACE), “typically the width of a thin space or a mid space”
 // U+205F	MEDIUM MATHEMATICAL SPACE	foo bar	4/18 em
 // U+3000	IDEOGRAPHIC SPACE	foo　bar	The width of ideographic (CJK) characters.
@@ -99,8 +106,7 @@ bool strus::whiteSpaceDelimiter( char const* si, const char* se)
 				else
 				{
 					if (chr >= 0x2000 && chr <= 0x200D) return true;
-					if (chr >= 0x2028 && chr <= 0x2029) return true;
-					if (chr == 0x202F) return true;
+					if (chr >= 0x2028 && chr <= 0x202F) return true;
 					if (chr >= 0x205F && chr <= 0x2060) return true;
 				}
 			}
