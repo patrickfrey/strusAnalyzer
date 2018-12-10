@@ -60,6 +60,7 @@ public:
 			: (m_seg < o.m_seg);
 	}
 
+	/// \brief Sorts the elements in the passed list and eliminates covered elements
 	static void eliminateCoveredElements( std::vector<BindTerm>& terms);
 
 private:

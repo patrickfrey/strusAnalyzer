@@ -574,7 +574,7 @@ public:
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
-		unsigned int rt = 0.0;
+		int rt = 0;
 		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
@@ -642,12 +642,12 @@ class MaxPosAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, unsigned int incr_, ErrorBufferInterface* errorhnd)
+	MaxPosAggregatorFunctionInstance( const std::string& featuretype_, int incr_, ErrorBufferInterface* errorhnd)
 		:m_featuretype( string_conv::tolower( featuretype_)),m_incr(incr_),m_errorhnd(0){}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
-		unsigned int rt = 0;
+		DocumentTerm::Position rt = 0;
 		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
@@ -673,7 +673,7 @@ public:
 
 private:
 	std::string m_featuretype;
-	unsigned int m_incr;
+	int m_incr;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -681,7 +681,7 @@ class MaxPosAggregatorFunction
 	:public AggregatorFunctionInterface
 {
 public:
-	MaxPosAggregatorFunction( unsigned int incr_, ErrorBufferInterface* errorhnd_)
+	MaxPosAggregatorFunction( int incr_, ErrorBufferInterface* errorhnd_)
 		:m_incr(incr_),m_errorhnd(errorhnd_){}
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
@@ -709,7 +709,7 @@ public:
 	}
 
 private:
-	unsigned int m_incr;
+	int m_incr;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -723,7 +723,7 @@ public:
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
-		unsigned int rt = 0;
+		DocumentTerm::Position rt = 0;
 		std::vector<DocumentTerm>::const_iterator
 			si = document.searchIndexTerms().begin(),
 			se = document.searchIndexTerms().end();
