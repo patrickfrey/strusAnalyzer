@@ -34,7 +34,9 @@
 #include "strus/lib/pattern_termfeeder.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/utf8.hpp"
 #include "private/errorUtils.hpp"
+#include "private/tokenizeHelpers.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
 #include <cstring>
@@ -495,6 +497,75 @@ private:
 };
 
 
+class AllTokenizerInstance
+	:public TokenizerFunctionInstanceInterface
+{
+public:
+	explicit AllTokenizerInstance( ErrorBufferInterface* errorhnd)
+		:m_errorhnd(errorhnd){}
+
+	virtual std::vector<analyzer::Token>
+			tokenize( const char* src, std::size_t srcsize) const
+	{
+		try
+		{
+			std::vector<analyzer::Token> rt;
+			rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
+			return rt;
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "all", *m_errorhnd, std::vector<analyzer::Token>());
+	}
+
+	virtual bool concatBeforeTokenize() const
+	{
+		return false;
+	}
+
+	virtual analyzer::FunctionView view() const
+	{
+		try
+		{
+			return analyzer::FunctionView( "all")
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+class AllTokenizerFunction
+	:public TokenizerFunctionInterface
+{
+public:
+	explicit AllTokenizerFunction( ErrorBufferInterface* errorhnd_)
+		:m_errorhnd(errorhnd_){}
+
+	virtual TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface* tp) const
+	{
+		if (args.size())
+		{
+			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("no arguments expected for '%s' normalizer"), "all");
+			return 0;
+		}
+		try
+		{
+			return new AllTokenizerInstance( m_errorhnd);
+		}
+		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "all", *m_errorhnd, 0);
+	}
+
+	virtual const char* getDescription() const
+	{
+		return _TXT("Tokenizer producing one token for each input chunk (identity)");
+	}
+
+private:
+	ErrorBufferInterface* m_errorhnd;
+};
+
+
 class ContentTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
@@ -507,6 +578,16 @@ public:
 	{
 		try
 		{
+			char const* si = src;
+			char const* se = src + srcsize;
+			while (si < se && strus::whiteSpaceDelimiter( si, se))
+			{
+				si += strus::utf8charlen( *si);
+			}
+			while (si < se && (strus::utf8midchr( *(se-1)) || strus::whiteSpaceDelimiter( se-1, src+srcsize)))
+			{
+				--se;
+			}
 			std::vector<analyzer::Token> rt;
 			rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
 			return rt;
@@ -556,7 +637,7 @@ public:
 
 	virtual const char* getDescription() const
 	{
-		return _TXT("Tokenizer producing one token for each input chunk (identity)");
+		return _TXT("Tokenizer producing one token with trimmed white spaces for each input chunk (identity)");
 	}
 
 private:
@@ -807,6 +888,7 @@ TextProcessor::TextProcessor( const FileLocatorInterface* filelocator_, ErrorBuf
 	segref = strus::createSegmenter_plain( m_errorhnd);
 	if (segref) defineSegmenter( "plain", segref);
 
+	defineTokenizer( "all", new AllTokenizerFunction( m_errorhnd));
 	defineTokenizer( "content", new ContentTokenizerFunction( m_errorhnd));
 	defineNormalizer( "orig", new OrigNormalizerFunction(m_errorhnd));
 	defineNormalizer( "text", new TextNormalizerFunction(m_errorhnd));
