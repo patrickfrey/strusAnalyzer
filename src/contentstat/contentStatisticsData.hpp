@@ -85,6 +85,12 @@ private:
 		{
 			itemar[ di->second].incr_df( item.df());
 			itemar[ di->second].incr_tf( 1);
+			Item& defitem = itemar[ di->second];
+			if (defitem.example().size() < item.example().size())
+			{
+				defitem.setExample( item.example());
+				defitem.setType( item.type());
+			}
 			return false;
 		}
 	}

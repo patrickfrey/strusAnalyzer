@@ -32,18 +32,20 @@ public:
 #endif
 
 	///\brief Get the select expression
-	const std::string& select() const	{return m_select;}
+	const std::string& select() const		{return m_select;}
 	///\brief Get the type assigned to it
-	const std::string& type() const		{return m_type;}
+	const std::string& type() const			{return m_type;}
 	///\brief Get an example that led to this item
-	const std::string& example() const	{return m_example;}
+	const std::string& example() const		{return m_example;}
 	///\brief Get the number of documents in the collection this item appears in
-	int df() const				{return m_df;}
+	int df() const					{return m_df;}
 	///\brief Get the number of appearances in the collection this item appears in
-	int tf() const				{return m_tf;}
+	int tf() const					{return m_tf;}
 
-	void incr_df( int df_)			{m_df+=df_;}
-	void incr_tf( int tf_)			{m_tf+=tf_;}
+	void setExample( const std::string& value)	{m_example = value;}
+	void setType( const std::string& type_)		{m_type = type_;}
+	void incr_df( int df_)				{m_df+=df_;}
+	void incr_tf( int tf_)				{m_tf+=tf_;}
 
 private:
 	std::string m_select;
