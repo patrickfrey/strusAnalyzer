@@ -14,6 +14,7 @@
 #include "contentStatisticsLibrary.hpp"
 #include "contentStatisticsData.hpp"
 #include "strus/base/thread.hpp"
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -49,6 +50,8 @@ public:
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
 
+	virtual void addSelectorExpression( const std::string& expression);
+
 	virtual ContentStatisticsContextInterface* createContext() const;
 
 	virtual analyzer::ContentStatisticsView view() const;
@@ -58,6 +61,7 @@ private:
 	const DocumentClassDetectorInterface* m_detector;
 	const TextProcessorInterface* m_textproc;
 	ContentStatisticsLibrary m_library;
+	std::vector<std::string> m_expressions;
 };
 
 /// \brief Implementation of content statistics
@@ -66,7 +70,7 @@ class ContentStatisticsContext
 {
 public:
 	/// \brief Constructor
-	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_);
+	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const std::vector<std::string>& expressions_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_);
 	/// \brief Destructor
 	virtual ~ContentStatisticsContext();
 
@@ -86,6 +90,7 @@ private:
 	const TextProcessorInterface* m_textproc;
 	const ContentStatisticsLibrary* m_library;
 	const DocumentClassDetectorInterface* m_detector;
+	std::vector<std::string> m_expressions;
 	ContentStatisticsData m_data;
 };
 

@@ -56,6 +56,10 @@ public:
 	/// \param[in] name of the attribute to show in a path
 	virtual void addVisibleAttribute( const std::string& name)=0;
 
+	/// \brief Define a selector expression that is chosen for content elements that matches it
+	/// \param[in] expression expression for selecting chunks
+	virtual void addSelectorExpression( const std::string& expression)=0;
+
 	/// \brief Create the context used for collecting document statitics
 	/// \return the document content statistics context (with ownership)
 	virtual ContentStatisticsContextInterface* createContext() const=0;

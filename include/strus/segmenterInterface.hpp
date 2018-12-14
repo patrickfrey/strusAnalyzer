@@ -44,6 +44,7 @@ public:
 	/// \param[in] content pointer to content
 	/// \param[in] contentsize size of content in bytes
 	/// \param[in] attributes attributes that should be included in the path expressions of the result
+	/// \param[in] expressions predefined selector expressions that are used for the outputs on a match
 	/// \param[in] dclass document class (encoding)
 	/// \param[in] opts segmenter options
 	/// \return content iterator interface (with ownership)
@@ -51,6 +52,7 @@ public:
 			const char* content,
 			std::size_t contentsize,
 			const std::vector<std::string>& attributes,
+			const std::vector<std::string>& expressions,
 			const analyzer::DocumentClass& dclass,
 			const analyzer::SegmenterOptions &opts=analyzer::SegmenterOptions()) const=0;
 

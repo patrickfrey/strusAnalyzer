@@ -45,11 +45,20 @@ void ContentStatistics::addLibraryElement(
 	m_library.addElement( type, regex, priority, minLength, maxLength, tokenizer, normalizers);
 }
 
+void ContentStatistics::addSelectorExpression( const std::string& expression)
+{
+	try
+	{
+		m_expressions.push_back( expression);
+	}
+	CATCH_ERROR_MAP( _TXT("error adding selector expression to statistics context: %s"), *m_errorhnd);
+}
+
 ContentStatisticsContextInterface* ContentStatistics::createContext() const
 {
 	try
 	{
-		return new ContentStatisticsContext( &m_library, m_textproc, m_detector, m_errorhnd);
+		return new ContentStatisticsContext( &m_library, m_expressions, m_textproc, m_detector, m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context: %s"), *m_errorhnd, NULL);
 }
@@ -63,8 +72,8 @@ analyzer::ContentStatisticsView ContentStatistics::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context introspection: %s"), *m_errorhnd, analyzer::ContentStatisticsView());
 }
 
-ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_textproc(textproc_),m_library(library_),m_detector(detector_),m_data()
+ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibrary* library_, const std::vector<std::string>& expressions_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_textproc(textproc_),m_library(library_),m_detector(detector_),m_expressions(expressions_),m_data()
 {}
 
 ContentStatisticsContext::~ContentStatisticsContext()
@@ -92,7 +101,7 @@ void ContentStatisticsContext::putContent(
 		{
 			segmenter = m_textproc->getSegmenterByMimeType( doctype.mimeType());
 			if (!segmenter) throw strus::runtime_error(_TXT("can't process the MIME type '%s'"), doctype.mimeType().c_str());
-			itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), doctype));
+			itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), m_expressions, doctype));
 			if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), doctype.mimeType().c_str());
 		}
 		else
@@ -102,7 +111,7 @@ void ContentStatisticsContext::putContent(
 			{
 				segmenter = m_textproc->getSegmenterByMimeType( dclass.mimeType());
 				if (!segmenter) throw strus::runtime_error(_TXT("can't process the MIME type '%s'"), doctype.mimeType().c_str());
-				itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), dclass));
+				itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), m_expressions, dclass));
 				if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), dclass.mimeType().c_str());
 			}
 			else if (m_errorhnd->hasError())

@@ -148,6 +148,7 @@ public:
 			const char* content_,
 			std::size_t contentsize_,
 			const std::vector<std::string>& attributes_,
+			const std::vector<std::string>& expressions_,
 			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
@@ -185,6 +186,7 @@ class TSVSegmenter : public strus::SegmenterInterface
 				const char* content,
 				std::size_t contentsize,
 				const std::vector<std::string>& attributes,
+				const std::vector<std::string>& expressions,
 				const strus::analyzer::DocumentClass& dclass,
 				const strus::analyzer::SegmenterOptions& opts) const;
 

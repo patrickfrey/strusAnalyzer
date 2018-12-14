@@ -67,6 +67,7 @@ public:
 			const char* content,
 			std::size_t contentsize,
 			const std::vector<std::string>& attributes,
+			const std::vector<std::string>& expressions,
 			const analyzer::DocumentClass& dclass,
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const;
 

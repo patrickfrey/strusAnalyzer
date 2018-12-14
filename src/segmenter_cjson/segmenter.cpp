@@ -94,6 +94,7 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
 		const std::vector<std::string>& attributes,
+		const std::vector<std::string>& expressions,
 		const analyzer::DocumentClass& dclass,
 		const analyzer::SegmenterOptions& opts) const
 {
@@ -105,7 +106,7 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 		{
 			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
 		}
-		return new ContentIterator( ContentIterator( content, contentsize, attributes, encoder, m_errorhnd));
+		return new ContentIterator( ContentIterator( content, contentsize, attributes, expressions, encoder, m_errorhnd));
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }

@@ -15,6 +15,7 @@
 #include "private/errorUtils.hpp"
 #include "private/contentIteratorStm.hpp"
 #include "private/textEncoder.hpp"
+#include "private/xpathAutomaton.hpp"
 #include "textwolf/xmlscanner.hpp"
 #include "cjson/cJSON.h"
 #include "cjson2textwolf.hpp"
@@ -36,6 +37,7 @@ public:
 			const char* content_,
 			std::size_t contentsize_,
 			const std::vector<std::string>& attributes_,
+			const std::vector<std::string>& expressions_,
 			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 			ErrorBufferInterface* errorhnd_);
 
@@ -55,6 +57,9 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 	std::set<std::string> m_attributes;
 	std::string m_content;
+	XPathAutomaton m_automaton;
+	XPathAutomatonContext* m_xpathselect;
+	std::vector<std::string> m_expressions;
 	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
 	std::vector<TextwolfItem> m_ar;
 	std::vector<TextwolfItem>::const_iterator m_elemitr;

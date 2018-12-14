@@ -162,12 +162,13 @@ int main( int argc, const char* argv[])
 #endif
 		// [1] Test content iterator:
 		std::vector<std::string> attributes;
+		std::vector<std::string> expressions;
 		attributes.push_back( "Number");
 		attributes.push_back( "Type");
 		attributes.push_back( "PartNumber");
 		strus::local_ptr<strus::ContentIteratorInterface> contentiter(
 				segmenter->createContentIterator(
-					inputsrc.c_str(), inputsrc.size(), attributes, dclass, strus::analyzer::SegmenterOptions()));
+					inputsrc.c_str(), inputsrc.size(), attributes, expressions, dclass, strus::analyzer::SegmenterOptions()));
 		if (!contentiter.get()) throw std::runtime_error("failed to create content iterator");
 		std::ostringstream out;
 		const char* exprstr; std::size_t exprsize;
