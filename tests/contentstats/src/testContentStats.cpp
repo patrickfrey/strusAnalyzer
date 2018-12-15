@@ -171,6 +171,8 @@ int main( int argc, const char* argv[])
 
 		int ec = 0;
 		defineTestLibrary( contentstats.get(), textproc.get());
+		contentstats->addSelectorExpression( "//date()");
+		contentstats->addSelectorExpression( "//id()");
 
 		strus::local_ptr<strus::ContentStatisticsContextInterface> context( contentstats->createContext());
 		if (!context.get()) throw std::runtime_error("unable to create content statistics context");

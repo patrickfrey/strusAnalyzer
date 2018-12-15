@@ -50,6 +50,13 @@ public:
 			m_ar.push_back('@');
 			m_ar.append( name, namelen);
 		}
+		void selectValue()
+		{
+			if (back() != ')')
+			{
+				m_ar.append( "()");
+			}
+		}
 		char back() const
 		{
 			if (m_ar.empty()) return '\0';
@@ -137,7 +144,6 @@ public:
 			m_state = StateContent;
 		}
 	}
-
 	void attributeValue( const char* value, std::size_t valuelen)
 	{
 		if (m_state == StateContent)
@@ -146,7 +152,10 @@ public:
 			m_state = StateAttribute;
 		}
 	}
-
+	void selectValue()
+	{
+		m_attrpath.selectValue();
+	}
 	bool textwolfItem(
 			const textwolf::XMLScannerBase::ElementType& itemtype, const char* itemstr, std::size_t itemsize,
 			const char*& expression, std::size_t& expressionsize,
@@ -182,6 +191,7 @@ public:
 				this->closeTag();
 				break;
 			case textwolf::XMLScannerBase::Content:
+				this->selectValue();
 				expression = m_attrpath().c_str();
 				expressionsize = m_attrpath().size();
 				segment = itemstr;
