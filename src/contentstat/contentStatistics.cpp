@@ -67,7 +67,7 @@ analyzer::ContentStatisticsView ContentStatistics::view() const
 {
 	try
 	{
-		return analyzer::ContentStatisticsView( m_library.view());
+		return analyzer::ContentStatisticsView( m_library.view(), m_library.collectedAttributes(), m_expressions);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context introspection: %s"), *m_errorhnd, analyzer::ContentStatisticsView());
 }
