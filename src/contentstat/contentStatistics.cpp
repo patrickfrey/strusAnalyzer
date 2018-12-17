@@ -82,7 +82,7 @@ ContentStatisticsContext::~ContentStatisticsContext()
 static bool isEmptyContent( const std::string& value)
 {
 	char const* vi = value.c_str();
-	for (; *vi && (unsigned char)*vi < 32; ++vi){}
+	for (; *vi && (unsigned char)*vi <= 32; ++vi){}
 	return !*vi;
 }
 
