@@ -589,7 +589,10 @@ public:
 				--se;
 			}
 			std::vector<analyzer::Token> rt;
-			rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
+			if (srcsize > 0)
+			{
+				rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
+			}
 			return rt;
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "content", *m_errorhnd, std::vector<analyzer::Token>());
