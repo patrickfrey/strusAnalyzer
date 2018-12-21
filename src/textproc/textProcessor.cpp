@@ -589,7 +589,7 @@ public:
 				--se;
 			}
 			std::vector<analyzer::Token> rt;
-			if (srcsize > 0)
+			if (si != se)
 			{
 				rt.push_back( analyzer::Token( 0/*ord*/, analyzer::Position(0/*seg*/, 0/*ofs*/), srcsize));
 			}
