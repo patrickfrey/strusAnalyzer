@@ -83,7 +83,7 @@ static void printContent( std::string& res, const char* segment, std::size_t seg
 	{
 		if ((unsigned char)*si <= 32)
 		{
-			if (!res.empty() && res.back() == ' ') continue;
+			if (res.empty() || res[ res.size()-1] == ' ') continue;
 			res.push_back( ' ');
 		}
 		else
