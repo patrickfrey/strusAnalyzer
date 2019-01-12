@@ -24,6 +24,8 @@ namespace strus {
 
 /// \brief Forward declaration
 class ErrorBufferInterface;
+/// \brief Forward declaration
+class TextProcessorInterface;
 
 class TagAttributeMarkupInterface
 {
@@ -57,9 +59,10 @@ private:
 /// \param[in] documentClass document class of the content with the encoding specified
 /// \param[in] content the content to process
 /// \param[in] markups array of definitions for markup
+/// \param[in] textproc text processor interface
 /// \param[in] errorhnd error buffer for reporting errors/exceptions
 /// \return the tagged document
-std::string markupDocumentTags( const analyzer::DocumentClass& documentClass, const std::string& content, const std::vector<DocumentTagMarkupDef>& markups, ErrorBufferInterface* errorhnd);
+std::string markupDocumentTags( const analyzer::DocumentClass& documentClass, const std::string& content, const std::vector<DocumentTagMarkupDef>& markups, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

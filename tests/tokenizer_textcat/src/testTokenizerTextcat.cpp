@@ -42,6 +42,7 @@ static void printUsage( int argc, const char* argv[])
 
 int main( int argc, const char* argv[])
 {
+	int rt = 0;
 	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
 		printUsage( argc, argv);
@@ -125,30 +126,37 @@ int main( int argc, const char* argv[])
 			std::cerr << "has error '" << err << "'" << std::endl;
 		}
 
-		delete g_errorhnd;
-
 		// we expect all tokens to be of the given language
 		if (result.size() == 0) {
-			return 1;
+			rt = 1;
 		}
-
-		return 0;
+		else
+		{
+			rt = 0;
+		}
 	}
 	catch (const std::bad_alloc&)
 	{
 		std::cerr << "ERROR memory allocation error" << std::endl;
+		rt = 2;
 	}
 	catch (const std::runtime_error& e)
 	{
 		std::cerr << "ERROR " << e.what() << std::endl;
+		rt = 1;
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << "EXCEPTION " << e.what() << std::endl;
+		rt = 1;
+	}
+	if (g_fileLocator)
+	{
+		delete g_fileLocator;
 	}
 	if (g_errorhnd)
 	{
 		delete g_errorhnd;
 	}
-	return 1;
+	return rt;
 }

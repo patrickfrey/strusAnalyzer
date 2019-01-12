@@ -74,6 +74,7 @@ static bool compareContent( const std::string& one, const std::string& two)
 
 int main( int argc, const char* argv[])
 {
+	int rt = 0;
 	try
 	{
 		// Parse arguments:
@@ -242,11 +243,12 @@ int main( int argc, const char* argv[])
 			throw std::runtime_error("test output differs");
 		}
 		std::cerr << "OK" << std::endl;
-		return 0;
+		rt = 0;
 	}
 	catch (const std::bad_alloc&)
 	{
 		std::cerr << "ERROR memory allocation error" << std::endl;
+		rt = 2;
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -259,14 +261,20 @@ int main( int argc, const char* argv[])
 		{
 			std::cerr << "ERROR " << e.what() << std::endl;
 		}
+		rt = 1;
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << "EXCEPTION " << e.what() << std::endl;
+		rt = 1;
+	}
+	if (g_fileLocator)
+	{
+		delete g_fileLocator;
 	}
 	if (g_errorhnd)
 	{
 		delete g_errorhnd;
 	}
-	return 1;
+	return rt;
 }

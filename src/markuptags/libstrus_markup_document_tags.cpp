@@ -9,6 +9,9 @@
 /// \file libstrus_markup_document_tags.cpp
 #include "strus/lib/markup_document_tags.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
+#include "strus/documentClassDetectorInterface.hpp"
+#include "strus/lib/detector_std.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_conv.hpp"
 #include "private/xpathAutomaton.hpp"
@@ -241,25 +244,39 @@ static MarkupInputBase* createMarkupInput( const std::string& encoding)
 	}
 }
 
-DLL_PUBLIC std::string strus::markupDocumentTags( const analyzer::DocumentClass& documentClass, const std::string& content, const std::vector<DocumentTagMarkupDef>& markups, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC std::string strus::markupDocumentTags( const analyzer::DocumentClass& documentClass, const std::string& content, const std::vector<DocumentTagMarkupDef>& markups, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
 		strus::local_ptr<MarkupInputBase> markup;
-		if (documentClass.defined())
+		analyzer::DocumentClass dclass;
+		if (!documentClass.defined())
 		{
-			if (strus::caseInsensitiveEquals( documentClass.mimeType(), "application/xml") || strus::caseInsensitiveEquals( documentClass.mimeType(), "xml"))
+			strus::local_ptr<DocumentClassDetectorInterface> detector( strus::createDetector_std( textproc, errorhnd));
+			if (!detector.get())
 			{
-				markup.reset( createMarkupInput( documentClass.encoding()));
+				throw strus::runtime_error( _TXT("failed to get document class detector: %s"), errorhnd->fetchError());
 			}
-			else
+			if (!detector->detect( dclass, content.c_str(), content.size(), true/*isComplete*/))
 			{
-				throw strus::runtime_error( _TXT("unable to process this document format, not implemented for this function"));
+				if (errorhnd->hasError())
+				{
+					throw strus::runtime_error( _TXT("failed to detect document class: %s"), errorhnd->fetchError());
+				}
+				else
+				{
+					throw strus::runtime_error( _TXT("unknown document class"));
+				}
 			}
+			dclass = documentClass;
+		}
+		if (strus::caseInsensitiveEquals( dclass.mimeType(), "application/xml") || strus::caseInsensitiveEquals( dclass.mimeType(), "xml"))
+		{
+			markup.reset( createMarkupInput( documentClass.encoding()));
 		}
 		else
 		{
-			markup.reset( new MarkupInput<textwolf::charset::UTF8>());
+			throw strus::runtime_error( _TXT("unable to process this document format, not implemented for this function"));
 		}
 		return markup->processContent( content, markups);
 	}

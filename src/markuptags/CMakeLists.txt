@@ -4,8 +4,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # SOURCES AND INCLUDES
 # --------------------------------------
 set(source_files
-	segmenter.cpp
-	libstrus_segmenter_textwolf.cpp
+	libstrus_markup_document_tags.cpp
 )
 
 include_directories(  
@@ -24,12 +23,12 @@ link_directories(
 # -------------------------------------------
 # LIBRARY
 # -------------------------------------------
-add_cppcheck( strus_segmenter_textwolf ${source_files} )
+add_cppcheck( strus_markup_document_tags  ${source_files} )
 
-add_library( strus_segmenter_textwolf SHARED ${source_files} )
-target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strusanalyzer_private_utils strus_base )
+add_library( strus_markup_document_tags SHARED  ${source_files} )
+target_link_libraries( strus_markup_document_tags  strus_segmenter_utils  strusanalyzer_private_utils  strus_base  strus_detector_std )
 set_target_properties(
-    strus_segmenter_textwolf
+    strus_markup_document_tags
     PROPERTIES
     DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
     SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
@@ -39,6 +38,6 @@ set_target_properties(
 # ------------------------------
 # INSTALLATION
 # ------------------------------
-install( TARGETS strus_segmenter_textwolf
+install( TARGETS strus_markup_document_tags
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

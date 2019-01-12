@@ -154,6 +154,7 @@ std::vector<MarkupDescription> parseMarkupDescriptions( const std::string& src)
 
 int main( int argc, const char* argv[])
 {
+	int rt = 0;
 	if (argc <= 1 || std::strcmp( argv[1], "-h") == 0 || std::strcmp( argv[1], "--help") == 0)
 	{
 		printUsage( argc, argv);
@@ -259,9 +260,7 @@ int main( int argc, const char* argv[])
 			throw std::runtime_error("output not as expected");
 		}
 		std::cerr << "OK" << std::endl;
-
-		delete g_errorhnd;
-		return 0;
+		rt = 0;
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -271,6 +270,7 @@ int main( int argc, const char* argv[])
 			msg << "(" << g_errorhnd->fetchError() << ")";
 		}
 		std::cerr << "ERROR memory allocation error" << msg.str() << std::endl;
+		rt = 2;
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -280,6 +280,7 @@ int main( int argc, const char* argv[])
 			msg << "(" << g_errorhnd->fetchError() << ")";
 		}
 		std::cerr << "ERROR " << e.what() << msg.str() << std::endl;
+		rt = 1;
 	}
 	catch (const std::exception& e)
 	{
@@ -289,12 +290,17 @@ int main( int argc, const char* argv[])
 			msg << "(" << g_errorhnd->fetchError() << ")";
 		}
 		std::cerr << "EXCEPTION " << e.what() << msg.str() << std::endl;
+		rt = 1;
+	}
+	if (g_fileLocator)
+	{
+		delete g_fileLocator;
 	}
 	if (g_errorhnd)
 	{
 		delete g_errorhnd;
 	}
-	return -1;
+	return rt;
 }
 
 

@@ -67,6 +67,7 @@ static void printTokens( std::ostream& out, const std::vector<strus::analyzer::T
 
 int main( int argc, const char* argv[])
 {
+	int rt = 0;
 	try
 	{
 		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, NULL);
@@ -130,11 +131,12 @@ int main( int argc, const char* argv[])
 			}
 		}
 		std::cerr << "done." << std::endl;
-		return 0;
+		rt = 0;
 	}
 	catch (const std::bad_alloc&)
 	{
 		std::cerr << std::endl << "ERROR memory allocation error" << std::endl;
+		rt = 2;
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -146,15 +148,21 @@ int main( int argc, const char* argv[])
 		{
 			std::cerr << std::endl << "ERROR " << e.what() << std::endl;
 		}
+		rt = 1;
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << std::endl << "EXCEPTION " << e.what() << std::endl;
+		rt = 1;
+	}
+	if (g_fileLocator)
+	{
+		delete g_fileLocator;
 	}
 	if (g_errorhnd)
 	{
 		delete g_errorhnd;
 	}
-	return 1;
+	return rt;
 }
 
