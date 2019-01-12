@@ -140,7 +140,7 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
 		typedef textwolf::charset::IsoLatin IsoLatin;
 		unsigned char codepage = 1;
-	
+
 		if (dclass.encoding().empty())
 		{
 			return new SegmenterMarkupContext<UTF8>( m_errorhnd, content);

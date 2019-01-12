@@ -25,6 +25,7 @@ link_directories(
 # LIBRARY
 # -------------------------------------------
 add_cppcheck( strus_segmenter_textwolf ${source_files} )
+add_cppcheck( strus_markup_document_tags  libstrus_markup_document_tags.cpp )
 
 add_library( strus_segmenter_textwolf SHARED ${source_files} )
 target_link_libraries( strus_segmenter_textwolf strus_segmenter_utils strusanalyzer_private_utils strus_base )
@@ -36,9 +37,21 @@ set_target_properties(
     VERSION ${STRUS_VERSION}
 )
 
+add_library( strus_markup_document_tags SHARED  libstrus_markup_document_tags.cpp )
+target_link_libraries( strus_markup_document_tags  strus_segmenter_utils  strusanalyzer_private_utils  strus_base )
+set_target_properties(
+    strus_markup_document_tags
+    PROPERTIES
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+    SOVERSION "${STRUS_MAJOR_VERSION}.${STRUS_MINOR_VERSION}"
+    VERSION ${STRUS_VERSION}
+)
+
 # ------------------------------
 # INSTALLATION
 # ------------------------------
 install( TARGETS strus_segmenter_textwolf
+           LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
+install( TARGETS strus_markup_document_tags
            LIBRARY DESTINATION ${LIB_INSTALL_DIR}/strus )
 

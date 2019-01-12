@@ -6,12 +6,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Library for adding attributes to selected tags of a document (currently only implemented for XML)
-/// \file attribute_tags.hpp
+/// \file markup_document_tags.hpp
 #ifndef _STRUS_ANALYZER_ATTRIBUTE_TAGS_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_ATTRIBUTE_TAGS_LIB_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/analyzer/documentAttribute.hpp"
+#include "strus/reference.hpp"
 #include "private/xpathAutomaton.hpp"
 #include <string>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <memory>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -22,18 +28,38 @@ class ErrorBufferInterface;
 class TagAttributeMarkupInterface
 {
 public:
-	virtual std::string getNextMarkupValue() const=0;
+	virtual strus::analyzer::DocumentAttribute synthesizeAttribute( const std::vector<strus::analyzer::DocumentAttribute>& attributes) const=0;
 };
+
+class DocumentTagMarkupDef
+{
+public:
+	/// \brief implementation of the markup generation
+	const TagAttributeMarkupInterface* markup() const	{return m_markup.get();}
+	/// \brief expression selecting the tag or sibling attribute to markup with a new attribute
+	const std::string& selectexpr() const			{return m_selectexpr;}
+
+	/// \brief Constructor
+	DocumentTagMarkupDef( TagAttributeMarkupInterface* markup_, const std::string& selectexpr_)
+		:m_markup(markup_),m_selectexpr(selectexpr_)
+	{
+		if (!m_markup.get()) throw std::bad_alloc();
+	}
+
+private:
+	strus::Reference<TagAttributeMarkupInterface> m_markup;
+	std::string m_selectexpr;
+};
+
 
 /// \brief Analyze a content and put markups on every tag matching an expression
 /// \remark This function is currently only implemented for XML
-/// \param[in] content the content to process
 /// \param[in] documentClass document class of the content with the encoding specified
-/// \param[in] selectexpr expression selecting the tag to markup with a new attribute
-/// \param[in] markup class that delivers the values for markup
-/// \param[in] errhnd error buffer for reporting errors/exceptions
+/// \param[in] content the content to process
+/// \param[in] markups array of definitions for markup
+/// \param[in] errorhnd error buffer for reporting errors/exceptions
 /// \return the tagged document
-std::string markupDocumentTags( const std::string& content, const analyzer::DocumentClass& documentClass, const std::string& selectexpr, TagAttributeMarkupInterface* markup, ErrorBufferInterface* errhnd);
+std::string markupDocumentTags( const analyzer::DocumentClass& documentClass, const std::string& content, const std::vector<DocumentTagMarkupDef>& markups, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

@@ -332,6 +332,8 @@ make test
 %{_libdir}/strus/libstrus_segmenter_plain.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_markup_document_tags.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_markup_document_tags.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -389,6 +391,7 @@ make test
 %{_libdir}/strus/libstrus_segmenter_tsv.so
 %{_libdir}/strus/libstrus_segmenter_plain.so
 %{_libdir}/strus/libstrus_analyzer.so
+%{_libdir}/strus/libstrus_markup_document_tags.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
 %{_libdir}/strus/libstrus_normalizer_ngram.so
