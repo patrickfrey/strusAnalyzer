@@ -9,12 +9,16 @@
 #include "strus/lib/markup_document_tags.hpp"
 #include "strus/lib/error.hpp"
 #include "strus/lib/filelocator.hpp"
+#include "strus/lib/textproc.hpp"
 #include "strus/fileLocatorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "strus/textProcessorInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/documentAttribute.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/fileio.hpp"
+#include "strus/base/string_format.hpp"
+#include "tree.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -41,19 +45,19 @@ class TestDocumentItem
 public:
 	enum Type {Content,Tag};
 
-	TestDocumentItem( Type type_, const std::string& value_, const std::vector<strus::DocumentAttribute>& attributes_ = std::vector<strus::DocumentAttribute>())
+	TestDocumentItem( Type type_, const std::string& value_, const std::vector<strus::analyzer::DocumentAttribute>& attributes_ = std::vector<strus::analyzer::DocumentAttribute>())
 		:m_type(type_),m_value(value_),m_attributes(attributes_){}
 	TestDocumentItem( const TestDocumentItem& o)
 		:m_type(o.m_type),m_value(o.m_value),m_attributes(o.m_attributes){}
 
 	Type type() const							{return m_type;}
 	const std::string& value() const					{return m_value;}
-	const std::vector<strus::DocumentAttribute>& attributes() const		{return m_attributes;}
+	const std::vector<strus::analyzer::DocumentAttribute>& attributes() const		{return m_attributes;}
 
 private:
 	Type m_type;
 	std::string m_value;
-	std::vector<strus::DocumentAttribute> m_attributes;
+	std::vector<strus::analyzer::DocumentAttribute> m_attributes;
 };
 
 typedef strus::test::TreeNode<TestDocumentItem> TestDocumentTree;
@@ -120,10 +124,10 @@ int main( int argc, const char* argv[])
 
 		if (result != expected)
 		{
-			ec = strus::writeFile( "RES", result.str());
-			if (ec) throw strus::runtime_error( "error writing file %s: %s", "RES", ::strerror(ec));
-			ec = strus::writeFile( "EXP", expected.str());
-			if (ec) throw strus::runtime_error( "error writing file %s: %s", "EXP", ::strerror(ec));
+			ec = strus::writeFile( "RES", result);
+			if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "RES", ::strerror(ec)));
+			ec = strus::writeFile( "EXP", expected);
+			if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "EXP", ::strerror(ec)));
 			throw std::runtime_error("output not as expected");
 		}
 		std::cerr << "OK" << std::endl;
