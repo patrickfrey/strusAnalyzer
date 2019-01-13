@@ -104,7 +104,7 @@ public:
 				{
 					if (current_markup && !tagname.empty())
 					{
-						attributes.push_back( current_markup->synthesizeAttribute( attributes));
+						attributes.push_back( current_markup->synthesizeAttribute( tagname, attributes));
 						std::string content;
 						textwolf::XMLPrinter<CharsetEncoding,textwolf::charset::UTF8,std::string> printer( m_charset, true);
 						printer.printOpenTag( tagname.c_str(), tagname.size(), content);
