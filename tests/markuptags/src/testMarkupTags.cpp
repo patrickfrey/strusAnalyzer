@@ -64,7 +64,19 @@ public:
 
 	void addAttribute( const strus::analyzer::DocumentAttribute& attr)
 	{
-		m_attributes.push_back( attr);
+		std::vector<strus::analyzer::DocumentAttribute>::iterator ai = m_attributes.begin(), ae = m_attributes.end();
+		for (; ai != ae; ++ai)
+		{
+			if (attr.name() == ai->name())
+			{
+				*ai = attr;
+				break;
+			}
+		}
+		if (ai == ae)
+		{
+			m_attributes.push_back( attr);
+		}
 	}
 
 private:
@@ -492,16 +504,19 @@ int main( int argc, const char* argv[])
 				MatchExpression selectAnyTag( "//T2");
 				MatchExpression selectRootTagAttr( "/T3@A1");
 				MatchExpression selectAnyTagAttr( "//T4@A1");
+				MatchExpression selectAnyTagReplace( "//T5@A1");
 				TestAttributeMarkup markupRootTag( "RootTag");
 				TestAttributeMarkup markupAnyTag( "AnyTag");
 				TestAttributeMarkup markupRootTagAttr( "RootTagAttr");
 				TestAttributeMarkup markupAnyTagAttr( "AnyTagAttr");
+				TestAttributeMarkup markupAnyTagAttrReplace( "A1");
 
 				std::vector<strus::DocumentTagMarkupDef> markups;
 				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "RootTag"), "/T1"));
 				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "AnyTag"), "//T2"));
 				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "RootTagAttr"), "/T3@A1"));
 				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "AnyTagAttr"), "//T4@A1"));
+				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "A1"), "//T5@A1"));
 
 				// Create test document tree:
 				TestDocumentTree testtree = createRandomTestDocumentTree( complexity);
@@ -521,6 +536,7 @@ int main( int argc, const char* argv[])
 				doTestTagMarkup( &resulttree, selectAnyTag, markupAnyTag, matchcnt[1]);
 				doTestTagMarkup( &resulttree, selectRootTagAttr, markupRootTagAttr, matchcnt[2]);
 				doTestTagMarkup( &resulttree, selectAnyTagAttr, markupAnyTagAttr, matchcnt[3]);
+				doTestTagMarkup( &resulttree, selectAnyTagReplace, markupAnyTagAttrReplace, matchcnt[4]);
 				std::ostringstream expectedtreebuf;
 				printTreeXML( expectedtreebuf, resulttree);
 				std::string expectedstr = expectedtreebuf.str();
@@ -579,6 +595,7 @@ int main( int argc, const char* argv[])
 		std::cerr << strus::string_format( "found %s %d times", "//T2", matchcnt[1]) << std::endl; 
 		std::cerr << strus::string_format( "found %s %d times", "/T3@A1", matchcnt[2]) << std::endl; 
 		std::cerr << strus::string_format( "found %s %d times", "//T4@A1", matchcnt[3]) << std::endl; 
+		std::cerr << strus::string_format( "found %s %d times", "//T5@A1 (replace A1)", matchcnt[4]) << std::endl; 
 
 		std::cerr << strus::string_format( "%d matches verified in %d random documents", g_matches_found, nofTests) << std::endl;
 		std::cerr << "OK" << std::endl;

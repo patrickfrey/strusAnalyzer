@@ -124,8 +124,23 @@ public:
 						{
 							syn.push_back( (*ci)->synthesizeAttribute( tagname, attributes));
 						}
-						attributes.insert( attributes.end(), syn.begin(), syn.end());
-
+						std::vector<strus::analyzer::DocumentAttribute>::const_iterator si = syn.begin(), se = syn.end();
+						for (; si != se; ++si)
+						{
+							std::vector<strus::analyzer::DocumentAttribute>::iterator ai = attributes.begin(), ae = attributes.end();
+							for (; ai != ae; ++ai)
+							{
+								if (si->name() == ai->name())
+								{
+									*ai = *si;
+									break;
+								}
+							}
+							if (ai == ae)
+							{
+								attributes.push_back( *si);
+							}
+						}
 						std::string content;
 						textwolf::XMLPrinter<CharsetEncoding,textwolf::charset::UTF8,std::string> printer( m_charset, true);
 						printer.printOpenTag( tagname.c_str(), tagname.size(), content);
