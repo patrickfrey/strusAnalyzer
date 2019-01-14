@@ -30,6 +30,7 @@ class TextProcessorInterface;
 class TagAttributeMarkupInterface
 {
 public:
+	virtual ~TagAttributeMarkupInterface(){}
 	virtual strus::analyzer::DocumentAttribute synthesizeAttribute( const std::string& tagname, const std::vector<strus::analyzer::DocumentAttribute>& attributes) const=0;
 };
 

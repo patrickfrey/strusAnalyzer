@@ -114,10 +114,10 @@ bool TSVParserDefinition::moreOftheSame( )
 
 // TSVSegmenterContext
 
-TSVSegmenterContext::TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
+TSVSegmenterContext::TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& decoder_, strus::ErrorBufferInterface *errbuf, bool errorReporting )
 	: m_errorhnd( errbuf ), m_errorReporting( errorReporting), m_parser( ),
 	m_parserDefinition( parserDefinition ), m_pos( -3 ),
-	m_encoder(encoder_), m_eof(false), m_buf()
+	m_decoder(decoder_), m_eof(false), m_buf()
 {}
 
 TSVSegmenterContext::~TSVSegmenterContext( )
@@ -189,9 +189,9 @@ void TSVSegmenterContext::putInput( const char *chunk, std::size_t chunksize, bo
 	m_buf.append( chunk, chunksize );
 	if (eof)
 	{
-		if (m_encoder.get())
+		if (m_decoder.get())
 		{
-			m_buf = m_encoder->convert( m_buf.c_str(), m_buf.size(), true );
+			m_buf = m_decoder->convert( m_buf.c_str(), m_buf.size(), true );
 		}
 		m_eof = true;
 		m_parser.init( m_buf );
@@ -328,12 +328,12 @@ strus::SegmenterContextInterface* TSVSegmenterInstance::createContext( const str
 {
 	try
 	{
-	strus::Reference<strus::utils::TextEncoderBase> encoder;
+	strus::Reference<strus::utils::TextEncoderBase> decoder;
 	if (!dclass.encoding().empty() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 	{
-		encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
+		decoder.reset( strus::utils::createTextDecoder( dclass.encoding().c_str()));
 	}
-	return new TSVSegmenterContext( m_parserDefinition, encoder, m_errorhnd, m_errorReporting );
+	return new TSVSegmenterContext( m_parserDefinition, decoder, m_errorhnd, m_errorReporting );
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating context of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -391,12 +391,12 @@ strus::ContentIteratorInterface* TSVSegmenter::createContentIterator(
 	try
 	{
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		strus::Reference<strus::utils::TextEncoderBase> decoder;
 		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+			decoder.reset( utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new TSVContentIterator( content, contentsize, attributes, expressions, encoder, m_errorhnd);
+		return new TSVContentIterator( content, contentsize, attributes, expressions, decoder, m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -411,15 +411,15 @@ TSVContentIterator::TSVContentIterator(
 		std::size_t contentsize_,
 		const std::vector<std::string>& attributes_,
 		const std::vector<std::string>& expressions_,
-		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+		const strus::Reference<strus::utils::TextEncoderBase>& decoder_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_attributes(attributes_.begin(),attributes_.end()),m_content(),m_parser(),m_pos(-3),m_encoder(encoder_)
+	:m_errorhnd(errorhnd_),m_attributes(attributes_.begin(),attributes_.end()),m_content(),m_parser(),m_pos(-3),m_decoder(decoder_)
 {
 	try
 	{
-		if (m_encoder.get())
+		if (m_decoder.get())
 		{
-			m_content = m_encoder->convert( content_, contentsize_, true);
+			m_content = m_decoder->convert( content_, contentsize_, true);
 		}
 		else
 		{

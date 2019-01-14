@@ -96,7 +96,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 {		
 	public:
 	
-		TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
+		TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& decoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
 
 		virtual ~TSVSegmenterContext( );
 		
@@ -110,7 +110,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		TSVParser m_parser;
 		TSVParserDefinition m_parserDefinition;
 		int m_pos;
-		strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+		strus::Reference<strus::utils::TextEncoderBase> m_decoder;
 		bool m_eof;
 		std::string m_buf;
 
@@ -149,7 +149,7 @@ public:
 			std::size_t contentsize_,
 			const std::vector<std::string>& attributes_,
 			const std::vector<std::string>& expressions_,
-			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+			const strus::Reference<strus::utils::TextEncoderBase>& decoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
 	virtual ~TSVContentIterator()
@@ -168,7 +168,7 @@ private:
 	std::string m_content;
 	TSVParser m_parser;
 	int m_pos;
-	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+	strus::Reference<strus::utils::TextEncoderBase> m_decoder;
 };
 
 

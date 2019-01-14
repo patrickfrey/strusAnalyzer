@@ -19,6 +19,8 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/string_format.hpp"
 #include "strus/base/pseudoRandom.hpp"
+#include "private/textEncoder.hpp"
+#include "strus/base/utf8.hpp"
 #include "tree.hpp"
 #include <memory>
 #include <string>
@@ -34,6 +36,7 @@
 static strus::ErrorBufferInterface* g_errorhnd = 0;
 static strus::FileLocatorInterface* g_fileLocator = 0;
 static bool g_verbose = false;
+static int g_matches_found = 0;
 static strus::PseudoRandom g_random;
 
 static void printUsage( int argc, const char* argv[])
@@ -70,6 +73,8 @@ private:
 	std::vector<strus::analyzer::DocumentAttribute> m_attributes;
 };
 
+typedef strus::test::TreeNode<TestDocumentItem> TestDocumentTree;
+
 std::ostream& operator << ( std::ostream& os, const TestDocumentItem& item)
 {
 	switch (item.type())
@@ -93,14 +98,49 @@ std::ostream& operator << ( std::ostream& os, const TestDocumentItem& item)
 	return os;
 }
 
-typedef strus::test::TreeNode<TestDocumentItem> TestDocumentTree;
+void printTreeXML( std::ostream& out, const TestDocumentTree& tree)
+{
+	TestDocumentTree const* np = &tree;
+	do
+	{
+		switch (np->item.type())
+		{
+			case TestDocumentItem::Content:
+				out << np->item.value();
+				break;
+			break;
+			case TestDocumentItem::Tag:
+			{
+				out << "<" << np->item.value();
+				std::vector<strus::analyzer::DocumentAttribute>::const_iterator ai = np->item.attributes().begin(), ae = np->item.attributes().end();
+				for (; ai != ae; ++ai)
+				{
+					out << " " << ai->name() << "=\"" << ai->value() << "\"";
+				}
+				if (np->chld)
+				{
+					out << ">\n";
+					printTreeXML( out, *np->chld);
+					out << "</" << np->item.value() << ">";
+				}
+				else
+				{
+					out << "/>";
+				}
+				break;
+			}
+		}
+		np = np->next;
+	} while (np);
+}
 
-enum {NofTags=100};
+
+enum {NofTags=30};
 enum {NofAttributes=20};
 enum {MaxAttributeLength=100};
 enum {MaxValueLength=1000};
 
-static std::string createRandomValue( int maxlength)
+static std::string createRandomContentValue( int maxlength)
 {
 	std::string rt;
 	textwolf::charset::UTF8 out;
@@ -128,9 +168,40 @@ static std::string createRandomValue( int maxlength)
 		}
 		else
 		{
-			static char codepagedistr[] = {1,1,1,1,1,1,2,2,2,2,3,3,3,4,4,4,5,5,5,6,6,7,7,8,8,9,10,11,12,13,14,15,0};
-			int maxchr = 7 << codepagedistr[ g_random.get( 0, std::strlen(codepagedistr))];
+			static char codepagedistr[] = {1,1,1,1,1,1,2,2,2,2,3,3,3,4,4,4,5,5,5,6,6,7,7,8,8,9,10,11,12,13,0};
+			int maxchr = 128 << codepagedistr[ g_random.get( 0, std::strlen(codepagedistr))];
 			chr = g_random.get( 127, maxchr);
+		}
+		out.print( chr, rt);
+	}
+	return rt;
+}
+
+static std::string createRandomAttributeValue( int maxlength)
+{
+	std::string rt;
+	textwolf::charset::UTF8 out;
+
+	int v1 = g_random.get( 0, maxlength);
+	int v2 = g_random.get( 0, v1+1);
+	int length = g_random.get( 0, v2+1);
+	int li=0, le=length;
+	for (; li != le; ++li)
+	{
+		textwolf::UChar chr = 0;
+		if (g_random.get( 0, 8) == 0 && !rt.empty() && rt[rt.size()] != ' ')
+		{
+			chr = 32;
+		}
+		else
+		{
+			static const char alphabet[] = "aaaabcdeeeeeefghiijklmnoopqrssstuvwxyz0123456789";
+			char ac = alphabet[ g_random.get( 0, std::strlen( alphabet))];
+			if (g_random.get( 0, 2) > 0)
+			{
+				ac = std::toupper( ac);
+			}
+			chr = ac;
 		}
 		out.print( chr, rt);
 	}
@@ -164,7 +235,7 @@ static TestDocumentItem createRandomTag()
 			if (nofAttributes == (int)attributes.size()) break;
 			--ai; continue; //... again, no duplicates
 		}
-		std::string attrvalue = createRandomValue( MaxAttributeLength);
+		std::string attrvalue = createRandomAttributeValue( MaxAttributeLength);
 		attributes.push_back( strus::analyzer::DocumentAttribute( attrname, attrvalue));
 	}
 	int tagidx = g_random.get( 0, g_random.get( 0, g_random.get( 0, NofTags)+1)+1);
@@ -176,7 +247,7 @@ static TestDocumentItem createRandomTestDocumentItem( int potentialTag)
 {
 	if (!potentialTag || g_random.get( 0, g_random.get( 0, potentialTag)+1) == 0)
 	{
-		std::string value = createRandomValue( MaxValueLength);
+		std::string value = createRandomContentValue( MaxValueLength);
 		return TestDocumentItem( TestDocumentItem::Content, value);
 	}
 	else
@@ -195,7 +266,7 @@ static TestDocumentTree createRandomTestDocumentTree( int complexity)
 		int ci=0,ce=nofChildren;
 		for (; ci != ce; ++ci)
 		{
-			TestDocumentTree chld = createRandomTestDocumentTree( g_random.get( 0, complexity));
+			TestDocumentTree chld = createRandomTestDocumentTree( g_random.get( 0, g_random.get( 0, complexity)+1));
 			rt.addChild( chld);
 		}
 	}
@@ -210,6 +281,7 @@ public:
 	TestAttributeMarkup( const char* attrname_)
 		:m_attrname( attrname_)
 	{}
+	virtual ~TestAttributeMarkup(){}
 
 	virtual strus::analyzer::DocumentAttribute synthesizeAttribute( const std::string& tagname, const std::vector<strus::analyzer::DocumentAttribute>& attributes) const
 	{
@@ -223,7 +295,7 @@ public:
 			val.push_back( ':');
 			val.append( ai->value());
 		}
-		return strus::analyzer::DocumentAttribute( m_attrname, val + strus::string_format( "%d", (int)attributes.size()));
+		return strus::analyzer::DocumentAttribute( m_attrname, val + strus::string_format( " N:%d", (int)attributes.size()));
 	}
 private:
 	std::string m_attrname;
@@ -295,12 +367,14 @@ struct MatchExpression
 	std::string attrname;
 };
 
-static void doTestTagMarkup( TestDocumentTree* np, const MatchExpression& selectexpr, const TestAttributeMarkup& markup, int depth=0)
+static void doTestTagMarkup( TestDocumentTree* np, const MatchExpression& selectexpr, const TestAttributeMarkup& markup, int& matchcnt, int depth=0)
 {
 	do
 	{
 		if (selectexpr.matches( np->item, depth))
 		{
+			++matchcnt;
+			++g_matches_found;
 			if (g_verbose) std::cerr << "found match tag='" << selectexpr.tagname << "', attr='" << selectexpr.attrname << "' for [" << np->item << "]" << std::endl;
 			
 			strus::analyzer::DocumentAttribute attr = markup.synthesizeAttribute( selectexpr.tagname, np->item.attributes());
@@ -308,10 +382,31 @@ static void doTestTagMarkup( TestDocumentTree* np, const MatchExpression& select
 		}
 		if (np->chld)
 		{
-			doTestTagMarkup( np->chld, selectexpr, markup, depth+1);
+			doTestTagMarkup( np->chld, selectexpr, markup, matchcnt, depth+1);
 		}
 		np = np->next;
 	} while (np);
+}
+
+static std::string toAscii( const std::string& utf8str)
+{
+	std::string rt;
+	char const* si = utf8str.c_str();
+	while (*si)
+	{
+		int chlen = strus::utf8charlen( *si);
+		if (chlen == 1)
+		{
+			rt.push_back( *si);
+		}
+		else
+		{
+			int32_t chr = strus::utf8decode( si, chlen);
+			rt.append( strus::string_format( "#x%4x", (unsigned int)(int)chr));
+		}
+		si += chlen;
+	}
+	return rt;
 }
 
 int main( int argc, const char* argv[])
@@ -332,6 +427,21 @@ int main( int argc, const char* argv[])
 		{
 			g_verbose = true;
 		}
+		else if (std::strcmp( argv[argi], "--") == 0)
+		{
+			++argi;
+			break;
+		}
+		else if (argv[argi][0] == '-')
+		{
+			std::cerr << "unknown option " << argv[argi] << std::endl;
+			printUsage( argc, argv);
+			return 1;
+		}
+		else
+		{
+			break;
+		}
 	}
 	if (argi < argc)
 	{
@@ -341,6 +451,7 @@ int main( int argc, const char* argv[])
 			std::cerr << "bad argument for number of tests: " << argv[argi] << std::endl;
 			exit( 1);
 		}
+		++argi;
 	}
 	if (argi < argc)
 	{
@@ -350,6 +461,7 @@ int main( int argc, const char* argv[])
 			std::cerr << "bad argument for complexity of tests: " << argv[argi] << std::endl;
 			return 1;
 		}
+		++argi;
 	}
 	if (argi < argc)
 	{
@@ -370,12 +482,13 @@ int main( int argc, const char* argv[])
 		{
 			throw std::runtime_error( g_errorhnd->fetchError());
 		}
+		int matchcnt[16] = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
 		int ti=1,te=nofTests+1;
 		{
 			for (; ti != te; ++ti)
 			{
-				TestDocumentTree testtree = createRandomTestDocumentTree( complexity);
-				MatchExpression selectRootTag( "/T1");
+				// Define markups:
+				MatchExpression selectRootTag( "/T1"); 
 				MatchExpression selectAnyTag( "//T2");
 				MatchExpression selectRootTagAttr( "/T3@A1");
 				MatchExpression selectAnyTagAttr( "//T4@A1");
@@ -384,38 +497,90 @@ int main( int argc, const char* argv[])
 				TestAttributeMarkup markupRootTagAttr( "RootTagAttr");
 				TestAttributeMarkup markupAnyTagAttr( "AnyTagAttr");
 
-				TestDocumentTree resulttree( testtree);
-				doTestTagMarkup( &resulttree, selectRootTag, markupRootTag);
-				doTestTagMarkup( &resulttree, selectAnyTag, markupAnyTag);
-				doTestTagMarkup( &resulttree, selectRootTagAttr, markupRootTagAttr);
-				doTestTagMarkup( &resulttree, selectAnyTagAttr, markupAnyTagAttr);
+				std::vector<strus::DocumentTagMarkupDef> markups;
+				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "RootTag"), "/T1"));
+				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "AnyTag"), "//T2"));
+				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "RootTagAttr"), "/T3@A1"));
+				markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( "AnyTagAttr"), "//T4@A1"));
 
+				// Create test document tree:
+				TestDocumentTree testtree = createRandomTestDocumentTree( complexity);
+				if (testtree.next || testtree.item.type() == TestDocumentItem::Content)
+				{
+					TestDocumentTree root( TestDocumentItem( TestDocumentItem::Tag, g_random.get(0,2) == 1 ? "T1":"T3"));
+					root.addChild( testtree);
+					testtree = root;
+				}
 				std::ostringstream testtreebuf;
-				testtree.print( testtreebuf);
-				std::string testtreestr = testtreebuf.str();
+				printTreeXML( testtreebuf, testtree);
+				std::string inputstr = testtreebuf.str();
 
+				// Build expected result:
+				TestDocumentTree resulttree( testtree);
+				doTestTagMarkup( &resulttree, selectRootTag, markupRootTag, matchcnt[0]);
+				doTestTagMarkup( &resulttree, selectAnyTag, markupAnyTag, matchcnt[1]);
+				doTestTagMarkup( &resulttree, selectRootTagAttr, markupRootTagAttr, matchcnt[2]);
+				doTestTagMarkup( &resulttree, selectAnyTagAttr, markupAnyTagAttr, matchcnt[3]);
 				std::ostringstream expectedtreebuf;
-				testtree.print( expectedtreebuf);
-				std::string expectedtreestr = expectedtreebuf.str();
+				printTreeXML( expectedtreebuf, resulttree);
+				std::string expectedstr = expectedtreebuf.str();
 
+				// Process document:
+				std::string resultstr_xml;
+				enum {NofCharsets=5};
+				static const char* charsets[ NofCharsets] = {"UTF-8","UTF-16BE","UTF-16LE","UTF-32BE","UTF-32LE"};
+				int charsetidx = 0;//[+]g_random.get( 0, NofCharsets);
+				strus::local_ptr<strus::utils::TextEncoderBase> encoder( strus::utils::createTextEncoder( charsets[ charsetidx]));
+				strus::local_ptr<strus::utils::TextEncoderBase> decoder( strus::utils::createTextDecoder( charsets[ charsetidx]));
+				if (!encoder.get() || !decoder.get()) throw std::runtime_error( strus::string_format( "failed to create text encoder/decoder for the character set encoding %s: %s", charsets[ charsetidx], g_errorhnd->fetchError()));
+				std::string inputstr_xml_utf8 = strus::string_format( "<?xml version=\"1.0\" encoding=\"%s\" standalone=\"yes\"?>\n", charsets[ charsetidx])
+								+ inputstr + "\n";
+				std::string inputstr_xml = encoder->convert( inputstr_xml_utf8.c_str(), inputstr_xml_utf8.size(), true);
+				bool doDetectDocumentClass = g_random.get( 0, 10) == 1;
+				if (doDetectDocumentClass)
+				{
+					resultstr_xml = strus::markupDocumentTags( strus::analyzer::DocumentClass(), inputstr_xml, markups, textproc.get(), g_errorhnd);
+				}
+				else
+				{
+					strus::analyzer::DocumentClass documentClass( "application/xml", charsets[ charsetidx]);
+					resultstr_xml = strus::markupDocumentTags( documentClass, inputstr_xml, markups, textproc.get(), g_errorhnd);
+				}
+				if (resultstr_xml.empty() && g_errorhnd->hasError())
+				{
+					ec = strus::writeFile( "INP", inputstr_xml);
+					if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "INP", ::strerror(ec)));
+					throw std::runtime_error( "error in markup document");
+				}
+				std::string expectedstr_xml_utf8 = strus::string_format( "<?xml version=\"1.0\" encoding=\"%s\" standalone=\"yes\"?>\n", charsets[ charsetidx])
+								+ expectedstr + "\n";
+				std::string expectedstr_xml = encoder->convert( expectedstr_xml_utf8.c_str(), expectedstr_xml_utf8.size(), true);
+
+				// Compare result with expected:
 				if (g_verbose)
 				{
-					std::cout << strus::string_format( "TEST TREE %d:", ti) << std::endl << testtreestr << std::endl << std::endl;
-					std::cout << strus::string_format( "EXPECTED TREE %d:", ti) << std::endl << expectedtreestr << std::endl << std::endl;
+					std::cout << strus::string_format( "INPUT %d:", ti) << std::endl << toAscii(inputstr_xml) << std::endl << std::endl;
+					std::cout << strus::string_format( "RESULT %d:", ti) << std::endl << toAscii(resultstr_xml) << std::endl << std::endl;
+					std::cout << strus::string_format( "EXPECTED %d:", ti) << std::endl << toAscii(expectedstr_xml) << std::endl << std::endl;
+				}
+				if (resultstr_xml != expectedstr_xml)
+				{
+					ec = strus::writeFile( "INP", inputstr_xml);
+					if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "INP", ::strerror(ec)));
+					ec = strus::writeFile( "RES", resultstr_xml);
+					if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "RES", ::strerror(ec)));
+					ec = strus::writeFile( "EXP", expectedstr_xml);
+					if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "EXP", ::strerror(ec)));
+					throw std::runtime_error( strus::string_format( "output of test %d not as expected", ti));
 				}
 			}
 		}
-		std::string result;
-		std::string expected;
+		std::cerr << strus::string_format( "found %s %d times", "/T1", matchcnt[0]) << std::endl; 
+		std::cerr << strus::string_format( "found %s %d times", "//T2", matchcnt[1]) << std::endl; 
+		std::cerr << strus::string_format( "found %s %d times", "/T3@A1", matchcnt[2]) << std::endl; 
+		std::cerr << strus::string_format( "found %s %d times", "//T4@A1", matchcnt[3]) << std::endl; 
 
-		if (result != expected)
-		{
-			ec = strus::writeFile( "RES", result);
-			if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "RES", ::strerror(ec)));
-			ec = strus::writeFile( "EXP", expected);
-			if (ec) throw std::runtime_error( strus::string_format( "error writing file %s: %s", "EXP", ::strerror(ec)));
-			throw std::runtime_error("output not as expected");
-		}
+		std::cerr << strus::string_format( "%d matches verified in %d random documents", g_matches_found, nofTests) << std::endl;
 		std::cerr << "OK" << std::endl;
 		rt = 0;
 	}

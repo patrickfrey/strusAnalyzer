@@ -57,7 +57,7 @@ public:
 			std::size_t contentsize_,
 			const std::vector<std::string>& attributes,
 			const std::vector<std::string>& expressions,
-			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+			const strus::Reference<strus::utils::TextEncoderBase>& decoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
 	virtual ~ContentIterator(){}
@@ -80,7 +80,7 @@ private:
 	const std::set<std::string> m_attributes;
 	std::string m_content;
 	bool m_eof;
-	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+	strus::Reference<strus::utils::TextEncoderBase> m_decoder;
 };
 
 

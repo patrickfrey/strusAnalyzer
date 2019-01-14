@@ -21,6 +21,7 @@ public:
 };
 
 TextEncoderBase* createTextEncoder( const char* charset);
+TextEncoderBase* createTextDecoder( const char* charset);
 
 const char* detectBOM( const char* src, std::size_t srcsize, std::size_t& BOM_size);
 const char* detectCharsetEncoding( const char* src, std::size_t srcsize);

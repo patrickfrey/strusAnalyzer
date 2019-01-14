@@ -24,6 +24,8 @@
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
+#undef STRUS_LOWLEVEL_DEBUG
+
 #define SEGMENTER_NAME "textwolf"
 #define MODULE_NAME "markup document tags"
 
@@ -37,13 +39,13 @@ public:
 };
 
 template <class CharsetEncoding>
-class MarkupInput
+class MarkupInputXml
 	:public MarkupInputBase
 {
 public:
-	explicit MarkupInput( const CharsetEncoding& charset_=CharsetEncoding())
+	explicit MarkupInputXml( const CharsetEncoding& charset_=CharsetEncoding())
 		:m_charset(charset_){}
-	virtual ~MarkupInput(){}
+	virtual ~MarkupInputXml(){}
 
 	virtual std::string processContent( const std::string& source, const std::vector<DocumentTagMarkupDef>& markups) const
 	{
@@ -64,22 +66,29 @@ public:
 
 		std::string rt;
 		std::vector<strus::analyzer::DocumentAttribute> attributes;
-		const TagAttributeMarkupInterface* current_markup = 0;
+		std::vector<const TagAttributeMarkupInterface*> current_markups;
 		std::size_t lastPos = 0;
 		std::string tagname;
+		std::string attribname;
+		std::string attribvalue;
+		int taglevel = 0;
 		bool eof = false;
 
 		try
 		{
 			if (setjmp(eom) != 0)
 			{
-				if (!eof) throw strus::runtime_error( _TXT( "unexpected end of input in '%s' %s"), SEGMENTER_NAME, MODULE_NAME);
+				if (!eof && taglevel) throw strus::runtime_error( _TXT( "unexpected end of input in '%s' %s"), SEGMENTER_NAME, MODULE_NAME);
+				eof = true;
 			}
 			while (!eof)
 			{
 				++itr;
-	
+
 				typename XMLScanner::ElementType et = itr->type();
+#ifdef STRUS_LOWLEVEL_DEBUG
+				std::cerr << "TOKEN " << XMLScanner::getElementTypeName( et) << ": '" << std::string( itr->content(), itr->size()) << "'" << std::endl;
+#endif
 				if (et == XMLScanner::ErrorOccurred)
 				{
 					const char* errstr = "";
@@ -98,13 +107,25 @@ public:
 
 					tagname = std::string( itr->content(), itr->size());
 					attributes.clear();
-					current_markup = 0;
+					current_markups.clear();
+					++taglevel;
 				}
 				else if (et == XMLScanner::CloseTag || et == XMLScanner::CloseTagIm || et == XMLScanner::Content)
 				{
-					if (current_markup && !tagname.empty())
+					if (et != XMLScanner::Content)
 					{
-						attributes.push_back( current_markup->synthesizeAttribute( tagname, attributes));
+						--taglevel;
+					}
+					if (!current_markups.empty() && !tagname.empty())
+					{
+						std::vector<strus::analyzer::DocumentAttribute> syn;
+						std::vector<const TagAttributeMarkupInterface*>::const_iterator ci = current_markups.begin(), ce = current_markups.end();
+						for (; ci != ce; ++ci)
+						{
+							syn.push_back( (*ci)->synthesizeAttribute( tagname, attributes));
+						}
+						attributes.insert( attributes.end(), syn.begin(), syn.end());
+
 						std::string content;
 						textwolf::XMLPrinter<CharsetEncoding,textwolf::charset::UTF8,std::string> printer( m_charset, true);
 						printer.printOpenTag( tagname.c_str(), tagname.size(), content);
@@ -112,46 +133,39 @@ public:
 						for (; ai != ae; ++ai)
 						{
 							printer.printAttribute( ai->name().c_str(), ai->name().size(), content);
-							printer.printAttribute( ai->value().c_str(), ai->value().size(), content);
+							printer.printValue( ai->value().c_str(), ai->value().size(), content);
 						}
-						printer.exitTagContext( content);
-						rt.append( content);
+						if (et == XMLScanner::CloseTagIm)
+						{
+							m_charset.print( '/', content);
+						}
+						else if (et == XMLScanner::Content)
+						{
+							m_charset.print( '>', content);
+						}
+						rt.append( content.c_str()+1, content.size()-1);
+						//... The staring '<' of the open tag has already been scanned by the textwolf STM. The token position points to
+						//	the name of the tag. Therefore we append the tag and its attributes without the opening '<'.
 						lastPos = scanner.getTokenPosition();
 					}
 					tagname.clear();
 					attributes.clear();
-					current_markup = 0;
+					current_markups.clear();
 				}
 				else if (et == XMLScanner::TagAttribName)
 				{
-					std::string attribname = std::string( itr->content(), itr->size());
-					++itr;
-					et = itr->type();
-					if (et == XMLScanner::TagAttribValue)
-					{
-						std::string attribvalue = std::string( itr->content(), itr->size());
-						attributes.push_back( strus::analyzer::DocumentAttribute( attribname, attribvalue));
-					}
-					else
-					{
-						throw strus::runtime_error( _TXT("expected value for attribute %s"), attribname.c_str());
-					}
+					attribname = std::string( itr->content(), itr->size());
 				}
-				else
+				else if (et == XMLScanner::TagAttribValue)
 				{
-					xpathselect.putElement( et, itr->content(), itr->size());
-					int id;
-					if (xpathselect.getNext( id))
-					{
-						current_markup = markups[ id-1].markup();
-						while (xpathselect.getNext( id))
-						{
-							if (current_markup != markups[ id-1].markup())
-							{
-								throw std::runtime_error( _TXT( "contradicting markup expressions defined"));
-							}
-						}
-					}
+					attribvalue = std::string( itr->content(), itr->size());
+					attributes.push_back( strus::analyzer::DocumentAttribute( attribname, attribvalue));
+				}
+				xpathselect.putElement( et, itr->content(), itr->size());
+				int elementid;
+				while (xpathselect.getNext( elementid))
+				{
+					current_markups.push_back( markups[ elementid-1].markup());
 				}
 			}
 			rt.append( source.c_str()+lastPos, source.size()-lastPos);
@@ -167,7 +181,7 @@ private:
 };
 
 
-static MarkupInputBase* createMarkupInput( const std::string& encoding)
+static MarkupInputBase* createMarkupInputXml( const std::string& encoding)
 {
 	typedef textwolf::charset::UTF8 UTF8;
 	typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
@@ -181,7 +195,7 @@ static MarkupInputBase* createMarkupInput( const std::string& encoding)
 	
 	if (encoding.empty())
 	{
-		return new MarkupInput<UTF8>();
+		return new MarkupInputXml<UTF8>();
 	}
 	else
 	{
@@ -201,41 +215,41 @@ static MarkupInputBase* createMarkupInput( const std::string& encoding)
 					throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), encoding.c_str());
 				}
 			}
-			return new MarkupInput<IsoLatin>( IsoLatin(codepage));
+			return new MarkupInputXml<IsoLatin>( IsoLatin(codepage));
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UTF-8"))
 		{
-			return new MarkupInput<UTF8>();
+			return new MarkupInputXml<UTF8>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UTF-16")
 		||       strus::caseInsensitiveEquals( encoding, "UTF-16BE"))
 		{
-			return new MarkupInput<UTF16BE>();
+			return new MarkupInputXml<UTF16BE>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UTF-16LE"))
 		{
-			return new MarkupInput<UTF16LE>();
+			return new MarkupInputXml<UTF16LE>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UCS-2")
 		||       strus::caseInsensitiveEquals( encoding, "UCS-2BE"))
 		{
-			return new MarkupInput<UCS2BE>();
+			return new MarkupInputXml<UCS2BE>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UCS-2LE"))
 		{
-			return new MarkupInput<UCS2LE>();
+			return new MarkupInputXml<UCS2LE>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UCS-4")
 		||       strus::caseInsensitiveEquals( encoding, "UCS-4BE")
 		||       strus::caseInsensitiveEquals( encoding, "UTF-32")
 		||       strus::caseInsensitiveEquals( encoding, "UTF-32BE"))
 		{
-			return new MarkupInput<UCS4BE>();
+			return new MarkupInputXml<UCS4BE>();
 		}
 		else if (strus::caseInsensitiveEquals( encoding, "UCS-4LE")
 		||       strus::caseInsensitiveEquals( encoding, "UTF-32LE"))
 		{
-			return new MarkupInput<UCS4LE>();
+			return new MarkupInputXml<UCS4LE>();
 		}
 		else
 		{
@@ -248,9 +262,13 @@ DLL_PUBLIC std::string strus::markupDocumentTags( const analyzer::DocumentClass&
 {
 	try
 	{
-		strus::local_ptr<MarkupInputBase> markup;
+		strus::local_ptr<MarkupInputBase> impl;
 		analyzer::DocumentClass dclass;
-		if (!documentClass.defined())
+		if (documentClass.defined())
+		{
+			dclass = documentClass;
+		}
+		else
 		{
 			strus::local_ptr<DocumentClassDetectorInterface> detector( strus::createDetector_std( textproc, errorhnd));
 			if (!detector.get())
@@ -268,17 +286,16 @@ DLL_PUBLIC std::string strus::markupDocumentTags( const analyzer::DocumentClass&
 					throw strus::runtime_error( _TXT("unknown document class"));
 				}
 			}
-			dclass = documentClass;
 		}
 		if (strus::caseInsensitiveEquals( dclass.mimeType(), "application/xml") || strus::caseInsensitiveEquals( dclass.mimeType(), "xml"))
 		{
-			markup.reset( createMarkupInput( documentClass.encoding()));
+			impl.reset( createMarkupInputXml( dclass.encoding()));
 		}
 		else
 		{
 			throw strus::runtime_error( _TXT("unable to process this document format, not implemented for this function"));
 		}
-		return markup->processContent( content, markups);
+		return impl->processContent( content, markups);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in markup document tags of '%s' segmenter: %s"), SEGMENTER_NAME, *errorhnd, std::string());
 }
