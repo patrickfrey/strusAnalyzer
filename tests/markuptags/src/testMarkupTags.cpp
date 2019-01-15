@@ -427,6 +427,43 @@ static std::string toAscii( const std::string& utf8str)
 	return rt;
 }
 
+static void runSimpleTest( const strus::TextProcessorInterface* textproc, const TestDocumentTree& tree, const char* selectexpr, const char* attrname)
+{
+	int notMatches = 0;
+	std::ostringstream testtreebuf;
+	printTreeXML( testtreebuf, tree);
+	std::string xmlheader = strus::string_format( "<?xml version=\"1.0\" encoding=\"%s\" standalone=\"yes\"?>\n", "UTF-8");
+	std::string inputstr = xmlheader + testtreebuf.str() + "\n";
+
+	MatchExpression matchExpression( selectexpr); 
+	TestAttributeMarkup markupTag( attrname);
+
+	std::vector<strus::DocumentTagMarkupDef> markups;
+	markups.push_back( strus::DocumentTagMarkupDef( new TestAttributeMarkup( attrname), selectexpr));
+
+	TestDocumentTree expectedtree( tree);
+	doTestTagMarkup( &expectedtree, matchExpression, markupTag, notMatches);
+
+	std::ostringstream expectedtreebuf;
+	printTreeXML( expectedtreebuf, expectedtree);
+	std::string expectedstr = xmlheader + expectedtreebuf.str() + "\n";
+
+	strus::analyzer::DocumentClass documentClass( "application/xml", "UTF-8");
+	std::string resultstr = strus::markupDocumentTags( documentClass, inputstr, markups, textproc, g_errorhnd);
+
+	if (expectedstr != resultstr || g_verbose)
+	{
+		std::cerr << "TEST " << selectexpr << " " << attrname << std::endl;
+		std::cerr << "INPUT:" << std::endl << inputstr << std::endl;
+		std::cerr << "RESULT:" << std::endl << resultstr << std::endl;
+		std::cerr << "EXPECTED:" << std::endl << expectedstr << std::endl;
+	}
+	if (expectedstr != resultstr)
+	{
+		throw std::runtime_error( strus::string_format( "Simple test %s %s failed", selectexpr, attrname));
+	}
+}
+
 int main( int argc, const char* argv[])
 {
 	int rt = 0;
@@ -501,6 +538,64 @@ int main( int argc, const char* argv[])
 			throw std::runtime_error( g_errorhnd->fetchError());
 		}
 		int matchcnt[16] = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
+		// Run simple tests:
+		{
+			TestDocumentItem root( TestDocumentItem::Tag, "T1");
+			TestDocumentItem content( TestDocumentItem::Content, "Here come the jets");
+			TestDocumentTree tree( root);
+			tree.addChild( content);
+			runSimpleTest( textproc.get(), tree, "/T1", "RootTag");
+		}
+		{
+			TestDocumentItem root( TestDocumentItem::Tag, "T1");
+			TestDocumentItem chld( TestDocumentItem::Tag, "T2");
+			TestDocumentItem content( TestDocumentItem::Content, "Here come the jets");
+			TestDocumentTree subtree( chld);
+			subtree.addChild( content);
+			TestDocumentTree tree( root);
+			tree.addChild( subtree);
+			runSimpleTest( textproc.get(), tree, "//T2", "AnyTag");
+		}
+		{
+			std::vector<strus::analyzer::DocumentAttribute> attr;
+			attr.push_back( strus::analyzer::DocumentAttribute( "A1", "a1"));
+			attr.push_back( strus::analyzer::DocumentAttribute( "A2", "a2"));
+			TestDocumentItem root( TestDocumentItem::Tag, "T1", attr);
+			TestDocumentItem chld( TestDocumentItem::Tag, "T3");
+			TestDocumentItem content( TestDocumentItem::Content, "Here come the jets");
+			TestDocumentTree subtree( chld);
+			subtree.addChild( content);
+			TestDocumentTree tree( root);
+			tree.addChild( subtree);
+			runSimpleTest( textproc.get(), tree, "/T1@A1", "RootTagAttr");
+		}
+		{
+			TestDocumentItem root( TestDocumentItem::Tag, "T1");
+			std::vector<strus::analyzer::DocumentAttribute> attr;
+			attr.push_back( strus::analyzer::DocumentAttribute( "A1", "a1"));
+			attr.push_back( strus::analyzer::DocumentAttribute( "A2", "a2"));
+			TestDocumentItem chld( TestDocumentItem::Tag, "T3", attr);
+			TestDocumentItem content( TestDocumentItem::Content, "Here come the jets");
+			TestDocumentTree subtree( chld);
+			subtree.addChild( content);
+			TestDocumentTree tree( root);
+			tree.addChild( subtree);
+			runSimpleTest( textproc.get(), tree, "//T3@A1", "AnyTagAttr");
+		}
+		{
+			TestDocumentItem root( TestDocumentItem::Tag, "T1");
+			std::vector<strus::analyzer::DocumentAttribute> attr;
+			attr.push_back( strus::analyzer::DocumentAttribute( "A1", "a1"));
+			attr.push_back( strus::analyzer::DocumentAttribute( "A2", "a2"));
+			TestDocumentItem chld( TestDocumentItem::Tag, "T3", attr);
+			TestDocumentItem content( TestDocumentItem::Content, "Here come the jets");
+			TestDocumentTree subtree( chld);
+			subtree.addChild( content);
+			TestDocumentTree tree( root);
+			tree.addChild( subtree);
+			runSimpleTest( textproc.get(), tree, "//T3@A1", "A1");
+		}
+		// Run random document tests:
 		int ti=1,te=nofTests+1;
 		{
 			for (; ti != te; ++ti)
