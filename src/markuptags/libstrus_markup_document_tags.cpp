@@ -78,8 +78,7 @@ public:
 		{
 			if (setjmp(eom) != 0)
 			{
-				if (!eof && taglevel) throw strus::runtime_error( _TXT( "unexpected end of input in '%s' %s"), SEGMENTER_NAME, MODULE_NAME);
-				eof = true;
+				throw strus::runtime_error( _TXT( "unexpected end of input in '%s' %s"), SEGMENTER_NAME, MODULE_NAME);
 			}
 			while (!eof)
 			{
@@ -166,6 +165,7 @@ public:
 					tagname.clear();
 					attributes.clear();
 					current_markups.clear();
+					if (taglevel == 0) eof = true;
 				}
 				else if (et == XMLScanner::TagAttribName)
 				{
