@@ -268,7 +268,7 @@ static TestDocumentItem createRandomTestDocumentItem( int potentialTag)
 	}
 }
 
-static TestDocumentTree createRandomTestDocumentTree( int complexity)
+static TestDocumentTree createRandomTestDocumentTree_( int complexity, int& nofNodes)
 {
 	TestDocumentItem node = createRandomTestDocumentItem( complexity);
 	TestDocumentTree rt( node);
@@ -276,15 +276,21 @@ static TestDocumentTree createRandomTestDocumentTree( int complexity)
 	{
 		int nofChildren = g_random.get( 0, (int)std::sqrt( complexity));
 		int ci=0,ce=nofChildren;
-		for (; ci != ce; ++ci)
+		for (; ci != ce && nofNodes < complexity * complexity; ++ci)
 		{
-			TestDocumentTree chld = createRandomTestDocumentTree( g_random.get( 0, g_random.get( 0, complexity)+1));
+			TestDocumentTree chld = createRandomTestDocumentTree_( g_random.get( 0, g_random.get( 0, complexity)+1), nofNodes);
+			++nofNodes;
 			rt.addChild( chld);
 		}
 	}
 	return rt;
 }
 
+static TestDocumentTree createRandomTestDocumentTree( int complexity)
+{
+	int nofNodes = 0;
+	return createRandomTestDocumentTree_( complexity, nofNodes);
+}
 
 class TestAttributeMarkup
 	:public strus::TagAttributeMarkupInterface
