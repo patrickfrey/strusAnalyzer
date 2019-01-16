@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_SEGMENTER_CJSON_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENTER_CJSON_LIB_HPP_INCLUDED
 #include <string>
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -22,6 +23,8 @@ class ErrorBufferInterface;
 /// \brief Get a document JSON segmenter based on cjson
 /// \return the segmenter
 SegmenterInterface* createSegmenter_cjson( ErrorBufferInterface* errorhnd);
+
+std::vector<std::string> splitJsonDocumentList( const std::string& encoding, const std::string& content, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif
