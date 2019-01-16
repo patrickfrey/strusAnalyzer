@@ -41,14 +41,13 @@ static std::vector<std::string> splitJsonDocumentList_UTF8( const std::string& c
 	try
 	{
 		char const* curstr = content.c_str();
-		char const* nextstr = strus::jsonSkipNextDocumentStart( curstr);
+		char const* nextstr = strus::jsonSkipEndOfNextDocument( curstr);
 		while (nextstr)
 		{
 			rt.push_back( std::string( curstr, nextstr-curstr));
 			curstr = nextstr;
-			nextstr = strus::jsonSkipNextDocumentStart( curstr);
+			nextstr = strus::jsonSkipEndOfNextDocument( curstr);
 		}
-		rt.push_back( curstr);
 		return rt;
 	}
 	catch (const std::runtime_error& err)

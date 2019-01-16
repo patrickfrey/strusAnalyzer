@@ -12,10 +12,10 @@
 namespace strus
 {
 
-/// \brief Return the pointer to the start of the next document in a JSON document list
+/// \brief Return the pointer to the end of the next document in a JSON document list
 /// \param[in] str pointer to UTF-8 source start
 /// \return the start of the next document or NULL in case of error
-const char* jsonSkipNextDocumentStart( const char* str);
+const char* jsonSkipEndOfNextDocument( const char* str);
 
 }
 #endif

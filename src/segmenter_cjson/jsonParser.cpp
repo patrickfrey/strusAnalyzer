@@ -103,7 +103,7 @@ static char const* nextToken( char const* si)
 	return si;
 }
 
-static const char* nextDocumentStart( const char* str)
+static const char* skipEndOfDocument( const char* str)
 {
 	enum State {Start,SeekFirstDef,SeekNextDef,SeekKey,SeekAssign,SeekValue};
 	int brkcnt = 0;
@@ -120,6 +120,10 @@ static const char* nextDocumentStart( const char* str)
 				{
 					if (brkcnt == 0) return NULL;
 					throw std::runtime_error(_TXT("unexpected end of document"));
+				}
+				else if (!*si)
+				{
+					return NULL;
 				}
 				else if (*si == '{')
 				{
@@ -160,8 +164,8 @@ static const char* nextDocumentStart( const char* str)
 				else if (*si == '}')
 				{
 					si=skipSpaces( ++si);
-					if (brkcnt == 0) return si;
-					--brkcnt;
+					if (brkcnt == 0) throw std::runtime_error(_TXT("syntax error, unexpected end of structure '}'"));
+					if (--brkcnt == 0) return si;
 					state = SeekNextDef;
 				}
 				else
@@ -231,9 +235,9 @@ static const char* nextDocumentStart( const char* str)
 	while ((unsigned char)*si <= 32) ++si;
 }
 
-const char* strus::jsonSkipNextDocumentStart( const char* str)
+const char* strus::jsonSkipEndOfNextDocument( const char* str)
 {
-	return nextDocumentStart( str);
+	return skipEndOfDocument( str);
 }
 
 
