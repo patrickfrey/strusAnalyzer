@@ -48,6 +48,9 @@ public:
 	{
 		if (!m_markup.get()) throw std::bad_alloc();
 	}
+	/// \brief Copy constructor
+	DocumentTagMarkupDef( const DocumentTagMarkupDef& o)
+		:m_markup(o.m_markup),m_selectexpr(o.m_selectexpr){}
 
 private:
 	strus::Reference<TagAttributeMarkupInterface> m_markup;
