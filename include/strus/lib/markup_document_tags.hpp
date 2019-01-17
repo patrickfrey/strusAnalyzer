@@ -12,7 +12,6 @@
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/documentAttribute.hpp"
 #include "strus/reference.hpp"
-#include "private/xpathAutomaton.hpp"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -44,6 +43,11 @@ public:
 
 	/// \brief Constructor
 	DocumentTagMarkupDef( TagAttributeMarkupInterface* markup_, const std::string& selectexpr_)
+		:m_markup(markup_),m_selectexpr(selectexpr_)
+	{
+		if (!m_markup.get()) throw std::bad_alloc();
+	}
+	DocumentTagMarkupDef( const strus::Reference<TagAttributeMarkupInterface>& markup_, const std::string& selectexpr_)
 		:m_markup(markup_),m_selectexpr(selectexpr_)
 	{
 		if (!m_markup.get()) throw std::bad_alloc();

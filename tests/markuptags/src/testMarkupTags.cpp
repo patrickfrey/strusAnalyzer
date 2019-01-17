@@ -18,9 +18,10 @@
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/string_format.hpp"
+#include "strus/base/utf8.hpp"
 #include "strus/base/pseudoRandom.hpp"
 #include "private/textEncoder.hpp"
-#include "strus/base/utf8.hpp"
+#include "textwolf/charset_utf8.hpp"
 #include "tree.hpp"
 #include <memory>
 #include <string>
