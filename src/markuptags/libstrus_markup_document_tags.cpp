@@ -98,20 +98,9 @@ public:
 				{
 					eof = true;
 				}
-				else if (et == XMLScanner::OpenTag)
+				else if (et == XMLScanner::CloseTag || et == XMLScanner::CloseTagIm || et == XMLScanner::Content || et == XMLScanner::OpenTag)
 				{
-					std::size_t curPos = scanner.getTokenPosition();
-					rt.append( source.c_str()+lastPos, curPos-lastPos);
-					lastPos = curPos;
-
-					tagname = std::string( itr->content(), itr->size());
-					attributes.clear();
-					current_markups.clear();
-					++taglevel;
-				}
-				else if (et == XMLScanner::CloseTag || et == XMLScanner::CloseTagIm || et == XMLScanner::Content)
-				{
-					if (et != XMLScanner::Content)
+					if (et == XMLScanner::CloseTag || et == XMLScanner::CloseTagIm)
 					{
 						--taglevel;
 					}
@@ -153,7 +142,7 @@ public:
 						{
 							m_charset.print( '/', content);
 						}
-						else if (et == XMLScanner::Content)
+						else if (et == XMLScanner::Content || et == XMLScanner::OpenTag)
 						{
 							m_charset.print( '>', content);
 						}
@@ -166,10 +155,22 @@ public:
 						//	the name of the tag. Therefore we append the tag and its attributes without the opening '<'.
 						lastPos = scanner.getTokenPosition();
 					}
-					tagname.clear();
+					if (et == XMLScanner::OpenTag)
+					{
+						std::size_t curPos = scanner.getTokenPosition();
+						rt.append( source.c_str()+lastPos, curPos-lastPos);
+						lastPos = curPos;
+
+						tagname = std::string( itr->content(), itr->size());
+						++taglevel;
+					}
+					else
+					{
+						tagname.clear();
+						if (taglevel == 0) eof = true;
+					}
 					attributes.clear();
 					current_markups.clear();
-					if (taglevel == 0) eof = true;
 				}
 				else if (et == XMLScanner::TagAttribName)
 				{
