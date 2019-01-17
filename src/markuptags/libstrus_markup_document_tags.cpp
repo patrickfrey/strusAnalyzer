@@ -157,7 +157,11 @@ public:
 						{
 							m_charset.print( '>', content);
 						}
-						rt.append( content.c_str()+1, content.size()-1);
+						if (content.size() < CharsetEncoding::UnitSize)
+						{
+							throw strus::runtime_error( _TXT("data corruption in XML processing (textwolf)"));
+						}
+						rt.append( content.c_str()+CharsetEncoding::UnitSize, content.size()-CharsetEncoding::UnitSize);
 						//... The staring '<' of the open tag has already been scanned by the textwolf STM. The token position points to
 						//	the name of the tag. Therefore we append the tag and its attributes without the opening '<'.
 						lastPos = scanner.getTokenPosition();

@@ -98,7 +98,7 @@ static Encoding g_encodings[] = {
 	{"utf-8",5},
 	{"utf-16be",8},
 	{"utf-16le",8},
-	{"utf-32le",8},
+	{"utf-32be",8},
 	{"utf-32le",8},
 	{"utf-16",6},
 	{"utf-32",6},

@@ -407,27 +407,6 @@ static void doTestTagMarkup( TestDocumentTree* np, const MatchExpression& select
 	} while (np);
 }
 
-static std::string toAscii( const std::string& utf8str)
-{
-	std::string rt;
-	char const* si = utf8str.c_str();
-	while (*si)
-	{
-		int chlen = strus::utf8charlen( *si);
-		if (chlen == 1)
-		{
-			rt.push_back( *si);
-		}
-		else
-		{
-			int32_t chr = strus::utf8decode( si, chlen);
-			rt.append( strus::string_format( "#x%4x", (unsigned int)(int)chr));
-		}
-		si += chlen;
-	}
-	return rt;
-}
-
 static void runSimpleTest( const strus::TextProcessorInterface* textproc, const TestDocumentTree& tree, const char* selectexpr, const char* attrname)
 {
 	int notMatches = 0;
@@ -647,7 +626,7 @@ int main( int argc, const char* argv[])
 				std::string resultstr_xml;
 				enum {NofCharsets=5};
 				static const char* charsets[ NofCharsets] = {"UTF-8","UTF-16BE","UTF-16LE","UTF-32BE","UTF-32LE"};
-				int charsetidx = 0;//[+]g_random.get( 0, NofCharsets);
+				int charsetidx = g_random.get( 0, NofCharsets);
 				strus::local_ptr<strus::utils::TextEncoderBase> encoder( strus::utils::createTextEncoder( charsets[ charsetidx]));
 				strus::local_ptr<strus::utils::TextEncoderBase> decoder( strus::utils::createTextDecoder( charsets[ charsetidx]));
 				if (!encoder.get() || !decoder.get()) throw std::runtime_error( strus::string_format( "failed to create text encoder/decoder for the character set encoding %s: %s", charsets[ charsetidx], g_errorhnd->fetchError()));
@@ -675,12 +654,6 @@ int main( int argc, const char* argv[])
 				std::string expectedstr_xml = encoder->convert( expectedstr_xml_utf8.c_str(), expectedstr_xml_utf8.size(), true);
 
 				// Compare result with expected:
-				if (g_verbose)
-				{
-					std::cout << strus::string_format( "INPUT %d:", ti) << std::endl << toAscii(inputstr_xml) << std::endl << std::endl;
-					std::cout << strus::string_format( "RESULT %d:", ti) << std::endl << toAscii(resultstr_xml) << std::endl << std::endl;
-					std::cout << strus::string_format( "EXPECTED %d:", ti) << std::endl << toAscii(expectedstr_xml) << std::endl << std::endl;
-				}
 				if (resultstr_xml != expectedstr_xml)
 				{
 					ec = strus::writeFile( "INP", inputstr_xml);
