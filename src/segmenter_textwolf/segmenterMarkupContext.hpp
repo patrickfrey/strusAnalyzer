@@ -425,7 +425,7 @@ private:
 		std::size_t orig_size;
 		char const* conv_strptr;
 		std::size_t conv_size;
-		int conv_diff;
+		std::size_t conv_diff;
 
 		if (lastPositionInfo.segpos == segpos && lastPositionInfo.ofs <= ofs)
 		{
