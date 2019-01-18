@@ -142,9 +142,14 @@ public:
 						{
 							m_charset.print( '/', content);
 						}
-						else if (et == XMLScanner::Content || et == XMLScanner::OpenTag)
+						else if (et == XMLScanner::Content)
 						{
 							m_charset.print( '>', content);
+						}
+						else if (et == XMLScanner::OpenTag)
+						{
+							m_charset.print( '>', content);
+							m_charset.print( '<', content);
 						}
 						if (content.size() < CharsetEncoding::UnitSize)
 						{
