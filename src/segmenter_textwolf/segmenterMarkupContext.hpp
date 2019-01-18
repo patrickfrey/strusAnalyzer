@@ -75,7 +75,6 @@ public:
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in get next for markup context of '%s' segmenter: %s"), "textwolf", *m_errorhnd, false);
 	}
-
 	virtual unsigned int segmentSize( const SegmenterPosition& segpos)
 	{
 		if (m_segmentitr == m_segmentmap.end() || m_segmentitr->first != segpos)
@@ -93,7 +92,7 @@ public:
 	{
 		enum Type {OpenTag,AttributeName,AttributeValue,CloseTag};
 		Type type;
-		std::size_t pos;	//< position of the markup in the original source
+		std::size_t origpos;	//< position of the markup in the original source
 		std::size_t idx;	//< index element in unsorted list of markups to make sort stable
 		std::string value;	//< value of the markup element
 
@@ -103,8 +102,8 @@ public:
 			return ar[t];
 		}
 
-		MarkupElement( Type type_, std::size_t pos_, std::size_t idx_, const std::string& value_)
-			:type(type_),pos(pos_),idx(idx_),value(value_){}
+		MarkupElement( Type type_, std::size_t origpos_, std::size_t idx_, const std::string& value_)
+			:type(type_),origpos(origpos_),idx(idx_),value(value_){}
 #if __cplusplus >= 201103L
 		MarkupElement( MarkupElement&& ) = default;
 		MarkupElement( const MarkupElement& ) = default;
@@ -112,13 +111,13 @@ public:
 		MarkupElement& operator= ( const MarkupElement& ) = default;
 #else
 		MarkupElement( const MarkupElement& o)
-			:type(o.type),pos(o.pos),idx(o.idx),value(o.value){}
+			:type(o.type),origpos(o.origpos),idx(o.idx),value(o.value){}
 #endif
 
 		bool operator < (const MarkupElement& o) const
 		{
-			if (pos < o.pos) return true;
-			if (pos > o.pos) return false;
+			if (origpos < o.origpos) return true;
+			if (origpos > o.origpos) return false;
 			if (idx < o.idx) return true;
 			if (idx > o.idx) return false;
 			return false;
@@ -165,8 +164,8 @@ public:
 			std::size_t ofs,
 			const std::string& name)
 	{
-		std::size_t pos = getOrigPosition( segpos, ofs);
-		m_markups.push_back( MarkupElement( MarkupElement::OpenTag, pos, m_markups.size(), name));
+		std::size_t origpos = getOrigPosition( segpos, ofs);
+		m_markups.push_back( MarkupElement( MarkupElement::OpenTag, origpos, m_markups.size(), name));
 	}
 
 	virtual void putCloseTag(
@@ -174,8 +173,8 @@ public:
 			std::size_t ofs,
 			const std::string& name)
 	{
-		std::size_t pos = getOrigPosition( segpos, ofs);
-		m_markups.push_back( MarkupElement( MarkupElement::CloseTag, pos, m_markups.size(), name));
+		std::size_t origpos = getOrigPosition( segpos, ofs);
+		m_markups.push_back( MarkupElement( MarkupElement::CloseTag, origpos, m_markups.size(), name));
 	}
 
 	virtual void putAttribute(
@@ -191,11 +190,11 @@ public:
 			{
 				throw std::runtime_error( _TXT("segment with this position not defined or it cannot be used for markup because it is not of type content"));
 			}
-			std::size_t pos = getOrigPosition( segpos, ofs);
-			if (m_markups.size() && m_markups.back().pos == pos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
+			std::size_t origpos = getOrigPosition( segpos, ofs);
+			if (m_markups.size() && m_markups.back().origpos == origpos && (m_markups.back().type == MarkupElement::OpenTag || m_markups.back().type == MarkupElement::AttributeValue))
 			{
-				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, pos, m_markups.size(), name));
-				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, pos, m_markups.size(), value));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeName, origpos, m_markups.size(), name));
+				m_markups.push_back( MarkupElement( MarkupElement::AttributeValue, origpos, m_markups.size(), value));
 			}
 			else
 			{
@@ -222,13 +221,13 @@ public:
 			typename MarkupElement::Type prevtype = MarkupElement::CloseTag;
 			for (; mi != me; ++mi)
 			{
-				if (mi->pos > prevpos)
+				if (mi->origpos > prevpos)
 				{
 					if (prevtype != MarkupElement::CloseTag)
 					{
 						printer.printValue( "", 0, rt);
 					}
-					rt.append( m_source.c_str() + prevpos, mi->pos - prevpos);
+					rt.append( m_source.c_str() + prevpos, mi->origpos - prevpos);
 				}
 				switch (mi->type)
 				{
@@ -256,7 +255,7 @@ public:
 					{
 						bool foundOpenTag = false;
 						typename std::vector<MarkupElement>::const_iterator ma = mi;
-						for (;ma != markups.begin() && (ma-1)->pos == mi->pos; --ma)
+						for (;ma != markups.begin() && (ma-1)->origpos == mi->origpos; --ma)
 						{
 							if ((ma-1)->type == MarkupElement::OpenTag && (ma-1)->value == mi->value)
 							{
@@ -275,7 +274,7 @@ public:
 					}
 				}
 				prevtype = mi->type;
-				prevpos = mi->pos;
+				prevpos = mi->origpos;
 				if (printer.lasterror())
 				{
 					throw strus::runtime_error(_TXT("error printing XML: %s"), printer.lasterror());
@@ -422,53 +421,130 @@ private:
 
 	std::size_t getOrigPosition( const SegmenterPosition& segpos, std::size_t ofs) const
 	{
-		typename SegmentMap::const_iterator segitr = findSegment( segpos);
-		if (segitr == m_segmentmap.end()) 
-		{
-			throw std::runtime_error( _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
-		}
-		if (segitr->second.segsize < ofs) 
-		{
-			throw std::runtime_error( _TXT("offset in this segment out of range"));
-		}
-		typedef textwolf::TextScanner<char*,CharsetEncoding> OrigTextScanner;
-		typedef textwolf::TextScanner<textwolf::CStringIterator,textwolf::charset::UTF8> ConvTextScanner;
+		char const* orig_strptr;
+		std::size_t orig_size;
+		char const* conv_strptr;
+		std::size_t conv_size;
+		int conv_diff;
 
-		char* origitr;
-		std::size_t strpos;
-		std::size_t strlen;
-		std::size_t posincr;
 		if (lastPositionInfo.segpos == segpos && lastPositionInfo.ofs <= ofs)
 		{
 			// Seek from last position in the same segment:
-			if (lastPositionInfo.ofs == ofs) return lastPositionInfo.pos;
-			origitr = const_cast<char*>( m_source.c_str() + lastPositionInfo.pos);
-			strpos = segitr->second.segidx + lastPositionInfo.ofs;
-			strlen = ofs - lastPositionInfo.ofs;
-			posincr = lastPositionInfo.pos;
+			if (lastPositionInfo.ofs == ofs) return lastPositionInfo.origpos;
+
+			orig_strptr = m_source.c_str() + lastPositionInfo.origpos;
+			orig_size = m_source.size() - lastPositionInfo.origpos;
+			conv_strptr = m_strings.c_str() + lastPositionInfo.convpos;
+			conv_size = m_strings.size() - lastPositionInfo.convpos;
+			conv_diff = ofs - lastPositionInfo.ofs;
 		}
 		else
 		{
 			// Seek from start of segment:
-			origitr = const_cast<char*>( m_source.c_str() + segpos);
-			strpos = segitr->second.segidx;
-			strlen = ofs;
-			posincr = segpos;
-		}
-		textwolf::CStringIterator convitr( m_strings.c_str() + strpos, strlen);
+			typename SegmentMap::const_iterator segitr = findSegment( segpos);
+			if (segitr == m_segmentmap.end()) 
+			{
+				throw std::runtime_error( _TXT("segment with this position not defined or it is not of type content and cannot be used for markup"));
+			}
+			const SegmentDef& segmentDef = segitr->second;
 
-		OrigTextScanner orig_scanner( m_charset, origitr);
-		ConvTextScanner conv_scanner( convitr);
-		while (conv_scanner.control() != textwolf::EndOfText)
-		{
-			++conv_scanner;
-			++orig_scanner;
+			orig_strptr = m_source.c_str() + segpos;
+			orig_size = m_source.size() - segpos;
+			conv_strptr = m_strings.c_str() + segmentDef.segidx;
+			conv_size = m_strings.size() - segmentDef.segidx;
+			conv_diff = ofs;
+
+			lastPositionInfo.segpos = segpos;
+			lastPositionInfo.origpos = segpos;
+			lastPositionInfo.convpos = segmentDef.segidx;
+			lastPositionInfo.ofs = 0;
 		}
-		lastPositionInfo.pos = orig_scanner.getPosition() + posincr;
-		lastPositionInfo.segpos = segpos;
+		typedef textwolf::TextScanner<textwolf::CStringIterator,CharsetEncoding> OrigTextScanner;
+		typedef textwolf::TextScanner<textwolf::CStringIterator,textwolf::charset::UTF8> ConvTextScanner;
+
+		textwolf::CStringIterator orig_itr( orig_strptr, orig_size);
+		OrigTextScanner orig_scanner( m_charset, orig_itr);
+		textwolf::CStringIterator conv_itr( conv_strptr, conv_size);
+		ConvTextScanner conv_scanner( conv_itr);
+
+		while (conv_scanner.getPosition() < conv_diff && conv_scanner.control() != textwolf::EndOfText && orig_scanner.control() != textwolf::EndOfText)
+		{
+			if (*conv_scanner != *orig_scanner)
+			{
+				if (orig_scanner.control() == textwolf::Amp)
+				{
+					// ... in case of character entity, skip it
+					// PF:HACK: textwolf gives us to few information about the original position, 
+					//	so we have to do here something that does not belong here at all!
+					++orig_scanner;
+					char ascii = orig_scanner.ascii();
+					for (; ascii && ascii != ';'; ++orig_scanner,ascii=orig_scanner.ascii())
+					{
+						if (ascii == '#' || ((ascii|32) >= 'a' && (ascii|32) <= 'z') || (ascii >= '0' && ascii <= '9') || ascii == '_' || ascii == '-') continue;
+						throw std::runtime_error( _TXT( "bad entity in XML"));
+					}
+				}
+				else
+				{
+					throw std::runtime_error( _TXT( "corrupt data in segmenter markup context, converted not equal original"));
+				}
+				++conv_scanner;
+				++orig_scanner;
+			}
+			else if (conv_scanner.control() == textwolf::Amp)
+			{
+				// ... special case character entity '&amp;'
+				// PF:HACK: textwolf gives us to few information about the original position, 
+				//	so we have to do here something that does not belong here at all!
+				++orig_scanner;
+				++conv_scanner;
+				int state = 1;
+				if (orig_scanner.ascii() == 'a')
+				{
+					++orig_scanner;
+					++state;
+					if (orig_scanner.ascii() == 'm')
+					{
+						++orig_scanner;
+						++state;
+						if (orig_scanner.ascii() == 'p')
+						{
+							++orig_scanner;
+							++state;
+							if (orig_scanner.ascii() == ';')
+							{
+								++orig_scanner;
+								++state;
+							}
+						}
+					}
+				}
+				if (state < 5)
+				{
+					static const char* entitystr = "&amp;";
+					int si = 1;
+					for (; si < state && conv_scanner.ascii() == entitystr[si]; ++si,++conv_scanner){}
+					if (si != state)
+					{
+						throw std::runtime_error( _TXT( "corrupt data in segmenter markup context, converted not equal original"));
+					}
+				}
+			}
+			else
+			{
+				++conv_scanner;
+				++orig_scanner;
+			}
+		}
+		if (conv_scanner.getPosition() != conv_diff) 
+		{
+			throw std::runtime_error( _TXT( "bad offset into this segment (out of range or splitting characters)"));
+		}
+		lastPositionInfo.origpos += orig_scanner.getPosition();
+		lastPositionInfo.convpos += conv_diff;
 		lastPositionInfo.ofs = ofs;
 
-		return lastPositionInfo.pos;
+		return lastPositionInfo.origpos;
 	}
 
 private:
@@ -483,10 +559,11 @@ private:
 	{
 		SegmenterPosition segpos;
 		std::size_t ofs;
-		std::size_t pos;
+		std::size_t origpos;
+		std::size_t convpos;
 
 		PositionInfo()
-			:segpos(0),ofs(0),pos(0){}
+			:segpos(0),ofs(0),origpos(0),convpos(0){}
 #if __cplusplus >= 201103L
 		PositionInfo( PositionInfo&& ) = default;
 		PositionInfo( const PositionInfo& ) = default;
@@ -494,7 +571,7 @@ private:
 		PositionInfo& operator= ( const PositionInfo& ) = default;
 #else
 		PositionInfo( const PositionInfo& o)
-			:segpos(o.segpos),ofs(o.ofs),pos(o.pos){}
+			:segpos(o.segpos),ofs(o.ofs),origpos(o.origpos),convpos(o.convpos){}
 #endif
 	};
 	mutable PositionInfo lastPositionInfo;
