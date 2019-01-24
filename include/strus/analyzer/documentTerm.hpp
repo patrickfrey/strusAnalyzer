@@ -21,6 +21,8 @@ namespace analyzer {
 class DocumentTerm
 {
 public:
+	typedef int Position;
+
 	/// \brief Default constructor
 	DocumentTerm()
 		:m_type(),m_value(),m_pos(0){}
@@ -39,7 +41,7 @@ public:
 	/// \param[in] v value of the term
 	/// \param[in] p position of the term
 	/// \param[in] l length of the term
-	DocumentTerm( const std::string& t, const std::string& v, unsigned int p)
+	DocumentTerm( const std::string& t, const std::string& v, const Position& p)
 		:m_type(t),m_value(v),m_pos(p){}
 
 	/// \brief Get the type name of the term
@@ -48,13 +50,13 @@ public:
 	/// \brief Get the value of the term
 	/// \return value of the term
 	const std::string& value() const	{return m_value;}
-	/// \brief Get the position of the term
-	/// \return word position of the term
-	unsigned int pos() const		{return m_pos;}
+	/// \brief Get the ordinal position of the term
+	/// \return ordinal position (word count index) of the term
+	Position pos() const			{return m_pos;}
 
-	/// \brief Set the word position of the term
-	/// \param[in] pos_ position (word count index) of the term
-	void setPos( unsigned int pos_)		{m_pos = pos_;}
+	/// \brief Set the ordinal position of the term
+	/// \param[in] pos_ ordinal position (word count index) of the term
+	void setPos( const Position& pos_)	{m_pos = pos_;}
 
 	bool operator < (const DocumentTerm& o) const
 	{
@@ -70,10 +72,22 @@ public:
 		}
 	}
 
+	bool defined() const
+	{
+		return !!m_pos;
+	}
+
+	void clear()
+	{
+		m_type.clear();
+		m_value.clear();
+		m_pos = 0;
+	}
+
 private:
 	std::string m_type;
 	std::string m_value;
-	unsigned int m_pos;
+	Position m_pos;
 };
 
 }}//namespace

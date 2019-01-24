@@ -23,6 +23,7 @@
 #include <string> 
 #include <vector> 
 #include <map>
+#include <set>
 #include <stdexcept>
 #include <sstream>
 
@@ -95,7 +96,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 {		
 	public:
 	
-		TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& encoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
+		TSVSegmenterContext( const TSVParserDefinition& parserDefinition, const strus::Reference<strus::utils::TextEncoderBase>& decoder_, strus::ErrorBufferInterface *errbuf, const bool errorReporting );
 
 		virtual ~TSVSegmenterContext( );
 		
@@ -109,7 +110,7 @@ class TSVSegmenterContext : public strus::SegmenterContextInterface
 		TSVParser m_parser;
 		TSVParserDefinition m_parserDefinition;
 		int m_pos;
-		strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+		strus::Reference<strus::utils::TextEncoderBase> m_decoder;
 		bool m_eof;
 		std::string m_buf;
 
@@ -146,7 +147,9 @@ public:
 	TSVContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
-			const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+			const std::vector<std::string>& attributes_,
+			const std::vector<std::string>& expressions_,
+			const strus::Reference<strus::utils::TextEncoderBase>& decoder_,
 			strus::ErrorBufferInterface* errorhnd_);
 
 	virtual ~TSVContentIterator()
@@ -161,10 +164,11 @@ private:
 
 private:
 	strus::ErrorBufferInterface* m_errorhnd;
+	std::set<std::string> m_attributes;
 	std::string m_content;
 	TSVParser m_parser;
 	int m_pos;
-	strus::Reference<strus::utils::TextEncoderBase> m_encoder;
+	strus::Reference<strus::utils::TextEncoderBase> m_decoder;
 };
 
 
@@ -181,6 +185,8 @@ class TSVSegmenter : public strus::SegmenterInterface
 		virtual strus::ContentIteratorInterface* createContentIterator(
 				const char* content,
 				std::size_t contentsize,
+				const std::vector<std::string>& attributes,
+				const std::vector<std::string>& expressions,
 				const strus::analyzer::DocumentClass& dclass,
 				const strus::analyzer::SegmenterOptions& opts) const;
 

@@ -25,14 +25,20 @@ using namespace strus;
 ContentIterator::ContentIterator( 
 		const char* content_,
 		std::size_t contentsize_,
+		const std::vector<std::string>& attributes_,
+		const std::vector<std::string>& expressions_,
 		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
 		ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_)
+	,m_attributes(attributes_.begin(),attributes_.end())
 	,m_content()
+	,m_automaton()
+	,m_xpathselect(0)
+	,m_expressions(expressions_)
 	,m_encoder(encoder_)
 	,m_ar()
 	,m_tree(0)
-	,m_stm()
+	,m_stm(&m_attributes)
 	,m_path()
 	,m_eof(false)
 {
@@ -50,6 +56,16 @@ ContentIterator::ContentIterator(
 
 		strus::getTextwolfItems( m_ar, m_tree);
 		m_elemitr = m_ar.begin();
+
+		if (!expressions_.empty())
+		{
+			std::vector<std::string>::const_iterator ei = expressions_.begin(), ee = expressions_.end();
+			for (int eidx=1; ei != ee; ++ei,++eidx)
+			{
+				m_automaton.defineSelectorExpression( eidx, *ei);
+			}
+			m_xpathselect = new XPathAutomatonContext( m_automaton.createContext());
+		}
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -90,15 +106,40 @@ bool ContentIterator::getNext(
 				++m_elemitr;
 				throw strus::runtime_error( _TXT("error in document: %s"), val);
 			}
-			else if (m_stm.textwolfItem(
-					m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0,
-					expression, expressionsize, segment, segmentsize))
-			{
-				++m_elemitr;
-				return true;
-			}
 			else
 			{
+				if (m_xpathselect)
+				{
+					m_xpathselect->putElement( m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0);
+					int expridx = 0;
+					if (m_xpathselect->getNext( expridx))
+					{
+						const std::string& expressionstr = m_expressions[ expridx-1];
+						if (m_stm.textwolfItem(
+							m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0,
+							expression, expressionsize, segment, segmentsize))
+						{
+							expression = expressionstr.c_str();
+							expressionsize = expressionstr.size();
+							++m_elemitr;
+							return true;
+						}
+					}
+					else if (m_stm.textwolfItem(
+						m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0,
+						expression, expressionsize, segment, segmentsize))
+					{
+						++m_elemitr;
+						return true;
+					}
+				}
+				else if (m_stm.textwolfItem(
+					m_elemitr->type, m_elemitr->value, m_elemitr->value?std::strlen(m_elemitr->value):0,
+					expression, expressionsize, segment, segmentsize))
+				{
+					++m_elemitr;
+					return true;
+				}
 				++m_elemitr;
 			}
 		}

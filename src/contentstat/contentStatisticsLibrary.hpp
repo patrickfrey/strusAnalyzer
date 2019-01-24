@@ -9,11 +9,12 @@
 /// \file contentStatisticsLibrary.hpp
 #ifndef _STRUS_ANALYZER_CONTENT_STATISTICS_LIBRARY_HPP_INCLUDED
 #define _STRUS_ANALYZER_CONTENT_STATISTICS_LIBRARY_HPP_INCLUDED
-#include "strus/base/regex.hpp"
 #include "strus/reference.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/contentStatisticsElementView.hpp"
+#include "strus/base/thread.hpp"
+#include "strus/base/regex.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
@@ -38,6 +39,14 @@ public:
 	
 	/// \brief Destructor
 	~ContentStatisticsLibrary(){}
+
+	/// \brief Define an attribute to be visible as path info
+	/// \param[in] name name of the attribute to collect
+	void addVisibleAttribute( const std::string& name);
+
+	/// \brief Check if an attribute is to be collected as path info
+	/// \param[in] name name of the candidate attribute
+	std::vector<std::string> collectedAttributes() const;
 
 	/// \brief Declare an element of the library used to categorize features
 	/// \param[in] type type name of the feature
@@ -92,8 +101,10 @@ private:
 	};
 
 private:
+	mutable strus::mutex m_mutex;
 	ErrorBufferInterface* m_errorhnd;
 	std::vector<Element> m_ar;
+	std::vector<std::string> m_attributes;
 };
 
 }//namespace

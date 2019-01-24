@@ -332,6 +332,8 @@ make test
 %{_libdir}/strus/libstrus_segmenter_plain.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_analyzer.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
+%{_libdir}/strus/libstrus_markup_document_tags.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
+%{_libdir}/strus/libstrus_markup_document_tags.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
 %{_libdir}/strus/libstrus_normalizer_dictmap.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@.@STRUS_PATCH_VERSION@
 %{_libdir}/strus/libstrus_normalizer_charconv.so.@STRUS_MAJOR_VERSION@.@STRUS_MINOR_VERSION@
@@ -389,6 +391,7 @@ make test
 %{_libdir}/strus/libstrus_segmenter_tsv.so
 %{_libdir}/strus/libstrus_segmenter_plain.so
 %{_libdir}/strus/libstrus_analyzer.so
+%{_libdir}/strus/libstrus_markup_document_tags.so
 %{_libdir}/strus/libstrus_normalizer_dictmap.so
 %{_libdir}/strus/libstrus_normalizer_charconv.so
 %{_libdir}/strus/libstrus_normalizer_ngram.so
@@ -414,7 +417,28 @@ make test
 %{_includedir}/strus/analyzer/*.hpp
 
 %changelog
+* Thu Jan 24 2019 Patrick Frey <patrickpfrey@yahoo.com> 0.17.0-0.1
+- added library for markup of tags in documents (curently XML only)
+- added interface for part of speech tagging (provided externally, in strus analyzer only the export of raw source and the merging in of the tagging is implemented)
+- added interface for document analyzer map (processing of different document types, selecting analyzer based on document class, previously only available for some programs in strusUtilities)
+- added interface for content statistics analysis
+- added content iterator to segmenter interface
+- added format strings for defining the pattern result strings in pattern matcher
+- added library for printing pattern matching results with format string
+- rewrote relocation of resources based on the new file locator interface in strusBase
+- some method renamings in pattern matcher interface
+- replaced some low level debug macros with debug trace calls
+
 * Fri May 11 2018 Patrick Frey <patrickpfrey@yahoo.com> 0.16.0-0.1
+- moved pseudo random number generator to strus base
+- added priority to features to eliminate features entirely covered by a single feature of higher priority
+- added trim normalization method
+- reference test programs with path relative to binary dir
+- change handling of gettext to avoid warning: return a const char* 
+- make use of debug interface in strus base instead of low level debug defines
+- added some introspection capabilities
+- reimplemented analyzer program loader here, to replace the implementation in strusUtilities
+- some spec file fixes
 
 * Thu Mar 15 2018 Patrick Frey <patrickpfrey@yahoo.com> 0.15.7-0.1
 - added make target cppcheck for static code analysis

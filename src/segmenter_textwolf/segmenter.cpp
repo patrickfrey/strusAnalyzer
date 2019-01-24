@@ -140,7 +140,7 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
 		typedef textwolf::charset::IsoLatin IsoLatin;
 		unsigned char codepage = 1;
-	
+
 		if (dclass.encoding().empty())
 		{
 			return new SegmenterMarkupContext<UTF8>( m_errorhnd, content);
@@ -231,6 +231,8 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 ContentIteratorInterface* Segmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
+		const std::vector<std::string>& attributes,
+		const std::vector<std::string>& expressions,
 		const analyzer::DocumentClass& dclass,
 		const analyzer::SegmenterOptions &opts) const
 {
@@ -252,7 +254,7 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 		}
 		if (dclass.encoding().empty())
 		{
-			return new ContentIterator<UTF8>( content, contentsize, UTF8(), m_errorhnd);
+			return new ContentIterator<UTF8>( content, contentsize, attributes, expressions, UTF8(), m_errorhnd);
 		}
 		else
 		{
@@ -272,41 +274,41 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 						throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), dclass.encoding().c_str());
 					}
 				}
-				return new ContentIterator<IsoLatin>( content, contentsize, IsoLatin(codepage), m_errorhnd);
+				return new ContentIterator<IsoLatin>( content, contentsize, attributes, expressions, IsoLatin(codepage), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
 			{
-				return new ContentIterator<UTF8>( content, contentsize, UTF8(), m_errorhnd);
+				return new ContentIterator<UTF8>( content, contentsize, attributes, expressions, UTF8(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
 			{
-				return new ContentIterator<UTF16BE>( content, contentsize, UTF16BE(), m_errorhnd);
+				return new ContentIterator<UTF16BE>( content, contentsize, attributes, expressions, UTF16BE(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
 			{
-				return new ContentIterator<UTF16LE>( content, contentsize, UTF16LE(), m_errorhnd);
+				return new ContentIterator<UTF16LE>( content, contentsize, attributes, expressions, UTF16LE(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
 			{
-				return new ContentIterator<UCS2BE>( content, contentsize, UCS2BE(), m_errorhnd);
+				return new ContentIterator<UCS2BE>( content, contentsize, attributes, expressions, UCS2BE(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
 			{
-				return new ContentIterator<UCS2LE>( content, contentsize, UCS2LE(), m_errorhnd);
+				return new ContentIterator<UCS2LE>( content, contentsize, attributes, expressions, UCS2LE(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
 			{
-				return new ContentIterator<UCS4BE>( content, contentsize, UCS4BE(), m_errorhnd);
+				return new ContentIterator<UCS4BE>( content, contentsize, attributes, expressions, UCS4BE(), m_errorhnd);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
 			{
-				return new ContentIterator<UCS4LE>( content, contentsize, UCS4LE(), m_errorhnd);
+				return new ContentIterator<UCS4LE>( content, contentsize, attributes, expressions, UCS4LE(), m_errorhnd);
 			}
 			else
 			{

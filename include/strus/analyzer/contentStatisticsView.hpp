@@ -27,18 +27,24 @@ public:
 
 	/// \brief Copy constructor
 	ContentStatisticsView( const ContentStatisticsView& o)
-		:m_elements(o.m_elements){}
+		:m_elements(o.m_elements),m_attributes(o.m_attributes),m_expressions(o.m_expressions){}
 
 	/// \brief Constructor
 	/// \param[in] elements_ list of elements
-	ContentStatisticsView( const std::vector<ContentStatisticsElementView>& elements_)
-		:m_elements(elements_){}
+	ContentStatisticsView( const std::vector<ContentStatisticsElementView>& elements_, const std::vector<std::string>& attributes_, const std::vector<std::string>& expressions_)
+		:m_elements(elements_),m_attributes(attributes_),m_expressions(expressions_){}
 
-	/// \brief Get the function
+	/// \brief Get the list of elements
 	const std::vector<ContentStatisticsElementView>& elements() const	{return m_elements;}
+	/// \brief Get the list of visible attributes
+	const std::vector<std::string>& attributes() const			{return m_attributes;}
+	/// \brief Get the list of expressions
+	const std::vector<std::string>& expressions() const			{return m_expressions;}
 
 private:
 	std::vector<ContentStatisticsElementView> m_elements;
+	std::vector<std::string> m_attributes;
+	std::vector<std::string> m_expressions;
 };
 
 }}//namespace

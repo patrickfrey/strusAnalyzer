@@ -11,13 +11,15 @@
 #include "strus/analyzer/segmenterOptions.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
+#include "private/xpathAutomaton.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "private/contentIteratorStm.hpp"
 #include "textwolf/charset.hpp"
 #include "textwolf/sourceiterator.hpp"
 #include "textwolf/xmlscanner.hpp"
 #include <cstdlib>
-#include <list>
+#include <vector>
+#include <set>
 #include <setjmp.h>
 
 #define SEGMENTER_NAME "textwolf"
@@ -33,15 +35,21 @@ public:
 	ContentIterator( 
 			const char* content_,
 			std::size_t contentsize_,
+			const std::vector<std::string>& attributes_,
+			const std::vector<std::string>& expressions_,
 			const CharsetEncoding& charset_,
 			ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_)
+		,m_attributes(attributes_.begin(),attributes_.end())
 		,m_content(content_,contentsize_)
 		,m_srciter()
+		,m_automaton()
+		,m_xpathselect(0)
+		,m_expressions(expressions_)
 		,m_scanner(charset_,textwolf::SrcIterator())
 		,m_eom()
 		,m_itr(),m_end()
-		,m_stm()
+		,m_stm(&m_attributes)
 		,m_path()
 		,m_eof(false)
 	{
@@ -49,9 +57,22 @@ public:
 		m_scanner.setSource( m_srciter);
 		m_itr = m_scanner.begin(false);
 		m_end = m_scanner.end();
+
+		if (!expressions_.empty())
+		{
+			std::vector<std::string>::const_iterator ei = expressions_.begin(), ee = expressions_.end();
+			for (int eidx=1; ei != ee; ++ei,++eidx)
+			{
+				m_automaton.defineSelectorExpression( eidx, *ei);
+			}
+			m_xpathselect = new XPathAutomatonContext( m_automaton.createContext());
+		}
 	}
 
-	virtual ~ContentIterator(){}
+	virtual ~ContentIterator()
+	{
+		if (m_xpathselect) delete m_xpathselect;
+	}
 
 	virtual bool getNext(
 			const char*& expression, std::size_t& expressionsize,
@@ -77,11 +98,37 @@ public:
 					m_scanner.getError( &errstr);
 					throw strus::runtime_error( _TXT("error in document at position %u: %s"), (unsigned int)m_scanner.getTokenPosition(), errstr);
 				}
-				else if (m_stm.textwolfItem(
-					m_itr->type(), m_itr->content(), m_itr->size(),
-					expression, expressionsize, segment, segmentsize))
+				else
 				{
-					return true;
+					if (m_xpathselect)
+					{
+						m_xpathselect->putElement( m_itr->type(), m_itr->content(), m_itr->size());
+						int expridx = 0;
+						if (m_xpathselect->getNext( expridx))
+						{
+							const std::string& expressionstr = m_expressions[ expridx-1];
+							if (m_stm.textwolfItem(
+								m_itr->type(), m_itr->content(), m_itr->size(),
+								expression, expressionsize, segment, segmentsize))
+							{
+								expression = expressionstr.c_str();
+								expressionsize = expressionstr.size();
+								return true;
+							}
+						}
+						else if (m_stm.textwolfItem(
+							m_itr->type(), m_itr->content(), m_itr->size(),
+							expression, expressionsize, segment, segmentsize))
+						{
+							return true;
+						}
+					}
+					else if (m_stm.textwolfItem(
+						m_itr->type(), m_itr->content(), m_itr->size(),
+						expression, expressionsize, segment, segmentsize))
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -97,8 +144,12 @@ private:
 		> XMLScanner;
 
 	ErrorBufferInterface* m_errorhnd;
+	std::set<std::string> m_attributes;
 	std::string m_content;
 	textwolf::SrcIterator m_srciter;
+	XPathAutomaton m_automaton;
+	XPathAutomatonContext* m_xpathselect;
+	std::vector<std::string> m_expressions;
 	XMLScanner m_scanner;
 	jmp_buf m_eom;
 	typename XMLScanner::iterator m_itr;

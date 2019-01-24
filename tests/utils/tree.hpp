@@ -10,6 +10,7 @@
 #include "strus/base/stdint.h"
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 namespace strus {
 namespace test {
@@ -27,6 +28,29 @@ struct TreeNode
 		:item(o.item)
 		,next( o.next ? new TreeNode( *o.next) : 0)
 		,chld( o.chld ? new TreeNode( *o.chld) : 0){}
+
+	TreeNode& operator=( const TreeNode& o)
+	{
+		item = o.item;
+		next = o.next ? new TreeNode( *o.next) : 0;
+		chld = o.chld ? new TreeNode( *o.chld) : 0;
+		return *this;
+	}
+#if __cplusplus >= 201103L
+	TreeNode( TreeNode&& o)
+		:item( std::move( o.item))
+		,next( o.next)
+		,chld( o.chld)
+	{o.next=0; o.chld=0;}
+
+	TreeNode& operator=( TreeNode&& o)
+	{
+		item = std::move( o.item);
+		next = o.next; o.next = 0;
+		chld = o.chld; o.chld = 0;
+		return *this;
+	}
+#endif
 	~TreeNode()
 	{
 		if (next) delete next;

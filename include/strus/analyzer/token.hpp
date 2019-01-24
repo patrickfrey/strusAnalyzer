@@ -57,6 +57,13 @@ public:
 		m_origpos = origpos_;
 	}
 
+	/// \brief Set the original size of the token in the source
+	/// \param[in] origsize_ size of the token in bytes
+	void setOrigSize( int origsize_)
+	{
+		m_origsize = origsize_ > 0 ? (uint32_t)origsize_ : 0;
+	}
+
 	/// \brief Set the ordinal position of the token in the source (adjusted in case of multiple segments)
 	/// \param[in] ordpos_ oridinal term position assigned to the the token
 	void setOrdpos( int ordpos_)

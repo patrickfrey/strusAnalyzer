@@ -28,7 +28,7 @@
 using namespace strus;
 
 PosTaggerInstance::PosTaggerInstance( const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd_)
-	:m_errorhnd( errorhnd_),m_debugtrace(0),m_segmenter(segmenter_->createInstance( opts)),m_markup(strus::createTokenMarkupInstance_standard(errorhnd_)),m_values()
+	:m_errorhnd( errorhnd_),m_debugtrace(0),m_segmenter(segmenter_->createInstance( opts)),m_markup(strus::createTokenMarkupInstance_standard(errorhnd_)),m_punctar()
 {
 	if (!m_markup) {cleanup(); throw std::runtime_error( m_errorhnd->fetchError());}
 	if (!m_segmenter) {cleanup(); throw std::runtime_error( m_errorhnd->fetchError());}
@@ -53,20 +53,44 @@ void PosTaggerInstance::addContentExpression( const std::string& expression)
 	m_segmenter->defineSelectorExpression( 1, expression);
 }
 
-void PosTaggerInstance::addPosTaggerInputPunctuation( const std::string& expression, const std::string& value)
+void PosTaggerInstance::addPosTaggerInputPunctuation( const std::string& expression, const std::string& value, int priority)
 {
-	int idx = 1;
-	std::vector<std::string>::const_iterator vi = std::find( m_values.begin(), m_values.end(), value);
-	if (vi != m_values.end())
+	try
 	{
-		idx = vi - m_values.begin() + 2;
+		int idx = 1;
+		std::vector<PunctuationDef>::const_iterator pi = m_punctar.begin(), pe = m_punctar.end();
+		PunctuationDef punctdef( value, priority);
+		for (; pi != pe && !(*pi == punctdef); ++pi){}
+		if (pi == pe)
+		{
+			idx = m_punctar.size() + 2;
+			m_punctar.push_back( punctdef);
+		}
+		else
+		{
+			idx = pi - m_punctar.begin() + 2;
+		}
+		m_segmenter->defineSelectorExpression( idx, expression);
 	}
-	else
+	CATCH_ERROR_ARG1_MAP( _TXT("error adding punctuation \"%s\": %s"), COMPONENT_NAME, *m_errorhnd);
+}
+
+static void printContent( std::string& res, const char* segment, std::size_t segmentsize)
+{
+	char const* si = segment;
+	const char* se = si + segmentsize;
+	for (; si != se; ++si)
 	{
-		idx = m_values.size() + 2;
-		m_values.push_back( value);
+		if ((unsigned char)*si <= 32)
+		{
+			if (res.empty() || res[ res.size()-1] == ' ') continue;
+			res.push_back( ' ');
+		}
+		else
+		{
+			res.push_back( *si);
+		}
 	}
-	m_segmenter->defineSelectorExpression( idx, expression);
 }
 
 std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass& dclass, const std::string& content) const
@@ -78,6 +102,7 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 
 		segctx->putInput( content.c_str(), content.size(), true/*eof*/);
 		int id = 0;
+		const PunctuationDef* pdef = 0;
 		SegmenterPosition pos = 0;
 		const char* segment = 0;
 		std::size_t segmentsize = 0;
@@ -87,17 +112,32 @@ std::string PosTaggerInstance::getPosTaggerInput( const analyzer::DocumentClass&
 		{
 			if (id > 1)
 			{
-				const std::string& mrk = m_values[ id-2];
-				if (rt.size() < mrk.size()) continue;
-
-				if (0!=std::memcmp( rt.c_str() + rt.size() - mrk.size(), mrk.c_str(), mrk.size()))
+				const PunctuationDef* altpdef = &m_punctar[ id-2];
+				if (!pdef || pdef->priority() < altpdef->priority())
 				{
-					rt.append( m_values[ id-2]);
+					pdef = altpdef;
 				}
 			}
 			else
 			{
-				rt.append( segment, segmentsize);
+				if (pdef)
+				{
+					const std::string& mrk = pdef->value();
+					if ((!rt.empty() && rt.size() < pdef->value().size()) || 0!=std::memcmp( rt.c_str() + rt.size() - mrk.size(), mrk.c_str(), mrk.size()))
+					{
+						rt.append( mrk);
+					}
+				}
+				pdef = 0;
+				printContent( rt, segment, segmentsize);
+			}
+		}
+		if (pdef && rt.size() >= pdef->value().size())
+		{
+			const std::string& mrk = pdef->value();
+			if (0!=std::memcmp( rt.c_str() + rt.size() - mrk.size(), mrk.c_str(), mrk.size()))
+			{
+				rt.append( mrk);
 			}
 		}
 		if (m_errorhnd->hasError()) return std::string();

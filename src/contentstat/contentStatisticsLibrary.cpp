@@ -12,9 +12,31 @@
 #include "strus/errorBufferInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
+#include <algorithm>
 
 /// \brief strus toplevel namespace
 using namespace strus;
+
+void ContentStatisticsLibrary::addVisibleAttribute( const std::string& name)
+{
+	try
+	{
+		strus::scoped_lock lock( m_mutex);
+		if (std::find( m_attributes.begin(), m_attributes.end(), name) == m_attributes.end()) return;
+		m_attributes.push_back( name);
+	}
+	CATCH_ERROR_MAP( _TXT("error in content statistics library: %s"), *m_errorhnd);
+}
+
+std::vector<std::string> ContentStatisticsLibrary::collectedAttributes() const
+{
+	try
+	{
+		strus::scoped_lock lock( m_mutex);
+		return m_attributes;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in content statistics library: %s"), *m_errorhnd, std::vector<std::string>());
+}
 
 void ContentStatisticsLibrary::addElement(
 		const std::string& type,
@@ -29,10 +51,12 @@ void ContentStatisticsLibrary::addElement(
 	std::vector<NormalizerFunctionReference> na;
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		if (priority < 0) throw std::runtime_error(_TXT("priority must be non-negative"));
 
 		RegexSearchReference regex;
-		if (!regexstr.empty())
+		if (!regexstr.empty() && regexstr != ".*")
 		{
 			regex.reset( new RegexSearch( regexstr, 0, m_errorhnd));
 		}
@@ -69,6 +93,8 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 {
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		std::vector<std::string> rt;
 		if (m_errorhnd->hasError()) return std::vector<std::string>();
 
@@ -124,6 +150,8 @@ std::vector<analyzer::ContentStatisticsElementView> ContentStatisticsLibrary::vi
 {
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		std::vector<analyzer::ContentStatisticsElementView> rt;
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)

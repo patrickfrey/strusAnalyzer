@@ -28,6 +28,11 @@ ContentStatistics::ContentStatistics(
 
 ContentStatistics::~ContentStatistics(){}
 
+void ContentStatistics::addVisibleAttribute( const std::string& name)
+{
+	m_library.addVisibleAttribute( name);
+}
+
 void ContentStatistics::addLibraryElement(
 	const std::string& type,
 	const std::string& regex,
@@ -40,11 +45,20 @@ void ContentStatistics::addLibraryElement(
 	m_library.addElement( type, regex, priority, minLength, maxLength, tokenizer, normalizers);
 }
 
+void ContentStatistics::addSelectorExpression( const std::string& expression)
+{
+	try
+	{
+		m_expressions.push_back( expression);
+	}
+	CATCH_ERROR_MAP( _TXT("error adding selector expression to statistics context: %s"), *m_errorhnd);
+}
+
 ContentStatisticsContextInterface* ContentStatistics::createContext() const
 {
 	try
 	{
-		return new ContentStatisticsContext( &m_library, m_textproc, m_detector, m_errorhnd);
+		return new ContentStatisticsContext( &m_library, m_expressions, m_textproc, m_detector, m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context: %s"), *m_errorhnd, NULL);
 }
@@ -53,13 +67,13 @@ analyzer::ContentStatisticsView ContentStatistics::view() const
 {
 	try
 	{
-		return analyzer::ContentStatisticsView( m_library.view());
+		return analyzer::ContentStatisticsView( m_library.view(), m_library.collectedAttributes(), m_expressions);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context introspection: %s"), *m_errorhnd, analyzer::ContentStatisticsView());
 }
 
-ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_textproc(textproc_),m_library(library_),m_detector(detector_),m_data()
+ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibrary* library_, const std::vector<std::string>& expressions_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_)
+	:m_errorhnd(errorhnd_),m_textproc(textproc_),m_library(library_),m_detector(detector_),m_expressions(expressions_),m_data()
 {}
 
 ContentStatisticsContext::~ContentStatisticsContext()
@@ -68,7 +82,7 @@ ContentStatisticsContext::~ContentStatisticsContext()
 static bool isEmptyContent( const std::string& value)
 {
 	char const* vi = value.c_str();
-	for (; *vi && (unsigned char)*vi < 32; ++vi){}
+	for (; *vi && (unsigned char)*vi <= 32; ++vi){}
 	return !*vi;
 }
 
@@ -79,13 +93,15 @@ void ContentStatisticsContext::putContent(
 {
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
+
 		strus::local_ptr<ContentIteratorInterface> itr;
 		const SegmenterInterface* segmenter;
 		if (doctype.defined())
 		{
 			segmenter = m_textproc->getSegmenterByMimeType( doctype.mimeType());
 			if (!segmenter) throw strus::runtime_error(_TXT("can't process the MIME type '%s'"), doctype.mimeType().c_str());
-			itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), doctype));
+			itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), m_expressions, doctype));
 			if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), doctype.mimeType().c_str());
 		}
 		else
@@ -95,7 +111,7 @@ void ContentStatisticsContext::putContent(
 			{
 				segmenter = m_textproc->getSegmenterByMimeType( dclass.mimeType());
 				if (!segmenter) throw strus::runtime_error(_TXT("can't process the MIME type '%s'"), doctype.mimeType().c_str());
-				itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), dclass));
+				itr.reset( segmenter->createContentIterator( content.c_str(), content.size(), m_library->collectedAttributes(), m_expressions, dclass));
 				if (!itr.get()) throw strus::runtime_error(_TXT("failed to create content iterator for '%s'"), dclass.mimeType().c_str());
 			}
 			else if (m_errorhnd->hasError())
@@ -143,6 +159,7 @@ analyzer::ContentStatisticsResult ContentStatisticsContext::statistics()
 {
 	try
 	{
+		strus::scoped_lock lock( m_mutex);
 		return ContentStatisticsResult( m_data.nofDocuments(), m_data.getGlobalStatistics());
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error collecting content statistics: %s"), *m_errorhnd, ContentStatisticsResult());
@@ -150,6 +167,7 @@ analyzer::ContentStatisticsResult ContentStatisticsContext::statistics()
 
 int ContentStatisticsContext::nofDocuments() const
 {
+	strus::scoped_lock lock( m_mutex);
 	return m_data.nofDocuments();
 }
 

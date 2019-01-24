@@ -34,25 +34,24 @@ public:
 	PosTaggerData( TokenizerFunctionInstanceInterface* tokenizer_, ErrorBufferInterface* errorhnd_);
 	virtual ~PosTaggerData();
 
-	virtual void defineTag( const std::string& type, const std::string& tag);
-
+	virtual void declareIgnoredToken( const std::string& value);
 	virtual void insert( int docno, const std::vector<Element>& elements);
 
 	void markupSegment( TokenMarkupContextInterface* markupContext, int docno, int& docitr, const SegmenterPosition& segmentpos, const char* segmentptr, std::size_t segmentsize) const;
 
-private:
-	typedef std::map<std::string,std::string> TypeTagMap;
-
+public://local function getTagsExcerptString
 	struct TagAssignment
 	{
-		int value;
-		const char* tag;
+		int headeridx;
+		int valueidx;
+		int refidx;
 
-		TagAssignment( int value_, const char* tag_)
-			:value(value_),tag(tag_){}
+		TagAssignment( int headeridx_, int valueidx_, int refidx_)
+			:headeridx(headeridx_),valueidx(valueidx_),refidx(refidx_){}
 		TagAssignment( const TagAssignment& o)
-			:value(o.value),tag(o.tag){}
+			:headeridx(o.headeridx),valueidx(o.valueidx),refidx(o.refidx){}
 	};
+private:
 	struct DocAssignment
 	{
 		std::vector<TagAssignment> ar;
@@ -64,6 +63,16 @@ private:
 	};
 
 private:
+	int elementValueToInt( const std::string& value);
+	const char* elementValue( int valueidx) const;
+
+	static std::string elementHeaderToString( const Element::Type& type, const std::string& value);
+	int elementHeaderToInt( const Element::Type& type, const std::string& tag);
+	Element::Type elementType( int headeridx) const;
+	const char* elementTag( int headeridx) const;
+
+	DocAssignment createDocAssignment( const std::vector<Element>& elements);
+
 	std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
 	std::vector<Element> tokenize( const std::vector<Element>& sequence) const;
 
@@ -71,11 +80,11 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 	TokenizerFunctionInstanceInterface* m_tokenizer;
-	TypeTagMap m_typeTagMap;
-	std::vector<std::string> m_typeList;
+	SymbolTable m_elementHeaderMap;
+	SymbolTable m_elementValueMap;
 	std::vector<DocAssignment> m_docs;
+	std::vector<std::string> m_ignoredTokens;
 	std::map<int,int> m_docnoDocMap;
-	SymbolTable m_symtab;
 };
 
 }//namespace

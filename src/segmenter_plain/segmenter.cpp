@@ -41,12 +41,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 {
 	try
 	{
-		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		strus::Reference<strus::utils::TextEncoderBase> decoder;
 		if (!dclass.encoding().empty() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
+			decoder.reset( strus::utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new SegmenterContext( m_errorhnd, &m_segids, encoder);
+		return new SegmenterContext( m_errorhnd, &m_segids, decoder);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -85,15 +85,17 @@ const char* Segmenter::getDescription() const
 ContentIterator::ContentIterator( 
 		const char* content_,
 		std::size_t contentsize_,
-		const strus::Reference<strus::utils::TextEncoderBase>& encoder_,
+		const std::vector<std::string>& attributes_,
+		const std::vector<std::string>& expressions_,
+		const strus::Reference<strus::utils::TextEncoderBase>& decoder_,
 		ErrorBufferInterface* errorhnd_)
-	:m_errorhnd(errorhnd_),m_content(),m_eof(false),m_encoder(encoder_)
+	:m_errorhnd(errorhnd_),m_attributes(attributes_.begin(),attributes_.end()),m_content(),m_eof(false),m_decoder(decoder_)
 {
 	try
 	{
-		if (m_encoder.get())
+		if (m_decoder.get())
 		{
-			m_content = m_encoder->convert( content_, contentsize_, true);
+			m_content = m_decoder->convert( content_, contentsize_, true);
 		}
 		else
 		{
@@ -106,17 +108,19 @@ ContentIterator::ContentIterator(
 strus::ContentIteratorInterface* Segmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
+		const std::vector<std::string>& attributes,
+		const std::vector<std::string>& expressions,
 		const strus::analyzer::DocumentClass& dclass,
 		const strus::analyzer::SegmenterOptions& opts) const
 {
 	try
 	{
-		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		strus::Reference<strus::utils::TextEncoderBase> decoder;
 		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
+			decoder.reset( strus::utils::createTextEncoder( dclass.encoding().c_str()));
 		}
-		return new ContentIterator( content, contentsize, encoder, m_errorhnd);
+		return new ContentIterator( content, contentsize, attributes, expressions, decoder, m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, NULL);
 }

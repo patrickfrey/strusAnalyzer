@@ -33,7 +33,8 @@ public:
 	/// \brief Defines a punktuation marker for POS tagger input
 	/// \param[in] expression expression selecting the marker position
 	/// \param[in] punct punctuation marker value
-	virtual void addPosTaggerInputPunctuation( const std::string& expression, const std::string& punct)=0;
+	/// \param[in] priority that selects one of many subsequent punctuations, the one with highest priority is written in POS tagger input
+	virtual void addPosTaggerInputPunctuation( const std::string& expression, const std::string& punct, int priority)=0;
 
 	/// \brief Map a document to a text string as input of POS tagging
 	/// \param[ín] dclass document class of document to markup

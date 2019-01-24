@@ -16,16 +16,16 @@
 using namespace strus;
 using namespace strus::utils;
 
-template <typename IOCharset>
+template <typename InputCharset, typename OutputCharset>
 class TextEncoder
 	:public TextEncoderBase
 {
 public:
-	explicit TextEncoder( const IOCharset& charset_=IOCharset())
-		:m_charset(charset_)
-		,m_itr(charset_)
+	explicit TextEncoder( const InputCharset& inputCharset_=InputCharset(), const OutputCharset& outputCharset_=OutputCharset())
+		:m_inputCharset(inputCharset_)
+		,m_outputCharset(outputCharset_)
+		,m_itr(inputCharset_)
 		,m_eom()
-		,m_output()
 		,m_src(0)
 		,m_srcsize(0)
 		,m_srcend(false)
@@ -40,27 +40,28 @@ public:
 		m_src = src;
 		m_srcend = eof;
 		m_srcsize = srcsize;
-		m_itr.setSource( textwolf::SrcIterator( m_src, m_srcsize, m_srcend?0:&m_eom));
+		m_itr.setSource( textwolf::SrcIterator( m_src, m_srcsize, &m_eom));
 
-		if (!m_srcend && setjmp(m_eom) != 0)
+		if (setjmp(m_eom) != 0)
 		{
+			if (!m_srcend) throw std::runtime_error(_TXT("unexpected eof in text encoder/decoder source"));
 			return rt;
 		}
 		textwolf::UChar ch;
 		while ((ch = *m_itr) != 0)
 		{
 			++m_itr;
-			m_output.print( ch, rt);
+			m_outputCharset.print( ch, rt);
 		}
 		return rt;
 	}
 
 private:
-	typedef textwolf::TextScanner<textwolf::SrcIterator,IOCharset> TextScanner;
-	IOCharset m_charset;			///< character set encoding
+	typedef textwolf::TextScanner<textwolf::SrcIterator,InputCharset> TextScanner;
+	InputCharset m_inputCharset;		///< input character set encoding
+	OutputCharset m_outputCharset;		///< output character set encoding
 	TextScanner m_itr;			///< iterator on input
 	jmp_buf m_eom;				///< end of message trigger
-	textwolf::charset::UTF8 m_output;	///< output
 	const char* m_src;			///< pointer to current chunk parsed
 	std::size_t m_srcsize;			///< size of the current chunk parsed in bytes
 	bool m_srcend;				///< true if end of message is in current chunk parsed
@@ -80,11 +81,11 @@ static std::string parseEncoding( const char* src)
 	return rt;
 }
 
-TextEncoderBase* utils::createTextEncoder( const char* encoding)
+TextEncoderBase* utils::createTextDecoder( const char* encoding)
 {
 	if (!encoding)
 	{
-		return new TextEncoder<textwolf::charset::UTF8>();
+		return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF8>();
 	}
 	else
 	{
@@ -98,11 +99,11 @@ TextEncoderBase* utils::createTextEncoder( const char* encoding)
 			}
 			if (codepage[0] == '1')
 			{
-				return new TextEncoder<textwolf::charset::IsoLatin>();
+				return new TextEncoder<textwolf::charset::IsoLatin,textwolf::charset::UTF8>();
 			}
 			else
 			{
-				return new TextEncoder<textwolf::charset::IsoLatin>( textwolf::charset::IsoLatin( codepage[0] - '0'));
+				return new TextEncoder<textwolf::charset::IsoLatin,textwolf::charset::UTF8>( textwolf::charset::IsoLatin( codepage[0] - '0'));
 			}
 		}
 		if ((enc.size() >= 7 && std::memcmp( enc.c_str(), "iso8859", 7) == 0))
@@ -114,40 +115,116 @@ TextEncoderBase* utils::createTextEncoder( const char* encoding)
 			}
 			if (codepage[0] == '1')
 			{
-				return new TextEncoder<textwolf::charset::IsoLatin>();
+				return new TextEncoder<textwolf::charset::IsoLatin,textwolf::charset::UTF8>();
 			}
 			else
 			{
-				return new TextEncoder<textwolf::charset::IsoLatin>( textwolf::charset::IsoLatin( codepage[0] - '0'));
+				return new TextEncoder<textwolf::charset::IsoLatin,textwolf::charset::UTF8>( textwolf::charset::IsoLatin( codepage[0] - '0'));
 			}
 		}
 		else if (enc.size() == 0 || enc == "utf8")
 		{
-			return new TextEncoder<textwolf::charset::UTF8>();
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF8>();
 		}
 		else if (enc == "utf16" || enc == "utf16be")
 		{
-			return new TextEncoder<textwolf::charset::UTF16BE>();
+			return new TextEncoder<textwolf::charset::UTF16BE,textwolf::charset::UTF8>();
 		}
 		else if (enc == "utf16le")
 		{
-			return new TextEncoder<textwolf::charset::UTF16LE>();
+			return new TextEncoder<textwolf::charset::UTF16LE,textwolf::charset::UTF8>();
 		}
 		else if (enc == "ucs2" || enc == "ucs2be")
 		{
-			return new TextEncoder<textwolf::charset::UCS2BE>();
+			return new TextEncoder<textwolf::charset::UCS2BE,textwolf::charset::UTF8>();
 		}
 		else if (enc == "ucs2le")
 		{
-			return new TextEncoder<textwolf::charset::UCS2LE>();
+			return new TextEncoder<textwolf::charset::UCS2LE,textwolf::charset::UTF8>();
 		}
 		else if (enc == "utf32" || enc == "ucs4" || enc == "utf32be" || enc == "ucs4be")
 		{
-			return new TextEncoder<textwolf::charset::UCS4BE>();
+			return new TextEncoder<textwolf::charset::UCS4BE,textwolf::charset::UTF8>();
 		}
 		else if (enc == "utf32le" || enc == "ucs4le")
 		{
-			return new TextEncoder<textwolf::charset::UCS4LE>();
+			return new TextEncoder<textwolf::charset::UCS4LE,textwolf::charset::UTF8>();
+		}
+		else
+		{
+			throw strus::runtime_error( _TXT("unknown character set encoding"));
+		}
+	}
+}
+
+TextEncoderBase* utils::createTextEncoder( const char* encoding)
+{
+	if (!encoding)
+	{
+		return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF8>();
+	}
+	else
+	{
+		std::string enc = parseEncoding( encoding);
+		if ((enc.size() >= 8 && std::memcmp( enc.c_str(), "isolatin", 8)== 0))
+		{
+			const char* codepage = enc.c_str() + 8;
+			if (std::strlen( codepage) > 1 || codepage[0] < '0' || codepage[0] > '9')
+			{
+				throw strus::runtime_error( _TXT("unknown iso-latin code page index"));
+			}
+			if (codepage[0] == '1')
+			{
+				return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::IsoLatin>();
+			}
+			else
+			{
+				return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::IsoLatin>( textwolf::charset::UTF8(), textwolf::charset::IsoLatin( codepage[0] - '0'));
+			}
+		}
+		if ((enc.size() >= 7 && std::memcmp( enc.c_str(), "iso8859", 7) == 0))
+		{
+			const char* codepage = enc.c_str() + 7;
+			if (std::strlen( codepage) > 1 || codepage[0] < '0' || codepage[0] > '9')
+			{
+				throw strus::runtime_error( _TXT("unknown iso-latin code page index"));
+			}
+			if (codepage[0] == '1')
+			{
+				return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::IsoLatin>();
+			}
+			else
+			{
+				return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::IsoLatin>( textwolf::charset::UTF8(), textwolf::charset::IsoLatin( codepage[0] - '0'));
+			}
+		}
+		else if (enc.size() == 0 || enc == "utf8")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF8>();
+		}
+		else if (enc == "utf16" || enc == "utf16be")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF16BE>();
+		}
+		else if (enc == "utf16le")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UTF16LE>();
+		}
+		else if (enc == "ucs2" || enc == "ucs2be")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UCS2BE>();
+		}
+		else if (enc == "ucs2le")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UCS2LE>();
+		}
+		else if (enc == "utf32" || enc == "ucs4" || enc == "utf32be" || enc == "ucs4be")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UCS4BE>();
+		}
+		else if (enc == "utf32le" || enc == "ucs4le")
+		{
+			return new TextEncoder<textwolf::charset::UTF8,textwolf::charset::UCS4LE>();
 		}
 		else
 		{

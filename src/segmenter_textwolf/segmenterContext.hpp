@@ -36,8 +36,11 @@ public:
 		,m_xpathselect(automaton_->createContext())
 		,m_srciter()
 		,m_scanner(charset_,textwolf::SrcIterator())
+		,m_itr()
+		,m_end()
 		,m_eof(false)
 		,m_initialized(false)
+		,m_eom()
 		,m_chunkbuf()
 		,m_errorhnd(errorhnd)
 	{}

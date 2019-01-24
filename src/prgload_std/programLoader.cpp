@@ -803,7 +803,7 @@ static void parseAnalyzerPatternMatchProgramDef(
 	// Read source:
 	std::vector<std::pair<std::string,std::string> > ptsources;
 	std::string filename = parseSelectorExpression( lexer);
-	std::string filepath = textproc->getResourceFilePath( filename);
+	std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 	if (filepath.empty() && errorhnd->hasError())
 	{
 		throw strus::runtime_error(_TXT( "failed to evaluate pattern match file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
@@ -896,8 +896,8 @@ static void expandIncludes(
 		std::string filename = parse_STRING( src);
 
 		if (filename.empty()) throw strus::runtime_error( _TXT("include file name is empty"));
-		std::string filepath = textproc->getResourceFilePath( filename);
-		if (filepath.empty()) throw strus::runtime_error(_TXT("failed to find include file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
+		if (filepath.empty() && errorhnd->hasError()) throw strus::runtime_error(_TXT("failed to find include file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
 
 		if (visited.find( filepath) == visited.end())
 		{
@@ -1270,7 +1270,7 @@ bool strus::isDocumentAnalyzerProgramFile(
 {
 	try
 	{
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty() && errorhnd->hasError())
 		{
 			throw strus::runtime_error(_TXT( "failed to evaluate file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
@@ -1379,7 +1379,7 @@ bool strus::loadDocumentAnalyzerProgramFile( DocumentAnalyzerInstanceInterface* 
 	try
 	{
 		if (filename.empty()) throw strus::runtime_error( _TXT("program file name is empty"));
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty()) throw std::runtime_error(_TXT("failed to find program path"));
 		std::string content;
 		int ec = strus::readFile( filepath, content);
@@ -1459,7 +1459,7 @@ bool strus::loadDocumentAnalyzerMapFile( DocumentAnalyzerMapInterface* analyzerm
 	try
 	{
 		if (filename.empty()) throw strus::runtime_error( _TXT("program file name is empty"));
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty()) throw std::runtime_error(_TXT("failed to find program path"));
 		std::string content;
 		int ec = strus::readFile( filepath, content);
@@ -1539,7 +1539,7 @@ bool strus::loadQueryAnalyzerProgramFile(
 	try
 	{
 		if (filename.empty()) throw strus::runtime_error( _TXT("program file name is empty"));
-		std::string filepath = textproc->getResourceFilePath( filename);
+		std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
 		if (filepath.empty()) throw std::runtime_error(_TXT("failed to find program path"));
 		std::string content;
 		int ec = strus::readFile( filepath, content);

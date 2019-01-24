@@ -23,6 +23,7 @@
 
 using namespace strus;
 
+#error DEPRECATED
 
 static std::string parseString( char const*& si, const char* se)
 {

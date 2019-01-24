@@ -13,6 +13,8 @@
 #include "strus/contentStatisticsContextInterface.hpp"
 #include "contentStatisticsLibrary.hpp"
 #include "contentStatisticsData.hpp"
+#include "strus/base/thread.hpp"
+#include <vector>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -37,6 +39,8 @@ public:
 	/// \brief Destructor
 	virtual ~ContentStatistics();
 
+	virtual void addVisibleAttribute( const std::string& name);
+
 	virtual void addLibraryElement(
 			const std::string& type,
 			const std::string& regex,
@@ -45,6 +49,8 @@ public:
 			int maxLength,
 			TokenizerFunctionInstanceInterface* tokenizer,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
+
+	virtual void addSelectorExpression( const std::string& expression);
 
 	virtual ContentStatisticsContextInterface* createContext() const;
 
@@ -55,6 +61,7 @@ private:
 	const DocumentClassDetectorInterface* m_detector;
 	const TextProcessorInterface* m_textproc;
 	ContentStatisticsLibrary m_library;
+	std::vector<std::string> m_expressions;
 };
 
 /// \brief Implementation of content statistics
@@ -63,7 +70,7 @@ class ContentStatisticsContext
 {
 public:
 	/// \brief Constructor
-	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_);
+	ContentStatisticsContext( const ContentStatisticsLibrary* library_, const std::vector<std::string>& expressions_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_);
 	/// \brief Destructor
 	virtual ~ContentStatisticsContext();
 
@@ -77,10 +84,13 @@ public:
 	virtual int nofDocuments() const;
 
 private:
+	/// \brief Note: we have to have a mutex because the context is possibly used by many clients, contrary to the context name that should indicate privacy. A little mis-design here.
+	mutable strus::mutex m_mutex;
 	ErrorBufferInterface* m_errorhnd;
 	const TextProcessorInterface* m_textproc;
 	const ContentStatisticsLibrary* m_library;
 	const DocumentClassDetectorInterface* m_detector;
+	std::vector<std::string> m_expressions;
 	ContentStatisticsData m_data;
 };
 

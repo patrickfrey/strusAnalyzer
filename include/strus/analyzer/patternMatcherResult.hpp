@@ -38,7 +38,7 @@ public:
 	PatternMatcherResult& operator= ( const PatternMatcherResult& ) = default;
 #else
 	PatternMatcherResult( const PatternMatcherResult& o)
-		:PatternMatcherResult(o),m_itemlist(o.m_itemlist){}
+		:PatternMatcherResultItem(o),m_itemlist(o.m_itemlist){}
 #endif
 	/// \brief Destructor
 	~PatternMatcherResult(){}
@@ -53,3 +53,4 @@ private:
 
 }} //namespace
 #endif
+

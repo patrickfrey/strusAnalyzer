@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_CONTENT_ITERATOR_STATEMACHINE_HPP_INCLUDED
 #include <string>
 #include <vector>
+#include <set>
 #include "textwolf/xmlscanner.hpp"
 #include "private/internationalization.hpp"
 
@@ -48,6 +49,13 @@ public:
 			m_ar.resize( m_attribpos);
 			m_ar.push_back('@');
 			m_ar.append( name, namelen);
+		}
+		void selectValue()
+		{
+			if (back() != ')')
+			{
+				m_ar.append( "()");
+			}
 		}
 		char back() const
 		{
@@ -109,14 +117,14 @@ public:
 		int m_attribpos;
 	};
 
-	ContentIteratorStm()
-		:m_contentpath(),m_attrpath(),m_selectpath(),m_state(StateAttribute)
+	explicit ContentIteratorStm( const std::set<std::string>* attributes_)
+		:m_attributes(attributes_),m_contentpath(),m_attrpath(),m_selectpath(),m_state(StateAttribute)
 	{}
 
 	void openTag( const char* name, std::size_t namelen)
 	{
-		m_contentpath.open( name, namelen);
 		m_attrpath.open( name, namelen);
+		m_contentpath = m_attrpath;
 		m_state = StateAttribute;
 	}
 
@@ -130,16 +138,24 @@ public:
 	void attributeName( const char* name, std::size_t namelen)
 	{
 		m_contentpath.selectAttribute( name, namelen);
-		m_attrpath.attributeCondName( name, namelen);
-		m_state = StateContent;
+		if (m_attributes->find( std::string( name, namelen)) != m_attributes->end())
+		{
+			m_attrpath.attributeCondName( name, namelen);
+			m_state = StateContent;
+		}
 	}
-
 	void attributeValue( const char* value, std::size_t valuelen)
 	{
-		m_attrpath.attributeCondValue( value, valuelen);
-		m_state = StateAttribute;
+		if (m_state == StateContent)
+		{
+			m_attrpath.attributeCondValue( value, valuelen);
+			m_state = StateAttribute;
+		}
 	}
-
+	void selectValue()
+	{
+		m_attrpath.selectValue();
+	}
 	bool textwolfItem(
 			const textwolf::XMLScannerBase::ElementType& itemtype, const char* itemstr, std::size_t itemsize,
 			const char*& expression, std::size_t& expressionsize,
@@ -175,6 +191,7 @@ public:
 				this->closeTag();
 				break;
 			case textwolf::XMLScannerBase::Content:
+				this->selectValue();
 				expression = m_attrpath().c_str();
 				expressionsize = m_attrpath().size();
 				segment = itemstr;
@@ -203,6 +220,7 @@ private:
 	};
 
 private:
+	const std::set<std::string>* m_attributes;
 	Path m_contentpath;
 	Path m_attrpath;
 	std::string m_selectpath;

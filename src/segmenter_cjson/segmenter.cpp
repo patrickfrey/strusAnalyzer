@@ -49,12 +49,12 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 {
 	try
 	{
-		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		strus::Reference<strus::utils::TextEncoderBase> decoder;
 		if (!dclass.encoding().empty() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+			decoder.reset( utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new SegmenterContext( m_errorhnd, &m_automaton, encoder);
+		return new SegmenterContext( m_errorhnd, &m_automaton, decoder);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
@@ -93,18 +93,20 @@ const char* Segmenter::getDescription() const
 ContentIteratorInterface* Segmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
+		const std::vector<std::string>& attributes,
+		const std::vector<std::string>& expressions,
 		const analyzer::DocumentClass& dclass,
 		const analyzer::SegmenterOptions& opts) const
 {
 	try
 	{
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-		strus::Reference<strus::utils::TextEncoderBase> encoder;
+		strus::Reference<strus::utils::TextEncoderBase> decoder;
 		if (dclass.defined() && !strus::caseInsensitiveEquals( dclass.encoding(), "utf-8"))
 		{
-			encoder.reset( utils::createTextEncoder( dclass.encoding().c_str()));
+			decoder.reset( utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new ContentIterator( ContentIterator( content, contentsize, encoder, m_errorhnd));
+		return new ContentIterator( ContentIterator( content, contentsize, attributes, expressions, decoder, m_errorhnd));
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
