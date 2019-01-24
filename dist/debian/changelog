@@ -1,3 +1,16 @@
+strusanalyzer (0.17.0-1) unstable; urgency=low
+  * added library for markup of tags in documents (curently XML only)
+  * added interface for part of speech tagging (provided externally, in strus analyzer only the export of raw source and the merging in of the tagging is implemented)
+  * added interface for document analyzer map (processing of different document types, selecting analyzer based on document class, previously only available for some programs in strusUtilities)
+  * added interface for content statistics analysis
+  * added content iterator to segmenter interface
+  * added format strings for defining the pattern result strings in pattern matcher
+  * added library for printing pattern matching results with format string
+  * rewrote relocation of resources based on the new file locator interface in strusBase
+  * some method renamings in pattern matcher interface
+  * replaced some low level debug macros with debug trace calls
+ -- Patrick Frey <patrickpfrey@yahoo.com>  Thu, 24 Jan 2019 07:30:00 +0100
+
 strusanalyzer (0.16.0-1) unstable; urgency=low
   * moved pseudo random number generator to strus base
   * added priority to features to eliminate features entirely covered by a single feature of higher priority
