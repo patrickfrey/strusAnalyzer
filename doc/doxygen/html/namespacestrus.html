@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -103,6 +103,10 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a detector that returns a content description for a document content it recognizes.  <a href="classstrus_1_1DocumentClassDetectorInterface.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1TagAttributeMarkupInterface.html">TagAttributeMarkupInterface</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1DocumentTagMarkupDef.html">DocumentTagMarkupDef</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PatternResultFormatContext.html">PatternResultFormatContext</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Context for mapping result format strings (allocator,maps,etc.)  <a href="classstrus_1_1PatternResultFormatContext.html#details">More...</a><br/></td></tr>
@@ -282,6 +286,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a081d660dc6991ab172732635ab951149"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1DocumentClassDetectorInterface.html">DocumentClassDetectorInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a081d660dc6991ab172732635ab951149">createDetector_std</a> (const <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *textproc, ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a081d660dc6991ab172732635ab951149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the standard content detector (with ownership)  <a href="#a081d660dc6991ab172732635ab951149">More...</a><br/></td></tr>
 <tr class="separator:a081d660dc6991ab172732635ab951149"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2659c4ca825e64f0cfc7d66f74a8bba2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a2659c4ca825e64f0cfc7d66f74a8bba2">markupDocumentTags</a> (const <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;documentClass, const std::string &amp;content, const std::vector&lt; <a class="el" href="classstrus_1_1DocumentTagMarkupDef.html">DocumentTagMarkupDef</a> &gt; &amp;markups, const <a class="el" href="classstrus_1_1TextProcessorInterface.html">TextProcessorInterface</a> *textproc, ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="memdesc:a2659c4ca825e64f0cfc7d66f74a8bba2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze a content and put markups on every tag matching an expression.  <a href="#a2659c4ca825e64f0cfc7d66f74a8bba2">More...</a><br/></td></tr>
+<tr class="separator:a2659c4ca825e64f0cfc7d66f74a8bba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a442a82e9501f392c5b2dc60e2f30cd2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1TokenMarkupInstanceInterface.html">TokenMarkupInstanceInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a442a82e9501f392c5b2dc60e2f30cd2f">createTokenMarkupInstance_standard</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a442a82e9501f392c5b2dc60e2f30cd2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the interface for markup of tokens in a document text.  <a href="#a442a82e9501f392c5b2dc60e2f30cd2f">More...</a><br/></td></tr>
 <tr class="separator:a442a82e9501f392c5b2dc60e2f30cd2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -356,6 +363,8 @@ Functions</h2></td></tr>
 <tr class="memitem:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851">createSegmenter_cjson</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document JSON segmenter based on cjson.  <a href="#afb64c2f853f6e8d0f4efe36a0ed17851">More...</a><br/></td></tr>
 <tr class="separator:afb64c2f853f6e8d0f4efe36a0ed17851"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c4b65eb733f0e9a68f2411773febdce"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a9c4b65eb733f0e9a68f2411773febdce">splitJsonDocumentList</a> (const std::string &amp;encoding, const std::string &amp;content, ErrorBufferInterface *errorhnd)</td></tr>
+<tr class="separator:a9c4b65eb733f0e9a68f2411773febdce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5251d30e58decca2ee580d681a62ba1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstrus_1_1SegmenterInterface.html">SegmenterInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrus.html#a5251d30e58decca2ee580d681a62ba1c">createSegmenter_plain</a> (ErrorBufferInterface *errorhnd)</td></tr>
 <tr class="memdesc:a5251d30e58decca2ee580d681a62ba1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a document plain text segmenter.  <a href="#a5251d30e58decca2ee580d681a62ba1c">More...</a><br/></td></tr>
 <tr class="separator:a5251d30e58decca2ee580d681a62ba1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2137,6 +2146,64 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a2659c4ca825e64f0cfc7d66f74a8bba2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string strus::markupDocumentTags </td>
+          <td>(</td>
+          <td class="paramtype">const analyzer::DocumentClass &amp;&#160;</td>
+          <td class="paramname"><em>documentClass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>content</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; DocumentTagMarkupDef &gt; &amp;&#160;</td>
+          <td class="paramname"><em>markups</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TextProcessorInterface *&#160;</td>
+          <td class="paramname"><em>textproc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Analyze a content and put markups on every tag matching an expression. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>This function is currently only implemented for XML </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">documentClass</td><td>document class of the content with the encoding specified </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">content</td><td>the content to process </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">markups</td><td>array of definitions for markup </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">textproc</td><td>text processor interface </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">errorhnd</td><td>error buffer for reporting errors/exceptions </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the tagged document </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a60efcada27b93a437410698fe61244e0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2173,11 +2240,43 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a9c4b65eb733f0e9a68f2411773febdce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; strus::splitJsonDocumentList </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>encoding</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>content</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ErrorBufferInterface *&#160;</td>
+          <td class="paramname"><em>errorhnd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

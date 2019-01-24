@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -75,16 +75,16 @@
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerDataInterface_1_1Element.html">Element</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output element of POS tagging.  <a href="classstrus_1_1PosTaggerDataInterface_1_1Element.html#details">More...</a><br/></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output element declaration for POS tagging.  <a href="classstrus_1_1PosTaggerDataInterface_1_1Element.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7ba03234b114afe71db93f2baacafb4"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerDataInterface.html#ac7ba03234b114afe71db93f2baacafb4">~PosTaggerDataInterface</a> ()</td></tr>
 <tr class="separator:ac7ba03234b114afe71db93f2baacafb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affbfdc479fc89ea2e600f9a0034afe16"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerDataInterface.html#affbfdc479fc89ea2e600f9a0034afe16">defineTag</a> (const std::string &amp;posentity, const std::string &amp;tag)=0</td></tr>
-<tr class="memdesc:affbfdc479fc89ea2e600f9a0034afe16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the tag to be used for a specific POS entity type.  <a href="#affbfdc479fc89ea2e600f9a0034afe16">More...</a><br/></td></tr>
-<tr class="separator:affbfdc479fc89ea2e600f9a0034afe16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afea3b665af4f8829836117aec69e1019"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerDataInterface.html#afea3b665af4f8829836117aec69e1019">declareIgnoredToken</a> (const std::string &amp;value)=0</td></tr>
+<tr class="memdesc:afea3b665af4f8829836117aec69e1019"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare a token to be ignored in the document elements, if it does not match.  <a href="#afea3b665af4f8829836117aec69e1019">More...</a><br/></td></tr>
+<tr class="separator:afea3b665af4f8829836117aec69e1019"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a530cbcaffdaf05152377b42db0bb20b2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerDataInterface.html#a530cbcaffdaf05152377b42db0bb20b2">insert</a> (int docno, const std::vector&lt; <a class="el" href="classstrus_1_1PosTaggerDataInterface_1_1Element.html">Element</a> &gt; &amp;sequence)=0</td></tr>
 <tr class="memdesc:a530cbcaffdaf05152377b42db0bb20b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a tagged text chunk.  <a href="#a530cbcaffdaf05152377b42db0bb20b2">More...</a><br/></td></tr>
 <tr class="separator:a530cbcaffdaf05152377b42db0bb20b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,7 +119,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="affbfdc479fc89ea2e600f9a0034afe16"></a>
+<a class="anchor" id="afea3b665af4f8829836117aec69e1019"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -127,21 +127,11 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void strus::PosTaggerDataInterface::defineTag </td>
+          <td class="memname">virtual void strus::PosTaggerDataInterface::declareIgnoredToken </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>posentity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>value</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>tag</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -151,15 +141,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Define the tag to be used for a specific POS entity type. </p>
+<p>Declare a token to be ignored in the document elements, if it does not match. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">posentity</td><td>POS entity type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tag</td><td>to use for 'type' </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>value of the token </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section remark"><dt>Remarks</dt><dd>Not allowed anymore after first insert </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>e.g. delimiter that might or might not be part of document segmentation because it belongs to the set of tokens potentially added in the input creation as delimiter. </dd></dl>
 
 </div>
 </div>
@@ -283,7 +272,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -79,9 +79,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae2c50fdf6be891c9e981f291f528edda"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerInstanceInterface.html#ae2c50fdf6be891c9e981f291f528edda">addContentExpression</a> (const std::string &amp;expression)=0</td></tr>
 <tr class="memdesc:ae2c50fdf6be891c9e981f291f528edda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an expression for selecting chunks from a document to do tagging.  <a href="#ae2c50fdf6be891c9e981f291f528edda">More...</a><br/></td></tr>
 <tr class="separator:ae2c50fdf6be891c9e981f291f528edda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fe20e4f606f9e1ec9d703613516f5e3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerInstanceInterface.html#a0fe20e4f606f9e1ec9d703613516f5e3">addPosTaggerInputPunctuation</a> (const std::string &amp;expression, const std::string &amp;punct)=0</td></tr>
-<tr class="memdesc:a0fe20e4f606f9e1ec9d703613516f5e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a punktuation marker for POS tagger input.  <a href="#a0fe20e4f606f9e1ec9d703613516f5e3">More...</a><br/></td></tr>
-<tr class="separator:a0fe20e4f606f9e1ec9d703613516f5e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46faa887bfc2168ec5bde01c12313c4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerInstanceInterface.html#ac46faa887bfc2168ec5bde01c12313c4">addPosTaggerInputPunctuation</a> (const std::string &amp;expression, const std::string &amp;punct, int priority)=0</td></tr>
+<tr class="memdesc:ac46faa887bfc2168ec5bde01c12313c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a punktuation marker for POS tagger input.  <a href="#ac46faa887bfc2168ec5bde01c12313c4">More...</a><br/></td></tr>
+<tr class="separator:ac46faa887bfc2168ec5bde01c12313c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f9210d735c09b2e6f24c26424337e4e"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1PosTaggerInstanceInterface.html#a7f9210d735c09b2e6f24c26424337e4e">getPosTaggerInput</a> (const <a class="el" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a> &amp;dclass, const std::string &amp;content) const =0</td></tr>
 <tr class="memdesc:a7f9210d735c09b2e6f24c26424337e4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map a document to a text string as input of POS tagging.  <a href="#a7f9210d735c09b2e6f24c26424337e4e">More...</a><br/></td></tr>
 <tr class="separator:a7f9210d735c09b2e6f24c26424337e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,7 +150,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a0fe20e4f606f9e1ec9d703613516f5e3"></a>
+<a class="anchor" id="ac46faa887bfc2168ec5bde01c12313c4"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -167,7 +167,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>punct</em>&#160;</td>
+          <td class="paramname"><em>punct</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>priority</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -187,6 +193,7 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">expression</td><td>expression selecting the marker position </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">punct</td><td>punctuation marker value </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">priority</td><td>that selects one of many subsequent punctuations, the one with highest priority is written in POS tagger input </td></tr>
   </table>
   </dd>
 </dl>
@@ -300,7 +307,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

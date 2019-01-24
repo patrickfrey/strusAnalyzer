@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -69,23 +69,27 @@
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef _STRUS_ANALYZER_SEGMENTER_CJSON_LIB_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _STRUS_ANALYZER_SEGMENTER_CJSON_LIB_HPP_INCLUDED</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>strus {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">class </span>SegmenterInterface;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;SegmenterInterface* <a class="code" href="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851">createSegmenter_cjson</a>( ErrorBufferInterface* errorhnd);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>strus {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">class </span>SegmenterInterface;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">class </span>ErrorBufferInterface;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;SegmenterInterface* <a class="code" href="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851">createSegmenter_cjson</a>( ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;std::vector&lt;std::string&gt; <a class="code" href="namespacestrus.html#a9c4b65eb733f0e9a68f2411773febdce">splitJsonDocumentList</a>( <span class="keyword">const</span> std::string&amp; encoding, <span class="keyword">const</span> std::string&amp; content, ErrorBufferInterface* errorhnd);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="namespacestrus_html_a9c4b65eb733f0e9a68f2411773febdce"><div class="ttname"><a href="namespacestrus.html#a9c4b65eb733f0e9a68f2411773febdce">strus::splitJsonDocumentList</a></div><div class="ttdeci">std::vector&lt; std::string &gt; splitJsonDocumentList(const std::string &amp;encoding, const std::string &amp;content, ErrorBufferInterface *errorhnd)</div></div>
 <div class="ttc" id="namespacestrus_html_afb64c2f853f6e8d0f4efe36a0ed17851"><div class="ttname"><a href="namespacestrus.html#afb64c2f853f6e8d0f4efe36a0ed17851">strus::createSegmenter_cjson</a></div><div class="ttdeci">SegmenterInterface * createSegmenter_cjson(ErrorBufferInterface *errorhnd)</div><div class="ttdoc">Get a document JSON segmenter based on cjson. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

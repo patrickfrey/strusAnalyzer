@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -101,52 +101,58 @@
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                m_origpos = origpos_;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">   62</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">setOrdpos</a>( <span class="keywordtype">int</span> ordpos_)</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#acc68941131ef5bb0c00910d407d18427">   62</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#acc68941131ef5bb0c00910d407d18427">setOrigSize</a>( <span class="keywordtype">int</span> origsize_)</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                m_ordpos = ordpos_;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                m_origsize = origsize_ &gt; 0 ? (uint32_t)origsize_ : 0;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">   68</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">compare</a>( <span class="keyword">const</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>&amp; o)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keywordtype">int</span> rt = m_origpos.<a class="code" href="structstrus_1_1analyzer_1_1Position.html#af37d3173159f96a15bee1a33faa1cc00">compare</a>( o.m_origpos);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <span class="keywordflow">if</span> (rt) <span class="keywordflow">return</span> rt;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                <span class="keywordflow">return</span> ((m_origsize &lt; o.m_origsize) - (m_origsize &gt; o.m_origsize));</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">   75</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>&amp; o)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">   69</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">setOrdpos</a>( <span class="keywordtype">int</span> ordpos_)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                m_ordpos = ordpos_;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">   75</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">compare</a>( <span class="keyword">const</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>&amp; o)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordtype">int</span> cmp = m_origpos.<a class="code" href="structstrus_1_1analyzer_1_1Position.html#af37d3173159f96a15bee1a33faa1cc00">compare</a>( o.m_origpos);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">return</span> (cmp == 0) ? (m_origsize &lt; o.m_origsize) : cmp &lt; 0;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        uint32_t m_ordpos;      </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        uint32_t m_origsize;    </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <a class="code" href="structstrus_1_1analyzer_1_1Position.html">Position</a> m_origpos;     </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;};</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordtype">int</span> rt = m_origpos.<a class="code" href="structstrus_1_1analyzer_1_1Position.html#af37d3173159f96a15bee1a33faa1cc00">compare</a>( o.m_origpos);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">if</span> (rt) <span class="keywordflow">return</span> rt;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keywordflow">return</span> ((m_origsize &lt; o.m_origsize) - (m_origsize &gt; o.m_origsize));</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        }</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">   82</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">operator &lt; </a>(<span class="keyword">const</span> <a class="code" href="structstrus_1_1analyzer_1_1Token.html">Token</a>&amp; o)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                <span class="keywordtype">int</span> cmp = m_origpos.<a class="code" href="structstrus_1_1analyzer_1_1Position.html#af37d3173159f96a15bee1a33faa1cc00">compare</a>( o.m_origpos);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keywordflow">return</span> (cmp == 0) ? (m_origsize &lt; o.m_origsize) : cmp &lt; 0;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        uint32_t m_ordpos;      </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        uint32_t m_origsize;    </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <a class="code" href="structstrus_1_1analyzer_1_1Position.html">Position</a> m_origpos;     </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_ac8d42c7924302dbe90980dc5cc458f03"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#ac8d42c7924302dbe90980dc5cc458f03">strus::analyzer::Token::setOrigPosition</a></div><div class="ttdeci">void setOrigPosition(const Position &amp;origpos_)</div><div class="ttdoc">Set the original segment index of the token in the source. </div><div class="ttdef"><b>Definition:</b> token.hpp:55</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_ab825d7f94373e786be6e6267668d9655"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#ab825d7f94373e786be6e6267668d9655">strus::analyzer::Token::Token</a></div><div class="ttdeci">Token(const Token &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> token.hpp:40</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a2408a440dd6105fd9dada9abeb258780"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a2408a440dd6105fd9dada9abeb258780">strus::analyzer::Token::ordpos</a></div><div class="ttdeci">int ordpos() const </div><div class="ttdoc">Get the ordinal (counting) position in the document. This value is used to assign the term position...</div><div class="ttdef"><b>Definition:</b> token.hpp:45</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_ad772eca4ca74931ec922a931b2a38452"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#ad772eca4ca74931ec922a931b2a38452">strus::analyzer::Token::origpos</a></div><div class="ttdeci">Position &amp; origpos()</div><div class="ttdoc">Get the start position of this token in the original document. </div><div class="ttdef"><b>Definition:</b> token.hpp:49</div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a8a7694a5f6ae09793a24811f93a76525"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">strus::analyzer::Token::compare</a></div><div class="ttdeci">int compare(const Token &amp;o) const </div><div class="ttdoc">Compare with another token. </div><div class="ttdef"><b>Definition:</b> token.hpp:68</div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a9f100100148f56cc064d31629b1a49c1"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">strus::analyzer::Token::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const Token &amp;o) const </div><div class="ttdoc">Compare operator for sort. </div><div class="ttdef"><b>Definition:</b> token.hpp:75</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a8a7694a5f6ae09793a24811f93a76525"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a8a7694a5f6ae09793a24811f93a76525">strus::analyzer::Token::compare</a></div><div class="ttdeci">int compare(const Token &amp;o) const </div><div class="ttdoc">Compare with another token. </div><div class="ttdef"><b>Definition:</b> token.hpp:75</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a9f100100148f56cc064d31629b1a49c1"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a9f100100148f56cc064d31629b1a49c1">strus::analyzer::Token::operator&lt;</a></div><div class="ttdeci">bool operator&lt;(const Token &amp;o) const </div><div class="ttdoc">Compare operator for sort. </div><div class="ttdef"><b>Definition:</b> token.hpp:82</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_aba953fed166cce6a30b58a8f85ca846d"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#aba953fed166cce6a30b58a8f85ca846d">strus::analyzer::Token::origsize</a></div><div class="ttdeci">int origsize() const </div><div class="ttdoc">Get the byte size of the translated token string (UTF-8) in the original document segment...</div><div class="ttdef"><b>Definition:</b> token.hpp:51</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Position_html_af37d3173159f96a15bee1a33faa1cc00"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Position.html#af37d3173159f96a15bee1a33faa1cc00">strus::analyzer::Position::compare</a></div><div class="ttdeci">int compare(const Position &amp;o) const </div><div class="ttdoc">Compare with another position. </div><div class="ttdef"><b>Definition:</b> position.hpp:61</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_acc68941131ef5bb0c00910d407d18427"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#acc68941131ef5bb0c00910d407d18427">strus::analyzer::Token::setOrigSize</a></div><div class="ttdeci">void setOrigSize(int origsize_)</div><div class="ttdoc">Set the original size of the token in the source. </div><div class="ttdef"><b>Definition:</b> token.hpp:62</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a94c9dc79ba5eafa696661dc8f947b634"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a94c9dc79ba5eafa696661dc8f947b634">strus::analyzer::Token::Token</a></div><div class="ttdeci">Token()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> token.hpp:25</div></div>
 <div class="ttc" id="position_8hpp_html"><div class="ttname"><a href="position_8hpp.html">position.hpp</a></div><div class="ttdoc">Structure describing a position in a document source by segment and offset. </div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a40076254f25e658be77a59b9d37e2f98"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a40076254f25e658be77a59b9d37e2f98">strus::analyzer::Token::Token</a></div><div class="ttdeci">Token(int ordpos_, const Position &amp;origpos_, int origsize_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> token.hpp:31</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Position_html"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Position.html">strus::analyzer::Position</a></div><div class="ttdoc">Structure describing a position in a document source by segment and offset. </div><div class="ttdef"><b>Definition:</b> position.hpp:22</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html">strus::analyzer::Token</a></div><div class="ttdoc">Structure describing a token in the document by its start and end position. </div><div class="ttdef"><b>Definition:</b> token.hpp:21</div></div>
-<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a5a26dec9016eb6ee2790b28c3a69dcc5"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">strus::analyzer::Token::setOrdpos</a></div><div class="ttdeci">void setOrdpos(int ordpos_)</div><div class="ttdoc">Set the ordinal position of the token in the source (adjusted in case of multiple segments) ...</div><div class="ttdef"><b>Definition:</b> token.hpp:62</div></div>
+<div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a5a26dec9016eb6ee2790b28c3a69dcc5"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a5a26dec9016eb6ee2790b28c3a69dcc5">strus::analyzer::Token::setOrdpos</a></div><div class="ttdeci">void setOrdpos(int ordpos_)</div><div class="ttdoc">Set the ordinal position of the token in the source (adjusted in case of multiple segments) ...</div><div class="ttdef"><b>Definition:</b> token.hpp:69</div></div>
 <div class="ttc" id="structstrus_1_1analyzer_1_1Token_html_a9246a5a063bb94f8564906a0647f9b71"><div class="ttname"><a href="structstrus_1_1analyzer_1_1Token.html#a9246a5a063bb94f8564906a0647f9b71">strus::analyzer::Token::origpos</a></div><div class="ttdeci">const Position &amp; origpos() const </div><div class="ttdoc">Get the start position of this token in the original document. </div><div class="ttdef"><b>Definition:</b> token.hpp:47</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -60,6 +60,7 @@ analyzer__objbuild_8hpp_source.html
 analyzer__prgload__std_8hpp_source.html
 contentstats__std_8hpp_source.html
 detector__std_8hpp_source.html
+markup__document__tags_8hpp_source.html
 markup__std_8hpp_source.html
 normalizer__charconv_8hpp_source.html
 normalizer__dateconv_8hpp_source.html
@@ -157,6 +158,7 @@ analyzer__objbuild_8hpp.html
 analyzer__prgload__std_8hpp.html
 contentstats__std_8hpp.html
 detector__std_8hpp.html
+markup__document__tags_8hpp.html
 markup__std_8hpp.html
 normalizer__charconv_8hpp.html
 normalizer__dateconv_8hpp.html
@@ -227,6 +229,10 @@ classstrus_1_1DocumentAnalyzerMapInterface.html
 classstrus_1_1DocumentAnalyzerMapInterface-members.html
 classstrus_1_1DocumentClassDetectorInterface.html
 classstrus_1_1DocumentClassDetectorInterface-members.html
+classstrus_1_1TagAttributeMarkupInterface.html
+classstrus_1_1TagAttributeMarkupInterface-members.html
+classstrus_1_1DocumentTagMarkupDef.html
+classstrus_1_1DocumentTagMarkupDef-members.html
 classstrus_1_1PatternResultFormatContext.html
 classstrus_1_1PatternResultFormatContext-members.html
 classstrus_1_1PatternResultFormatVariableMap.html
@@ -375,6 +381,7 @@ annotated.html
 classes.html
 hierarchy.html
 functions.html
+functions_b.html
 functions_c.html
 functions_d.html
 functions_e.html

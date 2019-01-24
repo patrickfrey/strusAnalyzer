@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -79,31 +79,37 @@
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#abcc576c0b9b3c139f5aaf8d45fddad0e">   26</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#abcc576c0b9b3c139f5aaf8d45fddad0e">ContentStatisticsView</a>(){}</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a6136df38c8f8978da89cb125245bf7cd">   29</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a6136df38c8f8978da89cb125245bf7cd">ContentStatisticsView</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html">ContentStatisticsView</a>&amp; o)</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                :m_elements(o.m_elements){}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                :m_elements(o.m_elements),m_attributes(o.m_attributes),m_expressions(o.m_expressions){}</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a4c575e32437d9086699522a0abfb3fe3">   34</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a4c575e32437d9086699522a0abfb3fe3">ContentStatisticsView</a>( <span class="keyword">const</span> std::vector&lt;ContentStatisticsElementView&gt;&amp; elements_)</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_elements(elements_){}</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a24c201935ba00b53856dd50f191c8764">   34</a></span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a24c201935ba00b53856dd50f191c8764">ContentStatisticsView</a>( <span class="keyword">const</span> std::vector&lt;ContentStatisticsElementView&gt;&amp; elements_, <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; attributes_, <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; expressions_)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                :m_elements(elements_),m_attributes(attributes_),m_expressions(expressions_){}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#aafa3024328eb9f7018b1be331afb2023">   38</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;ContentStatisticsElementView&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#aafa3024328eb9f7018b1be331afb2023">elements</a>()<span class="keyword"> const       </span>{<span class="keywordflow">return</span> m_elements;}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        std::vector&lt;ContentStatisticsElementView&gt; m_elements;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a54c46d5936efd2efa89d172b7f85aa3e">   40</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a54c46d5936efd2efa89d172b7f85aa3e">attributes</a>()<span class="keyword"> const                      </span>{<span class="keywordflow">return</span> m_attributes;}</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a03fbefaf8aa0e4ce861e4aa22ceb3cb8">   42</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a03fbefaf8aa0e4ce861e4aa22ceb3cb8">expressions</a>()<span class="keyword"> const                     </span>{<span class="keywordflow">return</span> m_expressions;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_a4c575e32437d9086699522a0abfb3fe3"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a4c575e32437d9086699522a0abfb3fe3">strus::analyzer::ContentStatisticsView::ContentStatisticsView</a></div><div class="ttdeci">ContentStatisticsView(const std::vector&lt; ContentStatisticsElementView &gt; &amp;elements_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:34</div></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        std::vector&lt;ContentStatisticsElementView&gt; m_elements;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::vector&lt;std::string&gt; m_attributes;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        std::vector&lt;std::string&gt; m_expressions;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_abcc576c0b9b3c139f5aaf8d45fddad0e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#abcc576c0b9b3c139f5aaf8d45fddad0e">strus::analyzer::ContentStatisticsView::ContentStatisticsView</a></div><div class="ttdeci">ContentStatisticsView()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:26</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html">strus::analyzer::ContentStatisticsView</a></div><div class="ttdoc">Structure describing the internal representation of a content statistics library. ...</div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:22</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_a24c201935ba00b53856dd50f191c8764"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a24c201935ba00b53856dd50f191c8764">strus::analyzer::ContentStatisticsView::ContentStatisticsView</a></div><div class="ttdeci">ContentStatisticsView(const std::vector&lt; ContentStatisticsElementView &gt; &amp;elements_, const std::vector&lt; std::string &gt; &amp;attributes_, const std::vector&lt; std::string &gt; &amp;expressions_)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:34</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_a6136df38c8f8978da89cb125245bf7cd"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a6136df38c8f8978da89cb125245bf7cd">strus::analyzer::ContentStatisticsView::ContentStatisticsView</a></div><div class="ttdeci">ContentStatisticsView(const ContentStatisticsView &amp;o)</div><div class="ttdoc">Copy constructor. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:29</div></div>
-<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_aafa3024328eb9f7018b1be331afb2023"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#aafa3024328eb9f7018b1be331afb2023">strus::analyzer::ContentStatisticsView::elements</a></div><div class="ttdeci">const std::vector&lt; ContentStatisticsElementView &gt; &amp; elements() const </div><div class="ttdoc">Get the function. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:38</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_aafa3024328eb9f7018b1be331afb2023"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#aafa3024328eb9f7018b1be331afb2023">strus::analyzer::ContentStatisticsView::elements</a></div><div class="ttdeci">const std::vector&lt; ContentStatisticsElementView &gt; &amp; elements() const </div><div class="ttdoc">Get the list of elements. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:38</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_a03fbefaf8aa0e4ce861e4aa22ceb3cb8"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a03fbefaf8aa0e4ce861e4aa22ceb3cb8">strus::analyzer::ContentStatisticsView::expressions</a></div><div class="ttdeci">const std::vector&lt; std::string &gt; &amp; expressions() const </div><div class="ttdoc">Get the list of expressions. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:42</div></div>
+<div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html_a54c46d5936efd2efa89d172b7f85aa3e"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html#a54c46d5936efd2efa89d172b7f85aa3e">strus::analyzer::ContentStatisticsView::attributes</a></div><div class="ttdeci">const std::vector&lt; std::string &gt; &amp; attributes() const </div><div class="ttdoc">Get the list of visible attributes. </div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:40</div></div>
 <div class="ttc" id="contentStatisticsElementView_8hpp_html"><div class="ttname"><a href="contentStatisticsElementView_8hpp.html">contentStatisticsElementView.hpp</a></div><div class="ttdoc">Structures describing the internal representation of a feature in a document analyzer. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

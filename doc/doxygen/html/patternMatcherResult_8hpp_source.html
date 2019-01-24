@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -93,7 +93,7 @@
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html">PatternMatcherResult</a>&amp; operator= ( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html">PatternMatcherResult</a>&amp; ) = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#a682a3616637ecf1765eafba3a9c7d409">   40</a></span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#a682a3616637ecf1765eafba3a9c7d409">PatternMatcherResult</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html">PatternMatcherResult</a>&amp; o)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                :<a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html">PatternMatcherResult</a>(o),m_itemlist(o.m_itemlist){}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                :<a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResultItem.html">PatternMatcherResultItem</a>(o),m_itemlist(o.m_itemlist){}</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span>        <a class="code" href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#acc798168c15853d838151f4446e784e0">~PatternMatcherResult</a>(){}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
@@ -106,6 +106,7 @@
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}} <span class="comment">//namespace</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherResult_html_a5fc4d7b15ac7e311fd7c1e0501a7c43b"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#a5fc4d7b15ac7e311fd7c1e0501a7c43b">strus::analyzer::PatternMatcherResult::items</a></div><div class="ttdeci">const std::vector&lt; Item &gt; &amp; items() const </div><div class="ttdoc">List of result items defined by variables assigned to nodes of the pattern of the match...</div><div class="ttdef"><b>Definition:</b> patternMatcherResult.hpp:47</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherResult_html_acc798168c15853d838151f4446e784e0"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#acc798168c15853d838151f4446e784e0">strus::analyzer::PatternMatcherResult::~PatternMatcherResult</a></div><div class="ttdeci">~PatternMatcherResult()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherResult.hpp:44</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1PatternMatcherResult_html_a95e0923046076e79bf22e526d2ceef27"><div class="ttname"><a href="classstrus_1_1analyzer_1_1PatternMatcherResult.html#a95e0923046076e79bf22e526d2ceef27">strus::analyzer::PatternMatcherResult::PatternMatcherResult</a></div><div class="ttdeci">PatternMatcherResult()</div><div class="ttdoc">Default constructor. </div><div class="ttdef"><b>Definition:</b> patternMatcherResult.hpp:28</div></div>
@@ -120,7 +121,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

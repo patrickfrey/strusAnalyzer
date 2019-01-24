@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a074d45c09d57a24762876b19b0ef4638"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1ContentStatisticsInterface.html#a074d45c09d57a24762876b19b0ef4638">addLibraryElement</a> (const std::string &amp;type, const std::string &amp;regex, int priority, int minLength, int maxLength, <a class="el" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a> *tokenizer, const std::vector&lt; <a class="el" href="classstrus_1_1NormalizerFunctionInstanceInterface.html">NormalizerFunctionInstanceInterface</a> * &gt; &amp;normalizers)=0</td></tr>
 <tr class="memdesc:a074d45c09d57a24762876b19b0ef4638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declare an element of the library used to categorize features.  <a href="#a074d45c09d57a24762876b19b0ef4638">More...</a><br/></td></tr>
 <tr class="separator:a074d45c09d57a24762876b19b0ef4638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3546c7af39da946f5cde6ac82845fa09"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1ContentStatisticsInterface.html#a3546c7af39da946f5cde6ac82845fa09">addVisibleAttribute</a> (const std::string &amp;name)=0</td></tr>
+<tr class="memdesc:a3546c7af39da946f5cde6ac82845fa09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define an attribute to be visible in content statistics path conditions.  <a href="#a3546c7af39da946f5cde6ac82845fa09">More...</a><br/></td></tr>
+<tr class="separator:a3546c7af39da946f5cde6ac82845fa09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b1f29c9b2bfe6413c6d13c2d68fd8dc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1ContentStatisticsInterface.html#a0b1f29c9b2bfe6413c6d13c2d68fd8dc">addSelectorExpression</a> (const std::string &amp;expression)=0</td></tr>
+<tr class="memdesc:a0b1f29c9b2bfe6413c6d13c2d68fd8dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a selector expression that is chosen for content elements that matches it.  <a href="#a0b1f29c9b2bfe6413c6d13c2d68fd8dc">More...</a><br/></td></tr>
+<tr class="separator:a0b1f29c9b2bfe6413c6d13c2d68fd8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73ca0a0c7c6a60b4f3f7a33cefcc2684"><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
 <a class="el" href="classstrus_1_1ContentStatisticsContextInterface.html">ContentStatisticsContextInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstrus_1_1ContentStatisticsInterface.html#a73ca0a0c7c6a60b4f3f7a33cefcc2684">createContext</a> () const =0</td></tr>
 <tr class="memdesc:a73ca0a0c7c6a60b4f3f7a33cefcc2684"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the context used for collecting document statitics.  <a href="#a73ca0a0c7c6a60b4f3f7a33cefcc2684">More...</a><br/></td></tr>
@@ -195,6 +201,70 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0b1f29c9b2bfe6413c6d13c2d68fd8dc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::ContentStatisticsInterface::addSelectorExpression </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>expression</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define a selector expression that is chosen for content elements that matches it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expression</td><td>expression for selecting chunks </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a3546c7af39da946f5cde6ac82845fa09"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void strus::ContentStatisticsInterface::addVisibleAttribute </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Define an attribute to be visible in content statistics path conditions. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>of the attribute to show in a path </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a73ca0a0c7c6a60b4f3f7a33cefcc2684"></a>
 <div class="memitem">
 <div class="memproto">
@@ -254,7 +324,7 @@ Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

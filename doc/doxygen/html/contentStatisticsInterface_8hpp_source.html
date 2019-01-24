@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -96,30 +96,36 @@
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        <a class="code" href="classstrus_1_1TokenizerFunctionInstanceInterface.html">TokenizerFunctionInstanceInterface</a>* tokenizer,</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        <span class="keyword">const</span> std::vector&lt;NormalizerFunctionInstanceInterface*&gt;&amp; normalizers)=0;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1ContentStatisticsContextInterface.html">ContentStatisticsContextInterface</a>* <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a73ca0a0c7c6a60b4f3f7a33cefcc2684">createContext</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a3546c7af39da946f5cde6ac82845fa09">addVisibleAttribute</a>( <span class="keyword">const</span> std::string&amp; name)=0;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html">analyzer::ContentStatisticsView</a> <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a76289292d8e9c2bc9c6fec33a6be168d">view</a>() <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a0b1f29c9b2bfe6413c6d13c2d68fd8dc">addSelectorExpression</a>( <span class="keyword">const</span> std::string&amp; expression)=0;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1ContentStatisticsContextInterface.html">ContentStatisticsContextInterface</a>* <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a73ca0a0c7c6a60b4f3f7a33cefcc2684">createContext</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">virtual</span> <a class="code" href="classstrus_1_1analyzer_1_1ContentStatisticsView.html">analyzer::ContentStatisticsView</a> <a class="code" href="classstrus_1_1ContentStatisticsInterface.html#a76289292d8e9c2bc9c6fec33a6be168d">view</a>() <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a1d3a15be1cd4d3a31fc33c56ab32fec3"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a1d3a15be1cd4d3a31fc33c56ab32fec3">strus::ContentStatisticsInterface::~ContentStatisticsInterface</a></div><div class="ttdeci">virtual ~ContentStatisticsInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> contentStatisticsInterface.hpp:36</div></div>
 <div class="ttc" id="contentStatisticsContextInterface_8hpp_html"><div class="ttname"><a href="contentStatisticsContextInterface_8hpp.html">contentStatisticsContextInterface.hpp</a></div><div class="ttdoc">Interface for context for collecting content statistics. </div></div>
 <div class="ttc" id="contentStatisticsItem_8hpp_html"><div class="ttname"><a href="contentStatisticsItem_8hpp.html">contentStatisticsItem.hpp</a></div><div class="ttdoc">Structure describing an item of the structure statistics analysis of a document. </div></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html">strus::ContentStatisticsInterface</a></div><div class="ttdoc">Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the...</div><div class="ttdef"><b>Definition:</b> contentStatisticsInterface.hpp:32</div></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsContextInterface_html"><div class="ttname"><a href="classstrus_1_1ContentStatisticsContextInterface.html">strus::ContentStatisticsContextInterface</a></div><div class="ttdoc">Defines a program for analyzing a document, splitting it into normalized terms that can be fed to the...</div><div class="ttdef"><b>Definition:</b> contentStatisticsContextInterface.hpp:22</div></div>
+<div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a0b1f29c9b2bfe6413c6d13c2d68fd8dc"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a0b1f29c9b2bfe6413c6d13c2d68fd8dc">strus::ContentStatisticsInterface::addSelectorExpression</a></div><div class="ttdeci">virtual void addSelectorExpression(const std::string &amp;expression)=0</div><div class="ttdoc">Define a selector expression that is chosen for content elements that matches it. ...</div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1ContentStatisticsView_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1ContentStatisticsView.html">strus::analyzer::ContentStatisticsView</a></div><div class="ttdoc">Structure describing the internal representation of a content statistics library. ...</div><div class="ttdef"><b>Definition:</b> contentStatisticsView.hpp:22</div></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a76289292d8e9c2bc9c6fec33a6be168d"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a76289292d8e9c2bc9c6fec33a6be168d">strus::ContentStatisticsInterface::view</a></div><div class="ttdeci">virtual analyzer::ContentStatisticsView view() const =0</div><div class="ttdoc">Return a structure with all definitions for introspection. </div></div>
 <div class="ttc" id="classstrus_1_1TokenizerFunctionInstanceInterface_html"><div class="ttname"><a href="classstrus_1_1TokenizerFunctionInstanceInterface.html">strus::TokenizerFunctionInstanceInterface</a></div><div class="ttdoc">Interface for tokenization. </div><div class="ttdef"><b>Definition:</b> tokenizerFunctionInstanceInterface.hpp:21</div></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a73ca0a0c7c6a60b4f3f7a33cefcc2684"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a73ca0a0c7c6a60b4f3f7a33cefcc2684">strus::ContentStatisticsInterface::createContext</a></div><div class="ttdeci">virtual ContentStatisticsContextInterface * createContext() const =0</div><div class="ttdoc">Create the context used for collecting document statitics. </div></div>
 <div class="ttc" id="contentStatisticsView_8hpp_html"><div class="ttname"><a href="contentStatisticsView_8hpp.html">contentStatisticsView.hpp</a></div><div class="ttdoc">Structures describing the internal representation of an aggregator in a document analyzer. </div></div>
+<div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a3546c7af39da946f5cde6ac82845fa09"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a3546c7af39da946f5cde6ac82845fa09">strus::ContentStatisticsInterface::addVisibleAttribute</a></div><div class="ttdeci">virtual void addVisibleAttribute(const std::string &amp;name)=0</div><div class="ttdoc">Define an attribute to be visible in content statistics path conditions. </div></div>
 <div class="ttc" id="classstrus_1_1ContentStatisticsInterface_html_a074d45c09d57a24762876b19b0ef4638"><div class="ttname"><a href="classstrus_1_1ContentStatisticsInterface.html#a074d45c09d57a24762876b19b0ef4638">strus::ContentStatisticsInterface::addLibraryElement</a></div><div class="ttdeci">virtual void addLibraryElement(const std::string &amp;type, const std::string &amp;regex, int priority, int minLength, int maxLength, TokenizerFunctionInstanceInterface *tokenizer, const std::vector&lt; NormalizerFunctionInstanceInterface * &gt; &amp;normalizers)=0</div><div class="ttdoc">Declare an element of the library used to categorize features. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

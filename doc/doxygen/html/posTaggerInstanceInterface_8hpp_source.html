@@ -27,7 +27,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">strusAnalyzer
-   &#160;<span id="projectnumber">0.16</span>
+   &#160;<span id="projectnumber">0.17</span>
    </div>
   </td>
  </tr>
@@ -83,21 +83,21 @@
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#ae2c50fdf6be891c9e981f291f528edda">addContentExpression</a>( <span class="keyword">const</span> std::string&amp; expression)=0;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#a0fe20e4f606f9e1ec9d703613516f5e3">addPosTaggerInputPunctuation</a>( <span class="keyword">const</span> std::string&amp; expression, <span class="keyword">const</span> std::string&amp; punct)=0;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#a7f9210d735c09b2e6f24c26424337e4e">getPosTaggerInput</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a>&amp; dclass, <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#a4c036f24d3f4cfc2576454a64ee583cb">markupDocument</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1PosTaggerDataInterface.html">PosTaggerDataInterface</a>* data, <span class="keywordtype">int</span> docno, <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a>&amp; dclass, <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}<span class="comment">//namespace</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#ac46faa887bfc2168ec5bde01c12313c4">addPosTaggerInputPunctuation</a>( <span class="keyword">const</span> std::string&amp; expression, <span class="keyword">const</span> std::string&amp; punct, <span class="keywordtype">int</span> priority)=0;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#a7f9210d735c09b2e6f24c26424337e4e">getPosTaggerInput</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a>&amp; dclass, <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">virtual</span> std::string <a class="code" href="classstrus_1_1PosTaggerInstanceInterface.html#a4c036f24d3f4cfc2576454a64ee583cb">markupDocument</a>( <span class="keyword">const</span> <a class="code" href="classstrus_1_1PosTaggerDataInterface.html">PosTaggerDataInterface</a>* data, <span class="keywordtype">int</span> docno, <span class="keyword">const</span> <a class="code" href="classstrus_1_1analyzer_1_1DocumentClass.html">analyzer::DocumentClass</a>&amp; dclass, <span class="keyword">const</span> std::string&amp; content) <span class="keyword">const</span>=0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}<span class="comment">//namespace</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_a4c036f24d3f4cfc2576454a64ee583cb"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#a4c036f24d3f4cfc2576454a64ee583cb">strus::PosTaggerInstanceInterface::markupDocument</a></div><div class="ttdeci">virtual std::string markupDocument(const PosTaggerDataInterface *data, int docno, const analyzer::DocumentClass &amp;dclass, const std::string &amp;content) const =0</div><div class="ttdoc">Markup a document with POS tagging info. </div></div>
 <div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_a7f9210d735c09b2e6f24c26424337e4e"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#a7f9210d735c09b2e6f24c26424337e4e">strus::PosTaggerInstanceInterface::getPosTaggerInput</a></div><div class="ttdeci">virtual std::string getPosTaggerInput(const analyzer::DocumentClass &amp;dclass, const std::string &amp;content) const =0</div><div class="ttdoc">Map a document to a text string as input of POS tagging. </div></div>
 <div class="ttc" id="classstrus_1_1analyzer_1_1DocumentClass_html"><div class="ttname"><a href="classstrus_1_1analyzer_1_1DocumentClass.html">strus::analyzer::DocumentClass</a></div><div class="ttdoc">Defines a description of the properties of an original document processed by the segmenter. </div><div class="ttdef"><b>Definition:</b> documentClass.hpp:21</div></div>
 <div class="ttc" id="documentClass_8hpp_html"><div class="ttname"><a href="documentClass_8hpp.html">documentClass.hpp</a></div><div class="ttdoc">Structure describing the MIME type plus some attributes that could be relevant for analysis of a docu...</div></div>
-<div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_a0fe20e4f606f9e1ec9d703613516f5e3"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#a0fe20e4f606f9e1ec9d703613516f5e3">strus::PosTaggerInstanceInterface::addPosTaggerInputPunctuation</a></div><div class="ttdeci">virtual void addPosTaggerInputPunctuation(const std::string &amp;expression, const std::string &amp;punct)=0</div><div class="ttdoc">Defines a punktuation marker for POS tagger input. </div></div>
+<div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_ac46faa887bfc2168ec5bde01c12313c4"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#ac46faa887bfc2168ec5bde01c12313c4">strus::PosTaggerInstanceInterface::addPosTaggerInputPunctuation</a></div><div class="ttdeci">virtual void addPosTaggerInputPunctuation(const std::string &amp;expression, const std::string &amp;punct, int priority)=0</div><div class="ttdoc">Defines a punktuation marker for POS tagger input. </div></div>
 <div class="ttc" id="classstrus_1_1PosTaggerDataInterface_html"><div class="ttname"><a href="classstrus_1_1PosTaggerDataInterface.html">strus::PosTaggerDataInterface</a></div><div class="ttdoc">Interface for the data built by a POS tagger. </div><div class="ttdef"><b>Definition:</b> posTaggerDataInterface.hpp:24</div></div>
 <div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_ae2c50fdf6be891c9e981f291f528edda"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#ae2c50fdf6be891c9e981f291f528edda">strus::PosTaggerInstanceInterface::addContentExpression</a></div><div class="ttdeci">virtual void addContentExpression(const std::string &amp;expression)=0</div><div class="ttdoc">Defines an expression for selecting chunks from a document to do tagging. </div></div>
 <div class="ttc" id="classstrus_1_1PosTaggerInstanceInterface_html_a720c520da94fb13905bf7767ebf20153"><div class="ttname"><a href="classstrus_1_1PosTaggerInstanceInterface.html#a720c520da94fb13905bf7767ebf20153">strus::PosTaggerInstanceInterface::~PosTaggerInstanceInterface</a></div><div class="ttdeci">virtual ~PosTaggerInstanceInterface()</div><div class="ttdoc">Destructor. </div><div class="ttdef"><b>Definition:</b> posTaggerInstanceInterface.hpp:27</div></div>
@@ -106,7 +106,7 @@
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 8 2018 18:39:20 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 24 2019 11:55:45 for strusAnalyzer by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
