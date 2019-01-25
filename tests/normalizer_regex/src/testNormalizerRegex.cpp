@@ -15,6 +15,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "strus/base/string_format.hpp"
 #include <iostream>
 #include <cstring>
 #include <memory>
@@ -48,11 +49,69 @@ static const Test g_test[] =
 	{"[Aa]+([0123456789]+)[az]*", "$1", "A17az", "17"},
 	{"[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]+([0123456789]+)[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ]*", "$1", "Abracadabra17 is a bad password", "17"},
 	{"[a-zA-Z]+([0-9]+)", "$1", "Abracadabra17", "17"},
+	{"^[^0-9]+", NULL, "Abracadabra17", "Abracadabra"},
+	{"[^0-9]+", NULL, "Abrac4dabra17", "\0Abrac\0dabra\0\0"},
+	{"[a-z]+", NULL, "Abrac4dabra17a", "\0brac\0dabra\0a\0\0"},
 	{"[a-zA-Z]+([0-9]+)a", "$1", "Abracadabra17a", "17"},
 	{"[a-zA-Z]+([0-9]+)[a-z ]+", "$1", "Abracadabra17 is a bad password", "17"},
 	{"[a-zA-Z]+([0-9]+)[a-z ]+([0-9]+)[a-z ]+", "$1", "Abracadabra17 or 18 is a bad password", "17"},
 	{0,0,0,0}
 };
+
+std::string mapOutputPrintable( const char* output, int outputsize=-1)
+{
+	if (!output)
+	{
+		return "NULL";
+	}
+	else if (output[0] == '\0')
+	{
+		std::string rt;
+		rt.push_back( '{');
+		char const* oi = output;
+		char const* oe;
+		if (outputsize < 0)
+		{
+			for (oe=oi; oe[0] || oe[1]; ++oe){}
+		}
+		else
+		{
+			oe = output + outputsize;
+		}
+		int oidx = 0;
+		for (++oi; oi < oe; ++oi,++oidx)
+		{
+			if (oidx) rt.append(", ");
+			char const* pi = oi;
+			oi = std::strchr( oi, '\0');
+			rt.append( pi, oi-pi);
+		}
+		rt.push_back( '}');
+		return rt;
+	}
+	else
+	{
+		return strus::string_format( "'%s'", output);
+	}
+}
+
+std::string mapOutput( const char* output)
+{
+	std::string rt;
+	if (!output)
+	{}
+	else if (output[0] == '\0')
+	{
+		char const* oi = output;
+		for (; oi[0] || oi[1]; ++oi){}
+		rt.append( output, oi - output);
+	}
+	else
+	{
+		rt.append( output);
+	}
+	return rt;
+}
 
 int main( int argc, const char* argv[])
 {
@@ -75,10 +134,20 @@ int main( int argc, const char* argv[])
 		Test const* ti = g_test;
 		for (int tidx=1; ti->regex; ++ti,++tidx)
 		{
-			std::cerr << "[" << tidx << "] matching " << ti->regex << " write " << ti->format << " on " << ti->input;
+			if (ti->format)
+			{
+				std::cerr << "[" << tidx << "] matching " << ti->regex << " write " << ti->format << " on " << ti->input;
+			}
+			else
+			{
+				std::cerr << "[" << tidx << "] matching " << ti->regex << " on " << ti->input;
+			}
 			std::vector<std::string> args;
 			args.push_back( ti->regex);
-			args.push_back( ti->format);
+			if (ti->format)
+			{
+				args.push_back( ti->format);
+			}
 			strus::local_ptr<strus::NormalizerFunctionInstanceInterface> inst( normalizer->createInstance( args, textproc.get()));
 			if (!inst.get()) throw std::runtime_error( "failed to create normalizer");
 
@@ -88,12 +157,15 @@ int main( int argc, const char* argv[])
 				std::cerr << std::endl;
 				throw std::runtime_error( "failed to normalize");
 			}
-			if (result != ti->output)
+			std::string outputstr = mapOutput( ti->output);
+			if (result != outputstr)
 			{
-				std::cerr << " got '" << result << "' but expected '" << ti->output << "'" << std::endl;
+				std::cerr << " got " << mapOutputPrintable( result.c_str(), result.size())
+					  << " but expected " << mapOutputPrintable( ti->output)
+					  << std::endl;
 				throw std::runtime_error( "result not as expected");
 			}
-			std::cerr << " result '" << ti->output << "'" << std::endl;
+			std::cerr << " result " << mapOutputPrintable( ti->output) << std::endl;
 		}
 		std::cerr << "OK" << std::endl;
 		rt = 0;
