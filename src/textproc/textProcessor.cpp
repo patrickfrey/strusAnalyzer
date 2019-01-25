@@ -40,6 +40,7 @@
 #include "private/internationalization.hpp"
 #include <stdexcept>
 #include <cstring>
+#include <set>
 
 using namespace strus;
 using namespace strus::analyzer;
@@ -653,36 +654,50 @@ class CountAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	CountAggregatorFunctionInstance( const std::string& featuretype_, ErrorBufferInterface* errorhnd)
-		:m_featuretype( string_conv::tolower( featuretype_)),m_errorhnd(0){}
+	CountAggregatorFunctionInstance( const std::vector<std::string>& featuretypes_, ErrorBufferInterface* errorhnd)
+		:m_featuretypes(),m_errorhnd(0)
+	{
+		std::vector<std::string>::const_iterator fi = featuretypes_.begin(), fe = featuretypes_.end();
+		for (; fi != fe; ++fi)
+		{
+			m_featuretypes.insert( string_conv::tolower( *fi));
+		}
+	}
 
 	virtual NumericVariant evaluate( const analyzer::Document& document) const
 	{
-		int rt = 0;
-		std::vector<DocumentTerm>::const_iterator
-			si = document.searchIndexTerms().begin(),
-			se = document.searchIndexTerms().end();
-
-		for (; si != se; ++si)
+		if (m_featuretypes.empty())
 		{
-			if (si->type() == m_featuretype) ++rt;
+			return (NumericVariant::IntType)document.searchIndexTerms().size();
 		}
-		return (NumericVariant::IntType)rt;
+		else
+		{
+			NumericVariant::IntType rt = 0;
+			std::vector<DocumentTerm>::const_iterator
+				si = document.searchIndexTerms().begin(),
+				se = document.searchIndexTerms().end();
+			for (; si != se; ++si)
+			{
+				if (m_featuretypes.find( si->type()) != m_featuretypes.end()) ++rt;
+			}
+			return rt;
+		}
 	}
 
 	virtual analyzer::FunctionView view() const
 	{
 		try
 		{
+			std::vector<std::string> types( m_featuretypes.begin(), m_featuretypes.end());
 			return analyzer::FunctionView( "count")
-				("type",m_featuretype)
+				("type",types)
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
 	}
 
 private:
-	std::string m_featuretype;
+	std::set<std::string> m_featuretypes;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -695,19 +710,9 @@ public:
 
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const
 	{
-		if (args.size() == 0)
-		{
-			m_errorhnd->report( ErrorCodeIncompleteDefinition, _TXT("feature type name as argument expected for '%s' aggregator function"), "count");
-			return 0;
-		}
-		if (args.size() > 1)
-		{
-			m_errorhnd->report( ErrorCodeInvalidArgument, _TXT("too many arguments passed to '%s' aggregator function"), "count");
-			return 0;
-		}
 		try
 		{
-			return new CountAggregatorFunctionInstance( args[0], m_errorhnd);
+			return new CountAggregatorFunctionInstance( args, m_errorhnd);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "count", *m_errorhnd, 0);
 	}
