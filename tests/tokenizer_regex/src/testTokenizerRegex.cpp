@@ -51,6 +51,9 @@ static const Test g_test[] =
 	{"b([Aa]+)", 1, "xbAaabcdes", {{"Aaa",2,3},{0,0,0}}},
 	{"b([Aa]+)b", 1, "xbAaabcdes", {{"Aaa",2,3},{0,0,0}}},
 	{"([Aa]+)b", 1, "xbAaabcdes", {{"Aaa",2,3},{0,0,0}}},
+	{"^[a-z]{3,6}[:][/][/]([^ ?]*)", 1, "https://bla.world.com?g=3&k=1", {{"bla.world.com", 8, 13},{0,0,0}}},
+	{"^([a-z]{1,32}[.][^ ?]*)", 1, "bla.world.com?g=3&k=1", {{"bla.world.com", 0, 13},{0,0,0}}},
+	{"^[a-z]{1,32}[.]([^ ?]*)", 1, "https://bla.world.com?g=3&k=1", {{0,0,0}}},
 	{0,0,0,{{0,0,0}}}
 };
 
