@@ -288,7 +288,7 @@ void SegmentProcessor::processContentTokens( std::vector<BindTerm>& result, cons
 			}
 		}
 		std::string termval( feat.normalize( segsrc + ti->origpos().ofs(), ti->origsize()));
-		if (termval.size() && termval[0] == '\0')
+		if (!termval.empty() && termval[0] == '\0')
 		{
 			// ... handle normalizers with multiple results
 			DEBUG_OPEN( "terms")
