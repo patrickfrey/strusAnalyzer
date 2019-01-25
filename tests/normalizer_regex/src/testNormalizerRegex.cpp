@@ -50,6 +50,8 @@ static const Test g_test[] =
 	{"[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]+([0123456789]+)[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ]*", "$1", "Abracadabra17 is a bad password", "17"},
 	{"[a-zA-Z]+([0-9]+)", "$1", "Abracadabra17", "17"},
 	{"^[^0-9]+", NULL, "Abracadabra17", "Abracadabra"},
+	{"^[^0-9]+", NULL, "Abracadabra17abc", "Abracadabra"},
+	{"[^0-9]+", NULL, "Abracadabra17a", "\0Abracadabra\0a\0\0"},
 	{"[^0-9]+", NULL, "Abrac4dabra17", "\0Abrac\0dabra\0\0"},
 	{"[a-z]+", NULL, "Abrac4dabra17a", "\0brac\0dabra\0a\0\0"},
 	{"[a-zA-Z]+([0-9]+)a", "$1", "Abracadabra17a", "17"},
