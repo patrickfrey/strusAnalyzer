@@ -102,7 +102,7 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)
 		{
-			int len = ai->regex.get() ? ai->regex->match_start( input, input + inputsize) : inputsize;
+			int len = ai->regex.get() ? ai->regex->find_start( input, input + inputsize) : inputsize;
 			if (len == (int)inputsize)
 			{
 				std::vector<analyzer::Token> tokens = ai->tokenizer->tokenize( input, inputsize);
