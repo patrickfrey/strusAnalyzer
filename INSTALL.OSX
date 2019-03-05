@@ -21,7 +21,7 @@ echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
 # 4) Build dependent strus packages
 # See installation of project strusBase
 
-# 5) Build strus with:
+# 5) Build strusAnalyzer with:
 
 cmake -G Xcode -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release .
 xcodebuild -configuration Release -target ALL_BUILD
