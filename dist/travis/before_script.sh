@@ -23,8 +23,6 @@ case $OS in
 			cmake \
 			boost \
 			gettext \
-			snappy \
-			leveldb \
 			|| true
 		# make sure cmake finds the brew version of gettext
 		brew link --force gettext || true
