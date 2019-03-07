@@ -179,7 +179,7 @@ static strus::QueryAnalyzerContextInterface::GroupBy getOpGroup( const QueryItem
 	}
 	else
 	{
-		throw std::logic_error( strus::string_format( "illegal call of '%s'", "getOpGroup"));
+		throw std::logic_error( "illegal call of 'getOpGroup'");
 	}
 }
 
