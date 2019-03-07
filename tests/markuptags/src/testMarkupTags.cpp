@@ -19,6 +19,7 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/string_format.hpp"
 #include "strus/base/utf8.hpp"
+#include "strus/base/math.hpp"
 #include "strus/base/pseudoRandom.hpp"
 #include "private/textEncoder.hpp"
 #include "textwolf/charset_utf8.hpp"
@@ -274,7 +275,7 @@ static TestDocumentTree createRandomTestDocumentTree_( int complexity, int& nofN
 	TestDocumentTree rt( node);
 	if (node.type() == TestDocumentItem::Tag && complexity)
 	{
-		int nofChildren = g_random.get( 0, (int)std::sqrt( complexity));
+		int nofChildren = g_random.get( 0, (int)strus::Math::sqrt( complexity));
 		int ci=0,ce=nofChildren;
 		for (; ci != ce && nofNodes < complexity * complexity; ++ci)
 		{

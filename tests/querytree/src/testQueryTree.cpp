@@ -592,7 +592,7 @@ int main( int argc, const char* argv[])
 
 		int nofTests = parseInt( argv[2]);
 		int maxTreeSize = parseInt( argv[3]);
-		int typemax = (int)(std::sqrt(maxTreeSize+1));
+		int typemax = (int)(strus::Math::sqrt(maxTreeSize+1));
 		int opmax = (int)(strus::Math::log(maxTreeSize+1));
 		int valuemax = maxTreeSize+1;
 		static const char* desttypes[] = { "even", "odd", 0 };
