@@ -13,12 +13,12 @@
 #include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/math.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <vector>
 #include <string>
 #include <map>
-#include <cmath>
 
 using namespace strus;
 using namespace strus::analyzer;

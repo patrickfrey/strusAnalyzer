@@ -18,7 +18,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <cmath>
 
 using namespace strus;
 using namespace strus::analyzer;

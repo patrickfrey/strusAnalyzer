@@ -27,13 +27,13 @@
 #include "strus/base/numstring.hpp"
 #include "strus/base/fileio.hpp"
 #include "strus/base/pseudoRandom.hpp"
+#include "strus/base/math.hpp"
 #include "strus/reference.hpp"
 #include "tree.hpp"
 #include <limits>
 #include <string>
 #include <cstring>
 #include <cstdio>
-#include <cmath>
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -593,7 +593,7 @@ int main( int argc, const char* argv[])
 		int nofTests = parseInt( argv[2]);
 		int maxTreeSize = parseInt( argv[3]);
 		int typemax = (int)(std::sqrt(maxTreeSize+1));
-		int opmax = (int)(std::log(maxTreeSize+1));
+		int opmax = (int)(strus::Math::log(maxTreeSize+1));
 		int valuemax = maxTreeSize+1;
 		static const char* desttypes[] = { "even", "odd", 0 };
 
@@ -608,7 +608,7 @@ int main( int argc, const char* argv[])
 			std::cerr << "Test " << ti << std::endl;
 #endif
 			int childmax = g_random.get( 1, 10);
-			int depth = 1 + (int)(std::log(maxTreeSize+1) / std::log(childmax+1));
+			int depth = 1 + (int)(strus::Math::log(maxTreeSize+1) / strus::Math::log(childmax+1));
 #ifdef STRUS_LOWLEVEL_DEBUG
 			std::cerr << "randomQueryTree( " << maxTreeSize << ", " << childmax << ", " << depth << ", " << opmax << ", " << typemax << ", " << valuemax << ");" << std::endl;			
 #endif

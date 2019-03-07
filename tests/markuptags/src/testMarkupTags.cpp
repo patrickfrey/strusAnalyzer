@@ -31,7 +31,6 @@
 #include <iostream>
 #include <sstream>
 #include <cctype>
-#include <cmath>
 #include <algorithm>
 
 static strus::ErrorBufferInterface* g_errorhnd = 0;
