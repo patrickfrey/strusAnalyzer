@@ -13,6 +13,7 @@
 #include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
+#include "strus/base/math.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <vector>
@@ -37,7 +38,7 @@ double sumSquareTfAggregatorFunctionCall( const std::vector<double>& input)
 	{
 		sum += (*ii) * (*ii);
 	}
-	return sqrt( sum);
+	return strus::Math::sqrt( sum);
 }
 
 class VsmAggregatorFunctionInstance

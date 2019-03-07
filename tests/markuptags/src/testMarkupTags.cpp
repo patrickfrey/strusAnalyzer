@@ -275,7 +275,7 @@ static TestDocumentTree createRandomTestDocumentTree_( int complexity, int& nofN
 	TestDocumentTree rt( node);
 	if (node.type() == TestDocumentItem::Tag && complexity)
 	{
-		int nofChildren = g_random.get( 0, (int)strus::Math::sqrt( complexity));
+		int nofChildren = g_random.get( 0, (int)strus::Math::sqrt( (double)complexity));
 		int ci=0,ce=nofChildren;
 		for (; ci != ce && nofNodes < complexity * complexity; ++ci)
 		{
