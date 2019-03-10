@@ -55,11 +55,9 @@ FeatureConfig::FeatureConfig(
 	}
 }
 
-std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) const
+std::string FeatureConfig::normalize( char const* tok, std::size_t toksize, std::vector<NormalizerReference>::const_iterator ci) const
 {
-	std::vector<NormalizerReference>::const_iterator
-		ci = m_normalizerlist.begin(),
-		ce = m_normalizerlist.end();
+	std::vector<NormalizerReference>::const_iterator ce = m_normalizerlist.end();
 	if (ci == ce) return std::string( tok, toksize);
 
 	std::string rt;
@@ -69,12 +67,44 @@ std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) cons
 		rt = (*ci)->normalize( tok, toksize);
 		if (ci + 1 != ce)
 		{
-			origstr.swap( rt);
-			tok = origstr.c_str();
-			toksize = origstr.size();
+			if (!rt.empty() && rt[0] == '\0')
+			{
+				std::string reslist;
+				char const* vi = rt.c_str();
+				char const* ve = vi + rt.size();
+				for (++vi; vi < ve; vi = std::strchr( vi, '\0')+1)
+				{
+					std::string partres = normalize( vi, std::strlen(vi), ci+1);
+					if (!partres.empty() && partres[0] == '\0')
+					{
+						reslist.append( partres);
+					}
+					else if (reslist.empty())
+					{
+						reslist.push_back( '\0');
+						reslist.append( partres);
+					}
+					else
+					{
+						reslist.append( partres);
+					}
+				}
+				return reslist;
+			}
+			else
+			{
+				origstr.swap( rt);
+				tok = origstr.c_str();
+				toksize = origstr.size();
+			}
 		}
 	}
 	return rt;
+}
+
+std::string FeatureConfig::normalize( char const* tok, std::size_t toksize) const
+{
+	return normalize( tok, toksize, m_normalizerlist.begin());
 }
 
 std::vector<analyzer::Token> FeatureConfig::tokenize( const char* src, std::size_t srcsize) const

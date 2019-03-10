@@ -65,6 +65,9 @@ public:
 	std::vector<analyzer::Token> tokenize( const char* src, std::size_t srcsize) const;
 
 private:
+	std::string normalize( char const* tok, std::size_t toksize, std::vector<NormalizerReference>::const_iterator ci) const;
+
+private:
 	std::string m_name;
 	std::string m_selectexpr;
 	TokenizerReference m_tokenizer;
