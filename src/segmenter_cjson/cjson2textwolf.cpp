@@ -140,13 +140,14 @@ static std::pair<std::size_t,std::size_t> lineInfo( const char* begin, const cha
 cJSON* strus::parseJsonTree( const std::string& content)
 {
 	cJSON_Context ctx;
-	cJSON* tree = cJSON_Parse( &ctx, content.c_str());
+	cJSON* tree = cJSON_Parse( content.c_str(), &ctx);
 	if (!tree)
 	{
-		if (!ctx.errorptr) throw std::bad_alloc();
-		std::pair<std::size_t,std::size_t> li = lineInfo( content.c_str(), ctx.errorptr);
+		char const* errptr = cJSON_GetErrorPtr( &ctx);
+		if (!errptr) throw std::bad_alloc();
+		std::pair<std::size_t,std::size_t> li = lineInfo( content.c_str(), errptr);
 
-		std::string err( ctx.errorptr);
+		std::string err( errptr);
 		throw strus::runtime_error( _TXT( "error in JSON at line %u, column %u: %s"), (unsigned int)li.first, (unsigned int)li.second, err.c_str());
 	}
 	return tree;
