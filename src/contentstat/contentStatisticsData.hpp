@@ -45,8 +45,8 @@ public:
 	{
 		strus::scoped_lock lock( m_mutex);
 		m_docidset.insert( docid_);
-		bool isnew = addMapItem( m_docselectmap, m_itemar, docid_ + "\1" + select_ + "\1" + type_, Item( select_, type_, example_, 1, 1));
-		addMapItem( m_globalselectmap, m_itemar, select_ + "\1" + type_, Item( select_, type_, example_, isnew?1:0, 1));
+		bool isnew = addMapItem( m_docselectmap, m_itemar, docid_ + "\1" + select_ + "\1" + type_, Item( select_, type_, example_, 0/*df*/, 1/*tf*/));
+		addMapItem( m_globalselectmap, m_itemar, select_ + "\1" + type_, Item( select_, type_, example_, isnew?1:0/*df*/, 1/*tf*/));
 	}
 
 	/// \brief Get the global statistics
@@ -83,9 +83,9 @@ private:
 		}
 		else
 		{
-			itemar[ di->second].incr_df( item.df());
-			itemar[ di->second].incr_tf( 1);
 			Item& defitem = itemar[ di->second];
+			defitem.incr_df( item.df());
+			defitem.incr_tf( 1);
 			if (defitem.example().size() < item.example().size())
 			{
 				defitem.setExample( item.example());
