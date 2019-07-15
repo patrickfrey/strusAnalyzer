@@ -116,13 +116,22 @@ public:
 						for (; si != se; ++si)
 						{
 							std::vector<strus::analyzer::DocumentAttribute>::iterator ai = attributes.begin(), ae = attributes.end();
-							for (; ai != ae; ++ai)
+							while (ai != ae)
 							{
-								if (si->name() == ai->name())
+								if (ai->name() == si->name())
 								{
-									*ai = *si;
+									if (si->value().empty())
+									{
+										ai = attributes.erase( ai);
+										continue;
+									}
+									else
+									{
+										*ai = *si;
+									}
 									break;
 								}
+								++ai;
 							}
 							if (ai == ae)
 							{
