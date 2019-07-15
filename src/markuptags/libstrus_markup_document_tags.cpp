@@ -135,7 +135,7 @@ public:
 								++aidx;
 								++ai;
 							}
-							if (aidx == attributes.size())
+							if (aidx == attributes.size() && !si->value().empty())
 							{
 								attributes.push_back( *si);
 							}
