@@ -115,8 +115,9 @@ public:
 						std::vector<strus::analyzer::DocumentAttribute>::const_iterator si = syn.begin(), se = syn.end();
 						for (; si != se; ++si)
 						{
-							std::vector<strus::analyzer::DocumentAttribute>::iterator ai = attributes.begin(), ae = attributes.end();
-							while (ai != ae)
+							std::size_t aidx = 0;
+							std::vector<strus::analyzer::DocumentAttribute>::iterator ai = attributes.begin();
+							while (aidx < attributes.size())
 							{
 								if (ai->name() == si->name())
 								{
@@ -128,12 +129,13 @@ public:
 									else
 									{
 										*ai = *si;
+										break;
 									}
-									break;
 								}
+								++aidx;
 								++ai;
 							}
-							if (ai == ae)
+							if (aidx == attributes.size())
 							{
 								attributes.push_back( *si);
 							}
