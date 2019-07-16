@@ -86,7 +86,8 @@ private:
 			Item& defitem = itemar[ di->second];
 			defitem.incr_df( item.df());
 			defitem.incr_tf( 1);
-			if (defitem.example().size() < item.example().size())
+			if (defitem.example().size() < item.example().size()
+			|| (defitem.example().size() == item.example().size() && defitem.example() > item.example()))
 			{
 				defitem.setExample( item.example());
 				defitem.setType( item.type());
