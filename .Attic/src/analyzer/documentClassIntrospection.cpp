@@ -28,9 +28,9 @@ IntrospectionInterface* DocumentClassIntrospection::open( const std::string& nam
 		{
 			return new AtomicTypeIntrospection<std::string>( &m_documentClass->encoding(), m_errorhnd);
 		}
-		else if (name == "scheme")
+		else if (name == "schema")
 		{
-			return new AtomicTypeIntrospection<std::string>( &m_documentClass->scheme(), m_errorhnd);
+			return new AtomicTypeIntrospection<std::string>( &m_documentClass->schema(), m_errorhnd);
 		}
 		else
 		{
@@ -47,7 +47,7 @@ std::string DocumentClassIntrospection::value() const
 
 std::vector<std::string> DocumentClassIntrospection::list() const
 {
-	static const char* ar[] = {"mimetype","encoding","scheme",0};
+	static const char* ar[] = {"mimetype","encoding","schema",0};
 	return strus::getIntrospectionElementList( ar, m_errorhnd);
 }
 

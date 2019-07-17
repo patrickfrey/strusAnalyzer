@@ -35,21 +35,21 @@ class DocumentAnalyzerMap
 {
 public:
 	DocumentAnalyzerMap( const AnalyzerObjectBuilderInterface* objbuilder_, ErrorBufferInterface* errorhnd_)
-		:m_errorhnd(errorhnd_),m_objbuilder(objbuilder_),m_mimeTypeAnalyzerMap(),m_schemeAnalyzerMap(),m_analyzers(){}
+		:m_errorhnd(errorhnd_),m_objbuilder(objbuilder_),m_mimeTypeAnalyzerMap(),m_schemaAnalyzerMap(),m_analyzers(){}
 	virtual ~DocumentAnalyzerMap(){}
 
 	virtual DocumentAnalyzerInstanceInterface* createAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme) const;
+			const std::string& schema) const;
 
 	virtual void addAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme,
+			const std::string& schema,
 			DocumentAnalyzerInstanceInterface* analyzer_);
 
 	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme) const;
+			const std::string& schema) const;
 
 	virtual analyzer::Document analyze(
 			const std::string& content,
@@ -68,7 +68,7 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 	const AnalyzerObjectBuilderInterface* m_objbuilder;
 	Map m_mimeTypeAnalyzerMap;
-	Map m_schemeAnalyzerMap;
+	Map m_schemaAnalyzerMap;
 	std::vector<DocumentAnalyzerReference> m_analyzers;
 };
 

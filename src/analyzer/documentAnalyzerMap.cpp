@@ -19,16 +19,16 @@
 
 using namespace strus;
 
-static std::string getMimeSchemeKey( const std::string& mimeType, const std::string& scheme)
+static std::string getMimeSchemaKey( const std::string& mimeType, const std::string& schema)
 {
 	std::string rt;
 	rt.append( mimeType);
 	rt.push_back( ';');
-	rt.append( scheme);
+	rt.append( schema);
 	return rt;
 }
 
-static std::pair<std::string,std::string> getMimeSchemeKeyParts( const std::string& key)
+static std::pair<std::string,std::string> getMimeSchemaKeyParts( const std::string& key)
 {
 	char const* ki = std::strchr( key.c_str(), ';');
 	if (ki == NULL) throw strus::runtime_error(_TXT("currupt key in map: %s"), key.c_str());
@@ -37,7 +37,7 @@ static std::pair<std::string,std::string> getMimeSchemeKeyParts( const std::stri
 
 DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::createAnalyzer(
 		const std::string& mimeType,
-		const std::string& scheme) const
+		const std::string& schema) const
 {
 	try
 	{
@@ -45,7 +45,7 @@ DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::createAnalyzer(
 		if (!textproc) throw std::runtime_error( m_errorhnd->fetchError());
 		const SegmenterInterface* segmenter = textproc->getSegmenterByMimeType( mimeType);
 		if (!segmenter) throw std::runtime_error( m_errorhnd->fetchError());
-		analyzer::SegmenterOptions segmenteropts = textproc->getSegmenterOptions( scheme);
+		analyzer::SegmenterOptions segmenteropts = textproc->getSegmenterOptions( schema);
 		if (m_errorhnd->hasError()) throw std::runtime_error( m_errorhnd->fetchError());
 		return m_objbuilder->createDocumentAnalyzer( segmenter, segmenteropts);
 	}
@@ -54,46 +54,46 @@ DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::createAnalyzer(
 
 void DocumentAnalyzerMap::addAnalyzer(
 		const std::string& mimeType_,
-		const std::string& scheme_,
+		const std::string& schema_,
 		DocumentAnalyzerInstanceInterface* analyzer_)
 {
 	try
 	{
 		DocumentAnalyzerReference analyzer( analyzer_);
 		m_analyzers.push_back( analyzer);
-		if (scheme_.empty())
+		if (schema_.empty())
 		{
 			m_mimeTypeAnalyzerMap[ mimeType_] = analyzer.get();
 		}
 		else
 		{
-			m_schemeAnalyzerMap[ getMimeSchemeKey( mimeType_, scheme_)] = analyzer.get();
+			m_schemaAnalyzerMap[ getMimeSchemaKey( mimeType_, schema_)] = analyzer.get();
 		}
 	}
 	CATCH_ERROR_MAP( _TXT("error adding analyzer to map: %s"), *m_errorhnd);
 }
 
-const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const std::string& mimeType, const std::string& scheme) const
+const DocumentAnalyzerInstanceInterface* DocumentAnalyzerMap::getAnalyzer( const std::string& mimeType, const std::string& schema) const
 {
 	try
 	{
 		Map::const_iterator ai;
-		if (scheme.empty())
+		if (schema.empty())
 		{
 			ai = m_mimeTypeAnalyzerMap.find( mimeType);
 		}
 		else
 		{
-			ai = m_schemeAnalyzerMap.find( getMimeSchemeKey( mimeType, scheme));
-			if (ai == m_schemeAnalyzerMap.end())
+			ai = m_schemaAnalyzerMap.find( getMimeSchemaKey( mimeType, schema));
+			if (ai == m_schemaAnalyzerMap.end())
 			{
 				ai = m_mimeTypeAnalyzerMap.find( mimeType);
 			}
 		}
 		if (ai == m_mimeTypeAnalyzerMap.end())
 		{
-			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", scheme=\"%s\""),
-							mimeType.c_str(), scheme.c_str());
+			throw strus::runtime_error(_TXT("no analyzer defined for this document class: mime-type=\"%s\", schema=\"%s\""),
+							mimeType.c_str(), schema.c_str());
 		}
 		return ai->second;
 	}
@@ -106,7 +106,7 @@ analyzer::Document DocumentAnalyzerMap::analyze(
 {
 	try
 	{
-		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.scheme());
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.schema());
 		if (!analyzer) return analyzer::Document();
 		return analyzer->analyze( content, dclass);
 	}
@@ -118,7 +118,7 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerMap::createContext(
 {
 	try
 	{
-		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.scheme());
+		const DocumentAnalyzerInstanceInterface* analyzer = getAnalyzer( dclass.mimeType(), dclass.schema());
 		if (!analyzer) return NULL;
 		return analyzer->createContext( dclass);
 	}
@@ -130,16 +130,16 @@ analyzer::DocumentAnalyzerMapView DocumentAnalyzerMap::view() const
 	try
 	{
 		std::vector<analyzer::DocumentAnalyzerMapElementView> definitions;
-		Map::const_iterator si = m_schemeAnalyzerMap.begin(), se = m_schemeAnalyzerMap.end();
+		Map::const_iterator si = m_schemaAnalyzerMap.begin(), se = m_schemaAnalyzerMap.end();
 		for (; si != se; ++si)
 		{
-			std::pair<std::string,std::string> kp = getMimeSchemeKeyParts( si->first);
+			std::pair<std::string,std::string> kp = getMimeSchemaKeyParts( si->first);
 			definitions.push_back( analyzer::DocumentAnalyzerMapElementView( kp.first, kp.second, si->second->view()));
 		}
 		si = m_mimeTypeAnalyzerMap.begin(), se = m_mimeTypeAnalyzerMap.end();
 		for (; si != se; ++si)
 		{
-			definitions.push_back( analyzer::DocumentAnalyzerMapElementView( si->first, ""/*scheme*/, si->second->view()));
+			definitions.push_back( analyzer::DocumentAnalyzerMapElementView( si->first, ""/*schema*/, si->second->view()));
 		}
 		return analyzer::DocumentAnalyzerMapView( definitions);
 	}

@@ -987,13 +987,13 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 	}
 }
 
-analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string& scheme) const
+analyzer::SegmenterOptions TextProcessor::getSegmenterOptions( const std::string& schema) const
 {
 	try
 	{
 		std::map<std::string,analyzer::SegmenterOptions>::const_iterator
-			oi = m_schemeSegmenterOptions_map.find( string_conv::tolower(scheme));
-		if (oi == m_schemeSegmenterOptions_map.end())
+			oi = m_schemaSegmenterOptions_map.find( string_conv::tolower(schema));
+		if (oi == m_schemaSegmenterOptions_map.end())
 		{
 			return analyzer::SegmenterOptions();
 		}
@@ -1185,11 +1185,11 @@ void TextProcessor::defineSegmenter( const std::string& name, SegmenterInterface
 	}
 }
 
-void TextProcessor::defineSegmenterOptions( const std::string& scheme, const analyzer::SegmenterOptions& options)
+void TextProcessor::defineSegmenterOptions( const std::string& schema, const analyzer::SegmenterOptions& options)
 {
 	try
 	{
-		m_schemeSegmenterOptions_map[ string_conv::tolower(scheme)] = options;
+		m_schemaSegmenterOptions_map[ string_conv::tolower(schema)] = options;
 	}
 	catch (const std::bad_alloc&)
 	{

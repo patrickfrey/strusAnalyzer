@@ -24,13 +24,13 @@ public:
 	/// \brief Destructor
 	virtual ~DocumentClassDetectorInterface(){}
 
-	/// \brief Define a detector for a document scheme
-	/// \param[in] scheme document scheme assigned
-	/// \param[in] mimeType mime type where this scheme applies
-	/// \param[in] select_expressions select expressions that must all match for this scheme
-	/// \param[in] reject_expressions select expressions of which no one must match for this scheme
-	virtual void defineDocumentSchemeDetector(
-			const std::string& scheme,
+	/// \brief Define a detector for a document schema
+	/// \param[in] schema document schema assigned
+	/// \param[in] mimeType mime type where this schema applies
+	/// \param[in] select_expressions select expressions that must all match for this schema
+	/// \param[in] reject_expressions select expressions of which no one must match for this schema
+	virtual void defineDocumentSchemaDetector(
+			const std::string& schema,
 			const std::string& mimeType,
 			const std::vector<std::string>& select_expressions,
 			const std::vector<std::string>& reject_expressions)=0;

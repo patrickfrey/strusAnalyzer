@@ -33,19 +33,19 @@ public:
 
 	/// \brief Declare a an analyzer interface to instrument and and add with addAnalyzer
 	/// \param[in] mimetype of the document for this analyzer, determines the document segmenter
-	/// \param[in] scheme scheme of the document to determine the segmenter options (can be empty meaning not defined)
+	/// \param[in] schema schema of the document to determine the segmenter options (can be empty meaning not defined)
 	/// \return the analyzer (with ownership)
 	virtual DocumentAnalyzerInstanceInterface* createAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme) const=0;
+			const std::string& schema) const=0;
 
 	/// \brief Declare a an analyzer to be used for the analysis of a specific document class
 	/// \param[in] mimetype of the document to process with this analyzer (must be defined)
-	/// \param[in] scheme scheme of the document to process with this analyzer (can be empty meaning not defined)
+	/// \param[in] schema schema of the document to process with this analyzer (can be empty meaning not defined)
 	/// \param[in] analyzer analyzer to use for the defined class of documents (with ownership)
 	virtual void addAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme,
+			const std::string& schema,
 			DocumentAnalyzerInstanceInterface* analyzer)=0;
 
 	/// \brief Get the analyzer interface assigned to a document class
@@ -53,7 +53,7 @@ public:
 	/// \return a reference to the analyzer interface
 	virtual const DocumentAnalyzerInstanceInterface* getAnalyzer(
 			const std::string& mimeType,
-			const std::string& scheme) const=0;
+			const std::string& schema) const=0;
 
 	/// \brief Segment and tokenize a document, assign types to tokens and metadata and normalize their values
 	/// \param[in] content document content string to analyze

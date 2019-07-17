@@ -994,7 +994,7 @@ static analyzer::DocumentClass parseDocumentClass_( const std::string& value)
 	{
 		encoding = getContentTypeElem( "encoding", value);
 	}
-	std::string scheme = getContentTypeElem( "scheme", value);
+	std::string schema = getContentTypeElem( "schema", value);
 
 	if (isEqual( mimeType,"xml") || isEqual( mimeType,"text/xml"))
 	{
@@ -1008,7 +1008,7 @@ static analyzer::DocumentClass parseDocumentClass_( const std::string& value)
 	{
 		mimeType = "text/tab-separated-values";
 	}
-	return analyzer::DocumentClass( mimeType, encoding, scheme);
+	return analyzer::DocumentClass( mimeType, encoding, schema);
 }
 
 static analyzer::DocumentClass parseDocumentClass_( ProgramLexer& lexer)
@@ -1427,13 +1427,13 @@ bool strus::loadDocumentAnalyzerMapSource(
 			{
 				throw std::runtime_error( _TXT("unexpected token, semicolon expected after analyzer map declaration"));
 			}
-			strus::Reference<DocumentAnalyzerInstanceInterface> analyzer( analyzermap->createAnalyzer( doctype.mimeType(), doctype.scheme()));
+			strus::Reference<DocumentAnalyzerInstanceInterface> analyzer( analyzermap->createAnalyzer( doctype.mimeType(), doctype.schema()));
 			if (!analyzer.get()) throw std::runtime_error( errorhnd->fetchError());
 			if (!loadDocumentAnalyzerProgramFile( analyzer.get(), textproc, programName, errorhnd))
 			{
 				throw std::runtime_error( errorhnd->fetchError());
 			}
-			analyzermap->addAnalyzer( doctype.mimeType(), doctype.scheme(), analyzer.get());
+			analyzermap->addAnalyzer( doctype.mimeType(), doctype.schema(), analyzer.get());
 			if (errorhnd->hasError())
 			{
 				throw std::runtime_error( errorhnd->fetchError());

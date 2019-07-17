@@ -25,17 +25,17 @@ class DocumentAnalyzerMapElementView
 {
 public:
 	DocumentAnalyzerMapElementView( const DocumentAnalyzerMapElementView& o)
-		:m_mimeType(o.m_mimeType),m_scheme(o.m_scheme),m_analyzer(o.m_analyzer){}
-	DocumentAnalyzerMapElementView( const std::string& mimeType_, const std::string& scheme_, const DocumentAnalyzerView& analyzer_)
-		:m_mimeType(mimeType_),m_scheme(scheme_),m_analyzer(analyzer_){}
+		:m_mimeType(o.m_mimeType),m_schema(o.m_schema),m_analyzer(o.m_analyzer){}
+	DocumentAnalyzerMapElementView( const std::string& mimeType_, const std::string& schema_, const DocumentAnalyzerView& analyzer_)
+		:m_mimeType(mimeType_),m_schema(schema_),m_analyzer(analyzer_){}
 
 	const std::string& mimeType() const			{return m_mimeType;}
-	const std::string& scheme() const			{return m_scheme;}
+	const std::string& schema() const			{return m_schema;}
 	const DocumentAnalyzerView& analyzer() const		{return m_analyzer;}
 	
 private:
 	std::string m_mimeType;
-	std::string m_scheme;
+	std::string m_schema;
 	DocumentAnalyzerView m_analyzer;
 };
 

@@ -208,12 +208,12 @@ void DocumentAnalyzerInstance::defineSubContent(
 		const SegmenterInterface* segmenter_ = m_textproc->getSegmenterByMimeType( documentClass.mimeType());
 		if (!segmenter_)
 		{
-			throw strus::runtime_error(_TXT("no document segmenter defined for encoding=%s; mimetype=%s; scheme=%s"), documentClass.encoding().c_str(), documentClass.mimeType().c_str(), documentClass.scheme().c_str());
+			throw strus::runtime_error(_TXT("no document segmenter defined for encoding=%s; mimetype=%s; schema=%s"), documentClass.encoding().c_str(), documentClass.mimeType().c_str(), documentClass.schema().c_str());
 		}
 		analyzer::SegmenterOptions opts;
-		if (!documentClass.scheme().empty())
+		if (!documentClass.schema().empty())
 		{
-			opts = m_textproc->getSegmenterOptions( documentClass.scheme());
+			opts = m_textproc->getSegmenterOptions( documentClass.schema());
 		}
 		Reference<SegmenterInstanceInterface> segmenterinst( segmenter_->createInstance( opts));
 		if (!segmenterinst.get()) throw std::runtime_error( _TXT("failed to create segmenter instance"));

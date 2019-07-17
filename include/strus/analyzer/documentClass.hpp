@@ -34,7 +34,7 @@ public:
 	DocumentClass(
 			const std::string& mimeType_,
 			const std::string& encoding_,
-			const std::string& scheme_)		:m_mimeType(mimeType_),m_scheme(scheme_),m_encoding(encoding_){}
+			const std::string& schema_)		:m_mimeType(mimeType_),m_schema(schema_),m_encoding(encoding_){}
 	/// \brief Copy constructor
 #if __cplusplus >= 201103L
 	DocumentClass( DocumentClass&& ) = default;
@@ -42,15 +42,15 @@ public:
 	DocumentClass& operator= ( DocumentClass&& ) = default;
 	DocumentClass& operator= ( const DocumentClass& ) = default;
 #else
-	DocumentClass( const DocumentClass& o)			:m_mimeType(o.m_mimeType),m_scheme(o.m_scheme),m_encoding(o.m_encoding){}
+	DocumentClass( const DocumentClass& o)			:m_mimeType(o.m_mimeType),m_schema(o.m_schema),m_encoding(o.m_encoding){}
 #endif
 
 	/// \brief Set the MIME type of the document class
 	/// \param[in] the document MIME type string
 	void setMimeType( const std::string& mimeType_)		{m_mimeType = mimeType_;}
-	/// \brief Set the scheme identifier of the document class
-	/// \param[in] the document scheme identifier
-	void setScheme( const std::string& scheme_)		{m_scheme = scheme_;}
+	/// \brief Set the schema identifier of the document class
+	/// \param[in] the document schema identifier
+	void setSchema( const std::string& schema_)		{m_schema = schema_;}
 	/// \brief Set the character set encoding of the document class
 	/// \param[in] the character set encoding string
 	void setEncoding( const std::string& encoding_)		{m_encoding = encoding_;}
@@ -58,9 +58,9 @@ public:
 	/// \brief Get the MIME type of the document class
 	/// \return the document MIME type string
 	const std::string& mimeType() const			{return m_mimeType;}
-	/// \brief Get the scheme identifier of the document class
-	/// \return the document scheme identifier
-	const std::string& scheme() const			{return m_scheme;}
+	/// \brief Get the schema identifier of the document class
+	/// \return the document schema identifier
+	const std::string& schema() const			{return m_schema;}
 	/// \brief Get the character set encoding of the document class
 	/// \return the character set encoding string
 	const std::string& encoding() const			{return m_encoding;}
@@ -71,11 +71,11 @@ public:
 	/// \brief Evaluate the level of definition of the document class
 	/// \return level of definition
 	/// \note this method is used to weight different oppinions of document class detection
-	int level() const					{return m_mimeType.empty()?0:(1+!m_scheme.empty()+!m_encoding.empty());}
+	int level() const					{return m_mimeType.empty()?0:(1+!m_schema.empty()+!m_encoding.empty());}
 
 private:
 	std::string m_mimeType;
-	std::string m_scheme;
+	std::string m_schema;
 	std::string m_encoding;
 };
 

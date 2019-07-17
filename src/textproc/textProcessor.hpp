@@ -31,7 +31,7 @@ public:
 
 	virtual const SegmenterInterface* getSegmenterByMimeType( const std::string& mimetype) const;
 
-	virtual analyzer::SegmenterOptions getSegmenterOptions( const std::string& scheme) const;
+	virtual analyzer::SegmenterOptions getSegmenterOptions( const std::string& schema) const;
 
 	virtual const TokenizerFunctionInterface* getTokenizer( const std::string& name) const;
 
@@ -57,7 +57,7 @@ public:
 
 	virtual void defineSegmenter( const std::string& name, SegmenterInterface* segmenter);
 
-	virtual void defineSegmenterOptions( const std::string& scheme, const analyzer::SegmenterOptions& options);
+	virtual void defineSegmenterOptions( const std::string& schema, const analyzer::SegmenterOptions& options);
 	
 	virtual void defineTokenizer( const std::string& name, TokenizerFunctionInterface* tokenizer);
 
@@ -79,7 +79,7 @@ private:
 	const FileLocatorInterface* m_filelocator;
 	std::map<std::string,SegmenterInterface*> m_segmenterMap;		///< map of defined document segmenters (key is segmenter name)
 	std::map<std::string,SegmenterInterface*> m_mimeSegmenterMap;		///< map of defined document segmenters (key is MIME type)
-	std::map<std::string,analyzer::SegmenterOptions> m_schemeSegmenterOptions_map;
+	std::map<std::string,analyzer::SegmenterOptions> m_schemaSegmenterOptions_map;
 	std::map<std::string,TokenizerFunctionInterface*> m_tokenizer_map;
 	std::map<std::string,NormalizerFunctionInterface*> m_normalizer_map;
 	std::map<std::string,AggregatorFunctionInterface*> m_aggregator_map;
