@@ -988,6 +988,10 @@ static analyzer::DocumentClass parseDocumentClass_( const std::string& value)
 	if (mimeType.empty())
 	{
 		mimeType = getContentTypeElem( "content", value);
+		if (mimeType.empty())
+		{
+			mimeType = getContentTypeElem( "mime", value);
+		}
 	}
 	std::string encoding = getContentTypeElem( "charset", value);
 	if (encoding.empty())
@@ -1000,7 +1004,7 @@ static analyzer::DocumentClass parseDocumentClass_( const std::string& value)
 	{
 		mimeType = "application/xml";
 	}
-	else if (isEqual( mimeType,"json"))
+	else if (isEqual( mimeType,"json") || isEqual( mimeType,"text/json"))
 	{
 		mimeType = "application/json";
 	}
