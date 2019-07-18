@@ -69,6 +69,7 @@ target_link_libraries(
 	strus_normalizer_wordjoin
 	strus_normalizer_trim
 	strus_normalizer_substrindex
+	strus_normalizer_entityid
 	strus_tokenizer_punctuation
 	strus_tokenizer_word
 	strus_tokenizer_regex

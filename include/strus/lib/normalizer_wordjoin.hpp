@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Exported functions of the strus analyzer wordjoin normalization function library
-/// \file normalizer_ngram.hpp
+/// \file normalizer_wordjoin.hpp
 #ifndef _STRUS_ANALYZER_NORMALIZER_WORDJOIN_LIB_HPP_INCLUDED
 #define _STRUS_ANALYZER_NORMALIZER_WORDJOIN_LIB_HPP_INCLUDED
 
