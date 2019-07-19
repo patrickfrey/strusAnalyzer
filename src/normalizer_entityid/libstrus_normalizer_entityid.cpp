@@ -6,7 +6,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 #include "strus/lib/normalizer_entityid.hpp"
-#include "strus/analyzerModule.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
