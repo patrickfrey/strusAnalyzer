@@ -99,7 +99,7 @@ public:
 		{
 			std::ostringstream out;
 			out << *vi;
-			m_parameter.push_back( NamedParameter( std::string("[]")+name_, out.str()));
+			m_parameter.push_back( NamedParameter( name_, out.str()));
 		}
 		return *this;
 	}
