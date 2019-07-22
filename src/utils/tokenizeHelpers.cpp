@@ -195,4 +195,50 @@ SourceSpan strus::getNextPosTaggingEntity( char const* src, int len, int& pos)
 	return rt;
 }
 
+bool strus::stringHasNonAsciiCharacters( const char* src, std::size_t srcsize)
+{
+	char const* ti = src;
+	const char* te = src + srcsize;
+	for (; ti != te; ++ti)
+	{
+		if ((unsigned char)*ti > 127) return true;
+	}
+	return false;
+}
+
+std::string strus::mapStringNonAscii( const char* src, std::size_t srcsize, char substchar)
+{
+	std::string rt;
+
+	char const* ti = src;
+	const char* te = src + srcsize;
+	while (ti < te)
+	{
+		if ((unsigned char)*ti >= 127)
+		{
+			rt.push_back( 127);
+			ti += strus::utf8charlen( *ti);
+		}
+		else
+		{
+			rt.push_back( *ti);
+			++ti;
+		}
+	}
+	return rt;
+}
+
+std::vector<int> strus::utf8charPosMap( const char* src, std::size_t srcsize)
+{
+	std::vector<int> rt;
+
+	char const* ti = src;
+	const char* te = src + srcsize;
+	for (; ti < te; ti += strus::utf8charlen( *ti))
+	{
+		rt.push_back( ti - src);
+	}
+	rt.push_back( ti - src);
+	return rt;
+}
 

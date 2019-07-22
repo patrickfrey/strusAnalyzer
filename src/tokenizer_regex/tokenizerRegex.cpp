@@ -13,6 +13,7 @@
 #include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "private/tokenizeHelpers.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -26,6 +27,12 @@ public:
 	RegexTokenizerFunctionInstance( const std::string& expression, int index, ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_),m_expression(expression),m_search( expression, index, errorhnd_)
 	{
+		std::string::const_iterator ei = expression.begin(), ee = expression.end();
+		for (; ei != ee && (unsigned char)*ei < 127; ++ei){}
+		if (ei != ee)
+		{
+			throw strus::runtime_error( _TXT("regular expression inf tokenizer '%s' rejected, only ASCII characters allowed"), TOKENIZER_NAME);
+		}
 		if (m_errorhnd->hasError())
 		{
 			throw std::runtime_error( m_errorhnd->fetchError());
@@ -43,17 +50,24 @@ public:
 	{
 		try
 		{
-			std::vector<analyzer::Token> rt;
-			char const* si = src;
-			char const* se = src + srcsize;
-			RegexSearch::Match mt = m_search.find( si, se);
-			for (; mt.pos >= 0; si += (mt.len ? (mt.pos + mt.len) : (mt.pos + 1)), mt = m_search.find( si, se))
+			if (strus::stringHasNonAsciiCharacters( src, srcsize))
 			{
-				std::size_t abspos = mt.pos + (si - src);
-				rt.push_back( analyzer::Token( abspos/*ord*/, analyzer::Position(0/*seg*/, abspos), mt.len));
-				if (abspos + mt.len >= srcsize) break;
+				std::string tokbuf = strus::mapStringNonAscii( src, srcsize, 127);
+				std::vector<int> posmap = strus::utf8charPosMap( src, srcsize);
+				std::vector<analyzer::Token> rt = tokenize_( tokbuf.c_str(), tokbuf.size());
+				std::vector<analyzer::Token>::iterator ti = rt.begin(), te = rt.end();
+				for (; ti != te; ++ti)
+				{
+					int new_ofs = posmap[ ti->origpos().ofs()];
+					int new_size = posmap[ ti->origpos().ofs() + ti->origsize()] - new_ofs;
+					*ti = analyzer::Token( ti->ordpos(), strus::analyzer::Position( ti->origpos().seg(), new_ofs), new_size);
+				}
+				return rt;
 			}
-			return rt;
+			else
+			{
+				return tokenize_( src, srcsize);
+			}
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
@@ -67,6 +81,22 @@ public:
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	}
+
+private:
+	std::vector<analyzer::Token> tokenize_( const char* src, std::size_t srcsize) const
+	{
+		std::vector<analyzer::Token> rt;
+		char const* si = src;
+		char const* se = src + srcsize;
+		RegexSearch::Match mt = m_search.find( si, se);
+		for (; mt.pos >= 0; si += (mt.len ? (mt.pos + mt.len) : (mt.pos + 1)), mt = m_search.find( si, se))
+		{
+			std::size_t abspos = mt.pos + (si - src);
+			rt.push_back( analyzer::Token( abspos/*ord*/, analyzer::Position(0/*seg*/, abspos), mt.len));
+			if (abspos + mt.len >= srcsize) break;
+		}
+		return rt;
 	}
 
 private:
