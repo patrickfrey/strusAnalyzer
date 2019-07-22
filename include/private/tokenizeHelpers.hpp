@@ -62,10 +62,6 @@ SourceSpan getNextPosTaggingEntity( char const* src, int len, int& pos);
 bool wordBoundaryDelimiter( char const* si, const char* se);
 bool whiteSpaceDelimiter( char const* si, const char* se);
 
-bool stringHasNonAsciiCharacters( const char* src, std::size_t srcsize);
-std::string mapStringNonAscii( const char* src, std::size_t srcsize, char substchar);
-std::vector<int> utf8charPosMap( const char* src, std::size_t srcsize);
-
 }//namespace
 #endif
 
