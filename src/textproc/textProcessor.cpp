@@ -821,7 +821,7 @@ public:
 		return (NumericVariant::IntType)(rt + m_incr);
 	}
 
-	virtual const char* name() const	{return "maxpos";}
+	virtual const char* name() const	{return m_incr ? "nextpos":"maxpos";}
 	virtual StructView view() const
 	{
 		try
@@ -829,7 +829,6 @@ public:
 			return StructView()
 				("name",name())
 				("type",m_featuretype)
-				("incr",m_incr)
 			;
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
@@ -867,14 +866,20 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "maxpos", *m_errorhnd, 0);
 	}
 
-	virtual const char* name() const	{return "maxpos";}
+	virtual const char* name() const	{return m_incr ? "nextpos":"maxpos";}
 	virtual StructView view() const
 	{
 		try
 		{
+			const char* descr;
+			if (m_incr)
+			{ descr = _TXT("Aggregator evaluating the maximum position of the input elements.");}
+			else
+			{ descr = _TXT("Aggregator evaluating the next position bigger than the maximum position of the input elements.");}
+
 			return StructView()
 				("name", name())
-				("description",_TXT("Aggregator evaluating the maximum position of the input elements."));
+				("description", descr);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
