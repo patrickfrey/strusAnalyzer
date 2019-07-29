@@ -11,7 +11,7 @@
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/patternMatcherResult.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include <string>
 
 namespace strus
@@ -60,9 +60,13 @@ public:
 			unsigned int lexemid,
 			const std::string& name) const=0;
 
-	/// \brief Get the definition of the function as structure for introspection
-	/// \return structure for introspection
-	virtual analyzer::FunctionView view() const=0;
+	/// \brief Get the name of the function
+	/// \return the identifier
+	virtual const char* name() const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual StructView view() const=0;
 };
 
 } //namespace

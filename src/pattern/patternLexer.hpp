@@ -14,7 +14,7 @@
 #include "strus/patternLexerContextInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
 #include "strus/analyzer/positionBind.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include "strus/base/regex.hpp"
 #include <stdexcept>
 #include <map>
@@ -39,7 +39,9 @@ public:
 
 	virtual std::vector<std::string> getCompileOptionNames() const	{return std::vector<std::string>();}
 	virtual PatternLexerInstanceInterface* createInstance() const;
-	virtual const char* getDescription() const			{return "test pattern lexer";}
+
+	virtual const char* name() const	{return "testlexer";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -54,8 +56,8 @@ public:
 	TestPatternLexerInstance( ErrorBufferInterface* errorhnd_);
 
 	virtual ~TestPatternLexerInstance();
-	virtual void defineOption( const std::string& name, double value);
-	virtual void defineLexemName( unsigned int id, const std::string& name);
+	virtual void defineOption( const std::string& name_, double value);
+	virtual void defineLexemName( unsigned int id, const std::string& name_);
 	virtual void defineLexem(
 			unsigned int id,
 			const std::string& expression,
@@ -66,11 +68,11 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name);
+			const std::string& name_);
 
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
-			const std::string& name) const;
+			const std::string& name_) const;
 
 	virtual const char* getLexemName( unsigned int id) const;
 
@@ -78,7 +80,8 @@ public:
 
 	virtual PatternLexerContextInterface* createContext() const;
 
-	virtual analyzer::FunctionView view() const;
+	virtual const char* name() const	{return "testlexer";}
+	virtual StructView view() const;
 
 private:
 	typedef std::map<std::string,int> SymbolTable;

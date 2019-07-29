@@ -11,6 +11,7 @@
 #ifndef _STRUS_ANALYZER_SUB_CONTENT_DEFINITION_VIEW_HPP_INCLUDED
 #define _STRUS_ANALYZER_SUB_CONTENT_DEFINITION_VIEW_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/structView.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -20,31 +21,19 @@ namespace analyzer {
 /// \brief Structure describing the internal representation of a sub content definition in the document analyzer
 /// \note The internal representation may not be suitable for reconstructing the object
 class SubContentDefinitionView
+	:public StructView
 {
 public:
-	/// \brief Default constructor
-	SubContentDefinitionView(){}
-	/// \brief Copy constructor
-	SubContentDefinitionView( const SubContentDefinitionView& o)
-		:m_selectexpr(o.m_selectexpr),m_documentClass(o.m_documentClass){}
-
 	/// \brief Constructor
 	/// \param[in] selectexpr_ the segmenter selection expression
 	/// \param[in] documentClass_ document class of the subcontent
 	SubContentDefinitionView( const std::string& selectexpr_, const analyzer::DocumentClass& documentClass_)
-		:m_selectexpr(selectexpr_),m_documentClass(documentClass_){}
-
-	/// \brief Get the name of this sub document type
-	/// \return name of the sub document type
-	const analyzer::DocumentClass& documentClass() const	{return m_documentClass;}
-
-	/// \brief Get the segmenter selection expression
-	/// \return the selection expression
-	const std::string& selection() const			{return m_selectexpr;}
-
-private:
-	std::string m_selectexpr;
-	analyzer::DocumentClass m_documentClass;
+	{
+		(*this)
+			("select",selectexpr_)
+			("documentclass",documentClass_.view())
+		;
+	}
 };
 
 }}//namespace

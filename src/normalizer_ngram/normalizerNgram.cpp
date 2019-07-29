@@ -13,7 +13,6 @@
 #include "private/internationalization.hpp"
 #include "strus/base/numstring.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -87,18 +86,20 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in normalize: %s"), *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return NORMALIZER_NAME;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( NORMALIZER_NAME)
-				( "width", m_config.width)
-				( "withEnd", m_config.withEnd)
-				( "withStart", m_config.withStart)
-				( "roundRobin", m_config.roundRobin)
+			return StructView()
+				("name", name())
+				("width", m_config.width)
+				("withEnd", m_config.withEnd)
+				("withStart", m_config.withStart)
+				("roundRobin", m_config.roundRobin)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -139,4 +140,16 @@ NormalizerFunctionInstanceInterface* NgramNormalizerFunction::createInstance( co
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in create normalizer instance: %s"), *m_errorhnd, 0);
 }
+
+StructView NgramNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer producing ngrams."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
+
 

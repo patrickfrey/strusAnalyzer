@@ -1276,16 +1276,17 @@ std::vector<analyzer::Token>
 	CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, std::vector<analyzer::Token>());
 }
 
-analyzer::FunctionView PunctuationTokenizerInstance_en::view() const
+StructView PunctuationTokenizerInstance_en::view() const
 {
 	try
 	{
-		return analyzer::FunctionView( "punctuation")
-			( "language", "en")
-			( "charlist", m_punctuation_charlist)
+		return StructView()
+			("name", name())
+			("language", "en")
+			("charlist", m_punctuation_charlist)
 		;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

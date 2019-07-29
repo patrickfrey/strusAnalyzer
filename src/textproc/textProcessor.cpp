@@ -25,7 +25,7 @@
 #include "strus/patternMatcherInterface.hpp"
 #include "strus/patternTermFeederInterface.hpp"
 #include "strus/analyzer/token.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include "strus/documentClassDetectorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/fileLocatorInterface.hpp"
@@ -111,14 +111,16 @@ public:
 	{
 		return std::string();
 	}
-	virtual analyzer::FunctionView view() const
+
+	virtual const char* name() const	{return "empty";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "empty")
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -146,9 +148,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "empty", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "empty";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer mapping input tokens to an empty string");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer mapping to the empty string."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -167,15 +176,17 @@ public:
 	{
 		return m_value;
 	}
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "const";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "const")
+			return StructView()
+				("name", name())
 				("value",m_value)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -204,9 +215,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "const", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "const";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer mapping input tokens to a constant string");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer mapping input tokens to a constant string."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -229,15 +247,17 @@ public:
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "prefix", *m_errorhnd, std::string());
 	}
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "prefix";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "prefix")
-				("value",m_value)
+			return StructView()
+				("name", name())
+				("value", m_value)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -266,9 +286,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "prefix", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "prefix";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer adding a prefix to the input tokens");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer adding a prefix to the input tokens."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -290,15 +317,16 @@ public:
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "suffix", *m_errorhnd, std::string());
 	}
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "suffix";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "suffix")
-				("value",m_value)
-			;
+			return StructView()
+				("name", name())
+				("value",m_value);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -327,9 +355,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "suffix", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "suffix";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer adding a suffix to the input tokens");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer adding a suffix to the input tokens."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -366,14 +401,15 @@ public:
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, std::string());
 	}
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "orig";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "orig")
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -400,10 +436,16 @@ public:
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, 0);
 	}
-
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "orig";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer mapping the identity of the input tokens");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer mapping the identity of the input tokens, but stripping sequences of duplicated white-spaces in a row, mapping them to one single white-space."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -453,14 +495,15 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "text", *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "text";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "text")
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -488,9 +531,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "orig", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "text";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer mapping the identity of the input tokens");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer trimming the input and removing non valid UTF-8 characters from the resulting text string."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -522,14 +572,15 @@ public:
 		return false;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "all";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "all")
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -557,9 +608,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "all", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "all";}
+	virtual StructView view() const
 	{
-		return _TXT("Tokenizer producing one token for each input chunk (identity)");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer mapping the identity of the input tokens, leaving input as it is, whithout trimming or stripping superfluous whitespaces."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -604,14 +662,15 @@ public:
 		return false;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "content";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "content")
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -639,9 +698,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "content", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "content";}
+	virtual StructView view() const
 	{
-		return _TXT("Tokenizer producing one token with trimmed white spaces for each input chunk (identity)");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Tokenizer producing one token with trimmed white spaces for each input chunk (identity)."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -684,16 +750,16 @@ public:
 		}
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "count";}
+	virtual StructView view() const
 	{
 		try
 		{
-			std::vector<std::string> types( m_featuretypes.begin(), m_featuretypes.end());
-			return analyzer::FunctionView( "count")
-				("type",types)
-			;
+			return StructView()
+				("name",name())
+				("types",m_featuretypes);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -717,9 +783,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "count", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "count";}
+	virtual StructView view() const
 	{
-		return _TXT("Aggregator counting the input elements");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Aggregator counting the input elements."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -748,16 +821,18 @@ public:
 		return (NumericVariant::IntType)(rt + m_incr);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "maxpos";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "maxpos")
+			return StructView()
+				("name",name())
 				("type",m_featuretype)
 				("incr",m_incr)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -792,9 +867,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "maxpos", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "maxpos";}
+	virtual StructView view() const
 	{
-		return _TXT("Aggregator getting the maximum position of the input elements");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Aggregator evaluating the maximum position of the input elements."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -824,15 +906,17 @@ public:
 		return (NumericVariant::IntType)rt;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "minpos";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "minpos")
+			return StructView()
+				("name",name())
 				("type",m_featuretype)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -866,9 +950,16 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), "minpos", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "minpos";}
+	virtual StructView view() const
 	{
-		return _TXT("Aggregator getting the minimum position of the input elements");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Aggregator evaluating the minimum position of the input elements."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:

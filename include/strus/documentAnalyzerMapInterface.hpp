@@ -11,7 +11,7 @@
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_MAP_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/documentAnalyzerMapView.hpp"
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 
@@ -72,7 +72,7 @@ public:
 
 	/// \brief Return a structure with all definitions for introspection
 	/// \return the structure with all definitions for introspection
-	virtual analyzer::DocumentAnalyzerMapView view() const=0;
+	virtual StructView view() const=0;
 };
 
 }//namespace

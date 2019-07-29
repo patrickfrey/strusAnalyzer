@@ -10,7 +10,6 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/math.hpp"
@@ -80,22 +79,18 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name.c_str(), *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "vsm";}
+	virtual StructView view() const
 	{
 		try
 		{
-			const char* function = "";
-			if (m_call == &sumSquareTfAggregatorFunctionCall)
-			{
-				function = "sumsqaretf";
-			}
-			return analyzer::FunctionView( "vsm")
-				( "featuretype", m_featuretype)
-				( "aggregationtype", m_name)
-				( "function", function)
+			return StructView()
+				("name",name())
+				("featuretype", m_featuretype)
+				("aggregationtype", m_name)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -131,9 +126,18 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' aggregator: %s"), m_name, *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "vsm";}
+	virtual StructView view() const
 	{
-		return m_description;
+		try
+		{
+			return StructView()
+				("name",name())
+				("description", _TXT("function aggregating with a function on feature occurrencies"))
+				("aggregationtype", m_name)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:

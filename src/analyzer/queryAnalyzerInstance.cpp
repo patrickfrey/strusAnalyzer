@@ -11,6 +11,8 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
+#include "private/queryAnalyzerView.hpp"
+#include "private/queryElementView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
@@ -133,24 +135,24 @@ QueryAnalyzerContextInterface* QueryAnalyzerInstance::createContext() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in QueryAnalyzerInstance::createContext: %s"), *m_errorhnd, 0);
 }
 
-static analyzer::QueryElementView getQueryElementView( const FeatureConfig& cfg)
+static StructView getQueryElementView( const FeatureConfig& cfg)
 {
 	typedef Reference<NormalizerFunctionInstanceInterface> NormalizerReference;
-	std::vector<analyzer::FunctionView> normalizerviews;
+	StructView normalizerviews;
 	std::vector<NormalizerReference>::const_iterator ni = cfg.normalizerlist().begin(), ne = cfg.normalizerlist().end();
 	for (; ni != ne; ++ni)
 	{
-		normalizerviews.push_back( (*ni)->view());
+		normalizerviews( (*ni)->view());
 	}
 	return analyzer::QueryElementView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.priority());
 }
 
-analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const
+StructView QueryAnalyzerInstance::view() const
 {
 	try
 	{
-		std::vector<analyzer::QueryElementView> elements;
-		std::vector<analyzer::QueryElementView> patternLexems;
+		StructView elements;
+		StructView patternLexems;
 
 		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
 		for (; fi != fe; ++fi)
@@ -167,15 +169,15 @@ analyzer::QueryAnalyzerView QueryAnalyzerInstance::view() const
 					throw strus::runtime_error(_TXT("internal: illegal %s feature definition in query"), "forward index");
 					break;
 				case FeatSearchIndexTerm:
-					elements.push_back( getQueryElementView( *fi));
+					elements( getQueryElementView( *fi));
 					break;
 				case FeatPatternLexem:
-					patternLexems.push_back( getQueryElementView( *fi));
+					patternLexems( getQueryElementView( *fi));
 					break;
 			}
 		}
 		return analyzer::QueryAnalyzerView( elements, patternLexems);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in query analyzer create view: %s"), *m_errorhnd, analyzer::QueryAnalyzerView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in query analyzer create view: %s"), *m_errorhnd, StructView());
 }
 

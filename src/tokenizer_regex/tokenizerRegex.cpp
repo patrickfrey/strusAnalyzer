@@ -10,7 +10,6 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/base/regex.hpp"
 #include "strus/base/numstring.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
@@ -59,15 +58,18 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error executing \"%s\" tokenizer function: %s"), TOKENIZER_NAME, *m_errorhnd, std::vector<analyzer::Token>());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "regex";}
+	StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( TOKENIZER_NAME)
-				( "expression", m_expression)
+			return StructView()
+				("name", name())
+				("expression", m_expression)
+				("index", m_search.index())
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -101,13 +103,16 @@ TokenizerFunctionInstanceInterface* RegexTokenizerFunction::createInstance(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating \"%s\" tokenizer instance: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
 }
 
-const char* RegexTokenizerFunction::getDescription() const
+StructView RegexTokenizerFunction::view() const
 {
 	try
 	{
-		return _TXT("Tokenizer selecting tokens from source that are matching a regular expression.");
+		return StructView()
+			("name", name())
+			("description",_TXT("Tokenizer selecting tokens from source that are matching a regular expression passed as first argument."))
+			("arg", StructView()( _TXT("Regular expression"))( _TXT("index of result to select (optional - 0 as default)")))
+		;
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error getting \"%s\" tokenizer description: %s"), TOKENIZER_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
-
 

@@ -10,6 +10,7 @@
 #include "contentStatisticsLibrary.hpp"
 #include "strus/analyzer/token.hpp"
 #include "strus/errorBufferInterface.hpp"
+#include "private/contentStatisticsElementView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <algorithm>
@@ -146,29 +147,29 @@ std::vector<std::string> ContentStatisticsLibrary::matches( const char* input, s
 	CATCH_ERROR_MAP_RETURN( _TXT("error in content statistics library: %s"), *m_errorhnd, std::vector<std::string>());
 }
 
-std::vector<analyzer::ContentStatisticsElementView> ContentStatisticsLibrary::view() const
+StructView ContentStatisticsLibrary::view() const
 {
 	try
 	{
 		strus::scoped_lock lock( m_mutex);
 
-		std::vector<analyzer::ContentStatisticsElementView> rt;
+		StructView rt;
 		std::vector<Element>::const_iterator ai = m_ar.begin(), ae = m_ar.end();
 		for (; ai != ae; ++ai)
 		{
-			std::vector<analyzer::FunctionView> normalizerviews;
+			StructView normalizerviews;
 			std::vector<NormalizerFunctionReference>::const_iterator
 				ni = ai->normalizers.begin(), ne = ai->normalizers.end();
 			for (; ni != ne; ++ni)
 			{
-				normalizerviews.push_back( (*ni)->view());
+				normalizerviews( (*ni)->view());
 			}
 			analyzer::ContentStatisticsElementView elem( ai->type, ai->regexstr, ai->priority, ai->minLength, ai->maxLength, ai->tokenizer->view(), normalizerviews);
-			rt.push_back( elem);
+			rt( elem);
 		}
 		return rt;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in content statistics library introspection: %s"), *m_errorhnd, std::vector<analyzer::ContentStatisticsElementView>());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in content statistics library introspection: %s"), *m_errorhnd, StructView());
 }
 
 

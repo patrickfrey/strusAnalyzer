@@ -13,6 +13,7 @@
 #include "strus/base/enable_if.hpp"
 #include "strus/base/type_traits.hpp"
 #include "strus/numericVariant.hpp"
+#include "strus/structView.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -27,20 +28,16 @@ namespace analyzer {
 /// \brief Structure describing the internal representation of a normalizer/tokenizer/aggregator function in the analyzer
 /// \note The internal representation may not be suitable for reconstructing the object
 class FunctionView
+	:public StructView
 {
 public:
-	typedef std::pair<std::string,std::string> NamedParameter;
-
-	/// \brief Default constructor
-	FunctionView(){}
-	/// \brief Copy constructor
-	FunctionView( const FunctionView& o)
-		:m_name(o.m_name),m_parameter(o.m_parameter){}
 	/// \brief Constructor
 	/// \param[in] name_ name of the function
 	/// \param[in] params_ list of named parameters
 	FunctionView( const std::string& name_, const std::vector<NamedParameter>& params_)
+	{
 		:m_name(name_),m_parameter(params_){}
+	}
 	/// \brief Constructor
 	/// \param[in] name_ name of the function
 	/// \param[in] params_ list of named parameters

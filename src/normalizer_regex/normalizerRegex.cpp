@@ -12,7 +12,6 @@
 #include "strus/base/regex.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 #include <iterator>
 #include <limits>
@@ -50,16 +49,18 @@ public:
 		}
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return MODULE_NAME;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( MODULE_NAME)
-				( "expression", m_expr)
-				( "result", m_result)
+			return StructView()
+				("name",name())
+				("expression", m_expr)
+				("result", m_result)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -137,15 +138,17 @@ public:
 		}
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return MODULE_NAME;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( MODULE_NAME)
+			return StructView()
+				("name", name())
 				( "expression", m_expr)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -182,13 +185,15 @@ NormalizerFunctionInstanceInterface* RegexNormalizerFunction::createInstance(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating \"%s\" normalizer instance: %s"), MODULE_NAME, *m_errorhnd, 0);
 }
 
-const char* RegexNormalizerFunction::getDescription() const
+StructView RegexNormalizerFunction::view() const
 {
 	try
 	{
-		return _TXT( "Normalizer that does a regular expression match with the first argument and a replace with the format string defined in the second argument if one is defined or simply return the matches if no second argument is specified.");
+		return StructView()
+			("name", name())
+			("description",_TXT( "Normalizer that does a regular expression match with the first argument and a replace with the format string defined in the second argument if one is defined or simply return the matches if no second argument is specified."));
 	}
-	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error getting \"%s\" normalizer description: %s"), MODULE_NAME, *m_errorhnd, 0);
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

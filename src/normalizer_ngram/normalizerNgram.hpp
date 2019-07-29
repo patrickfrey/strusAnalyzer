@@ -9,7 +9,6 @@
 #define _STRUS_NORMALIZER_NGRAM_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -28,10 +27,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer producing ngrams.");
-	}
+	virtual const char* name() const	{return "ngram";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

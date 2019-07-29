@@ -24,10 +24,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer doing stemming based on snowball. The language is passed as parameter");
-	}
+	virtual const char* name() const	{return "stem";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

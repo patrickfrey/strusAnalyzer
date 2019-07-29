@@ -8,7 +8,6 @@
 #include "normalizerCharConv.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -66,8 +65,8 @@ class CharMapNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
 {
 public:
-	CharMapNormalizerInstance( CharMap::ConvType maptype_, CharMap::ExceptionsF exceptions_, ErrorBufferInterface* errorhnd_)
-		:m_map(CharMap::getMap(maptype_)),m_maptype(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
+	CharMapNormalizerInstance( const char* name_, CharMap::ConvType maptype_, CharMap::ExceptionsF exceptions_, ErrorBufferInterface* errorhnd_)
+		:m_name(name_),m_map(CharMap::getMap(maptype_)),m_maptype(maptype_),m_exceptions(exceptions_),m_errorhnd(errorhnd_){}
 
 	virtual std::string normalize(
 			const char* src,
@@ -76,16 +75,19 @@ public:
 		return m_map->rewrite( src, srcsize, m_exceptions, m_errorhnd);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return m_name;}
+
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( m_map->name());
+			return StructView()("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
+	const char* m_name;
 	const CharMap* m_map;
 	CharMap::ConvType m_maptype;
 	CharMap::ExceptionsF m_exceptions;
@@ -4421,13 +4423,24 @@ NormalizerFunctionInstanceInterface* LowercaseNormalizerFunction::createInstance
 	}
 	try
 	{
-		return new CharMapNormalizerInstance( CharMap::Lowercase, 0, m_errorhnd);
+		return new CharMapNormalizerInstance( "lc", CharMap::Lowercase, 0, m_errorhnd);
 	}
 	catch (const std::bad_alloc&)
 	{
 		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "lc");
 		return 0;
 	}
+}
+
+StructView LowercaseNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping all characters to lowercase."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
@@ -4439,13 +4452,24 @@ NormalizerFunctionInstanceInterface* UppercaseNormalizerFunction::createInstance
 	}
 	try
 	{
-		return new CharMapNormalizerInstance( CharMap::Uppercase, 0, m_errorhnd);
+		return new CharMapNormalizerInstance( "uc", CharMap::Uppercase, 0, m_errorhnd);
 	}
 	catch (const std::bad_alloc&)
 	{
 		m_errorhnd->report( ErrorCodeOutOfMem, _TXT("out of memory in normalizer '%s'"), "uc");
 		return 0;
 	}
+}
+
+StructView UppercaseNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping all characters to uppercase."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 static const char* germanUmlautExceptions( unsigned int chr)
@@ -4473,18 +4497,18 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 		}
 		if (args.size() == 0)
 		{
-			return new CharMapNormalizerInstance( CharMap::Diacritical, 0, m_errorhnd);
+			return new CharMapNormalizerInstance( "convdia", CharMap::Diacritical, 0, m_errorhnd);
 		}
 		else
 		{
 			std::string language_lo = string_conv::tolower( args[0]);
 			if (language_lo == "de")
 			{
-				return new CharMapNormalizerInstance( CharMap::Diacritical, germanUmlautExceptions, m_errorhnd);
+				return new CharMapNormalizerInstance( "convdia", CharMap::Diacritical, germanUmlautExceptions, m_errorhnd);
 			}
 			else
 			{
-				return new CharMapNormalizerInstance( CharMap::Diacritical, 0, m_errorhnd);
+				return new CharMapNormalizerInstance( "convdia", CharMap::Diacritical, 0, m_errorhnd);
 			}
 		}
 	}
@@ -4495,6 +4519,16 @@ NormalizerFunctionInstanceInterface* DiacriticalNormalizerFunction::createInstan
 	}
 }
 
+StructView DiacriticalNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping all diacritical characters to ascii. The language is passed as first argument (currently only german 'de' and english 'en' supported)"));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
 
 class CharSet
 {
@@ -4644,15 +4678,17 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), "charselect", *m_errorhnd, 0);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "charselect";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "charselect")
+			return StructView()
+				( "name", name())
 				( "sets", m_setnames)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -4670,6 +4706,16 @@ NormalizerFunctionInstanceInterface* CharSelectNormalizerFunction::createInstanc
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating '%s' normalizer instance: %s"), "charselect", *m_errorhnd, 0);
 }
 
+StructView CharSelectNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping all alpha characters to identity and all other characters to nothing. The language set is passed as first argument (currently only european 'eu' and ASCII 'ascii' supported)."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
 
 
 

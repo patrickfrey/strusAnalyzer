@@ -8,12 +8,12 @@
 /// \brief Implementation of a parametrizable document analyzer instance able to process many different document types
 /// \file documentAnalyzerMap.cpp
 #include "documentAnalyzerMap.hpp"
-#include "strus/analyzer/documentAnalyzerMapView.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/debugTraceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
+#include "private/documentAnalyzerMapView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 
@@ -125,25 +125,25 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerMap::createContext(
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating analyzer context: %s"), *m_errorhnd, NULL);
 }
 
-analyzer::DocumentAnalyzerMapView DocumentAnalyzerMap::view() const
+StructView DocumentAnalyzerMap::view() const
 {
 	try
 	{
-		std::vector<analyzer::DocumentAnalyzerMapElementView> definitions;
+		StructView definitions;
 		Map::const_iterator si = m_schemaAnalyzerMap.begin(), se = m_schemaAnalyzerMap.end();
 		for (; si != se; ++si)
 		{
 			std::pair<std::string,std::string> kp = getMimeSchemaKeyParts( si->first);
-			definitions.push_back( analyzer::DocumentAnalyzerMapElementView( kp.first, kp.second, si->second->view()));
+			definitions( analyzer::DocumentAnalyzerMapElementView( kp.first, kp.second, si->second->view()));
 		}
 		si = m_mimeTypeAnalyzerMap.begin(), se = m_mimeTypeAnalyzerMap.end();
 		for (; si != se; ++si)
 		{
-			definitions.push_back( analyzer::DocumentAnalyzerMapElementView( si->first, ""/*schema*/, si->second->view()));
+			definitions( analyzer::DocumentAnalyzerMapElementView( si->first, ""/*schema*/, si->second->view()));
 		}
 		return analyzer::DocumentAnalyzerMapView( definitions);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating analyzer context: %s"), *m_errorhnd, analyzer::DocumentAnalyzerMapView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

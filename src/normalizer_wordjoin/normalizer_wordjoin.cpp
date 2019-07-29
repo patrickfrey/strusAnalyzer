@@ -10,7 +10,6 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 
 using namespace strus;
@@ -58,15 +57,17 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return NORMALIZER_NAME;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( NORMALIZER_NAME)
+			return StructView()
+				( "name", name())
 				( "jointoken", m_jointoken)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -89,5 +90,16 @@ NormalizerFunctionInstanceInterface* WordJoinNormalizerFunction::createInstance(
 		}
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+}
+
+StructView WordJoinNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer producing joined words."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 

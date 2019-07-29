@@ -348,14 +348,14 @@ strus::SegmenterMarkupContextInterface* TSVSegmenterInstance::createMarkupContex
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup instance of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-strus::analyzer::FunctionView TSVSegmenterInstance::view() const
+strus::StructView TSVSegmenterInstance::view() const
 {
 	try
 	{
-		return strus::analyzer::FunctionView( SEGMENTER_NAME)
+		return strus::StructView()("name",name())
 		;
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, strus::analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, strus::StructView());
 }
 
 // TSVSegmenter
@@ -401,9 +401,17 @@ strus::ContentIteratorInterface* TSVSegmenter::createContentIterator(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating content iterator of '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-const char* TSVSegmenter::getDescription() const
+strus::StructView TSVSegmenter::view() const
 {
-	return _TXT("Segmenter for TSV (text/tab-separated-values)");
+	try
+	{
+		return strus::StructView()
+			("name", name())
+			("mimetype", mimeType())
+			("description", _TXT("Segmenter for TSV (text/tab-separated-values)"))
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, strus::StructView());
 }
 
 TSVContentIterator::TSVContentIterator( 

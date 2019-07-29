@@ -9,7 +9,6 @@
 /// \file posTaggerInstance.hpp
 #ifndef _STRUS_ANALYZER_POS_TAGGER_INSTANCE_IMPLEMENTATION_HPP_INCLUDED
 #define _STRUS_ANALYZER_POS_TAGGER_INSTANCE_IMPLEMENTATION_HPP_INCLUDED
-#include "strus/analyzer/functionView.hpp"
 #include "strus/posTaggerInstanceInterface.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
 #include <string>

@@ -132,13 +132,12 @@ TokenMarkupContextInterface* TokenMarkupInstance::createContext( const Segmenter
 	CATCH_ERROR_MAP_RETURN( _TXT("failed to create token markup: %s"), *m_errorhnd, 0);
 }
 
-analyzer::FunctionView TokenMarkupInstance::view() const
+StructView TokenMarkupInstance::view() const
 {
 	try
 	{
-		return analyzer::FunctionView( "std")
-		;
+		return StructView()("name", name());
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 

@@ -22,7 +22,7 @@
 #include "strus/base/stdint.h"
 #include "strus/reference.hpp"
 #include "strus/versionAnalyzer.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <vector>
@@ -300,14 +300,14 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name)
+			const std::string& name_)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::TermFeeder_defineSymbol);
 			m_serializerData->pushParam( id);
 			m_serializerData->pushParam( lexemid);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineSymbol command: %s"), *m_errorhnd);
@@ -334,13 +334,14 @@ public:
 		return 0;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "feeder";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "serialize");
+			return StructView()( "serialize");
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -356,13 +357,13 @@ public:
 		:m_errorhnd(errorhnd_),m_serializerData(serializerData_){}
 	virtual ~PatternLexerInstance(){}
 
-	virtual void defineLexemName( unsigned int id, const std::string& name)
+	virtual void defineLexemName( unsigned int id, const std::string& name_)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternLexer_defineLexemName);
 			m_serializerData->pushParam( id);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineLexemName command: %s"), *m_errorhnd);
@@ -391,14 +392,14 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name)
+			const std::string& name_)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternLexer_defineSymbol);
 			m_serializerData->pushParam( id);
 			m_serializerData->pushParam( lexemid);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineSymbol command: %s"), *m_errorhnd);
@@ -418,12 +419,12 @@ public:
 		return 0;
 	}
 
-	virtual void defineOption( const std::string& name, double value)
+	virtual void defineOption( const std::string& name_, double value)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternLexer_defineOption);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->pushParam( value);
 			m_serializerData->endCall();
 		}
@@ -447,9 +448,10 @@ public:
 		return 0;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "lexer";}
+	virtual StructView view() const
 	{
-		return analyzer::FunctionView();
+		return StructView();
 	}
 
 private:
@@ -503,34 +505,34 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushExpression command: %s"), *m_errorhnd);
 	}
 
-	virtual void pushPattern( const std::string& name)
+	virtual void pushPattern( const std::string& name_)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_pushPattern);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name)
+	virtual void attachVariable( const std::string& name_)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_attachVariable);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->endCall();
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
 	}
 
-	virtual void definePattern( const std::string& name, const std::string& formatstring, bool visible)
+	virtual void definePattern( const std::string& name_, const std::string& formatstring, bool visible)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_definePattern);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->pushParam( formatstring);
 			m_serializerData->pushParam( visible);
 			m_serializerData->endCall();
@@ -538,12 +540,12 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void defineOption( const std::string& name, double value)
+	virtual void defineOption( const std::string& name_, double value)
 	{
 		try
 		{
 			m_serializerData->startCall( SerializerData::PatternMatcher_defineOption);
-			m_serializerData->pushParam( name);
+			m_serializerData->pushParam( name_);
 			m_serializerData->pushParam( value);
 			m_serializerData->endCall();
 		}
@@ -567,10 +569,10 @@ public:
 		return 0;
 	}
 
-	
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "matcher";}
+	virtual StructView view() const
 	{
-		return analyzer::FunctionView();
+		return StructView();
 	}
 
 private:
@@ -601,11 +603,11 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name)
+			const std::string& name_)
 	{
 		try
 		{
-			(*m_output) << "F defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+			(*m_output) << "F defineSymbol( " << id << ", " << lexemid << ", " << name_ << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternTermFeeder::defineSymbol command: %s"), *m_errorhnd);
 	}
@@ -631,9 +633,10 @@ public:
 		return 0;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "feeder";}
+	virtual StructView view() const
 	{
-		return analyzer::FunctionView();
+		return StructView();
 	}
 
 private:
@@ -648,11 +651,11 @@ public:
 		:m_errorhnd(errorhnd_),m_output(&output_){}
 	virtual ~PatternLexerInstanceText(){}
 
-	virtual void defineLexemName( unsigned int id, const std::string& name)
+	virtual void defineLexemName( unsigned int id, const std::string& name_)
 	{
 		try
 		{
-			(*m_output) << "L defineLexemName( " << id << ", " << name << ");" << std::endl;
+			(*m_output) << "L defineLexemName( " << id << ", " << name_ << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineLexemName command: %s"), *m_errorhnd);
 	}
@@ -674,11 +677,11 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name)
+			const std::string& name_)
 	{
 		try
 		{
-			(*m_output) << "L defineSymbol( " << id << ", " << lexemid << ", " << name << ");" << std::endl;
+			(*m_output) << "L defineSymbol( " << id << ", " << lexemid << ", " << name_ << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineSymbol command: %s"), *m_errorhnd);
 	}
@@ -697,11 +700,11 @@ public:
 		return 0;
 	}
 
-	virtual void defineOption( const std::string& name, double value)
+	virtual void defineOption( const std::string& name_, double value)
 	{
 		try
 		{
-			(*m_output) << "L defineOption( " << name << ", " << value << ");" << std::endl;
+			(*m_output) << "L defineOption( " << name_ << ", " << value << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternLexer::defineOption command: %s"), *m_errorhnd);
 	}
@@ -716,9 +719,10 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in serialize of PatternLexer::compile command: %s"), *m_errorhnd, false);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "lexer";}
+	virtual StructView view() const
 	{
-		return analyzer::FunctionView();
+		return StructView();
 	}
 
 	virtual PatternLexerContextInterface* createContext() const
@@ -768,38 +772,38 @@ public:
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushExpression command: %s"), *m_errorhnd);
 	}
 
-	virtual void pushPattern( const std::string& name)
+	virtual void pushPattern( const std::string& name_)
 	{
 		try
 		{
-			(*m_output) << "M pushPattern( " << name << ");" << std::endl;
+			(*m_output) << "M pushPattern( " << name_ << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::pushPattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void attachVariable( const std::string& name)
+	virtual void attachVariable( const std::string& name_)
 	{
 		try
 		{
-			(*m_output) << "M attachVariable( " << name << ");" << std::endl;
+			(*m_output) << "M attachVariable( " << name_ << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::attachVariable command: %s"), *m_errorhnd);
 	}
 
-	virtual void definePattern( const std::string& name, const std::string& formatstring, bool visible)
+	virtual void definePattern( const std::string& name_, const std::string& formatstring, bool visible)
 	{
 		try
 		{
-			(*m_output) << "M definePattern( " << name << ", " << formatstring << ", " << (visible?"true":"false") << ");" << std::endl;
+			(*m_output) << "M definePattern( " << name_ << ", " << formatstring << ", " << (visible?"true":"false") << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::definePattern command: %s"), *m_errorhnd);
 	}
 
-	virtual void defineOption( const std::string& name, double value)
+	virtual void defineOption( const std::string& name_, double value)
 	{
 		try
 		{
-			(*m_output) << "M defineOption( " << name << ", " << value << ");" << std::endl;
+			(*m_output) << "M defineOption( " << name_ << ", " << value << ");" << std::endl;
 		}
 		CATCH_ERROR_MAP( _TXT("error in serialize of PatternMatcher::defineOption command: %s"), *m_errorhnd);
 	}
@@ -820,9 +824,10 @@ public:
 		return 0;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "matcher";}
+	virtual StructView view() const
 	{
-		return analyzer::FunctionView();
+		return StructView();
 	}
 
 private:
@@ -1005,10 +1010,10 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternLexer_defineOption:
 		{
-			std::string name = deserializer.readParam_string();
+			std::string name_ = deserializer.readParam_string();
 			double value = deserializer.readParam_double();
 			deserializer.endCall();
-			lexer->defineOption( name, value);
+			lexer->defineOption( name_, value);
 			break;
 		}
 		case SerializerData::PatternLexer_compile:
@@ -1086,10 +1091,10 @@ static void deserializeCommand(
 		}
 		case SerializerData::PatternMatcher_defineOption:
 		{
-			std::string name = deserializer.readParam_string();
+			std::string name_ = deserializer.readParam_string();
 			double value = deserializer.readParam_double();
 			deserializer.endCall();
-			matcher->defineOption( name, value);
+			matcher->defineOption( name_, value);
 			break;
 		}
 		case SerializerData::PatternMatcher_compile:

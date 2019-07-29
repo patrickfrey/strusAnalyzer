@@ -13,7 +13,7 @@
 #include "strus/patternMatcherInstanceInterface.hpp"
 #include "strus/patternMatcherContextInterface.hpp"
 #include "strus/analyzer/patternLexem.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include "strus/lib/pattern_resultformat.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/reference.hpp"
@@ -40,7 +40,9 @@ public:
 
 	virtual std::vector<std::string> getCompileOptionNames() const		{return std::vector<std::string>();}
 	virtual PatternMatcherInstanceInterface* createInstance() const;
-	virtual const char* getDescription() const				{return "test pattern matcher";}
+
+	virtual const char* name() const	{return "testmatcher";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -54,19 +56,21 @@ public:
 	TestPatternMatcherInstance( ErrorBufferInterface* errorhnd_);
 
 	virtual ~TestPatternMatcherInstance();
-	virtual void defineOption( const std::string& name, double value);
+	virtual void defineOption( const std::string& name_, double value);
 	virtual void defineTermFrequency( unsigned int termid, double df);
 	virtual void pushTerm( unsigned int termid);
 	virtual void pushExpression(
 			JoinOperation operation,
 			std::size_t argc, unsigned int range, unsigned int cardinality);
-	virtual void pushPattern( const std::string& name);
-	virtual void attachVariable( const std::string& name);
-	virtual void definePattern( const std::string& name, const std::string& formatstring, bool visible);
+	virtual void pushPattern( const std::string& name_);
+	virtual void attachVariable( const std::string& name_);
+	virtual void definePattern( const std::string& name_, const std::string& formatstring, bool visible);
 	virtual bool compile();
 
 	virtual PatternMatcherContextInterface* createContext() const;
-	virtual analyzer::FunctionView view() const;
+
+	virtual const char* name() const	{return "testmatcher";}
+	virtual StructView view() const;
 
 private:
 	friend class TestPatternMatcherContext;

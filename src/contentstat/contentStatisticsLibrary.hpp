@@ -12,9 +12,9 @@
 #include "strus/reference.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "strus/analyzer/contentStatisticsElementView.hpp"
 #include "strus/base/thread.hpp"
 #include "strus/base/regex.hpp"
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
@@ -72,7 +72,7 @@ public:
 	std::vector<std::string> matches( const char* input, std::size_t inputsize) const;
 
 	/// \brief Get the list of element views
-	std::vector<analyzer::ContentStatisticsElementView> view() const;
+	StructView view() const;
 
 private:
 	typedef strus::Reference<TokenizerFunctionInstanceInterface> TokenizerFunctionReference;

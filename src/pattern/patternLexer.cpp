@@ -30,6 +30,14 @@ PatternLexerInstanceInterface* TestPatternLexer::createInstance() const
 	return new TestPatternLexerInstance( m_errorhnd);
 }
 
+StructView TestPatternLexer::view() const
+{
+	try
+	{
+		return StructView()("name", name());
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
 
 TestPatternLexerInstance::TestPatternLexerInstance( ErrorBufferInterface* errorhnd_)
 	:m_errorhnd(errorhnd_),m_debugtrace(0),m_lexemNameMap(),m_symmap(),m_expressions(),m_done(false)
@@ -48,24 +56,24 @@ TestPatternLexerInstance::~TestPatternLexerInstance()
 	if (m_debugtrace) delete m_debugtrace;
 }
 
-void TestPatternLexerInstance::defineOption( const std::string& name, double value)
+void TestPatternLexerInstance::defineOption( const std::string& name_, double value)
 {
 	try
 	{
-		if (m_debugtrace) m_debugtrace->event( "option", "%s %f", name.c_str(), value);
+		if (m_debugtrace) m_debugtrace->event( "option", "%s %f", name_.c_str(), value);
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
 		throw std::runtime_error(_TXT("unknonw option passed to pattern lexer"));
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternLexerInstance::defineOption", *m_errorhnd);
 }
 
-void TestPatternLexerInstance::defineLexemName( unsigned int id, const std::string& name)
+void TestPatternLexerInstance::defineLexemName( unsigned int id, const std::string& name_)
 {
 	try
 	{
-		if (m_debugtrace) m_debugtrace->event( "name", "%s %u", name.c_str(), id);
+		if (m_debugtrace) m_debugtrace->event( "name", "%s %u", name_.c_str(), id);
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
-		m_lexemNameMap[ id] = name;
+		m_lexemNameMap[ id] = name_;
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternLexerInstance::defineOption", *m_errorhnd);
 }
@@ -97,26 +105,26 @@ void TestPatternLexerInstance::defineLexem(
 void TestPatternLexerInstance::defineSymbol(
 		unsigned int id,
 		unsigned int lexemid,
-		const std::string& name)
+		const std::string& name_)
 {
 	try
 	{
-		if (m_debugtrace) m_debugtrace->event( "symbol", "%u %u '%s'", id, lexemid, name.c_str());
+		if (m_debugtrace) m_debugtrace->event( "symbol", "%u %u '%s'", id, lexemid, name_.c_str());
 		if (m_done) throw std::runtime_error( _TXT("illegal call"));
-		m_symmap[ lexemid][ name] = id;
+		m_symmap[ lexemid][ name_] = id;
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error calling %s: %s"), "TestPatternLexerInstance::defineOption", *m_errorhnd);
 }
 
 unsigned int TestPatternLexerInstance::getSymbol(
 		unsigned int lexemid,
-		const std::string& name) const
+		const std::string& name_) const
 {
 	try
 	{
 		std::map<unsigned int,SymbolTable>::const_iterator si = m_symmap.find( lexemid);
 		if (si == m_symmap.end()) return 0;
-		SymbolTable::const_iterator ti = si->second.find( name);
+		SymbolTable::const_iterator ti = si->second.find( name_);
 		if (ti == si->second.end()) return 0;
 		return ti->second;
 	}
@@ -151,14 +159,13 @@ PatternLexerContextInterface* TestPatternLexerInstance::createContext() const
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error calling %s: %s"), "TestPatternLexerInstance::defineOption", *m_errorhnd, NULL);
 }
 
-analyzer::FunctionView TestPatternLexerInstance::view() const
+StructView TestPatternLexerInstance::view() const
 {
 	try
 	{
-		return analyzer::FunctionView( "testlexer")
-		;
+		return StructView()("name", name());
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

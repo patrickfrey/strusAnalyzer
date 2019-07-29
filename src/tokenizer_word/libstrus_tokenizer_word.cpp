@@ -10,7 +10,6 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/token.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -46,13 +45,14 @@ public:
 		return false;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return m_delim->name;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( m_delim->name);
+			return StructView()( "name", m_delim->name);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -65,7 +65,7 @@ class SeparationTokenizerFunction
 {
 public:
 	SeparationTokenizerFunction( const char* description_, const TokenDelimiter* delim_, ErrorBufferInterface* errorhnd_)
-		:m_delim(delim_),m_description(description_),m_errorhnd(errorhnd_){}
+		:m_description(description_),m_delim(delim_),m_errorhnd(errorhnd_){}
 
 	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
@@ -81,14 +81,22 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return m_delim->name;}
+	virtual StructView view() const
 	{
-		return m_description;
+		try
+		{
+			return StructView()
+				("name", name())
+				("description", m_description)
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
-	const TokenDelimiter* m_delim;
 	const char* m_description;
+	const TokenDelimiter* m_delim;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -147,13 +155,14 @@ public:
 		return false;
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "langtoken";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "langtoken");
+			return StructView()( "name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -181,9 +190,17 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' tokenizer: %s"), "langtoken", *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "langtoken";}
+	virtual StructView view() const
 	{
-		return _TXT("Tokenizer returning all sequences of alphanumeric characters as words and word boundary delimiters as single characters");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description", _TXT("Tokenizer returning all sequences of alphanumeric characters as words and word boundary delimiters as single characters"))
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:

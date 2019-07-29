@@ -10,7 +10,7 @@
 /// \file documentAnalyzerView.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_ANALYZER_MAP_VIEW_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_ANALYZER_MAP_VIEW_HPP_INCLUDED
-#include "strus/analyzer/documentAnalyzerView.hpp"
+#include "strus/structView.hpp"
 #include <string>
 #include <vector>
 
@@ -22,44 +22,27 @@ namespace analyzer {
 /// \brief Structure describing the internal representation of one element of a document analyzer map for introspection
 /// \note The internal representations may not be suitable for reconstructing the objects
 class DocumentAnalyzerMapElementView
+	:public StructView
 {
 public:
-	DocumentAnalyzerMapElementView( const DocumentAnalyzerMapElementView& o)
-		:m_mimeType(o.m_mimeType),m_schema(o.m_schema),m_analyzer(o.m_analyzer){}
-	DocumentAnalyzerMapElementView( const std::string& mimeType_, const std::string& schema_, const DocumentAnalyzerView& analyzer_)
-		:m_mimeType(mimeType_),m_schema(schema_),m_analyzer(analyzer_){}
-
-	const std::string& mimeType() const			{return m_mimeType;}
-	const std::string& schema() const			{return m_schema;}
-	const DocumentAnalyzerView& analyzer() const		{return m_analyzer;}
-	
-private:
-	std::string m_mimeType;
-	std::string m_schema;
-	DocumentAnalyzerView m_analyzer;
+	DocumentAnalyzerMapElementView( const std::string& mimeType_, const std::string& schema_, const StructView& analyzer_)
+	{
+		StructView::operator()( "mimetype", mimeType_)( "schema", schema_)( "analyzer", analyzer_);
+	}
 };
 
 /// \brief Structure describing the internal representation of a document analyzer map for introspection
 /// \note The internal representations may not be suitable for reconstructing the objects
 class DocumentAnalyzerMapView
+	:public StructView
 {
 public:
-	/// \brief Default constructor
-	DocumentAnalyzerMapView(){}
-	/// \brief Copy constructor
-	DocumentAnalyzerMapView( const DocumentAnalyzerMapView& o)
-		:m_definitions(o.m_definitions)
-		{}
 	/// \brief Constructor
 	/// \param[in] definitions_ definitions
-	DocumentAnalyzerMapView( const std::vector<DocumentAnalyzerMapElementView>& definitions_)
-		:m_definitions(definitions_)
-		{}
-
-	const std::vector<DocumentAnalyzerMapElementView>& definitions() const	{return m_definitions;}
-
-private:
-	std::vector<DocumentAnalyzerMapElementView> m_definitions;
+	DocumentAnalyzerMapView( const StructView& definitions_)
+	{
+		StructView::operator()( "definition", definitions_);
+	}
 };
 
 }}//namespace

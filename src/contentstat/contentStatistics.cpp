@@ -15,6 +15,7 @@
 #include "strus/textProcessorInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/local_ptr.hpp"
+#include "private/contentStatisticsView.hpp"
 #include "private/errorUtils.hpp"
 
 using namespace strus;
@@ -28,9 +29,9 @@ ContentStatistics::ContentStatistics(
 
 ContentStatistics::~ContentStatistics(){}
 
-void ContentStatistics::addVisibleAttribute( const std::string& name)
+void ContentStatistics::addVisibleAttribute( const std::string& name_)
 {
-	m_library.addVisibleAttribute( name);
+	m_library.addVisibleAttribute( name_);
 }
 
 void ContentStatistics::addLibraryElement(
@@ -63,13 +64,13 @@ ContentStatisticsContextInterface* ContentStatistics::createContext() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context: %s"), *m_errorhnd, NULL);
 }
 
-analyzer::ContentStatisticsView ContentStatistics::view() const
+StructView ContentStatistics::view() const
 {
 	try
 	{
 		return analyzer::ContentStatisticsView( m_library.view(), m_library.collectedAttributes(), m_expressions);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context introspection: %s"), *m_errorhnd, analyzer::ContentStatisticsView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error creating content statistics context introspection: %s"), *m_errorhnd, StructView());
 }
 
 ContentStatisticsContext::ContentStatisticsContext( const ContentStatisticsLibrary* library_, const std::vector<std::string>& expressions_, const TextProcessorInterface* textproc_, const DocumentClassDetectorInterface* detector_, ErrorBufferInterface* errorhnd_)

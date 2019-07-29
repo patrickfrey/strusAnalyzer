@@ -15,7 +15,7 @@
 #include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/functionView.hpp"
+#include "strus/structView.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
@@ -243,10 +243,10 @@ public:
 		return normalizeMultiplication( src, srcsize, m_factor);
 	}
 
-	virtual strus::analyzer::FunctionView view() const
+	virtual const char* name() const	{return "multiply";}
+	virtual strus::StructView view() const
 	{
-		return strus::analyzer::FunctionView( "multiply")
-		;
+		return strus::StructView()("name",name());
 	}
 
 private:

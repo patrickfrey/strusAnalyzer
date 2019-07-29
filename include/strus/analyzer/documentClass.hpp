@@ -9,6 +9,7 @@
 /// \file documentClass.hpp
 #ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_CLASS_HPP_INCLUDED
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
@@ -72,6 +73,15 @@ public:
 	/// \return level of definition
 	/// \note this method is used to weight different oppinions of document class detection
 	int level() const					{return m_mimeType.empty()?0:(1+!m_schema.empty()+!m_encoding.empty());}
+
+	StructView view() const
+	{
+		StructView rt;
+		if (!m_mimeType.empty()) rt("mimetype",m_mimeType);
+		if (!m_mimeType.empty()) rt("schema",m_schema);
+		if (!m_mimeType.empty()) rt("encoding",m_encoding);
+		return rt;
+	}
 
 private:
 	std::string m_mimeType;

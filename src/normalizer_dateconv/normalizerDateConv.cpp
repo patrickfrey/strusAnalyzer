@@ -10,7 +10,6 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "strus/base/stdint.h"
-#include "strus/analyzer/functionView.hpp"
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -163,16 +162,18 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "date2int";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "date2int")
-				( "granularity", m_config.granularitystr)
-				( "format", m_config.fmtar)
+			return StructView()
+				("name", name())
+				("granularity", m_config.granularitystr)
+				("format", m_config.fmtar)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -302,6 +303,22 @@ NormalizerFunctionInstanceInterface* Date2IntNormalizerFunction::createInstance(
 		}
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), MODULENAME, *m_errorhnd, 0);
+}
+
+StructView Date2IntNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT(
+				 "Normalizer mapping a date to an integer. The granularity of the result is passed as first argument and alternative date formats as following arguments."
+				 "Returns a date time difference of a date time value to a constant base date time value (e.g. '1970-01-01') as integer."
+				 "The first parameter specifies the unit of the result and the constant base date time value."
+				 "This unit is specified as string with the granularity (one of { 'us'=microseconds, 'ms'=milliseconds, 's'=seconds, 'm'=minutes, 'h'=hours, 'd'=days })"
+				 "optionally followed by the base date time value. If the base date time value is not specified, then \"1970-01-01\" is assumed."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

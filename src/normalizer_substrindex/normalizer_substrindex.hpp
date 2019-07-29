@@ -9,7 +9,6 @@
 #define _STRUS_NORMALIZER_SUBSTRING_INDEX_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -28,10 +27,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping the sub strings defined by the arguments to their indices starting from 0.");
-	}
+	virtual const char* name() const	{return "substrindex";}
+	virtual StructView view() const;
 
 public:
 	enum {MaxSubStringLength=256};
@@ -49,10 +46,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping the sub strings defined by the arguments to their indices starting from 0.");
-	}
+	virtual const char* name() const	{return "substrmap";}
+	virtual StructView view() const;
 
 public:
 	enum {MaxSubStringLength=256};

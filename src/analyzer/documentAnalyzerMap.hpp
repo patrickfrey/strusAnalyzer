@@ -14,7 +14,6 @@
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/reference.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/documentAnalyzerMapView.hpp"
 #include <vector>
 #include <string>
 
@@ -58,7 +57,7 @@ public:
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const;
 
-	virtual analyzer::DocumentAnalyzerMapView view() const;
+	virtual StructView view() const;
 
 private:
 	typedef strus::Reference<DocumentAnalyzerInstanceInterface> DocumentAnalyzerReference;

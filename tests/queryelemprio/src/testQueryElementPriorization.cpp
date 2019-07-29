@@ -18,7 +18,6 @@
 #include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/queryAnalyzerContextInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "strus/textProcessorInterface.hpp"
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"

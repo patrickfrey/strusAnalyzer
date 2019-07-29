@@ -19,6 +19,17 @@ using namespace strus;
 
 #define SEGMENTER_NAME "textwolf"
 
+StructView SegmenterInstance::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
+
 void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
 	try
@@ -34,7 +45,6 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	}
 	CATCH_ERROR_ARG1_MAP( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
-
 
 void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
@@ -208,16 +218,6 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-analyzer::FunctionView SegmenterInstance::view() const
-{
-	try
-	{
-		return analyzer::FunctionView( "textwolf")
-		;
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
-}
-
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try
@@ -319,9 +319,17 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter creating content iterator: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-const char* Segmenter::getDescription() const
+StructView Segmenter::view() const
 {
-	return _TXT("Segmenter for XML (application/xml) based on the textwolf library");
+	try
+	{
+		return StructView()
+			("name", name())
+			("mimetype", mimeType())
+			("description", _TXT("Segmenter for XML (application/xml) based on the textwolf library"))
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

@@ -14,7 +14,6 @@
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/string_conv.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <memory>
@@ -51,13 +50,13 @@ public:
 	virtual void defineSymbol(
 			unsigned int id,
 			unsigned int lexemid,
-			const std::string& name)
+			const std::string& name_)
 	{
 		try
 		{
 			if (!id) throw std::runtime_error( _TXT("used 0 as symbol identifier"));
 
-			std::size_t idx = m_symbolTable.getOrCreate( name);
+			std::size_t idx = m_symbolTable.getOrCreate( name_);
 			if (idx == 0) throw strus::runtime_error( "%s", m_errorhnd->fetchError());
 			if (m_symbolTable.isNew())
 			{
@@ -96,11 +95,11 @@ public:
 
 	virtual unsigned int getSymbol(
 			unsigned int lexemid,
-			const std::string& name) const
+			const std::string& name_) const
 	{
 		try
 		{
-			std::size_t idx = m_symbolTable.get( name);
+			std::size_t idx = m_symbolTable.get( name_);
 			if (!idx) return 0;
 			const SymbolInfo* itr = &m_syminfoar[ m_syminfotab[ idx-1] -1];
 			for (;;)
@@ -113,15 +112,23 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to retrieve lexem symbol: %s"), *m_errorhnd, 0);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "std";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "std")
-				( "type", m_typeTable)
+			StructView typemapview;
+			TypeTable::const_iterator ti = m_typeTable.begin(), te = m_typeTable.end();
+			for (; ti != te; ++ti)
+			{
+				typemapview( ti->first, ti->second);
+			}
+			return StructView()
+				( "name", name())
+				( "typemap", typemapview)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -163,6 +170,15 @@ public:
 			return new PatternTermFeederInstance( m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("failed to create pattern term feeder instance: %s"), *m_errorhnd, 0);
+	}
+
+	virtual const char* name() const	{return "std";}
+	virtual StructView view() const
+	{
+		return StructView()
+			("name",name())
+			("description",_TXT("Feeder of patternmatching from lexems picked from features of defined types"))
+		;
 	}
 
 private:

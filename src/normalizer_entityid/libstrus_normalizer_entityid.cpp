@@ -104,14 +104,15 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in %s normalize: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "entityid";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( NORMALIZER_NAME)
-			;
+			return StructView()
+				("name", name());
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -139,9 +140,16 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error creating instance of normalizer: %s"), *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "entityid";}
+	virtual StructView view() const
 	{
-		return _TXT("Normalizer for entities in the Wikipedia search project");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Normalizer mapping multi part strings to single entities usable as identifiers. Soes also some normalization of the way the entity parts are joined."));
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:

@@ -32,7 +32,8 @@ public:
 			const std::vector<std::string>& args,
 			const TextProcessorInterface* tp) const;
 
-	virtual const char* getDescription() const;
+	virtual const char* name() const	{return "regex";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_ERROR_UTILITIES_HPP_INCLUDED
 #include <stdexcept>
 #include "private/internationalization.hpp"
+#include "strus/errorBufferInterface.hpp"
 
 #define THIS_COMPONENT_NAME	"strus analyzer"
 

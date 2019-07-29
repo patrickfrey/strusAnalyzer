@@ -14,7 +14,6 @@
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include "private/tokenizeHelpers.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "compactNodeTrie.hpp"
 #include <cstring>
 
@@ -98,21 +97,23 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in \"%s\" normalizer: %s"), m_normalizername, *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return m_normalizername;}
+	virtual StructView view() const
 	{
 		try
 		{
-			std::vector<analyzer::FunctionView::NamedParameter> args;
+			std::vector<std::string> args;
 			conotrie::CompactNodeTrie::const_iterator ti = m_trie.begin(), te = m_trie.end();
 			for (; ti != te; ++ti)
 			{
-				args.push_back( analyzer::FunctionView::NamedParameter(
-							"map", strus::string_format("'%s'='%s'",
-							ti.key().c_str(), m_substar[ ti.data()].c_str())));
+				args.push_back( strus::string_format("'%s'='%s'", ti.key().c_str(), m_substar[ ti.data()].c_str()));
 			}
-			return analyzer::FunctionView( m_normalizername, args);
+			return StructView()
+				("name", name())
+				("map", args)
+			;
 		}
-		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in introspection of '%s' normalizer: %s"), m_normalizername, *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -143,6 +144,13 @@ NormalizerFunctionInstanceInterface* SubStringIndexNormalizerFunction::createIns
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), "substrindex", *m_errorhnd, 0);
 }
 
+StructView SubStringIndexNormalizerFunction::view() const
+{
+	return StructView()
+		("name", name())
+		("description",_TXT("Normalizer mapping the sub strings defined by the arguments to their indices starting from 0."));
+}
+
 NormalizerFunctionInstanceInterface* SubStringMapNormalizerFunction::createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 {
 	try
@@ -161,4 +169,16 @@ NormalizerFunctionInstanceInterface* SubStringMapNormalizerFunction::createInsta
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in create \"%s\" normalizer instance: %s"), "substrmap", *m_errorhnd, 0);
 }
+
+StructView SubStringMapNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping the sub strings defined by the arguments to their indices starting from 0."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
+
 

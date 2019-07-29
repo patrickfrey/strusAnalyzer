@@ -10,7 +10,7 @@
 /// \file queryAnalyzerView.hpp
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_VIEW_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_VIEW_HPP_INCLUDED
-#include "strus/analyzer/queryElementView.hpp"
+#include "strus/structView.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -20,30 +20,18 @@ namespace analyzer {
 /// \brief Structure describing the internal representation of a document analyzer for introspection
 /// \note The internal representations may not be suitable for reconstructing the objects
 class QueryAnalyzerView
+	:public StructView
 {
 public:
-	/// \brief Default constructor
-	QueryAnalyzerView(){}
-	/// \brief Copy constructor
-	QueryAnalyzerView( const QueryAnalyzerView& o)
-		:m_elements(o.m_elements)
-		,m_patternLexems(o.m_patternLexems)
-		{}
 	/// \brief Constructor
 	/// \param[in] elements_ elements
+	/// \param[in] lexems_ lexems for pattern matching
 	QueryAnalyzerView(
-			const std::vector<QueryElementView>& elements_,
-			const std::vector<QueryElementView>& patternLexems_)
-		:m_elements(elements_)
-		,m_patternLexems(patternLexems_)
-		{}
-
-	const std::vector<QueryElementView>& elements() const		{return m_elements;}
-	const std::vector<QueryElementView>& patternLexems() const	{return m_patternLexems;}
-
-private:
-	std::vector<QueryElementView> m_elements;
-	std::vector<QueryElementView> m_patternLexems;
+			const StructView& elements_,
+			const StructView& lexems_)
+	{
+		(*this)( "element", elements_)( "lexem", lexems_);
+	}
 };
 
 }}//namespace

@@ -9,6 +9,7 @@
 /// \file "patternTermFeederInterface.hpp"
 #ifndef _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_PATTERN_TERM_FEEDER_INTERFACE_HPP_INCLUDED
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 
@@ -27,6 +28,14 @@ public:
 	/// \brief Create an instance to define the mappings of terms to pattern lexems and a method to call the mappings defined.
 	/// \return the term feeder instance
 	virtual PatternTermFeederInstanceInterface* createInstance() const=0;
+
+	/// \brief Get the name of the function
+	/// \return the identifier
+	virtual const char* name() const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual StructView view() const=0;
 };
 
 } //namespace

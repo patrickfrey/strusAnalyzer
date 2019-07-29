@@ -9,6 +9,7 @@
 /// \file aggregatorFunctionInterface.hpp
 #ifndef _STRUS_ANALYZER_AGGREGATOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_AGGREGATOR_INTERFACE_HPP_INCLUDED
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 
@@ -32,9 +33,13 @@ public:
 	/// \param[in] errorhnd analyzer error buffer interface for reporting exeptions and errors
 	virtual AggregatorFunctionInstanceInterface* createInstance( const std::vector<std::string>& args) const=0;
 
-	/// \brief Get a description of the function for user help
-	/// \return the description
-	virtual const char* getDescription() const=0;
+	/// \brief Get the name of the function
+	/// \return the identifier
+	virtual const char* name() const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual StructView view() const=0;
 };
 
 }//namespace

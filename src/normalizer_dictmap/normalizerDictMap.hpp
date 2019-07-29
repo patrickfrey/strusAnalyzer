@@ -10,7 +10,6 @@
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/textProcessorInterface.hpp"
-#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -30,11 +29,9 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument");
-	}
-	
+	virtual const char* name() const	{return "dictmap";}
+	virtual StructView view() const;
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 };

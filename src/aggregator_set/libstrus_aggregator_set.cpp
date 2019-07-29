@@ -10,7 +10,6 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/analyzer/documentTerm.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "strus/base/dll_tags.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/math.hpp"
@@ -32,8 +31,8 @@ class SetAggregatorFunctionInstance
 {
 public:
 	/// \brief Constructor
-	SetAggregatorFunctionInstance( const std::string& type, const std::vector<std::string>& items, ErrorBufferInterface* errorhnd)
-		:m_type(string_conv::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
+	SetAggregatorFunctionInstance( const char* name_, const std::string& type, const std::vector<std::string>& items, ErrorBufferInterface* errorhnd)
+		:m_name(name_),m_type(string_conv::tolower(type)),m_itemmap(),m_errorhnd(errorhnd)
 	{
 		if (items.size() >= (8 * sizeof(unsigned int)))
 		{
@@ -88,19 +87,28 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, (NumericVariant::IntType)0);
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return m_name;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "set")
-				( "featuretype", m_type)
-				( "set", m_itemmap)
+			StructView mapview;
+			ItemMap::const_iterator mi = m_itemmap.begin(), me = m_itemmap.end();
+			for (; mi != me; ++mi)
+			{
+				mapview( mi->first, me->second);
+			}
+			return StructView()
+				("name",name())
+				("featuretype", m_type)
+				("map", mapview)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
+	const char* m_name;
 	std::string m_type;
 	typedef std::map<std::string,unsigned int> ItemMap;
 	ItemMap m_itemmap;
@@ -123,14 +131,23 @@ public:
 		}
 		try
 		{
-			return new SetAggregatorFunctionInstance( std::string(), args, m_errorhnd);
+			return new SetAggregatorFunctionInstance( "typeset", std::string(), args, m_errorhnd);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "typeset";}
+	virtual StructView view() const
 	{
-		return _TXT("aggregator building a set of features types that exist in the document (represented as bit-field)");
+		try
+		{
+			return StructView()
+				("name",name())
+				("description", _TXT("Aggregator building a set of features types that exist in the document (represented as bit-field)"))
+				("arg", _TXT("feature types to use as elements in the set"))
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -154,14 +171,23 @@ public:
 		}
 		try
 		{
-			return new SetAggregatorFunctionInstance( args[0], std::vector<std::string>( args.begin()+1, args.end()), m_errorhnd);
+			return new SetAggregatorFunctionInstance( "valueset", args[0], std::vector<std::string>( args.begin()+1, args.end()), m_errorhnd);
 		}
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s': %s"), MODULE_NAME, *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "valueset";}
+	virtual StructView view() const
 	{
-		return _TXT("aggregator building a set of features values that exist in the document (represented as bit-field)");
+		try
+		{
+			return StructView()
+				("name",name())
+				("description", _TXT("Aggregator building a set of features values that exist in the document (represented as bit-field)"))
+				("arg", _TXT("feature values to use as elements in the set"))
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:

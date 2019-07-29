@@ -9,7 +9,6 @@
 #define _STRUS_NORMALIZER_CHARACTER_CONVERSIONS_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "private/internationalization.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -28,10 +27,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping all characters to lowercase.");
-	}
+	virtual const char* name() const	{return "lc";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -46,10 +43,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping all characters to uppercase.");
-	}
+	virtual const char* name() const	{return "uc";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -64,10 +59,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping all diacritical characters to ascii. The language is passed as first argument (currently only german 'de' and english 'en' supported).");
-	}
+	virtual const char* name() const	{return "convdia";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -82,10 +75,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer mapping all alpha characters to identity and all other characters to nothing. The language set is passed as first argument (currently only european 'eu' and ASCII 'ascii' supported).");
-	}
+	virtual const char* name() const	{return "charselect";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

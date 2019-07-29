@@ -12,7 +12,6 @@
 #include "strus/tokenMarkupContextInterface.hpp"
 #include "strus/tokenMarkupInstanceInterface.hpp"
 #include "strus/analyzer/tokenMarkup.hpp"
-#include "strus/analyzer/functionView.hpp"
 
 namespace strus
 {
@@ -106,7 +105,8 @@ public:
 
 	virtual TokenMarkupContextInterface* createContext( const SegmenterInstanceInterface* segmenter) const;
 
-	virtual analyzer::FunctionView view() const;
+	virtual const char* name() const	{return "std";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

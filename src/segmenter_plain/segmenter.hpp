@@ -10,7 +10,6 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "strus/contentIteratorInterface.hpp"
 #include "strus/reference.hpp"
 #include "private/textEncoder.hpp"
@@ -40,7 +39,8 @@ public:
 	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const;
 	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
-	virtual analyzer::FunctionView view() const;
+	virtual const char* name() const	{return "plain";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;
@@ -107,7 +107,8 @@ public:
 			const strus::analyzer::DocumentClass& dclass,
 			const strus::analyzer::SegmenterOptions& opts) const;
 
-	virtual const char* getDescription() const;
+	virtual const char* name() const	{return "plain";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

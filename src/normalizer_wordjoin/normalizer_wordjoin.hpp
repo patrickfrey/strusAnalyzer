@@ -9,7 +9,7 @@
 #define _STRUS_NORMALIZER_WORD_JOIN_HPP_INCLUDED
 #include "strus/normalizerFunctionInterface.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
-#include "private/internationalization.hpp"
+#include "strus/structView.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -28,10 +28,8 @@ public:
 
 	virtual NormalizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const;
 
-	virtual const char* getDescription() const
-	{
-		return _TXT("Normalizer producing joined words.");
-	}
+	virtual const char* name() const	{return "wordjoin";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

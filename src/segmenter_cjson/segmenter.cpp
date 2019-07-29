@@ -65,14 +65,13 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	return 0;
 }
 
-analyzer::FunctionView SegmenterInstance::view() const
+StructView SegmenterInstance::view() const
 {
 	try
 	{
-		return analyzer::FunctionView( "cjson")
-		;
+		return StructView()( "cjson");
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
@@ -85,9 +84,17 @@ SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::Segmenter
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-const char* Segmenter::getDescription() const
+StructView Segmenter::view() const
 {
-	return _TXT("Segmenter for JSON (application/json) based on the cjson library for parsing json and textwolf for the xpath automaton");
+	try
+	{
+		return StructView()
+			("name", name())
+			("mimetype", mimeType())
+			("description", _TXT("Segmenter for JSON (application/json) based on the cjson library for parsing json and textwolf for the xpath automaton"))
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 ContentIteratorInterface* Segmenter::createContentIterator(

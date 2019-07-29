@@ -64,11 +64,20 @@ public:
 		CATCH_ERROR_MAP_RETURN( _TXT("error in 'punctuation' tokenizer: %s"), *m_errorhnd, 0);
 	}
 
-	virtual const char* getDescription() const
+	virtual const char* name() const	{return "punctuation";}
+	virtual StructView view() const
 	{
-		return _TXT("Tokenizer producing punctuation elements (end of sentence recognition). The language is specified as parameter (currently only german 'de' and english 'en' supported)");
+		try
+		{
+			return StructView()
+				("name", name())
+				("description",_TXT("Tokenizer producing punctuation elements (end of sentence recognition)"))
+				("arg", StructView()( _TXT("Language of the source text (currently only 'de' or 'en' supported)")))
+			;
+		}
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
-	
+
 private:
 	ErrorBufferInterface* m_errorhnd;
 };

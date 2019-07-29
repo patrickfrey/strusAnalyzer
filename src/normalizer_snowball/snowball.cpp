@@ -11,7 +11,6 @@
 #include "snowball.hpp"
 #include "libstemmer.h"
 #include "strus/base/string_conv.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "textwolf/charset_utf8.hpp"
 #include "textwolf/cstringiterator.hpp"
 #include "private/errorUtils.hpp"
@@ -61,15 +60,16 @@ public:
 		}
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return "stem";}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( "stem")
-				( "language", m_language)
-			;
+			return StructView()
+				("name", name())
+				("language", m_language);
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -91,6 +91,17 @@ NormalizerFunctionInstanceInterface* StemNormalizerFunction::createInstance( con
 		return new StemNormalizerFunctionInstance( args[0], m_errorhnd);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in stem normalizer: %s"), *m_errorhnd, 0);
+}
+
+StructView StemNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer doing stemming based on snowball. The language is passed as parameter."));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 

@@ -13,7 +13,9 @@
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
 #include "strus/analyzer/segmenterOptions.hpp"
-#include "strus/analyzer/subContentDefinitionView.hpp"
+#include "private/subContentDefinitionView.hpp"
+#include "private/aggregatorView.hpp"
+#include "private/documentAnalyzerView.hpp"
 #include "featureConfigMap.hpp"
 #include "patternFeatureConfigMap.hpp"
 #include "patternMatchConfigMap.hpp"
@@ -137,7 +139,9 @@ public:
 	virtual DocumentAnalyzerContextInterface* createContext(
 			const analyzer::DocumentClass& dclass) const;
 
-	virtual analyzer::DocumentAnalyzerView view() const;
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual StructView view() const;
 
 public:/*DocumentAnalyzerContext*/
 	typedef Reference<AggregatorFunctionInstanceInterface> StatisticsReference;
@@ -195,7 +199,7 @@ private:
 private:
 	const TextProcessorInterface* m_textproc;
 	SegmenterInstanceInterface* m_segmenter;
-	std::vector<analyzer::SubDocumentDefinitionView> m_subDocumentList;
+	std::vector<std::pair<std::string,std::string> > m_subDocumentList;
 	std::vector<SubSegmenterDef> m_subsegmenterList;
 	FeatureConfigMap m_featureConfigMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;

@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_FEATURE_OPTIONS_HPP_INCLUDED
 #define _STRUS_ANALYZER_FEATURE_OPTIONS_HPP_INCLUDED
 #include "strus/analyzer/positionBind.hpp"
+#include "strus/structView.hpp"
 #include <utility>
 
 /// \brief strus toplevel namespace
@@ -40,6 +41,11 @@ public:
 
 	/// \brief Get the PositionBind value set
 	analyzer::PositionBind positionBind() const		{return (analyzer::PositionBind)(m_opt & 0x3);}
+	const char* positionBindName() const
+	{
+		static const char* ar[] = {"content","succ","pred","unique"};
+		return ar[ positionBind()];
+	}
 
 	/// \brief Define the PositionBind value
 	void definePositionBind( analyzer::PositionBind b)	{m_opt &= ~0x3; m_opt |= (unsigned int)b;}
@@ -47,6 +53,15 @@ public:
 	/// \brief Get the options transacription as integer
 	unsigned int opt() const				{return m_opt;}
 
+	StructView view() const
+	{
+		StructView rt;
+		if (opt())
+		{
+			rt( "position", positionBindName());
+		}
+		return rt;
+	}
 private:
 	unsigned int m_opt;
 };

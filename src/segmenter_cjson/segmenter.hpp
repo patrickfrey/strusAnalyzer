@@ -10,7 +10,6 @@
 #include "strus/segmenterInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
 #include "strus/analyzer/documentClass.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "private/xpathAutomaton.hpp"
 #include <string>
 
@@ -37,7 +36,8 @@ public:
 	virtual SegmenterContextInterface* createContext( const analyzer::DocumentClass& dclass) const;
 	virtual SegmenterMarkupContextInterface* createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const;
 
-	virtual analyzer::FunctionView view() const;
+	virtual const char* name() const	{return "cjson";}
+	virtual StructView view() const;
 
 private:
 	void addExpression( int id, const std::string& expression);
@@ -71,7 +71,8 @@ public:
 			const analyzer::DocumentClass& dclass,
 			const analyzer::SegmenterOptions& opts=analyzer::SegmenterOptions()) const;
 
-	virtual const char* getDescription() const;
+	virtual const char* name() const	{return "cjson";}
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

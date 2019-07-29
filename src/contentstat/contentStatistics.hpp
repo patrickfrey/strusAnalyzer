@@ -54,7 +54,7 @@ public:
 
 	virtual ContentStatisticsContextInterface* createContext() const;
 
-	virtual analyzer::ContentStatisticsView view() const;
+	virtual StructView view() const;
 
 private:
 	ErrorBufferInterface* m_errorhnd;

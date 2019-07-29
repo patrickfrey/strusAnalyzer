@@ -7,7 +7,6 @@
  */
 #include "documentAnalyzerInstance.hpp"
 #include "documentAnalyzerContext.hpp"
-#include "strus/analyzer/subDocumentDefinitionView.hpp"
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/segmenterInstanceInterface.hpp"
@@ -16,6 +15,8 @@
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_conv.hpp"
+#include "private/subDocumentDefinitionView.hpp"
+#include "private/featureView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
 #include <stdexcept>
@@ -188,7 +189,7 @@ void DocumentAnalyzerInstance::defineSubDocument(
 	{
 		unsigned int subDocumentType = m_subdoctypear.size();
 		m_subdoctypear.push_back( subDocumentTypeName);
-		m_subDocumentList.push_back( analyzer::SubDocumentDefinitionView( subDocumentTypeName, selectexpr));
+		m_subDocumentList.push_back( std::pair<std::string,std::string>( subDocumentTypeName, selectexpr));
 		if (subDocumentType >= MaxNofSubDocuments)
 		{
 			throw std::runtime_error( _TXT("too many sub documents defined"));
@@ -346,36 +347,37 @@ DocumentAnalyzerContextInterface* DocumentAnalyzerInstance::createContext( const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create context: %s"), *m_errorhnd, 0);
 }
 
-static analyzer::FeatureView getFeatureView( const FeatureConfig& cfg)
+static StructView getFeatureView( const FeatureConfig& cfg)
 {
 	typedef Reference<NormalizerFunctionInstanceInterface> NormalizerReference;
-	std::vector<analyzer::FunctionView> normalizerviews;
+	StructView normalizerviews;
 	std::vector<NormalizerReference>::const_iterator ni = cfg.normalizerlist().begin(), ne = cfg.normalizerlist().end();
 	for (; ni != ne; ++ni)
 	{
-		normalizerviews.push_back( (*ni)->view());
+		normalizerviews( (*ni)->view());
 	}
 	return analyzer::FeatureView( cfg.name(), cfg.selectexpr(), cfg.tokenizer()->view(), normalizerviews, cfg.options(), cfg.priority());
 }
 
-analyzer::DocumentAnalyzerView DocumentAnalyzerInstance::view() const
+StructView DocumentAnalyzerInstance::view() const
 {
 	try
 	{
-		analyzer::FunctionView segmenterView( m_segmenter->view());
-		std::vector<analyzer::SubContentDefinitionView> subcontents;
+		StructView segmenterView( m_segmenter->view());
+		StructView subcontents;
 		{
 			std::vector<SubSegmenterDef>::const_iterator si = m_subsegmenterList.begin(), se = m_subsegmenterList.end();
 			for (; si != se; ++si)
 			{
-				subcontents.push_back( analyzer::SubContentDefinitionView( si->selectorPrefix, si->documentClass));
+				subcontents( analyzer::SubContentDefinitionView( si->selectorPrefix, si->documentClass));
 			}
 		}
-		std::vector<analyzer::FeatureView> attributes;
-		std::vector<analyzer::FeatureView> metadata;
-		std::vector<analyzer::FeatureView> searchindex;
-		std::vector<analyzer::FeatureView> forwardindex;
-		std::vector<analyzer::AggregatorView> aggregators;
+		StructView attributes;
+		StructView metadata;
+		StructView searchindex;
+		StructView forwardindex;
+		StructView aggregators;
+		StructView lexems;
 
 		std::vector<FeatureConfig>::const_iterator fi = m_featureConfigMap.begin(), fe = m_featureConfigMap.end();
 		for (; fi != fe; ++fi)
@@ -383,31 +385,39 @@ analyzer::DocumentAnalyzerView DocumentAnalyzerInstance::view() const
 			switch (fi->featureClass())
 			{
 				case FeatMetaData:
-					metadata.push_back( getFeatureView( *fi));
+					metadata( getFeatureView( *fi));
 					break;
 				case FeatAttribute:
-					attributes.push_back( getFeatureView( *fi));
+					attributes( getFeatureView( *fi));
 					break;
 				case FeatSearchIndexTerm:
-					searchindex.push_back( getFeatureView( *fi));
+					searchindex( getFeatureView( *fi));
 					break;
 				case FeatForwardIndexTerm:
-					forwardindex.push_back( getFeatureView( *fi));
+					forwardindex( getFeatureView( *fi));
 					break;
 				case FeatPatternLexem:
+					lexems( getFeatureView( *fi));
 					break;
 			}
 		}
 		std::vector<StatisticsConfig>::const_iterator si = m_statistics.begin(), se = m_statistics.end();
 		for (; si != se; ++si)
 		{
-			aggregators.push_back( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
+			aggregators( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
 		}
 
+		StructView subDocumentListView;
+		std::vector<std::pair<std::string,std::string> >::const_iterator
+			di = m_subDocumentList.begin(), de = m_subDocumentList.end();
+		for (; di != de; ++di)
+		{
+			subDocumentListView( di->first, di->second);
+		}
 		return analyzer::DocumentAnalyzerView( 
-			segmenterView, subcontents, m_subDocumentList, attributes, metadata, searchindex, forwardindex, aggregators);
+			segmenterView, subcontents, subDocumentListView, attributes, metadata, searchindex, forwardindex, aggregators, lexems);
 	}
-	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer create view: %s"), *m_errorhnd, analyzer::DocumentAnalyzerView());
+	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer introspection: %s"), *m_errorhnd, StructView());
 }
 
 

@@ -12,7 +12,6 @@
 #include "strus/base/fileio.hpp"
 #include "strus/base/symbolTable.hpp"
 #include "strus/base/local_ptr.hpp"
-#include "strus/analyzer/functionView.hpp"
 #include "compactNodeTrie.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
@@ -201,17 +200,19 @@ public:
 		CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, std::string());
 	}
 
-	virtual analyzer::FunctionView view() const
+	virtual const char* name() const	{return NORMALIZER_NAME;}
+	virtual StructView view() const
 	{
 		try
 		{
-			return analyzer::FunctionView( NORMALIZER_NAME)
-				( "defaultorig", m_defaultOrig)
-				( "default", m_defaultResult)
-				( "filename", m_filename)
+			return StructView()
+				("name", name())
+				("defaultorig", m_defaultOrig)
+				("default", m_defaultResult)
+				("filename", m_filename)
 			;
 		}
-		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, analyzer::FunctionView());
+		CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 	}
 
 private:
@@ -248,6 +249,17 @@ NormalizerFunctionInstanceInterface* DictMapNormalizerFunction::createInstance( 
 		return new DictMapNormalizerInstance( args[0], defaultValue, defaultOrig, textproc, m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' normalizer: %s"), NORMALIZER_NAME, *m_errorhnd, 0);
+}
+
+StructView DictMapNormalizerFunction::view() const
+{
+	try
+	{
+		return StructView()
+			("name", name())
+			("description",_TXT("Normalizer mapping the elements with a dictionary. For found elements the passed value is returned. The dictionary file name is passed as argument"));
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
 
