@@ -260,5 +260,36 @@ bool StandardDocumentClassDetector::detect( analyzer::DocumentClass& dclass, con
 	CATCH_ERROR_MAP_RETURN( _TXT("error in standard document class detector: %s"), *m_errorhnd, false);
 }
 
+StructView StandardDocumentClassDetector::SchemaDef::view() const
+{
+	return StructView()
+		("name", name)
+		("select",select_expressions)
+		("reject",reject_expressions);
+}
+
+StructView StandardDocumentClassDetector::view() const
+{
+	try
+	{
+		StructView schemaview;
+		std::vector<SchemaDef>::const_iterator si = m_schemas.begin(), se = m_schemas.end();
+		for (; si != se; ++si)
+		{
+			schemaview( si->view());
+		}
+		StructView segmenterview;
+		segmenterview
+			("xml", m_xmlSegmenter->name())
+			("json", m_jsonSegmenter->name())
+			("tsv", m_tsvSegmenter->name());
+		return StructView()
+			("name", "detector_std")
+			("schemas", schemaview)
+			("segmenter", segmenterview)
+		;
+	}
+	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
+}
 
 

@@ -10,6 +10,7 @@
 #ifndef _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
 #define _STRUS_ANALYZER_DOCUMENT_CLASS_DETECTOR_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/documentClass.hpp"
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 
@@ -43,6 +44,10 @@ public:
 	/// \return true, if the document class was recognized
 	/// \note It is assumed that a reasonable size of the document chunk (e.g. 1K) is enough to detect the document class. This is an assumption that is wrong for many MIME types, but it should work for text content. At least it should be enough to recognize the segmenter to use.
 	virtual bool detect( analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const=0;
+
+	/// \brief Return a structure with all definitions for introspection
+	/// \return the structure with all definitions for introspection
+	virtual StructView view() const=0;
 };
 
 }//namespace

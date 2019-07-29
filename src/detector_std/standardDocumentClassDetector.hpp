@@ -44,6 +44,8 @@ public:
 			const char* contentBegin, std::size_t contentBeginSize,
 			bool isComplete) const;
 
+	virtual StructView view() const;
+
 private:
 	SegmenterInstanceInterface* getSegmenterInstance( const std::string& mimeType);
 	int detectSchema( const SegmenterInstanceInterface* segmenter, analyzer::DocumentClass& dclass, const char* contentBegin, std::size_t contentBeginSize, bool isComplete) const;
@@ -61,6 +63,7 @@ private:
 			:name(o.name),select_expressions(o.select_expressions),reject_expressions(o.reject_expressions){}
 
 		int nofEvents() const	{return select_expressions.size();}
+		StructView view() const;
 	};
 
 	ErrorBufferInterface* m_errorhnd;

@@ -11,6 +11,7 @@
 #define _STRUS_ANALYZER_AGGREGATOR_FUNCTION_INSTANCE_INTERFACE_HPP_INCLUDED
 #include "strus/analyzer/document.hpp"
 #include "strus/numericVariant.hpp"
+#include "strus/structView.hpp"
 
 /// \brief strus toplevel namespace
 namespace strus
