@@ -35,8 +35,8 @@ public:
 			("type",type_)
 			("field",field_)
 			("tokenizer",tokenizer_)
-			("normalizer",normalizer_)
-			("priority",priority_);
+			("normalizer",normalizer_);
+		if (priority_) (*this)("priority",priority_);
 	}
 };
 

@@ -374,8 +374,8 @@ StructView DocumentAnalyzerInstance::view() const
 		}
 		StructView attributes;
 		StructView metadata;
-		StructView searchindex;
-		StructView forwardindex;
+		StructView searchindex( StructView::Structure);
+		StructView forwardindex( StructView::Structure);
 		StructView aggregators;
 		StructView lexems;
 

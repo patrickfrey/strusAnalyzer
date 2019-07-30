@@ -29,8 +29,10 @@ public:
 	QueryAnalyzerView(
 			const StructView& elements_,
 			const StructView& lexems_)
+		:StructView( StructView::Structure)
 	{
-		(*this)( "element", elements_)( "lexem", lexems_);
+		if (elements_.defined()) (*this)( "element", elements_);
+		if (lexems_.defined()) (*this)( "lexem", lexems_);
 	}
 };
 

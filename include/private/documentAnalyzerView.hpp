@@ -46,15 +46,17 @@ public:
 	{
 		StructView::operator()
 			( "segmenter", segmenter_)
-			( "subcontent", subcontents_)
-			( "subdocument", subdocuments_)
-			( "attribute", attributes_)
-			( "metadata", metadata_)
 			( "searchindex", searchindex_)
 			( "forwardindex", forwardindex_)
-			( "aggregator", aggregators_)
-			( "lexem", lexems_)
 		;
+		if (attributes_.defined()) StructView::operator()( "attribute", attributes_);
+		if (metadata_.defined()) StructView::operator()( "metadata", metadata_);
+		if (subcontents_.defined()) StructView::operator()( "subcontent", subcontents_);
+		if (subdocuments_.defined()) StructView::operator()( "subdocument", subdocuments_);
+		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
+		if (aggregators_.defined()) StructView::operator()( "aggregator", aggregators_);
+		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
+		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
 	}
 };
 
