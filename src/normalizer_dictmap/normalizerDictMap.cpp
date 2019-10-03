@@ -155,7 +155,7 @@ public:
 		{
 			throw strus::runtime_error(_TXT("could not resolve path of file '%s': %s"), m_filename.c_str(), m_errorhnd->fetchError());
 		}
-		unsigned int ec = readFileSize( resolvedFilename, sz);
+		unsigned int ec = strus::readFileSize( resolvedFilename, sz);
 		if (ec) throw strus::runtime_error(_TXT("could not open file '%s': %s"), m_filename.c_str(), ::strerror(ec));
 		strus::local_ptr<KeyMap> map;
 		if (sz > 2000000)
