@@ -17,6 +17,7 @@
 #include "strus/structView.hpp"
 #include <vector>
 #include <string>
+#include <cstring>
 
 /// \brief strus toplevel namespace
 namespace strus
@@ -77,15 +78,15 @@ public:
 			const analyzer::FeatureOptions& options)=0;
 
 	/// \brief Declare a field, a positional range of elements and assign a classifying name and a contextual unique identifier to it.
-	/// \param[in] name classifying name of the field, determining how the field is addressed in the query evaluation
+	/// \param[in] fieldTypeName type name of the field, for addressing it in structure definitions
 	/// \param[in] scopeexpr defining the scope of the field identifiers and the parent expression of select and id (tag selection in abbreviated syntax of XPath)
 	/// \param[in] selectexpr select expression relative to scope expression selecting the positional range of the field (tag selection in abbreviated syntax of XPath)
-	/// \param[in] idexpr select expression relative to scope expression selecting the identifier of the field within its scope (tag selection in abbreviated syntax of XPath)
+	/// \param[in] keyexpr select expression relative to scope expression selecting the identifier of the field within its scope (tag selection in abbreviated syntax of XPath)
 	virtual void addSearchIndexField(
-			const std::string& name,
+			const std::string& fieldTypeName,
 			const std::string& scopeexpr,
 			const std::string& selectexpr,
-			const std::string& idexpr)=0;
+			const std::string& keyexpr)=0;
 
 	/// \brief Classification of structures declared as relation of two fields
 	enum StructureType
@@ -99,15 +100,25 @@ public:
 		const char* ar[] = {"hierarchical","heading","footer",0};
 		return ar[t];
 	}
+	static bool structureTypeFromName( StructureType& type, const char* name)
+	{
+		type = (StructureType)0;
+		char const* typestr = structureTypeName( type);
+		for (; typestr; typestr = structureTypeName( type=(StructureType)(type+1)))
+		{
+			if (0==std::strcmp( name, typestr)) return true;
+		}
+		return false;
+	}
 
 	/// \brief Declare a structure as unidirectional relation of two fields
 	/// \note The source of the relation is called header and the sink is called content
-	/// \param[in] name name of the structure, how to address it in the query
+	/// \param[in] structureTypeName type name of the structure, for addressing it in the query
 	/// \param[in] headerFieldName header field name of the structure
 	/// \param[in] contentFieldName content field name of the structure
 	/// \param[in] structureType type of the structure 
 	virtual void addSearchIndexStructure(
-			const std::string& name,
+			const std::string& structureTypeName,
 			const std::string& headerFieldName,
 			const std::string& contentFieldName,
 			const StructureType& structureType)=0;

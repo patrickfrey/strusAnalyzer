@@ -21,15 +21,12 @@ class ErrorBufferInterface;
 class SeachIndexFieldConfig
 {
 public:
-	SeachIndexFieldConfig( const std::string& name_, const std::string& scopeexpr_, const std::string& selectexpr_, const std::string& idexpr_, int scopeIdx_)
-		:m_name(name_),m_scopeexpr(scopeexpr_),m_selectexpr(selectexpr_),m_idexpr(idexpr_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_){}
+	SeachIndexFieldConfig( const std::string& name_, int scopeIdx_)
+		:m_name(name_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_){}
 	SeachIndexFieldConfig( const SeachIndexFieldConfig& o)
-		:m_name(o.m_name),m_scopeexpr(o.m_scopeexpr),m_selectexpr(o.m_selectexpr),m_idexpr(o.m_idexpr),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
+		:m_name(o.m_name),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
 
 	const std::string& name() const				{return m_name;}
-	const std::string& scopeexpr() const			{return m_scopeexpr;}
-	const std::string& selectexpr() const			{return m_selectexpr;}
-	const std::string& idexpr() const			{return m_idexpr;}
 	const std::vector<int> headerStructureList() const	{return m_headerStructureList;}
 	const std::vector<int> contentStructureList() const	{return m_contentStructureList;}
 	int scopeIdx() const					{return m_scopeIdx;}
@@ -39,9 +36,6 @@ public:
 
 private:
 	std::string m_name;
-	std::string m_scopeexpr;
-	std::string m_selectexpr;
-	std::string m_idexpr;
 	std::vector<int> m_headerStructureList;
 	std::vector<int> m_contentStructureList;
 	int m_scopeIdx;

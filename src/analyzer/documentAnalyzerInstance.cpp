@@ -147,7 +147,7 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 		const std::string& name,
 		const std::string& scopeexpr,
 		const std::string& selectexpr,
-		const std::string& idexpr)
+		const std::string& keyexpr)
 {
 	try
 	{
@@ -157,12 +157,12 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 		}
 		// Define XPath selector events of this field:
 		unsigned int fidx = m_fieldConfigList.size();
-		if (!idexpr.empty())
+		if (!keyexpr.empty())
 		{
-			std::string full_idexpr = strus::joinXPathExpression( scopeexpr, idexpr);
+			std::string full_keyexpr = strus::joinXPathExpression( scopeexpr, keyexpr);
 			defineSelectorExpression(
 				OfsStructureElement + FieldEventHandle( FieldEvent_Id, fidx),
-				full_idexpr);
+				full_keyexpr);
 		}
 		std::string full_selectexpr_start = strus::xpathStartStructurePath( strus::joinXPathExpression( scopeexpr, selectexpr));
 		std::string full_selectexpr_end = strus::xpathEndStructurePath( full_selectexpr_start);
@@ -189,9 +189,7 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 			scopeIdx = found->second;
 		}
 		// Define the field and its relations to structures referencing it:
-		m_fieldConfigList.push_back(
-			SeachIndexFieldConfig(
-				string_conv::tolower(name), scopeexpr, selectexpr, idexpr, scopeIdx));
+		m_fieldConfigList.push_back( SeachIndexFieldConfig( string_conv::tolower(name), scopeIdx));
 
 		std::vector<SeachIndexStructureConfig>::const_iterator si = m_structureConfigList.begin(), se = m_structureConfigList.end();
 		for (int sidx=0; si != se; ++si,++sidx)

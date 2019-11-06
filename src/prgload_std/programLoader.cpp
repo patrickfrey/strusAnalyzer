@@ -1064,7 +1064,7 @@ static void loadDocumentSection( ProgramLexer& lexer, const SectionHeader& heade
 			throw strus::runtime_error( _TXT("feature type name (identifier) instead of %s expected at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
 		}
 		std::string identifier = lexer.current().value();
-		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of %s"), tokenName( lexer.current()), header.name.c_str());
 		lexer.next();
 
 		std::string xpathexpr( parseSelectorExpression( lexer));
@@ -1092,21 +1092,100 @@ static void loadAggregatorSection( ProgramLexer& lexer, const SectionHeader& hea
 			throw strus::runtime_error( _TXT("feature type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
 		}
 		std::string identifier = lexer.current().value();
-		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of %s"), tokenName( lexer.current()), header.name.c_str());
 		lexer.next();
 
 		FunctionConfig cfg = parseAggregatorFunctionConfig( lexer);
 
 		const AggregatorFunctionInterface* sf = textproc->getAggregator( cfg.name());
-		if (!sf) throw strus::runtime_error(_TXT( "unknown aggregator function '%s'"), cfg.name().c_str());
+		if (!sf) throw strus::runtime_error(_TXT( "unknown %s '%s'"), header.name.c_str(), cfg.name().c_str());
 		
 		strus::local_ptr<AggregatorFunctionInstanceInterface> statfunc( sf->createInstance( cfg.args()));
-		if (!statfunc.get()) throw strus::runtime_error(_TXT( "failed to create instance of aggregator function '%s'"), cfg.name().c_str());
+		if (!statfunc.get()) throw strus::runtime_error(_TXT( "failed to create instance of %s '%s'"), header.name.c_str(), cfg.name().c_str());
 
 		analyzer->defineAggregatedMetaData( identifier, statfunc.get());
 		statfunc.release();
 
 		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadFieldSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+{
+	if (!header.arg.empty())
+	{
+		throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("field type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		std::string fieldTypeName = lexer.current().value();
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after type identifier of %s"), tokenName( lexer.current()), header.name.c_str());
+		lexer.next();
+
+		std::string scopeSelectionDef = parseSelectorExpression( lexer);
+		std::string contentDef = parseSelectorExpression( lexer);
+		std::string keyDef;
+
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			keyDef = parseSelectorExpression( lexer);
+		}
+		analyzer->addSearchIndexField( fieldTypeName, scopeSelectionDef, contentDef, keyDef);
+
+		if (!lexer.current().isToken( TokSemiColon))
+		{
+			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		lexer.next();
+	}
+	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
+}
+
+static void loadStructureSection( ProgramLexer& lexer, const SectionHeader& header, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
+{
+	if (!header.arg.empty())
+	{
+		throw strus::runtime_error( _TXT("no arguments expeted in section %s definition"), header.name.c_str());
+	}
+	do
+	{
+		if (!lexer.current().isToken(TokIdentifier))
+		{
+			throw strus::runtime_error( _TXT("structure type name (identifier) expected instead of %s at start of a %s declaration"), tokenName( lexer.current()), header.name.c_str());
+		}
+		std::string structureName = lexer.current().value();
+		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after type identifier of %s"), tokenName( lexer.current()), header.name.c_str());
+		lexer.next();
+
+		strus::ProgramLexem cur = lexer.current();
+		if (!cur.isToken( TokIdentifier)) throw strus::runtime_error( _TXT("expected identifier (%s) instead of %s after assignment in %s"), "header field name", tokenName( cur), header.name.c_str());
+		std::string headerName = lexer.current().value();
+
+		cur = lexer.next();
+		if (!cur.isToken( TokIdentifier)) throw strus::runtime_error( _TXT("expected identifier (%s) instead of %s after assignment in %s"), "content field name", tokenName( cur), header.name.c_str());
+		std::string contentName = lexer.current().value();
+
+		cur = lexer.next();
+		if (!cur.isToken( TokIdentifier)) throw strus::runtime_error( _TXT("expected identifier (%s) instead of %s after assignment in %s"), "structure type", tokenName( cur), header.name.c_str());
+		std::string structTypeStr = strus::string_conv::tolower( lexer.current().value());
+
+		DocumentAnalyzerInstanceInterface::StructureType structType;
+		if (!DocumentAnalyzerInstanceInterface::structureTypeFromName( structType, structTypeStr.c_str()))
+		{
+			throw strus::runtime_error( _TXT("expected one of %s instead of %s in %s"), "{hierarchical, heading, footer}", tokenName( cur), header.name.c_str());
+		}
+		analyzer->addSearchIndexStructure( structureName, headerName, contentName, structType);
+
+		if (!lexer.next().isToken( TokSemiColon))
 		{
 			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
 		}
@@ -1337,6 +1416,14 @@ bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInstanceInterface
 			else if (isEqual( header.name, "Aggregator"))
 			{
 				loadAggregatorSection( lexer, header, analyzer, textproc, errorhnd);
+			}
+			else if (isEqual( header.name, "Field"))
+			{
+				loadFieldSection( lexer, header, analyzer, textproc, errorhnd);
+			}
+			else if (isEqual( header.name, "Structure"))
+			{
+				loadStructureSection( lexer, header, analyzer, textproc, errorhnd);
 			}
 			else if (isEqual( header.name, "PatternMatch"))
 			{

@@ -71,7 +71,7 @@ public:
 			const std::string& name,
 			const std::string& scopeexpr,
 			const std::string& selectexpr,
-			const std::string& idexpr);
+			const std::string& keyexpr);
 
 	virtual void addSearchIndexStructure(
 			const std::string& name,

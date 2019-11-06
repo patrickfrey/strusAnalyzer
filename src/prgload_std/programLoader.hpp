@@ -82,6 +82,20 @@ analyzer::DocumentClass parseDocumentClass(
 	NormalizerDef        :- FunctionDecl
 	TokenizerDef         :- FunctionDecl
 	SelectionDef         :- # Abbrev XPath expression: Selection of the content that is used as input for the building of this feature
+
+	FieldSection         :- "[" "Field" "]" { FieldDecl ";" }
+	FieldDecl            :- FieldTypeName "=" ScopeSelectionDef ContentDef [ IdDef ]
+	FieldTypeName        :- # Identifier: Type name of the field that is used to address it when declaring structures
+	ScopeSelectionDef    :- Abbrev XPath expression: Selection of the content that covers all elements of the field and serves as scope and key for relating fields to build structures. It serves also ase base path for the definition of content and optionally id.
+	ContentDef           :- Abbrev XPath expression relative to ScopeSelectionDef. Identifies the content of the field.
+	KeyDef               :- Abbrev XPath expression relative to ScopeSelectionDef. Optional. Identifies the key to relate fields in structures if the scope is not enough (e.g. table rows and columns).
+
+	StructureSection     :- "[" "Structure" "]" { StructureDecl ";" }
+	StructureDecl        :- StructureName "=" FieldNameHeader FieldNameContent StructureType
+	StructureName        :- # Identifier: Class name of the structure that is used to address it
+	FieldNameHeader      :- # Identifier: Class name of the field that serves as header of the structure
+	FieldNameContent     :- # Identifier: Class name of the field that serves as content of the structure
+	StructureType        :- # One of "hierarchical" (the content encloses the header or wise versa), "heading" (the header preceedes content until a new "heading" is declared, "footer" (the header succeeds the contents preeceeding it without other "footer" defined)
 */
 bool loadDocumentAnalyzerProgramSource(
 		DocumentAnalyzerInstanceInterface* analyzer,
