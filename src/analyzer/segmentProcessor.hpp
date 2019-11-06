@@ -9,6 +9,7 @@
 #define _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #include "featureConfigMap.hpp"
 #include "patternFeatureConfigMap.hpp"
+#include "searchIndexStructure.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
 #include "strus/analyzer/queryTermExpression.hpp"
@@ -71,7 +72,9 @@ public:
 	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
-	analyzer::Document fetchDocument();
+	analyzer::Document fetchDocument(
+		const std::vector<SeachIndexStructureConfig>& structureConfigs,
+		const std::vector<SearchIndexStructure>& structures);
 
 	class QueryElement
 		:public analyzer::QueryTerm

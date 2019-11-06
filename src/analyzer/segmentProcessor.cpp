@@ -201,7 +201,29 @@ void SegmentProcessor::eliminateCovered()
 	BindTerm::eliminateCoveredElements( m_metadataTerms);
 }
 
-analyzer::Document SegmentProcessor::fetchDocument()
+static analyzer::DocumentStructure::Position getOrdinalPosition( const PositionMap& posmap, const analyzer::Position& pos)
+{
+	PositionMap::const_iterator pi = posmap.lower_bound( pos);
+	if (pi == posmap.end())
+	{
+		return posmap.empty() ? 1 : posmap.rbegin()->second+1;
+	}
+	else
+	{
+		return pi->second;
+	}
+}
+
+static analyzer::DocumentStructure::PositionRange getOrdinalPositionRange( const PositionMap& posmap, const SearchIndexStructure::PositionRange& posrange)
+{
+	return analyzer::DocumentStructure::PositionRange( 
+			getOrdinalPosition( posmap, posrange.first),
+			getOrdinalPosition( posmap, posrange.second));
+}
+
+analyzer::Document SegmentProcessor::fetchDocument(
+		const std::vector<SeachIndexStructureConfig>& structureConfigs,
+		const std::vector<SearchIndexStructure>& structures)
 {
 	analyzer::Document rt;
 
@@ -235,6 +257,18 @@ analyzer::Document SegmentProcessor::fetchDocument()
 	for (; ai != ae; ++ai)
 	{
 		rt.setAttribute( ai->type(), ai->value());
+	}
+	std::vector<SearchIndexStructure>::const_iterator si = structures.begin(), se = structures.end();
+	for (; si != se; ++si)
+	{
+		const std::string&
+			nn = structureConfigs[ si->configIdx()].structureName();
+		analyzer::DocumentStructure::PositionRange
+			hh = getOrdinalPositionRange( posmap, si->source());
+		analyzer::DocumentStructure::PositionRange
+			cc = getOrdinalPositionRange( posmap, si->sink());
+
+		rt.addSearchIndexStructure( nn, hh, cc);
 	}
 	clearTermMaps();
 	return rt;

@@ -76,6 +76,42 @@ public:
 			int priority,
 			const analyzer::FeatureOptions& options)=0;
 
+	/// \brief Declare a field, a positional range of elements and assign a classifying name and a contextual unique identifier to it.
+	/// \param[in] name classifying name of the field, determining how the field is addressed in the query evaluation
+	/// \param[in] scopeexpr defining the scope of the field identifiers and the parent expression of select and id (tag selection in abbreviated syntax of XPath)
+	/// \param[in] selectexpr select expression relative to scope expression selecting the positional range of the field (tag selection in abbreviated syntax of XPath)
+	/// \param[in] idexpr select expression relative to scope expression selecting the identifier of the field within its scope (tag selection in abbreviated syntax of XPath)
+	virtual void addSearchIndexField(
+			const std::string& name,
+			const std::string& scopeexpr,
+			const std::string& selectexpr,
+			const std::string& idexpr)=0;
+
+	/// \brief Classification of structures declared as relation of two fields
+	enum StructureType
+	{
+		StructureHierarchical,		///< Header is embedding content or vice versa
+		StructureHeading,		///< Content is following header, contents are attached to header until new header appears
+		StructureFooter			///< Header is following content, open contents are attached to header when the next header appears
+	};
+	static const char* structureTypeName( StructureType t)
+	{
+		const char* ar[] = {"hierarchical","heading","footer",0};
+		return ar[t];
+	}
+
+	/// \brief Declare a structure as unidirectional relation of two fields
+	/// \note The source of the relation is called header and the sink is called content
+	/// \param[in] name name of the structure, how to address it in the query
+	/// \param[in] headerFieldName header field name of the structure
+	/// \param[in] contentFieldName content field name of the structure
+	/// \param[in] structureType type of the structure 
+	virtual void addSearchIndexStructure(
+			const std::string& name,
+			const std::string& headerFieldName,
+			const std::string& contentFieldName,
+			const StructureType& structureType)=0;
+
 	/// \brief Declare a feature to be put into the meta data table used for restrictions, weighting and summarization.
 	/// \param[in] metaname name of the column in the meta data table this feature is written to
 	/// \param[in] selectexpr an expression that decribes what elements are taken from a document for this feature (tag selection in abbreviated syntax of XPath)

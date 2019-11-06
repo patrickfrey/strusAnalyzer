@@ -17,19 +17,37 @@ namespace strus
 
 enum {
 	MaxSegmenterId=(1<<30),
+	
 	OfsSubContent=(1<<28),
 	MaxNofSubContents=(MaxSegmenterId - OfsSubContent - 1),
 
-	SubDocumentEnd=(1<<24),
+	SubDocumentEnd=(1<<26),
 	OfsSubDocument=SubDocumentEnd+1,
 	MaxNofSubDocuments=(OfsSubContent - OfsSubDocument - 1),
 
+	StructureElement=(1<<24),
+	OfsStructureElement=StructureElement+1,
+	MaxStructureElement=(SubDocumentEnd - OfsStructureElement - 1),
+	MaxFieldEventIdx=(MaxStructureElement/4),
+
 	OfsPatternMatchSegment=(1<<20),
-	MaxNofPatternMatchSegments=(SubDocumentEnd-OfsPatternMatchSegment-1),
+	MaxNofPatternMatchSegments=(StructureElement-OfsPatternMatchSegment-1),
 
 	EndOfFeatures=OfsPatternMatchSegment-1,
 	MaxNofFeatures=EndOfFeatures-1
 };
+
+/// \brief Set of selecting events for defining fields and their associated structures
+enum FieldEvent {
+	FieldEvent_Collect,
+	FieldEvent_Id,
+	FieldEvent_Start,
+	FieldEvent_End
+};
+#define FieldEventHandle( Event, idx)	(idx<<2)+Event
+#define FieldEventIdx( hnd)		(hnd>>2)
+#define FieldEventType( hnd)		(FieldEvent)(hnd & 3)
+
 
 /// \brief Set of configured features
 class FeatureConfigMap

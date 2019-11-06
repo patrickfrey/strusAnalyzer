@@ -7,6 +7,7 @@ set( source_files
 	${CMAKE_CURRENT_BINARY_DIR}/internationalization.cpp
 	tokenizeHelpers.cpp
 	debugTraceHelpers.cpp
+	xpath.cpp
 	textEncoder.cpp
 )
 

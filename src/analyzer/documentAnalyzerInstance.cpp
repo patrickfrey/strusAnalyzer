@@ -19,6 +19,7 @@
 #include "private/featureView.hpp"
 #include "private/errorUtils.hpp"
 #include "private/internationalization.hpp"
+#include "private/xpath.hpp"
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -32,8 +33,12 @@ using namespace strus;
 DocumentAnalyzerInstance::DocumentAnalyzerInstance( const TextProcessorInterface* textproc_, const SegmenterInterface* segmenter_, const analyzer::SegmenterOptions& opts, ErrorBufferInterface* errorhnd)
 	:m_textproc(textproc_)
 	,m_segmenter(segmenter_->createInstance( opts))
+	,m_subDocumentList()
 	,m_subsegmenterList()
 	,m_featureConfigMap()
+	,m_fieldConfigList()
+	,m_structureConfigList()
+	,m_structureScopeMap()
 	,m_preProcPatternMatchConfigMap()
 	,m_postProcPatternMatchConfigMap()
 	,m_patternFeatureConfigMap()
@@ -138,6 +143,98 @@ void DocumentAnalyzerInstance::addForwardIndexFeature(
 	CATCH_ERROR_MAP( _TXT("error adding forward index feature: %s"), *m_errorhnd);
 }
 
+void DocumentAnalyzerInstance::addSearchIndexField(
+		const std::string& name,
+		const std::string& scopeexpr,
+		const std::string& selectexpr,
+		const std::string& idexpr)
+{
+	try
+	{
+		if (MaxFieldEventIdx <= m_fieldConfigList.size())
+		{
+			throw strus::runtime_error(_TXT("too many fields for structures defined"));
+		}
+		// Define XPath selector events of this field:
+		unsigned int fidx = m_fieldConfigList.size();
+		if (!idexpr.empty())
+		{
+			std::string full_idexpr = strus::joinXPathExpression( scopeexpr, idexpr);
+			defineSelectorExpression(
+				OfsStructureElement + FieldEventHandle( FieldEvent_Id, fidx),
+				full_idexpr);
+		}
+		std::string full_selectexpr_start = strus::xpathStartStructurePath( strus::joinXPathExpression( scopeexpr, selectexpr));
+		std::string full_selectexpr_end = strus::xpathEndStructurePath( full_selectexpr_start);
+		std::string norm_scopeexpr = strus::xpathEndStructurePath( scopeexpr);
+		defineSelectorExpression(
+			OfsStructureElement + FieldEventHandle( FieldEvent_Start, fidx),
+			full_selectexpr_start);
+		defineSelectorExpression(
+			OfsStructureElement + FieldEventHandle( FieldEvent_End, fidx),
+			full_selectexpr_end);
+		int scopeIdx = m_structureScopeMap.size()+1;
+		std::pair<StructureScopeMap::iterator,bool> ins
+			= m_structureScopeMap.insert(
+				StructureScopeMap::value_type( norm_scopeexpr, scopeIdx));
+		if (ins.second == true/*insert took place*/)
+		{
+			defineSelectorExpression(
+				OfsStructureElement + FieldEventHandle( FieldEvent_Collect, scopeIdx),
+				norm_scopeexpr);
+		}
+		else
+		{
+			StructureScopeMap::iterator found = ins.first;
+			scopeIdx = found->second;
+		}
+		// Define the field and its relations to structures referencing it:
+		m_fieldConfigList.push_back(
+			SeachIndexFieldConfig(
+				string_conv::tolower(name), scopeexpr, selectexpr, idexpr, scopeIdx));
+
+		std::vector<SeachIndexStructureConfig>::const_iterator si = m_structureConfigList.begin(), se = m_structureConfigList.end();
+		for (int sidx=0; si != se; ++si,++sidx)
+		{
+			if (si->headerName() == m_fieldConfigList.back().name())
+			{
+				m_fieldConfigList.back().defineHeaderStructureRef( sidx);
+			}
+			if (si->contentName() == m_fieldConfigList.back().name())
+			{
+				m_fieldConfigList.back().defineContentStructureRef( sidx);
+			}
+		}
+	}
+	CATCH_ERROR_MAP( _TXT("error adding search index field: %s"), *m_errorhnd);
+}
+
+void DocumentAnalyzerInstance::addSearchIndexStructure(
+		const std::string& name,
+		const std::string& headerFieldName,
+		const std::string& contentFieldName,
+		const StructureType& structureType)
+{
+	try
+	{
+		int sidx = m_structureConfigList.size();
+		m_structureConfigList.push_back( SeachIndexStructureConfig( string_conv::tolower(name), string_conv::tolower(headerFieldName), string_conv::tolower(contentFieldName), structureType));
+		std::vector<SeachIndexFieldConfig>::iterator fi = m_fieldConfigList.begin(), fe = m_fieldConfigList.end();
+		for (; fi != fe; ++fi)
+		{
+			if (fi->name() == m_structureConfigList.back().headerName())
+			{
+				fi->defineHeaderStructureRef( sidx);
+			}
+			if (fi->name() == m_structureConfigList.back().contentName())
+			{
+				fi->defineContentStructureRef( sidx);
+			}
+		}
+	}
+	CATCH_ERROR_MAP( _TXT("error adding search index structure: %s"), *m_errorhnd);
+}
+
 void DocumentAnalyzerInstance::defineMetaData(
 		const std::string& metaname,
 		const std::string& selectexpr,
@@ -187,7 +284,7 @@ void DocumentAnalyzerInstance::defineSubDocument(
 {
 	try
 	{
-		unsigned int subDocumentType = m_subdoctypear.size();
+		int subDocumentType = m_subdoctypear.size();
 		m_subdoctypear.push_back( subDocumentTypeName);
 		m_subDocumentList.push_back( std::pair<std::string,std::string>( subDocumentTypeName, selectexpr));
 		if (subDocumentType >= MaxNofSubDocuments)

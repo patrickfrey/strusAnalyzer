@@ -19,6 +19,7 @@
 #include "featureConfigMap.hpp"
 #include "patternFeatureConfigMap.hpp"
 #include "patternMatchConfigMap.hpp"
+#include "searchIndexStructure.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -65,6 +66,18 @@ public:
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			int priority,
 			const analyzer::FeatureOptions& options);
+
+	virtual void addSearchIndexField(
+			const std::string& name,
+			const std::string& scopeexpr,
+			const std::string& selectexpr,
+			const std::string& idexpr);
+
+	virtual void addSearchIndexStructure(
+			const std::string& name,
+			const std::string& headerFieldName,
+			const std::string& contentFieldName,
+			const StructureType& structureType);
 
 	virtual void defineMetaData(
 			const std::string& fieldname,
@@ -183,6 +196,8 @@ public:/*DocumentAnalyzerContext*/
 	const SegmenterInstanceInterface* segmenter() const				{return m_segmenter;}
 	const SubSegmenterDef* subsegmenter( unsigned int idx) const			{return (idx<m_subsegmenterList.size()) ? &m_subsegmenterList[idx]:(const SubSegmenterDef*)0;}
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
+	const std::vector<SeachIndexFieldConfig>& fieldConfigList() const		{return m_fieldConfigList;}
+	const std::vector<SeachIndexStructureConfig>& structureConfigList() const	{return m_structureConfigList;}
 	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
 	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
 	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
@@ -202,6 +217,10 @@ private:
 	std::vector<std::pair<std::string,std::string> > m_subDocumentList;
 	std::vector<SubSegmenterDef> m_subsegmenterList;
 	FeatureConfigMap m_featureConfigMap;
+	std::vector<SeachIndexFieldConfig> m_fieldConfigList;
+	std::vector<SeachIndexStructureConfig> m_structureConfigList;
+	typedef std::map<std::string,int> StructureScopeMap;
+	StructureScopeMap m_structureScopeMap;
 	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
 	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
 	PatternFeatureConfigMap m_patternFeatureConfigMap;

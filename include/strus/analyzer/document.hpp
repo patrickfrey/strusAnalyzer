@@ -13,6 +13,7 @@
 #include "strus/analyzer/documentTerm.hpp"
 #include "strus/analyzer/documentAttribute.hpp"
 #include "strus/analyzer/documentMetaData.hpp"
+#include "strus/analyzer/documentStructure.hpp"
 #include <string>
 #include <vector>
 
@@ -39,19 +40,22 @@ public:
 		,m_metadata(o.m_metadata)
 		,m_attributes(o.m_attributes)
 		,m_searchIndexTerms(o.m_searchIndexTerms)
-		,m_forwardIndexTerms(o.m_forwardIndexTerms){}
+		,m_forwardIndexTerms(o.m_forwardIndexTerms)
+		,m_searchIndexStructures(o.m_searchIndexStructures){}
 #endif
 
 	/// \brief Get the sub document type name
-	const std::string& subDocumentTypeName() const			{return m_subdoctypename;}
+	const std::string& subDocumentTypeName() const				{return m_subdoctypename;}
 	/// \brief Get the list of the attributes defined in this document
-	const std::vector<DocumentAttribute>& attributes() const	{return m_attributes;}
+	const std::vector<DocumentAttribute>& attributes() const		{return m_attributes;}
 	/// \brief Get the list of the metadata defined in this document
-	const std::vector<DocumentMetaData>& metadata() const		{return m_metadata;}
+	const std::vector<DocumentMetaData>& metadata() const			{return m_metadata;}
 	/// \brief Get the list of the search index terms defined in this document
-	const std::vector<DocumentTerm>& searchIndexTerms() const	{return m_searchIndexTerms;}
+	const std::vector<DocumentTerm>& searchIndexTerms() const		{return m_searchIndexTerms;}
 	/// \brief Get the list of the forward index terms defined in this document
-	const std::vector<DocumentTerm>& forwardIndexTerms() const	{return m_forwardIndexTerms;}
+	const std::vector<DocumentTerm>& forwardIndexTerms() const		{return m_forwardIndexTerms;}
+	/// \brief Get the list of the search index structures defined in this document
+	const std::vector<DocumentStructure>& searchIndexStructures() const	{return m_searchIndexStructures;}
 
 	/// \brief Set the name of the sub document type as declared in the document analyzer (empty for the main document)
 	void setSubDocumentTypeName( const std::string& n)
@@ -104,6 +108,15 @@ public:
 		m_forwardIndexTerms.insert( m_forwardIndexTerms.end(), terms.begin(), terms.end());
 	}
 
+	/// \brief Define a search index structure in the document
+	/// \param[in] n label of the structure
+	/// \param[in] h header element of the structure
+	/// \param[in] h content element of the structure
+	void addSearchIndexStructure( const std::string& n, const DocumentStructure::PositionRange& h, const DocumentStructure::PositionRange& c)
+	{
+		m_searchIndexStructures.push_back( DocumentStructure( n, h, c));
+	}
+	
 	/// \brief Clear the document content
 	void clear()
 	{
@@ -112,6 +125,7 @@ public:
 		m_attributes.clear();
 		m_searchIndexTerms.clear();
 		m_forwardIndexTerms.clear();
+		m_searchIndexStructures.clear();
 	}
 
 	/// \brief Swap a document structure with another
@@ -122,6 +136,7 @@ public:
 		m_attributes.swap(o.m_attributes);
 		m_searchIndexTerms.swap(o.m_searchIndexTerms);
 		m_forwardIndexTerms.swap(o.m_forwardIndexTerms);
+		m_searchIndexStructures.swap(o.m_searchIndexStructures);
 	}
 
 private:
@@ -130,6 +145,7 @@ private:
 	std::vector<DocumentAttribute> m_attributes;
 	std::vector<DocumentTerm> m_searchIndexTerms;
 	std::vector<DocumentTerm> m_forwardIndexTerms;
+	std::vector<DocumentStructure> m_searchIndexStructures;
 };
 
 }}//namespace

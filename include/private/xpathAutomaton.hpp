@@ -66,7 +66,6 @@ private:
 	Automaton m_automaton;
 };
 
-
 } // namespace
 #endif
 

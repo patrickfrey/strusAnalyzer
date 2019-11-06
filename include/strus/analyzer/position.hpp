@@ -40,7 +40,12 @@ public:
 	Position( const Position& o)
 		:m_seg(o.m_seg),m_ofs(o.m_ofs){}
 #endif
-
+	///\brief Test if position is valid
+	/// \return true if yes, false if no
+	bool defined() const
+	{
+		return m_seg != 0 && m_ofs != 0;
+	}
 	///\brief Get the position of the segment in the original source
 	int seg() const	{return m_seg;}
 	///\brief Get the byte position in the translated document segment (UTF-8)
@@ -66,9 +71,11 @@ public:
 	}
 	bool operator <= (const Position& o) const
 	{
-		return (m_seg == o.m_seg)
-			? (m_ofs <= o.m_ofs)
-			: (m_seg <= o.m_seg);
+		return (m_seg == o.m_seg) ? (m_ofs <= o.m_ofs) : (m_seg <= o.m_seg);
+	}
+	bool operator >= (const Position& o) const
+	{
+		return (m_seg == o.m_seg) ? (m_ofs >= o.m_ofs) : (m_seg >= o.m_seg);
 	}
 	bool operator == (const Position& o) const
 	{
@@ -76,15 +83,11 @@ public:
 	}
 	bool operator < (const Position& o) const
 	{
-		return (m_seg == o.m_seg)
-			? (m_ofs < o.m_ofs)
-			: (m_seg < o.m_seg);
+		return (m_seg == o.m_seg) ? (m_ofs < o.m_ofs) : (m_seg < o.m_seg);
 	}
 	bool operator > (const Position& o) const
 	{
-		return (m_seg == o.m_seg)
-			? (m_ofs > o.m_ofs)
-			: (m_seg > o.m_seg);
+		return (m_seg == o.m_seg) ? (m_ofs > o.m_ofs) : (m_seg > o.m_seg);
 	}
 
 private:
