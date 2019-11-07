@@ -91,13 +91,13 @@ public:
 	/// \brief Classification of structures declared as relation of two fields
 	enum StructureType
 	{
-		StructureHierarchical,		///< Header is embedding content or vice versa
-		StructureHeading,		///< Content is following header, contents are attached to header until new header appears
+		StructureHierarchy,		///< Header is embedding content or vice versa
+		StructureHeader,		///< Content is following header, contents are attached to header until new header appears
 		StructureFooter			///< Header is following content, open contents are attached to header when the next header appears
 	};
 	static const char* structureTypeName( StructureType t)
 	{
-		const char* ar[] = {"hierarchical","heading","footer",0};
+		const char* ar[] = {"hierarchy","header","footer",0};
 		return ar[t];
 	}
 	static bool structureTypeFromName( StructureType& type, const char* name)

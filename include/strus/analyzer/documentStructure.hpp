@@ -22,7 +22,22 @@ class DocumentStructure
 {
 public:
 	typedef int Position;
-	typedef std::pair<Position,Position> PositionRange;
+	class PositionRange
+	{
+	public:
+		PositionRange()
+			:m_start(0),m_end(0){}
+		PositionRange( const Position& start_, const Position& end_)
+			:m_start(start_),m_end(end_){}
+		PositionRange( const PositionRange& o)
+			:m_start(o.m_start),m_end(o.m_end){}
+
+		const Position& start() const	{return m_start;}
+		const Position& end() const	{return m_end;}
+	private:
+		Position m_start;
+		Position m_end;
+	};
 
 	DocumentStructure(
 			const std::string& name_,
@@ -32,6 +47,10 @@ public:
 	DocumentStructure(
 			const DocumentStructure& o)
 		:m_name(o.m_name),m_source(o.m_source),m_sink(o.m_sink){}
+
+	const std::string& name() const		{return m_name;}
+	const PositionRange& source() const	{return m_source;}
+	const PositionRange& sink() const	{return m_sink;}
 
 private:
 	std::string m_name;

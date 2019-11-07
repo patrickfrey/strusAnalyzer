@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
+add_subdirectory( textwolf )
 add_subdirectory( randomfeed )
 add_subdirectory( documentclassdetect )
 add_subdirectory( segmenter_textwolf )
