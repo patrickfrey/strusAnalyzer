@@ -58,9 +58,9 @@ private:
 			:start_position(o.start_position),curr_position_ofs(o.curr_position_ofs),segmenter(o.segmenter){}
 #endif
 	};
-	SearchIndexField& getOrCreateSearchIndexField( int configIdx, int scopeIdx);
 	void collectIndexFields( int scopeIdx);
 	void buildStructures( const std::vector<SearchIndexField>& fields, int headerIdx);
+	void handleStructureEvent( int evhnd, const char* segsrc, std::size_t segsize);
 
 private:
 	SegmentProcessor m_segmentProcessor;

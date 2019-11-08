@@ -44,7 +44,7 @@ public:
 	/// \return true if yes, false if no
 	bool defined() const
 	{
-		return m_seg != 0 && m_ofs != 0;
+		return !!(m_seg|m_ofs);
 	}
 	///\brief Get the position of the segment in the original source
 	int seg() const	{return m_seg;}

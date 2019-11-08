@@ -167,17 +167,6 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 	}
 }
 
-SearchIndexField& DocumentAnalyzerContext::getOrCreateSearchIndexField( int configIdx, int scopeIdx)
-{
-	std::vector<SearchIndexField>::iterator fi = m_activeFields.begin(), fe = m_activeFields.end();
-	for (; fi != fe; ++fi)
-	{
-		if (fi->configIdx() == configIdx) return *fi;
-	}
-	m_activeFields.push_back( SearchIndexField( configIdx, scopeIdx));
-	return m_activeFields.back();
-}
-
 struct FieldArea
 {
 	enum Type {HeaderType,ContentType};
@@ -209,6 +198,11 @@ struct FieldArea
 	{
 		return positionRange.second >= oth.positionRange.second
 			&& positionRange.first <= oth.positionRange.first;
+	}
+	bool isequal( const FieldArea& oth) const
+	{
+		return positionRange.second == oth.positionRange.second
+			&& positionRange.first == oth.positionRange.first;
 	}
 };
 
@@ -324,49 +318,52 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 
 	switch (structConfig.structureType())
 	{
-		case DocumentAnalyzerInstanceInterface::StructureHierarchy:
+		case DocumentAnalyzerInstanceInterface::StructureCover:
 		{
+			// Find header covering content completely (not equal)
+			std::set<FieldArea>::reverse_iterator ai = areaset.rbegin(), ae = areaset.rend();
+			for (; ai != ae; ++ai)
 			{
-				// Find content covering header
-				std::set<FieldArea>::const_iterator ai = areaset.begin(), ae = areaset.end();
-				for (; ai != ae; ++ai)
+				if (ai->type == FieldArea::HeaderType)
 				{
-					if (ai->type == FieldArea::HeaderType)
+					std::vector<FieldArea> candidates;
+					std::set<FieldArea>::reverse_iterator next_ai = ai;
+					++next_ai;
+					for (; next_ai != ae; ++next_ai)
 					{
-						std::vector<FieldArea> candidates;
-						std::set<FieldArea>::const_iterator next_ai = ai;
-						++next_ai;
-						for (; next_ai != ae; ++next_ai)
+						if (next_ai->type == FieldArea::ContentType
+						&&  ai->covers( *next_ai)
+						&& !ai->isequal( *next_ai))
 						{
-							if (next_ai->type == FieldArea::ContentType
-							&&  next_ai->covers( *ai))
-							{
-								addInnerStructureFieldCandidate( candidates, *next_ai);
-							}
+							addStructureFieldCandidate( candidates, *next_ai);
 						}
-						flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
 					}
+					flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
 				}
-			}{
-				// Find header covering content
-				std::set<FieldArea>::reverse_iterator ai = areaset.rbegin(), ae = areaset.rend();
-				for (; ai != ae; ++ai)
+			}
+			break;
+		}
+		case DocumentAnalyzerInstanceInterface::StructureLabel:
+		{
+			// Find header inside content (covered by content, not equal)
+			std::set<FieldArea>::const_iterator ai = areaset.begin(), ae = areaset.end();
+			for (; ai != ae; ++ai)
+			{
+				if (ai->type == FieldArea::HeaderType)
 				{
-					if (ai->type == FieldArea::HeaderType)
+					std::vector<FieldArea> candidates;
+					std::set<FieldArea>::const_iterator next_ai = ai;
+					++next_ai;
+					for (; next_ai != ae; ++next_ai)
 					{
-						std::vector<FieldArea> candidates;
-						std::set<FieldArea>::reverse_iterator next_ai = ai;
-						++next_ai;
-						for (; next_ai != ae; ++next_ai)
+						if (next_ai->type == FieldArea::ContentType
+						&&  next_ai->covers( *ai)
+						&& !next_ai->isequal( *ai))
 						{
-							if (next_ai->type == FieldArea::ContentType
-							&&  ai->covers( *next_ai))
-							{
-								addStructureFieldCandidate( candidates, *next_ai);
-							}
+							addInnerStructureFieldCandidate( candidates, *next_ai);
 						}
-						flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
 					}
+					flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
 				}
 			}
 		}
@@ -456,6 +453,47 @@ void DocumentAnalyzerContext::collectIndexFields( int scopeIdx)
 	std::swap( m_activeFields, otherFields);
 }
 
+void DocumentAnalyzerContext::handleStructureEvent( int evhnd, const char* segsrc, std::size_t segsize)
+{
+	int fidx = FieldEventIdx( evhnd);
+
+	switch ((FieldEvent)FieldEventType(evhnd))
+	{
+		case FieldEvent_Collect:
+		{
+			int scopeIdx = fidx;
+			collectIndexFields( scopeIdx);
+			break;
+		}
+		case FieldEvent_Id:
+		{
+			int configIdx = fidx;
+			std::size_t aidx = m_activeFields.size();
+			for (; aidx && (m_activeFields[aidx-1].configIdx() != configIdx || m_activeFields[aidx-1].end().defined()); --aidx){}
+			if (!aidx) throw std::runtime_error(_TXT("logic error: field id event without start detected"));
+			m_activeFields[aidx-1].setId( strus::string_conv::trim( segsrc, segsize));
+			break;
+		}
+		case FieldEvent_Start:
+		{
+			int configIdx = fidx;
+			const SeachIndexFieldConfig& fieldConfig = m_analyzer->fieldConfigList()[ configIdx];
+			m_activeFields.push_back( SearchIndexField( configIdx, fieldConfig.scopeIdx()));
+			m_activeFields.back().setStart( analyzer::Position( (int)m_curr_position, 0));
+			break;
+		}
+		case FieldEvent_End:
+		{
+			int configIdx = fidx;
+			std::size_t aidx = m_activeFields.size();
+			for (; aidx && (m_activeFields[aidx-1].configIdx() != configIdx || m_activeFields[aidx-1].end().defined()); --aidx){}
+			if (!aidx) throw std::runtime_error(_TXT("logic error: end of field event without start detected"));
+			m_activeFields[aidx-1].setEnd( analyzer::Position( (int)m_curr_position, 0));
+			break;
+		}
+	}
+}
+
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
 	try 
@@ -522,51 +560,7 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					else if (featidx >= OfsStructureElement)
 					{
 						int evhnd = featidx - OfsStructureElement;
-						int fidx = FieldEventIdx( evhnd);
-
-						switch ((FieldEvent)FieldEventType(evhnd))
-						{
-							case FieldEvent_Collect:
-							{
-								/*[-]*/std::vector<SearchIndexField>::iterator ai = m_activeFields.begin(), ae = m_activeFields.end();
-								/*[-]*/for (; ai != ae; ++ai)
-								/*[-]*/{
-								/*[-]*/	if (ai->scopeIdx() == fidx/*scopeIdx*/)
-								/*[-]*/	{
-								/*[-]*/		const SeachIndexFieldConfig& config = m_analyzer->fieldConfigList()[ ai->configIdx()];
-								/*[-]*/		std::cerr << "COLLECT FIELD " << config.name() << " AT " << m_curr_position << std::endl;
-								/*[-]*/}}
-								collectIndexFields( fidx/*scopeIdx*/);
-								break;
-							}
-							case FieldEvent_Id:
-							{
-								int configIdx = fidx;
-								const SeachIndexFieldConfig& fieldConfig = m_analyzer->fieldConfigList()[ configIdx];
-								SearchIndexField& field = getOrCreateSearchIndexField( configIdx, fieldConfig.scopeIdx());
-								field.setId( strus::string_conv::trim( segsrc, segsrcsize));
-								/*[-]*/std::cerr << "FIELD ID " << fieldConfig.name() << " AT " << m_curr_position << " IS " << field.id() << std::endl;
-								break;
-							}
-							case FieldEvent_Start:
-							{
-								int configIdx = fidx;
-								const SeachIndexFieldConfig& fieldConfig = m_analyzer->fieldConfigList()[ configIdx];
-								SearchIndexField& field = getOrCreateSearchIndexField( configIdx, fieldConfig.scopeIdx());
-								field.setStart( analyzer::Position( (int)m_curr_position, 0));
-								/*[-]*/std::cerr << "FIELD START " << fieldConfig.name() << " AT " << m_curr_position << std::endl;
-								break;
-							}
-							case FieldEvent_End:
-							{
-								int configIdx = fidx;
-								const SeachIndexFieldConfig& fieldConfig = m_analyzer->fieldConfigList()[ configIdx];
-								SearchIndexField& field = getOrCreateSearchIndexField( configIdx, fieldConfig.scopeIdx());
-								field.setEnd( analyzer::Position( (int)m_curr_position, 0));
-								/*[-]*/std::cerr << "FIELD END " << fieldConfig.name() << " AT " << m_curr_position << std::endl;
-								break;
-							}
-						}
+						handleStructureEvent( evhnd, segsrc, segsrcsize);
 					}
 					else
 					{

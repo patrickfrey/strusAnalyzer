@@ -27,8 +27,8 @@ public:
 		:m_name(o.m_name),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
 
 	const std::string& name() const				{return m_name;}
-	const std::vector<int> headerStructureList() const	{return m_headerStructureList;}
-	const std::vector<int> contentStructureList() const	{return m_contentStructureList;}
+	const std::vector<int>& headerStructureList() const	{return m_headerStructureList;}
+	const std::vector<int>& contentStructureList() const	{return m_contentStructureList;}
 	int scopeIdx() const					{return m_scopeIdx;}
 
 	void defineHeaderStructureRef( int idx)			{m_headerStructureList.push_back(idx);}

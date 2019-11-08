@@ -159,6 +159,10 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 		unsigned int fidx = m_fieldConfigList.size();
 		if (!keyexpr.empty())
 		{
+			if (!stringStartsWith( selectexpr, keyexpr))
+			{
+				throw strus::runtime_error(_TXT("expression for key has to select content inside the selection expression, but select '%s' not a prefix of key '%s'"), selectexpr.c_str(), keyexpr.c_str());
+			}
 			std::string full_keyexpr = strus::joinXPathExpression( scopeexpr, keyexpr);
 			defineSelectorExpression(
 				OfsStructureElement + FieldEventHandle( FieldEvent_Id, fidx),

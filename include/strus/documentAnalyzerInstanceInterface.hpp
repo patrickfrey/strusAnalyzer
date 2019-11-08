@@ -91,24 +91,24 @@ public:
 	/// \brief Classification of structures declared as relation of two fields
 	enum StructureType
 	{
-		StructureHierarchy,		///< Header is embedding content or vice versa
+		StructureCover,			///< Header is covering content
+		StructureLabel,			///< Header is included in content
 		StructureHeader,		///< Content is following header, contents are attached to header until new header appears
 		StructureFooter			///< Header is following content, open contents are attached to header when the next header appears
 	};
+	/// \brief Get the structure class name as string
 	static const char* structureTypeName( StructureType t)
 	{
-		const char* ar[] = {"hierarchy","header","footer",0};
+		const char* ar[] = {"cover","label","header","footer",0};
 		return ar[t];
 	}
+	/// \brief Get the structure class from its name as string (case sensitive)
 	static bool structureTypeFromName( StructureType& type, const char* name)
 	{
-		type = (StructureType)0;
-		char const* typestr = structureTypeName( type);
-		for (; typestr; typestr = structureTypeName( type=(StructureType)(type+1)))
-		{
-			if (0==std::strcmp( name, typestr)) return true;
-		}
-		return false;
+		char const* typestr = structureTypeName( type = (StructureType)0);
+		for (; typestr && 0!=std::strcmp( name, typestr); typestr = structureTypeName( type=(StructureType)(type+1)))
+		{}
+		return !!typestr;
 	}
 
 	/// \brief Declare a structure as unidirectional relation of two fields
