@@ -257,7 +257,7 @@ analyzer::Document SegmentProcessor::fetchDocument(
 	std::vector<BindTerm>::const_iterator ai = m_attributeTerms.begin(), ae = m_attributeTerms.end();
 	for (; ai != ae; ++ai)
 	{
-		if (0==std::strcmp( ai->type(), analyzer::Document::attribute_access()))
+		if (ai->type() == analyzer::Document::attribute_access())
 		{
 			if (!accessListStr.empty()) accessListStr.push_back(',');
 			accessListStr.append( ai->value());
