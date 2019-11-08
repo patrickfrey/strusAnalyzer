@@ -100,12 +100,12 @@ public:
 
 	const PreProcPatternMatchContext& context( std::size_t idx) const
 	{
-		if (idx <= 0 || idx > m_ar.size()) throw std::logic_error("array bound read (document analyzer pattern match context)");
+		if (idx <= 0 || idx > m_ar.size()) throw std::runtime_error("array bound read (document analyzer pattern match context)");
 		return *m_ar[ idx-1].get();
 	}
 	PreProcPatternMatchContext& context( std::size_t idx)
 	{
-		if (idx <= 0 || idx > m_ar.size()) throw std::logic_error("array bound write (document analyzer pattern match context)");
+		if (idx <= 0 || idx > m_ar.size()) throw std::runtime_error("array bound write (document analyzer pattern match context)");
 		return *m_ar[ idx-1].get();
 	}
 

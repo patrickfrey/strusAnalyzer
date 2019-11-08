@@ -253,10 +253,24 @@ analyzer::Document SegmentProcessor::fetchDocument(
 		}
 		rt.setMetaData( mi->type(), value);
 	}
+	std::string accessListStr;
 	std::vector<BindTerm>::const_iterator ai = m_attributeTerms.begin(), ae = m_attributeTerms.end();
 	for (; ai != ae; ++ai)
 	{
-		rt.setAttribute( ai->type(), ai->value());
+		if (0==std::strcmp( ai->type(), analyzer::Document::attribute_access()))
+		{
+			if (!accessListStr.empty()) accessListStr.push_back(',');
+			accessListStr.append( ai->value());
+			rt.addAccess( ai->value());
+		}
+		else
+		{
+			rt.setAttribute( ai->type(), ai->value());
+		}
+	}
+	if (!accessListStr.empty())
+	{
+		rt.setAttribute( analyzer::Document::attribute_access(), accessListStr);
 	}
 	std::vector<SearchIndexStructure>::const_iterator si = structures.begin(), se = structures.end();
 	for (; si != se; ++si)

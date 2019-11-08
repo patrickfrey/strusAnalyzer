@@ -41,7 +41,8 @@ public:
 		,m_attributes(o.m_attributes)
 		,m_searchIndexTerms(o.m_searchIndexTerms)
 		,m_forwardIndexTerms(o.m_forwardIndexTerms)
-		,m_searchIndexStructures(o.m_searchIndexStructures){}
+		,m_searchIndexStructures(o.m_searchIndexStructures)
+		,m_accessList(o.m_accessList){}
 #endif
 
 	/// \brief Get the sub document type name
@@ -56,6 +57,8 @@ public:
 	const std::vector<DocumentTerm>& forwardIndexTerms() const		{return m_forwardIndexTerms;}
 	/// \brief Get the list of the search index structures defined in this document
 	const std::vector<DocumentStructure>& searchIndexStructures() const	{return m_searchIndexStructures;}
+	/// \brief Get the list of the user/roles allowed to access this document
+	const std::vector<std::string>& accessList() const			{return m_accessList;}
 
 	/// \brief Set the name of the sub document type as declared in the document analyzer (empty for the main document)
 	void setSubDocumentTypeName( const std::string& n)
@@ -116,7 +119,19 @@ public:
 	{
 		m_searchIndexStructures.push_back( DocumentStructure( n, h, c));
 	}
-	
+
+	/// \brief Attribute name for the access list of a document
+	static const char* attribute_access()
+	{
+		return "access";
+	}
+
+	/// \brief Define a user role name to allow access to this document (ACL enabled in the storage)
+	void addAccess( const std::string& userRoleName)
+	{
+		m_accessList.push_back( userRoleName);
+	}
+
 	/// \brief Clear the document content
 	void clear()
 	{
@@ -126,6 +141,7 @@ public:
 		m_searchIndexTerms.clear();
 		m_forwardIndexTerms.clear();
 		m_searchIndexStructures.clear();
+		m_accessList.clear();
 	}
 
 	/// \brief Swap a document structure with another
@@ -137,6 +153,7 @@ public:
 		m_searchIndexTerms.swap(o.m_searchIndexTerms);
 		m_forwardIndexTerms.swap(o.m_forwardIndexTerms);
 		m_searchIndexStructures.swap(o.m_searchIndexStructures);
+		m_accessList.swap(o.m_accessList);
 	}
 
 private:
@@ -146,6 +163,7 @@ private:
 	std::vector<DocumentTerm> m_searchIndexTerms;
 	std::vector<DocumentTerm> m_forwardIndexTerms;
 	std::vector<DocumentStructure> m_searchIndexStructures;
+	std::vector<std::string> m_accessList;
 };
 
 }}//namespace

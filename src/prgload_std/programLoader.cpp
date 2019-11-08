@@ -529,7 +529,7 @@ static void parseDocumentPatternFeatureDef(
 			break;
 
 		case FeatPatternLexem:
-			throw std::logic_error("cannot define pattern match lexem from pattern match result");
+			throw std::runtime_error("cannot define pattern match lexem from pattern match result");
 	}
 	featuredef.release();
 }

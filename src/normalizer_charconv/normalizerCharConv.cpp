@@ -32,7 +32,7 @@ public:
 			case Lowercase: return &rt_Lowercase;
 			case Uppercase: return &rt_Uppercase;
 		}
-		throw  std::logic_error("bad enum value");
+		throw  std::runtime_error("bad enum value");
 	}
 
 	typedef const char* (*ExceptionsF)( unsigned int chr);
