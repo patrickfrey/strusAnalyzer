@@ -10,6 +10,7 @@
 #include "strus/documentAnalyzerInstanceInterface.hpp"
 #include "strus/reference.hpp"
 #include "strus/analyzer/position.hpp"
+#include "strus/structView.hpp"
 #include <vector>
 #include <string>
 
@@ -21,10 +22,15 @@ class ErrorBufferInterface;
 class SeachIndexFieldConfig
 {
 public:
-	SeachIndexFieldConfig( const std::string& name_, int scopeIdx_)
-		:m_name(name_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_){}
+	SeachIndexFieldConfig( 
+		const std::string& name_,
+		const std::string& scopeexpr_,
+		const std::string& selectexpr_,
+		const std::string& keyexpr_,
+		int scopeIdx_)
+		:m_name(name_),m_scopeexpr(scopeexpr_),m_selectexpr(selectexpr_),m_keyexpr(keyexpr_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_){}
 	SeachIndexFieldConfig( const SeachIndexFieldConfig& o)
-		:m_name(o.m_name),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
+		:m_name(o.m_name),m_scopeexpr(o.m_scopeexpr),m_selectexpr(o.m_selectexpr),m_keyexpr(o.m_keyexpr),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
 
 	const std::string& name() const				{return m_name;}
 	const std::vector<int>& headerStructureList() const	{return m_headerStructureList;}
@@ -34,8 +40,21 @@ public:
 	void defineHeaderStructureRef( int idx)			{m_headerStructureList.push_back(idx);}
 	void defineContentStructureRef( int idx)		{m_contentStructureList.push_back(idx);}
 
+	StructView view() const
+	{
+		return StructView()
+			( "name", m_name)
+			( "scope", m_scopeexpr)
+			( "select", m_selectexpr)
+			( "key", m_keyexpr)
+		;
+	}
+
 private:
 	std::string m_name;
+	std::string m_scopeexpr;
+	std::string m_selectexpr;
+	std::string m_keyexpr;
 	std::vector<int> m_headerStructureList;
 	std::vector<int> m_contentStructureList;
 	int m_scopeIdx;
@@ -59,6 +78,16 @@ public:
 	const std::string& headerName() const		{return m_headerName;}
 	const std::string& contentName() const		{return m_contentName;}
 	const Type& structureType() const		{return m_structureType;}
+
+	StructView view() const
+	{
+		return StructView()
+			( "name", m_structureName)
+			( "header", m_headerName)
+			( "content", m_contentName)
+			( "class", DocumentAnalyzerInstanceInterface::structureTypeName( m_structureType))
+		;
+	}
 
 private:
 	std::string m_structureName;

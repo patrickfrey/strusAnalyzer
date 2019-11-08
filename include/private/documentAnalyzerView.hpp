@@ -31,6 +31,8 @@ public:
 	/// \param[in] metadata_ metadata definitions
 	/// \param[in] searchindex_ search index feature definitions
 	/// \param[in] forwardindex_ forward index feature definitions
+	/// \param[in] searchfields_ search index structure field definitions
+	/// \param[in] searchstructures_ search index structure definitions as directed relations of fields
 	/// \param[in] aggregators_ aggregator definitions
 	/// \param[in] lexems_ lexems defined internally for pattern matching
 	DocumentAnalyzerView(
@@ -41,6 +43,8 @@ public:
 			const StructView& metadata_,
 			const StructView& searchindex_,
 			const StructView& forwardindex_,
+			const StructView& searchfields_,
+			const StructView& searchstructures_,
 			const StructView& aggregators_,
 			const StructView& lexems_)
 	{
@@ -49,6 +53,8 @@ public:
 			( "searchindex", searchindex_)
 			( "forwardindex", forwardindex_)
 		;
+		if (searchfields_.defined()) StructView::operator()( "field", searchfields_);
+		if (searchstructures_.defined()) StructView::operator()( "struct", searchstructures_);
 		if (attributes_.defined()) StructView::operator()( "attribute", attributes_);
 		if (metadata_.defined()) StructView::operator()( "metadata", metadata_);
 		if (subcontents_.defined()) StructView::operator()( "subcontent", subcontents_);

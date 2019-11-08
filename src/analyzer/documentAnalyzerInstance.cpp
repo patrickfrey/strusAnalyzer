@@ -193,7 +193,10 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 			scopeIdx = found->second;
 		}
 		// Define the field and its relations to structures referencing it:
-		m_fieldConfigList.push_back( SeachIndexFieldConfig( string_conv::tolower(name), scopeIdx));
+		m_fieldConfigList.push_back( 
+			SeachIndexFieldConfig(
+				string_conv::tolower(name), 
+				scopeexpr, selectexpr, keyexpr, scopeIdx));
 
 		std::vector<SeachIndexStructureConfig>::const_iterator si = m_structureConfigList.begin(), se = m_structureConfigList.end();
 		for (int sidx=0; si != se; ++si,++sidx)
@@ -475,6 +478,8 @@ StructView DocumentAnalyzerInstance::view() const
 		StructView metadata;
 		StructView searchindex( StructView::Structure);
 		StructView forwardindex( StructView::Structure);
+		StructView searchfields;
+		StructView searchstructures;
 		StructView aggregators;
 		StructView lexems;
 
@@ -500,12 +505,23 @@ StructView DocumentAnalyzerInstance::view() const
 					break;
 			}
 		}
+		std::vector<SeachIndexFieldConfig>::const_iterator
+			li = m_fieldConfigList.begin(),le = m_fieldConfigList.end();
+		for (;li != le; ++li)
+		{
+			searchfields( li->view());
+		}
+		std::vector<SeachIndexStructureConfig>::const_iterator
+			xi = m_structureConfigList.begin(),xe = m_structureConfigList.end();
+		for (;xi != xe; ++xi)
+		{
+			searchstructures( xi->view());
+		}
 		std::vector<StatisticsConfig>::const_iterator si = m_statistics.begin(), se = m_statistics.end();
 		for (; si != se; ++si)
 		{
 			aggregators( analyzer::AggregatorView( si->name(), si->statfunc()->view()));
 		}
-
 		StructView subDocumentListView;
 		std::vector<std::pair<std::string,std::string> >::const_iterator
 			di = m_subDocumentList.begin(), de = m_subDocumentList.end();
@@ -514,7 +530,11 @@ StructView DocumentAnalyzerInstance::view() const
 			subDocumentListView( di->first, di->second);
 		}
 		return analyzer::DocumentAnalyzerView( 
-			segmenterView, subcontents, subDocumentListView, attributes, metadata, searchindex, forwardindex, aggregators, lexems);
+			segmenterView, subcontents, subDocumentListView,
+			attributes, metadata,
+			searchindex, forwardindex,
+			searchfields, searchstructures,
+			aggregators, lexems);
 	}
 	CATCH_ERROR_MAP_RETURN( _TXT("error in document analyzer introspection: %s"), *m_errorhnd, StructView());
 }
