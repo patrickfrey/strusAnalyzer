@@ -450,7 +450,7 @@ void DocumentAnalyzerContext::collectIndexFields( int scopeIdx)
 		buildStructures( selectedFields, *ci);
 	}
 	// [3] Remove fields processed from active fields:
-	std::swap( m_activeFields, otherFields);
+	m_activeFields.swap( otherFields);
 }
 
 void DocumentAnalyzerContext::handleStructureEvent( int evhnd, const char* segsrc, std::size_t segsize)
