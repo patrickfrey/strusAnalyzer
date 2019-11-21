@@ -94,12 +94,14 @@ public:
 		StructureCover,			///< Header is covering content
 		StructureLabel,			///< Header is included in content
 		StructureHeader,		///< Content is following header, contents are attached to header until new header appears
-		StructureFooter			///< Header is following content, open contents are attached to header when the next header appears
+		StructureFooter,		///< Header is following content, open contents are attached to header when the next header appears
+		StructureSpan,			///< Header labels an area that spans an area until the element marked as content selection
+		StructureAssociative		///< Header labels identify their content solely by the identifier valid in the scope, order of definition or area scope do not matter
 	};
 	/// \brief Get the structure class name as string
 	static const char* structureTypeName( StructureType t)
 	{
-		const char* ar[] = {"cover","label","header","footer",0};
+		const char* ar[] = {"cover","label","header","footer","span","associative",0};
 		return ar[t];
 	}
 	/// \brief Get the structure class from its name as string (case sensitive)

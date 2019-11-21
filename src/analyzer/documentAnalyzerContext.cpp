@@ -171,14 +171,15 @@ struct FieldArea
 {
 	enum Type {HeaderType,ContentType};
 	Type type;
+	const char* id;
 	SearchIndexStructure::PositionRange positionRange;
 
 	FieldArea()
-		:type(ContentType),positionRange(){}
-	FieldArea( Type type_, const SearchIndexStructure::PositionRange& positionRange_)
-		:type(type_),positionRange(positionRange_){}
+		:type(ContentType),id(0),positionRange(){}
+	FieldArea( Type type_, const char* id_, const SearchIndexStructure::PositionRange& positionRange_)
+		:type(type_),id(id_),positionRange(positionRange_){}
 	FieldArea( const FieldArea& o)
-		:type(o.type),positionRange(o.positionRange){}
+		:type(o.type),id(o.id),positionRange(o.positionRange){}
 
 	bool operator<( const FieldArea& o) const
 	{
@@ -193,7 +194,6 @@ struct FieldArea
 			return positionRange.second < o.positionRange.second;
 		}
 	}
-
 	bool covers( const FieldArea& oth) const
 	{
 		return positionRange.second >= oth.positionRange.second
@@ -203,6 +203,25 @@ struct FieldArea
 	{
 		return positionRange.second == oth.positionRange.second
 			&& positionRange.first == oth.positionRange.first;
+	}
+	static bool isMatchSeparator( char aa)
+	{
+		return aa == '\0' || aa == ',';
+	}
+	static bool isSubMatch( const char* haystack, const char* needle)
+	{
+		char const* ai = std::strstr( haystack, needle);
+		return ai
+			&& (ai == haystack || *(ai-1) == ',')
+			&& isMatchSeparator( ai[std::strlen(needle)]);
+	}
+	bool matches( const FieldArea& oth) const
+	{
+		if (id == oth.id) return true;
+		if (!id || !oth.id) return false;
+		if (0==std::strcmp( id, oth.id)) return true;
+		if (isSubMatch( id, oth.id) || isSubMatch( oth.id, id)) return true;
+		return false;
 	}
 };
 
@@ -224,6 +243,7 @@ static void collectHeaderFields(
 			{
 				res.insert( FieldArea(
 					FieldArea::HeaderType,
+					fi->id().c_str(),
 					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
 			}
 		}
@@ -248,6 +268,7 @@ static void collectContentFields(
 			{
 				res.insert( FieldArea(
 					FieldArea::ContentType,
+					fi->id().c_str(),
 					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
 			}
 		}
@@ -332,6 +353,7 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					for (; next_ai != ae; ++next_ai)
 					{
 						if (next_ai->type == FieldArea::ContentType
+						&&  ai->matches( *next_ai)
 						&&  ai->covers( *next_ai)
 						&& !ai->isequal( *next_ai))
 						{
@@ -357,6 +379,7 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					for (; next_ai != ae; ++next_ai)
 					{
 						if (next_ai->type == FieldArea::ContentType
+						&&  next_ai->matches( *ai)
 						&&  next_ai->covers( *ai)
 						&& !next_ai->isequal( *ai))
 						{
@@ -379,7 +402,8 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					++next_ai;
 					for (; next_ai != ae && next_ai->type == FieldArea::ContentType; ++next_ai)
 					{
-						if (next_ai->positionRange.first >= ai->positionRange.second)
+						if (next_ai->positionRange.first >= ai->positionRange.second
+						&&  next_ai->matches( *ai))
 						{
 							addStructureFieldCandidate( candidates, *next_ai);
 						}
@@ -401,7 +425,66 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					++next_ai;
 					for (; next_ai != ae && next_ai->type == FieldArea::ContentType; ++next_ai)
 					{
-						if (next_ai->positionRange.second <= ai->positionRange.first)
+						if (next_ai->positionRange.second <= ai->positionRange.first
+						&&  next_ai->matches( *ai))
+							
+						{
+							addStructureFieldCandidate( candidates, *next_ai);
+						}
+					}
+					flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
+				}
+			}
+			break;
+		}
+		case DocumentAnalyzerInstanceInterface::StructureSpan:
+		{
+			std::set<FieldArea>::const_iterator ai = areaset.begin(), ae = areaset.end();
+			for (; ai != ae; ++ai)
+			{
+				if (ai->type == FieldArea::HeaderType)
+				{
+					std::vector<FieldArea> candidates;
+					std::set<FieldArea>::const_iterator next_ai = ai;
+					++next_ai;
+					for (; next_ai != ae; ++next_ai)
+					{
+						if (next_ai->type == FieldArea::ContentType
+						&&  next_ai->positionRange.first >= ai->positionRange.second
+						&&  next_ai->matches( *ai))
+						{
+							SearchIndexStructure::PositionRange
+								posrange( ai->positionRange.first, next_ai->positionRange.second);
+							FieldArea area( FieldArea::ContentType, ai->id, posrange);
+							addStructureFieldCandidate( candidates, area);
+						}
+					}
+					if (candidates.empty())
+					{
+						//... no end marker found, set end position to end of document
+						SearchIndexStructure::PositionRange
+							posrange( ai->positionRange.first, analyzer::Position::endOfDocument());
+						FieldArea area( FieldArea::ContentType, ai->id, posrange);
+						addStructureFieldCandidate( candidates, area);
+					}
+					flushStructureFieldCandidates( m_structures, configIdx, *ai, candidates);
+				}
+			}
+			break;
+		}
+		case DocumentAnalyzerInstanceInterface::StructureAssociative:
+		{
+			std::set<FieldArea>::const_iterator ai = areaset.begin(), ae = areaset.end();
+			for (; ai != ae; ++ai)
+			{
+				if (ai->type == FieldArea::HeaderType)
+				{
+					std::vector<FieldArea> candidates;
+					std::set<FieldArea>::const_iterator next_ai = areaset.begin();
+					for (; next_ai != ae; ++next_ai)
+					{
+						if (next_ai->type == FieldArea::ContentType
+						&&  next_ai->matches( *ai))
 						{
 							addStructureFieldCandidate( candidates, *next_ai);
 						}

@@ -116,7 +116,11 @@ public:
 	const analyzer::Position& start() const			{return m_start;}
 	const analyzer::Position& end() const			{return m_end;}
 
-	void setId( const std::string& id_)			{m_id = id_;}
+	void setId( const std::string& id_)
+	{
+		if (!m_id.empty()) m_id.push_back(',');
+		m_id.append(id_);
+	}
 	void setStart( const analyzer::Position& start_)	{m_start = start_;}
 	void setEnd( const analyzer::Position& end_)		{m_end = end_;}
 

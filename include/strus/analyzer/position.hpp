@@ -11,7 +11,7 @@
 #ifndef _STRUS_ANALYZER_POSITION_HPP_INCLUDED
 #define _STRUS_ANALYZER_POSITION_HPP_INCLUDED
 #include "strus/base/stdint.h"
-
+#include <limits>
 
 /// \brief strus toplevel namespace
 namespace strus {
@@ -88,6 +88,10 @@ public:
 	bool operator > (const Position& o) const
 	{
 		return (m_seg == o.m_seg) ? (m_ofs > o.m_ofs) : (m_seg > o.m_seg);
+	}
+	static Position endOfDocument()
+	{
+		return Position( std::numeric_limits<int32_t>::max(), 0);
 	}
 
 private:
