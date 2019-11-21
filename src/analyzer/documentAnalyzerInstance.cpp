@@ -155,20 +155,20 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 		{
 			throw strus::runtime_error(_TXT("too many fields for structures defined"));
 		}
+		std::string full_selectexpr_start = strus::xpathStartStructurePath( strus::joinXPathExpression( scopeexpr, selectexpr));
 		// Define XPath selector events of this field:
 		unsigned int fidx = m_fieldConfigList.size();
 		if (!keyexpr.empty())
 		{
-			if (!stringStartsWith( selectexpr, keyexpr))
+			std::string full_keyexpr = strus::joinXPathExpression( scopeexpr, keyexpr);
+			if (!stringStartsWith( full_keyexpr, full_selectexpr_start))
 			{
 				throw strus::runtime_error(_TXT("expression for key has to select content inside the selection expression, but select '%s' not a prefix of key '%s'"), selectexpr.c_str(), keyexpr.c_str());
 			}
-			std::string full_keyexpr = strus::joinXPathExpression( scopeexpr, keyexpr);
 			defineSelectorExpression(
 				OfsStructureElement + FieldEventHandle( FieldEvent_Id, fidx),
 				full_keyexpr);
 		}
-		std::string full_selectexpr_start = strus::xpathStartStructurePath( strus::joinXPathExpression( scopeexpr, selectexpr));
 		std::string full_selectexpr_end = strus::xpathEndStructurePath( full_selectexpr_start);
 		std::string norm_scopeexpr = strus::xpathEndStructurePath( scopeexpr);
 		defineSelectorExpression(

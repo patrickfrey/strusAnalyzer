@@ -62,8 +62,19 @@ std::string strus::xpathStartStructurePath( const std::string& selectexpr)
 			for (--si; si > 0 && (unsigned char)selectexpr[si-1] <= 32; --si){}
 			return std::string( selectexpr.c_str(), si);
 		}
+		else
+		{
+			return selectexpr;
+		}
 	}
-	return selectexpr;
+	else if (si == selectexpr.size())
+	{
+		return selectexpr;
+	}
+	else
+	{
+		return std::string( selectexpr.c_str(), si);
+	}
 }
 
 std::string strus::xpathEndStructurePath( const std::string& selectexpr)
