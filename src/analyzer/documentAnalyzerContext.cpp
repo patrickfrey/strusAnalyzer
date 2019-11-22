@@ -30,6 +30,8 @@
 #define DEBUG_EVENT2( NAME, FMT, ID, VAL)			if (m_debugtrace) m_debugtrace->event( NAME, FMT, ID, VAL);
 #define DEBUG_EVENT2_CONTENT( NAME, FMT, ID, VAL, STR, LEN)	if (m_debugtrace) {std::string cs(contentCut(STR,LEN,100)); m_debugtrace->event( NAME, FMT, ID, VAL, cs.c_str());}
 
+#define FIELD_ID_SEPARATOR ','
+
 #define B10000000 128
 #define B11000000 (127+64)
 
@@ -186,7 +188,9 @@ struct FieldArea
 		if (positionRange.second == o.positionRange.second)
 		{
 			return (positionRange.first == o.positionRange.first)
-				? (int)type < (int)o.type
+				? (type == o.type
+					? id < o.id
+					: (int)type < (int)o.type)
 				: positionRange.first < o.positionRange.first;
 		}
 		else
@@ -206,21 +210,85 @@ struct FieldArea
 	}
 	static bool isMatchSeparator( char aa)
 	{
-		return aa == '\0' || aa == ',';
+		return aa == '\0' || aa == FIELD_ID_SEPARATOR;
 	}
 	static bool isSubMatch( const char* haystack, const char* needle)
 	{
 		char const* ai = std::strstr( haystack, needle);
 		return ai
-			&& (ai == haystack || *(ai-1) == ',')
+			&& (ai == haystack || *(ai-1) == FIELD_ID_SEPARATOR)
 			&& isMatchSeparator( ai[std::strlen(needle)]);
+	}
+	struct IdSubString {
+		const char* str;
+		std::size_t len;
+	};
+	static void parseIdSubStrings( IdSubString* buf, std::size_t bufsize, std::size_t& len, const char* haystack)
+	{
+		char const* hi = haystack;
+		char const* hn = std::strchr( hi, FIELD_ID_SEPARATOR);
+		len = 0;
+
+		for (; hn && len < bufsize; 
+			hi=hn+1,hn = std::strchr( hi, FIELD_ID_SEPARATOR),++len)
+		{
+			buf[ len].str = hi;
+			buf[ len].len = hn-hi;
+		}
+		if (len == bufsize) throw std::runtime_error(_TXT("too many ids assigned to structure"));
+		buf[ len].str = hi;
+		buf[ len].len = std::strchr( hi, '\0')-hi;
+		++len;
+	}
+
+	static bool findCommonMatch( const char* haystack1, const char* haystack2)
+	{
+		enum {MaxNofFields = 8};
+
+		IdSubString har1[ MaxNofFields]; std::size_t harlen1 = 0;
+		IdSubString har2[ MaxNofFields]; std::size_t harlen2 = 0;
+
+		parseIdSubStrings( har1, MaxNofFields, harlen1, haystack1);
+		parseIdSubStrings( har2, MaxNofFields, harlen2, haystack2);
+
+		std::size_t h1 = 0;
+		for (; h1 < harlen1; ++h1)
+		{
+			std::size_t h2 = 0;
+			for (; h2 < harlen2; ++h2)
+			{
+				if (har1[ h1].len == har2[ h2].len
+				&& 0==std::memcmp( har1[ h1].str, har2[ h2].str, har2[ h2].len))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	bool matches( const FieldArea& oth) const
 	{
 		if (id == oth.id) return true;
 		if (!id || !oth.id) return false;
-		if (0==std::strcmp( id, oth.id)) return true;
-		if (isSubMatch( id, oth.id) || isSubMatch( oth.id, id)) return true;
+		if (0!=std::strchr( id, FIELD_ID_SEPARATOR))
+		{
+			if (0!=std::strchr( oth.id, FIELD_ID_SEPARATOR))
+			{
+				return findCommonMatch( id, oth.id);
+			}
+			else
+			{
+				return isSubMatch( id, oth.id);
+			}
+		}
+		else if (0!=std::strchr( oth.id, FIELD_ID_SEPARATOR))
+		{
+			return isSubMatch( oth.id, id);
+		}
+		else
+		{
+			return 0==std::strcmp( id, oth.id);
+		}
 		return false;
 	}
 };
@@ -243,7 +311,7 @@ static void collectHeaderFields(
 			{
 				res.insert( FieldArea(
 					FieldArea::HeaderType,
-					fi->id().c_str(),
+					fi->id().empty() ? 0 : fi->id().c_str(),
 					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
 			}
 		}
@@ -268,7 +336,7 @@ static void collectContentFields(
 			{
 				res.insert( FieldArea(
 					FieldArea::ContentType,
-					fi->id().c_str(),
+					fi->id().empty() ? 0 : fi->id().c_str(),
 					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
 			}
 		}
@@ -454,9 +522,10 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 						&&  next_ai->matches( *ai))
 						{
 							SearchIndexStructure::PositionRange
-								posrange( ai->positionRange.first, next_ai->positionRange.second);
+								posrange( ai->positionRange.first, next_ai->positionRange.first);
 							FieldArea area( FieldArea::ContentType, ai->id, posrange);
 							addStructureFieldCandidate( candidates, area);
+							break;//... only the next candidate matches
 						}
 					}
 					if (candidates.empty())
@@ -484,6 +553,7 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					for (; next_ai != ae; ++next_ai)
 					{
 						if (next_ai->type == FieldArea::ContentType
+						&&  !ai->isequal( *next_ai)
 						&&  next_ai->matches( *ai))
 						{
 							addStructureFieldCandidate( candidates, *next_ai);
