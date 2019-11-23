@@ -109,6 +109,9 @@ void DocumentAnalyzerContext::processAggregatedMetadata( analyzer::Document& res
 
 void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& res)
 {
+	// collect open structures that did not get the terminate event:
+	collectActiveFields();
+
 	// process concatenated chunks:
 	m_segmentProcessor.processConcatenated();
 	m_segmentProcessor.eliminateCovered();
@@ -167,6 +170,8 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 	{
 		(*vi)->clear();
 	}
+	m_activeFields.clear();
+	m_structures.clear();
 }
 
 struct FieldArea
@@ -309,10 +314,10 @@ static void collectHeaderFields(
 		{
 			if (*hi == configIdx)
 			{
-				res.insert( FieldArea(
-					FieldArea::HeaderType,
-					fi->id().empty() ? 0 : fi->id().c_str(),
-					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
+				const char* idstr = fi->id().empty() ? 0 : fi->id().c_str();
+				SearchIndexStructure::PositionRange posrange( fi->start(), fi->end());
+				FieldArea area( FieldArea::HeaderType, idstr, posrange);
+				res.insert( area);
 			}
 		}
 	}
@@ -334,10 +339,10 @@ static void collectContentFields(
 		{
 			if (*ci == configIdx)
 			{
-				res.insert( FieldArea(
-					FieldArea::ContentType,
-					fi->id().empty() ? 0 : fi->id().c_str(),
-					SearchIndexStructure::PositionRange( fi->start(), fi->end())));
+				const char* idstr = fi->id().empty() ? 0 : fi->id().c_str();
+				SearchIndexStructure::PositionRange posrange( fi->start(), fi->end());
+				FieldArea area( FieldArea::ContentType, idstr, posrange);
+				res.insert( area);
 			}
 		}
 	}
@@ -581,14 +586,17 @@ void DocumentAnalyzerContext::collectIndexFields( int scopeIdx)
 	{
 		if (ai->scopeIdx() == scopeIdx)
 		{
-			selectedFields.push_back( *ai);
-
-			const SeachIndexFieldConfig& config = m_analyzer->fieldConfigList()[ ai->configIdx()];
-			const std::vector<int>& headerRefs = config.headerStructureList();
-			std::vector<int>::const_iterator hi = headerRefs.begin(), he = headerRefs.end();
-			for (; hi != he; ++hi)
+			if (ai->end().defined())
 			{
-				candidateStructures.insert( *hi);
+				selectedFields.push_back( *ai);
+	
+				const SeachIndexFieldConfig& config = m_analyzer->fieldConfigList()[ ai->configIdx()];
+				const std::vector<int>& headerRefs = config.headerStructureList();
+				std::vector<int>::const_iterator hi = headerRefs.begin(), he = headerRefs.end();
+				for (; hi != he; ++hi)
+				{
+					candidateStructures.insert( *hi);
+				}
 			}
 		}
 		else
@@ -604,6 +612,22 @@ void DocumentAnalyzerContext::collectIndexFields( int scopeIdx)
 	}
 	// [3] Remove fields processed from active fields:
 	m_activeFields.swap( otherFields);
+}
+
+void DocumentAnalyzerContext::DocumentAnalyzerContext::collectActiveFields()
+{
+	std::size_t aidx = m_activeFields.size();
+	for (; aidx; --aidx)
+	{
+		if (!m_activeFields[aidx-1].end().defined())
+		{
+			m_activeFields[aidx-1].setEnd( analyzer::Position( (int)m_curr_position, 0));
+		}
+	}
+	while (!m_activeFields.empty())
+	{
+		collectIndexFields( m_activeFields.begin()->scopeIdx());
+	}
 }
 
 void DocumentAnalyzerContext::handleStructureEvent( int evhnd, const char* segsrc, std::size_t segsize)
