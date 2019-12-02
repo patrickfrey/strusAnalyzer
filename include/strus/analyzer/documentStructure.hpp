@@ -34,6 +34,8 @@ public:
 
 		const Position& start() const	{return m_start;}
 		const Position& end() const	{return m_end;}
+
+		bool defined() const		{return m_start != m_end;}
 	private:
 		Position m_start;
 		Position m_end;

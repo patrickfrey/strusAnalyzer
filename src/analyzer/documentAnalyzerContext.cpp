@@ -21,7 +21,6 @@
 #include <set>
 #include <map>
 #include <cstring>
-#include <limits>
 
 #define STRUS_DBGTRACE_COMPONENT_NAME "analyzer"
 #define DEBUG_OPEN( NAME) if (m_debugtrace) m_debugtrace->open( NAME);
@@ -621,7 +620,11 @@ void DocumentAnalyzerContext::DocumentAnalyzerContext::collectActiveFields()
 	{
 		if (!m_activeFields[aidx-1].end().defined())
 		{
-			m_activeFields[aidx-1].setEnd( analyzer::Position( (int)m_curr_position, 0));
+			const SeachIndexFieldConfig& config = m_analyzer->fieldConfigList()[ m_activeFields[aidx-1].configIdx()];
+			if (config.autoclose())
+			{
+				m_activeFields[aidx-1].setEnd( analyzer::Position( (int)m_curr_position, 0));
+			}
 		}
 	}
 	while (!m_activeFields.empty())

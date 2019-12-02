@@ -28,14 +28,15 @@ public:
 		const std::string& selectexpr_,
 		const std::string& keyexpr_,
 		int scopeIdx_)
-		:m_name(name_),m_scopeexpr(scopeexpr_),m_selectexpr(selectexpr_),m_keyexpr(keyexpr_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_){}
+		:m_name(name_),m_scopeexpr(scopeexpr_),m_selectexpr(selectexpr_),m_keyexpr(keyexpr_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_),m_autoclose(isRootTagSelect(scopeexpr_)){}
 	SeachIndexFieldConfig( const SeachIndexFieldConfig& o)
-		:m_name(o.m_name),m_scopeexpr(o.m_scopeexpr),m_selectexpr(o.m_selectexpr),m_keyexpr(o.m_keyexpr),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx){}
+		:m_name(o.m_name),m_scopeexpr(o.m_scopeexpr),m_selectexpr(o.m_selectexpr),m_keyexpr(o.m_keyexpr),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx),m_autoclose(o.m_autoclose){}
 
 	const std::string& name() const				{return m_name;}
 	const std::vector<int>& headerStructureList() const	{return m_headerStructureList;}
 	const std::vector<int>& contentStructureList() const	{return m_contentStructureList;}
 	int scopeIdx() const					{return m_scopeIdx;}
+	bool autoclose() const					{return m_autoclose;}
 
 	void defineHeaderStructureRef( int idx)			{m_headerStructureList.push_back(idx);}
 	void defineContentStructureRef( int idx)		{m_contentStructureList.push_back(idx);}
@@ -51,6 +52,22 @@ public:
 	}
 
 private:
+	// \brief Test if expression is selecting the root tag or the document as a whole
+	bool isRootTagSelect( const std::string& expr) const
+	{
+		char const* si = expr.c_str();
+		if (*si == '/')
+		{
+			++si;
+			if (*si == '/') return false;
+			for (; *si && *si != '/' && *si != '[' && *si != '@' && *si != '(' && *si != '{'; ++si){}
+			if (*si == '/') ++si;
+			return !*si;
+		}
+		return false;
+	}
+
+private:
 	std::string m_name;
 	std::string m_scopeexpr;
 	std::string m_selectexpr;
@@ -58,6 +75,7 @@ private:
 	std::vector<int> m_headerStructureList;
 	std::vector<int> m_contentStructureList;
 	int m_scopeIdx;
+	bool m_autoclose;
 };
 
 class SeachIndexStructureConfig

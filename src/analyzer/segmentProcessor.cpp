@@ -281,8 +281,10 @@ analyzer::Document SegmentProcessor::fetchDocument(
 			hh = getOrdinalPositionRange( posmap, si->source());
 		analyzer::DocumentStructure::PositionRange
 			cc = getOrdinalPositionRange( posmap, si->sink());
-
-		rt.addSearchIndexStructure( nn, hh, cc);
+		if (hh.defined() && cc.defined())
+		{
+			rt.addSearchIndexStructure( nn, hh, cc);
+		}
 	}
 	clearTermMaps();
 	return rt;
