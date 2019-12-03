@@ -35,5 +35,5 @@
     doclen = count( stem);
 
 [PatternMatch test]
-    upcaseword = { /list/doc/text//(), /list/doc/title//()} "detect_upcase.rul";
+    upcaseword = { "/list/doc/text//()", "/list/doc/title//()" } "detect_upcase.rul";
 
