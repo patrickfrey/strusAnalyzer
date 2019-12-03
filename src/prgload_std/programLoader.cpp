@@ -73,7 +73,7 @@ static const char* g_tokens[] = {
 	":",
 	";",
 	"<-",
-	"[/@][^;,{} ]*",
+	"[/@][^; ]*",
 	NULL
 };
 static const char* g_token_names[] = {
