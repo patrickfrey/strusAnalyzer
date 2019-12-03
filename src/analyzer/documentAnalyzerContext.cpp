@@ -239,7 +239,10 @@ struct FieldArea
 			buf[ len].str = hi;
 			buf[ len].len = hn-hi;
 		}
-		if (len == bufsize) throw std::runtime_error(_TXT("too many ids assigned to structure"));
+		if (len == bufsize)
+		{
+			throw strus::runtime_error(_TXT("too many ids assigned to structure in '%s'"), haystack);
+		}
 		buf[ len].str = hi;
 		buf[ len].len = std::strchr( hi, '\0')-hi;
 		++len;
