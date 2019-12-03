@@ -250,7 +250,7 @@ struct FieldArea
 
 	static bool findCommonMatch( const char* haystack1, const char* haystack2)
 	{
-		enum {MaxNofFields = 8};
+		enum {MaxNofFields = 64};
 
 		IdSubString har1[ MaxNofFields]; std::size_t harlen1 = 0;
 		IdSubString har2[ MaxNofFields]; std::size_t harlen2 = 0;
