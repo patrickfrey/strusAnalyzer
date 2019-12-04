@@ -226,7 +226,19 @@ struct FieldArea
 	struct IdSubString {
 		const char* str;
 		std::size_t len;
+		int hash;
 	};
+	static int hashIdSubString( const char* str, std::size_t len)
+	{
+		std::size_t li = 0, le = len;
+		int hs = 1031;
+		for (; li != le; ++li)
+		{
+			hs += (str[ li] * li * 10) + 137;
+		}
+		return hs;
+	}
+
 	static void parseIdSubStrings( IdSubString* buf, std::size_t bufsize, std::size_t& len, const char* haystack)
 	{
 		char const* hi = haystack;
@@ -236,21 +248,25 @@ struct FieldArea
 		for (; hn && len < bufsize; 
 			hi=hn+1,hn = std::strchr( hi, FIELD_ID_SEPARATOR),++len)
 		{
-			buf[ len].str = hi;
-			buf[ len].len = hn-hi;
+			buf[ len].hash
+				= hashIdSubString(
+					buf[ len].str = hi,
+					buf[ len].len = hn-hi);
 		}
 		if (len == bufsize)
 		{
 			throw strus::runtime_error(_TXT("too many ids (%d) assigned to structure in '%s'"), (int)len, haystack);
 		}
-		buf[ len].str = hi;
-		buf[ len].len = std::strchr( hi, '\0')-hi;
+		buf[ len].hash
+			= hashIdSubString(
+				buf[ len].str = hi,
+				buf[ len].len = std::strchr( hi, '\0')-hi);
 		++len;
 	}
 
 	static bool findCommonMatch( const char* haystack1, const char* haystack2)
 	{
-		enum {MaxNofFields = 256};
+		enum {MaxNofFields = 1024};
 
 		IdSubString har1[ MaxNofFields]; std::size_t harlen1 = 0;
 		IdSubString har2[ MaxNofFields]; std::size_t harlen2 = 0;
@@ -264,8 +280,9 @@ struct FieldArea
 			std::size_t h2 = 0;
 			for (; h2 < harlen2; ++h2)
 			{
-				if (har1[ h1].len == har2[ h2].len
-				&& 0==std::memcmp( har1[ h1].str, har2[ h2].str, har2[ h2].len))
+				if (har1[ h1].hash == har2[ h2].hash
+				&&  har1[ h1].len == har2[ h2].len
+				&&  0==std::memcmp( har1[ h1].str, har2[ h2].str, har2[ h2].len))
 				{
 					return true;
 				}
