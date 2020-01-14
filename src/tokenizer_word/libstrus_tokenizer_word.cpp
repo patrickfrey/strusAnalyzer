@@ -22,6 +22,7 @@ using namespace strus;
 using namespace strus::analyzer;
 
 typedef bool (*TokenDelimiterFunction)( char const* si, const char* se);
+typedef bool (*FilterFunction)( char const* si, const char* se);
 
 struct TokenDelimiter
 {
@@ -33,8 +34,8 @@ class SeparationTokenizerInstance
 	:public TokenizerFunctionInstanceInterface
 {
 public:
-	SeparationTokenizerInstance( const TokenDelimiter* delim, ErrorBufferInterface* errorhnd)
-		:m_delim(delim),m_errorhnd(errorhnd){}
+	SeparationTokenizerInstance( const TokenDelimiter* delim, FilterFunction filter_, ErrorBufferInterface* errorhnd)
+		:m_delim(delim),m_filter(filter_),m_errorhnd(errorhnd){}
 
 	const char* skipToToken( char const* si, const char* se) const;
 
@@ -57,6 +58,7 @@ public:
 
 private:
 	const TokenDelimiter* m_delim;
+	FilterFunction m_filter;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -64,8 +66,8 @@ class SeparationTokenizerFunction
 	:public TokenizerFunctionInterface
 {
 public:
-	SeparationTokenizerFunction( const char* description_, const TokenDelimiter* delim_, ErrorBufferInterface* errorhnd_)
-		:m_description(description_),m_delim(delim_),m_errorhnd(errorhnd_){}
+	SeparationTokenizerFunction( const char* description_, const TokenDelimiter* delim_, FilterFunction filter_, ErrorBufferInterface* errorhnd_)
+		:m_description(description_),m_delim(delim_),m_filter(filter_),m_errorhnd(errorhnd_){}
 
 	TokenizerFunctionInstanceInterface* createInstance( const std::vector<std::string>& args, const TextProcessorInterface*) const
 	{
@@ -76,7 +78,7 @@ public:
 		}
 		try
 		{
-			return new SeparationTokenizerInstance( m_delim, m_errorhnd);
+			return new SeparationTokenizerInstance( m_delim, m_filter, m_errorhnd);
 		}
 		CATCH_ERROR_MAP_RETURN( _TXT("error in tokenizer: %s"), *m_errorhnd, 0);
 	}
@@ -97,6 +99,7 @@ public:
 private:
 	const char* m_description;
 	const TokenDelimiter* m_delim;
+	FilterFunction m_filter;
 	ErrorBufferInterface* m_errorhnd;
 };
 
@@ -122,7 +125,10 @@ std::vector<Token> SeparationTokenizerInstance::tokenize( const char* src, std::
 			{
 				si = skipChar( si);
 			}
-			rt.push_back( Token( start-src, analyzer::Position(0/*seg*/, start-src), si-start));
+			if (!m_filter || (*m_filter)( start, si))
+			{
+				rt.push_back( Token( start-src, analyzer::Position(0/*seg*/, start-src), si-start));
+			}
 		}
 		return rt;
 	}
@@ -220,7 +226,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferI
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries"), &delim, errorhnd);
+		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries"), &delim, 0/*filter*/, errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "word", *errorhnd, 0);
 }
@@ -235,7 +241,7 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_whitespace( ErrorB
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new SeparationTokenizerFunction( _TXT( "Tokenizer splitting tokens separated by whitespace characters"), &delim, errorhnd);
+		return new SeparationTokenizerFunction( _TXT( "Tokenizer splitting tokens separated by whitespace characters"), &delim, 0/*filter*/, errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "split", *errorhnd, 0);
 }
@@ -254,5 +260,28 @@ DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_langtoken( ErrorBu
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "langtoken", *errorhnd, 0);
 }
 
+bool digitsFilter( char const* si, const char* se)
+{
+	for (; si != se; ++si)
+	{
+		if (*si >= '0' && *si <= '9') return false;
+	}
+	return true;
+}
+
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_alpha( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		static const TokenDelimiter delim = {"alpha", &wordBoundaryDelimiter};
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by word boundaries but filtering out tokens containing digits"), &delim, &digitsFilter/*filter*/, errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "alpha", *errorhnd, 0);
+}
 
 

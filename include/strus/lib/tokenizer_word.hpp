@@ -25,9 +25,12 @@ TokenizerFunctionInterface* createTokenizer_word( ErrorBufferInterface* errorhnd
 /// \brief Get the tokenizer type that creates the tokenization as splitting of the input by whitespaces 
 /// \return the tokenization function
 TokenizerFunctionInterface* createTokenizer_whitespace( ErrorBufferInterface* errorhnd);
-/// \brief Get the tokenizer type that creates the tokenization as splitting of all tokens, returning sequnces of language characters as tokens and word boundary delimiters as single character
+/// \brief Get the tokenizer type that creates the tokenization as splitting of all tokens, returning sequences of language characters as tokens and word boundary delimiters as single character
 /// \return the tokenization function
 TokenizerFunctionInterface* createTokenizer_langtoken( ErrorBufferInterface* errorhnd);
+/// \brief Get the tokenizer type that creates the tokenization as words containing sequences of language alphabet characters
+/// \return the tokenization function
+TokenizerFunctionInterface* createTokenizer_alpha( ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif
