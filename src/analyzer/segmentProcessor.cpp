@@ -132,6 +132,52 @@ static PositionMap getPositionMap( const std::set<analyzer::Position>& pset)
 	return posmap;
 }
 
+static std::set<int> getOrdinalPositionSet(
+		const std::vector<BindTerm>& terms,
+		const PositionMap& posmap, std::size_t posofs)
+{
+	std::set<int> rt;
+	std::vector<BindTerm>::const_iterator ri = terms.begin(), re = terms.end();
+	for (; ri != re; ++ri)
+	{
+		switch (ri->posbind())
+		{
+			case analyzer::BindContent:
+			{
+				PositionMap::const_iterator
+					mi = posmap.find( analyzer::Position( ri->seg(), ri->ofs()+1));
+				if (mi != posmap.end())
+				{
+					rt.insert( (int)(mi->second + posofs));
+				}
+				break;
+			}
+			case analyzer::BindUnique:
+			case analyzer::BindSuccessor:
+			{
+				PositionMap::const_iterator
+					mi = posmap.upper_bound( analyzer::Position( ri->seg(), ri->ofs()));
+				if (mi != posmap.end())
+				{
+					rt.insert( (int)(mi->second + posofs));
+				}
+				break;
+			}
+			case analyzer::BindPredecessor:
+			{
+				PositionMap::const_iterator
+					mi = posmap.upper_bound( analyzer::Position( ri->seg(), ri->ofs()+1));
+				if (mi != posmap.end() && mi->second + posofs > 1)
+				{
+					rt.insert( (int)(mi->second + posofs - 1));
+				}
+				break;
+			}
+		}
+	}
+	return rt;
+}
+
 static void fillTermsDocument(
 		std::vector<analyzer::DocumentTerm>& res,
 		const std::vector<BindTerm>& terms,
@@ -146,7 +192,10 @@ static void fillTermsDocument(
 			{
 				PositionMap::const_iterator
 					mi = posmap.find( analyzer::Position( ri->seg(), ri->ofs()+1));
-				res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
+				if (mi != posmap.end())
+				{
+					res.push_back( analyzer::DocumentTerm( ri->type(), ri->value(), mi->second + posofs));
+				}
 				break;
 			}
 			case analyzer::BindUnique:
@@ -240,6 +289,8 @@ analyzer::Document SegmentProcessor::fetchDocument(
 	std::vector<analyzer::DocumentTerm> fwterms;
 	fillTermsDocument( fwterms, m_forwardTerms, posmap, posofs);
 
+	std::set<int> pset_search = getOrdinalPositionSet( m_searchTerms, posmap, posofs);
+
 	rt.addSearchIndexTerms( seterms);
 	rt.addForwardIndexTerms( fwterms);
 
@@ -283,7 +334,15 @@ analyzer::Document SegmentProcessor::fetchDocument(
 			cc = getOrdinalPositionRange( posmap, si->sink());
 		if (hh.defined() && cc.defined())
 		{
-			rt.addSearchIndexStructure( nn, hh, cc);
+			std::set<int>::const_iterator qi = pset_search.lower_bound( (int)hh.start());
+			if (qi != pset_search.end() && *qi < (int)hh.end())
+			{
+				qi = pset_search.lower_bound( (int)cc.start());
+				if (qi != pset_search.end() && *qi < (int)cc.end())
+				{
+					rt.addSearchIndexStructure( nn, hh, cc);
+				}
+			}
 		}
 	}
 	clearTermMaps();
