@@ -197,7 +197,6 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 			SeachIndexFieldConfig(
 				string_conv::tolower(name), 
 				scopeexpr, selectexpr, keyexpr, scopeIdx));
-
 		std::vector<SeachIndexStructureConfig>::const_iterator si = m_structureConfigList.begin(), se = m_structureConfigList.end();
 		for (int sidx=0; si != se; ++si,++sidx)
 		{

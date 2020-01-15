@@ -23,12 +23,13 @@ class SeachIndexFieldConfig
 {
 public:
 	SeachIndexFieldConfig( 
-		const std::string& name_,
-		const std::string& scopeexpr_,
-		const std::string& selectexpr_,
-		const std::string& keyexpr_,
-		int scopeIdx_)
+			const std::string& name_,
+			const std::string& scopeexpr_,
+			const std::string& selectexpr_,
+			const std::string& keyexpr_,
+			int scopeIdx_)
 		:m_name(name_),m_scopeexpr(scopeexpr_),m_selectexpr(selectexpr_),m_keyexpr(keyexpr_),m_headerStructureList(),m_contentStructureList(),m_scopeIdx(scopeIdx_),m_autoclose(isRootTagSelect(scopeexpr_)){}
+
 	SeachIndexFieldConfig( const SeachIndexFieldConfig& o)
 		:m_name(o.m_name),m_scopeexpr(o.m_scopeexpr),m_selectexpr(o.m_selectexpr),m_keyexpr(o.m_keyexpr),m_headerStructureList(o.m_headerStructureList),m_contentStructureList(o.m_contentStructureList),m_scopeIdx(o.m_scopeIdx),m_autoclose(o.m_autoclose){}
 
@@ -43,12 +44,14 @@ public:
 
 	StructView view() const
 	{
-		return StructView()
+		StructView rt;
+		rt
 			( "name", m_name)
 			( "scope", m_scopeexpr)
 			( "select", m_selectexpr)
 			( "key", m_keyexpr)
 		;
+		return rt;
 	}
 
 private:
