@@ -9,8 +9,6 @@
 #define _STRUS_DOCUMENT_ANALYZER_CONTEXT_HPP_INCLUDED
 #include "documentAnalyzerInstance.hpp"
 #include "segmentProcessor.hpp"
-#include "patternMatchContextMap.hpp"
-#include "patternFeatureConfigMap.hpp"
 #include "strus/documentAnalyzerContextInterface.hpp"
 #include "strus/segmenterContextInterface.hpp"
 
@@ -37,7 +35,6 @@ public:
 
 private:
 	void processAggregatedMetadata( analyzer::Document& res) const;
-	void processPatternMatchResult( const std::vector<BindTerm>& result);
 	void completeDocumentProcessing( analyzer::Document& res);
 
 	struct SegmenterStackElement
@@ -65,8 +62,6 @@ private:
 
 private:
 	SegmentProcessor m_segmentProcessor;
-	PreProcPatternMatchContextMap m_preProcPatternMatchContextMap;
-	PostProcPatternMatchContextMap m_postProcPatternMatchContextMap;
 	const DocumentAnalyzerInstance* m_analyzer;
 	SegmenterContextInterface* m_segmenter;
 	std::vector<SegmenterStackElement> m_segmenterstack;

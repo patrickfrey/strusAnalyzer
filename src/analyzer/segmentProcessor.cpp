@@ -32,10 +32,8 @@ using namespace strus;
 
 SegmentProcessor::SegmentProcessor(
 		const FeatureConfigMap& featureConfigMap_,
-		const PatternFeatureConfigMap& patternFeatureConfigMap_,
 		ErrorBufferInterface* errorhnd_)
 	:m_featureConfigMap(&featureConfigMap_)
-	,m_patternFeatureConfigMap(&patternFeatureConfigMap_)
 	,m_concatenatedMap()
 	,m_errorhnd(errorhnd_)
 	,m_debugtrace(0)
@@ -56,7 +54,6 @@ void SegmentProcessor::clearTermMaps()
 	m_forwardTerms.clear();
 	m_metadataTerms.clear();
 	m_attributeTerms.clear();
-	m_patternLexemTerms.clear();
 }
 
 void SegmentProcessor::concatDocumentSegment(
@@ -245,7 +242,6 @@ void SegmentProcessor::eliminateCovered()
 {
 	BindTerm::eliminateCoveredElements( m_searchTerms);
 	BindTerm::eliminateCoveredElements( m_forwardTerms);
-	BindTerm::eliminateCoveredElements( m_patternLexemTerms);
 	BindTerm::eliminateCoveredElements( m_attributeTerms);
 	BindTerm::eliminateCoveredElements( m_metadataTerms);
 }
@@ -371,7 +367,6 @@ static const char* featureClassType( FeatureClass featclass)
 		case FeatAttribute: return "attribute";
 		case FeatSearchIndexTerm: return "search index";
 		case FeatForwardIndexTerm: return "forward index";
-		case FeatPatternLexem: return "pattern lexem";
 	}
 	return 0;
 }
@@ -457,11 +452,6 @@ void SegmentProcessor::processDocumentSegment( int featidx, std::size_t segmentp
 			processContentTokens( m_forwardTerms, feat, tokens, segsrc, segmentpos, concatposmap);
 			break;
 		}
-		case FeatPatternLexem:
-		{
-			processContentTokens( m_patternLexemTerms, feat, tokens, segsrc, segmentpos, concatposmap);
-			break;
-		}
 	}
 }
 
@@ -490,41 +480,5 @@ void SegmentProcessor::processConcatenated()
 	DEBUG_CLOSE()
 }
 
-void SegmentProcessor::processPatternMatchResult( const std::vector<BindTerm>& result)
-{
-	DEBUG_OPEN( "patterns")
-	std::vector<BindTerm>::const_iterator ri = result.begin(), re = result.end();
-	for (; ri != re; ++ri)
-	{
-		DEBUG_OPEN( ri->type().c_str());
-		std::vector<const PatternFeatureConfig*> cfgs = m_patternFeatureConfigMap->getConfigs( ri->type());
-		std::vector<const PatternFeatureConfig*>::const_iterator ci = cfgs.begin(), ce = cfgs.end();
-		for (; ci != ce; ++ci)
-		{
-			const PatternFeatureConfig* cfg = *ci;
-			DEBUG_EVENT6( featureClassType( cfg->featureClass()), "[%d %d %d] %d %s '%s'", cfg->priority(), (int)ri->seg(), (int)ri->ofs(), (int)ri->ordlen(), cfg->name().c_str(), ri->value().c_str());
-
-			switch (cfg->featureClass())
-			{
-				case FeatMetaData:
-					m_metadataTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
-					break;
-				case FeatAttribute:
-					m_attributeTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
-					break;
-				case FeatSearchIndexTerm:
-					m_searchTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
-					break;
-				case FeatForwardIndexTerm:
-					m_forwardTerms.push_back( BindTerm( ri->seg(), ri->ofs(), ri->endofs(), ri->ordlen(), cfg->priority(), cfg->options().positionBind(), cfg->name(), ri->value()));
-					break;
-				case FeatPatternLexem:
-					throw std::runtime_error( _TXT("internal: illegal feature class for pattern match result"));
-			}
-		}
-		DEBUG_CLOSE()
-	}
-	DEBUG_CLOSE()
-}
 
 

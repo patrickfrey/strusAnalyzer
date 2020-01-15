@@ -39,9 +39,6 @@ DocumentAnalyzerInstance::DocumentAnalyzerInstance( const TextProcessorInterface
 	,m_fieldConfigList()
 	,m_structureConfigList()
 	,m_structureScopeMap()
-	,m_preProcPatternMatchConfigMap()
-	,m_postProcPatternMatchConfigMap()
-	,m_patternFeatureConfigMap()
 	,m_subdoctypear()
 	,m_statistics()
 	,m_forwardIndexTermTypeSet()
@@ -325,101 +322,6 @@ void DocumentAnalyzerInstance::defineSubContent(
 	CATCH_ERROR_MAP( _TXT("error in DocumentAnalyzerInstance::defineSubContentSegmenter: %s"), *m_errorhnd);
 }
 
-void DocumentAnalyzerInstance::addPatternLexem(
-		const std::string& termtype,
-		const std::string& selectexpr,
-		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		int priority)
-{
-	unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, selectexpr, tokenizer, normalizers, priority, analyzer::FeatureOptions());
-	defineSelectorExpression( featidx, selectexpr);
-}
-
-void DocumentAnalyzerInstance::defineTokenPatternMatcher(
-		const std::string& patternTypeName,
-		PatternMatcherInstanceInterface* matcher,
-		PatternTermFeederInstanceInterface* feeder)
-{
-	try
-	{
-		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, true);
-	}
-	CATCH_ERROR_MAP( _TXT("error defining token pattern match: %s"), *m_errorhnd);
-}
-
-void DocumentAnalyzerInstance::defineContentPatternMatcher(
-		const std::string& patternTypeName,
-		PatternMatcherInstanceInterface* matcher,
-		PatternLexerInstanceInterface* lexer,
-		const std::vector<std::string>& selectexpr)
-{
-	try
-	{
-		unsigned int idx = OfsPatternMatchSegment
-				+ m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, true);
-		std::vector<std::string>::const_iterator
-			si = selectexpr.begin(), se = selectexpr.end();
-		for (; si != se; ++si)
-		{
-			defineSelectorExpression( idx, *si);
-		}
-	}
-	CATCH_ERROR_MAP( _TXT("error defining content pattern match: %s"), *m_errorhnd);
-}
-
-void DocumentAnalyzerInstance::addSearchIndexFeatureFromPatternMatch(
-		const std::string& type,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		int priority,
-		const analyzer::FeatureOptions& options)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, priority, options);
-	}
-	CATCH_ERROR_MAP( _TXT("error defining search index feature from pattern matching result: %s"), *m_errorhnd);
-}
-
-void DocumentAnalyzerInstance::addForwardIndexFeatureFromPatternMatch(
-		const std::string& type,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		int priority,
-		const analyzer::FeatureOptions& options)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatForwardIndexTerm, type, patternTypeName, normalizers, priority, options);
-	}
-	CATCH_ERROR_MAP( _TXT("error defining forward index feature from pattern matching result: %s"), *m_errorhnd);
-}
-
-void DocumentAnalyzerInstance::defineMetaDataFromPatternMatch(
-		const std::string& metaname,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatMetaData, metaname, patternTypeName, normalizers, 0/*priority*/, analyzer::FeatureOptions());
-	}
-	CATCH_ERROR_MAP( _TXT("error defining document meta data from pattern matching result: %s"), *m_errorhnd);
-}
-
-void DocumentAnalyzerInstance::defineAttributeFromPatternMatch(
-		const std::string& attribname,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatAttribute, attribname, patternTypeName, normalizers, 0/*priority*/, analyzer::FeatureOptions());
-	}
-	CATCH_ERROR_MAP( _TXT("error defining document attribute from pattern matching result: %s"), *m_errorhnd);
-}
-
 analyzer::Document DocumentAnalyzerInstance::analyze(
 		const std::string& content,
 		const analyzer::DocumentClass& dclass) const
@@ -498,9 +400,6 @@ StructView DocumentAnalyzerInstance::view() const
 					break;
 				case FeatForwardIndexTerm:
 					forwardindex( getFeatureView( *fi));
-					break;
-				case FeatPatternLexem:
-					lexems( getFeatureView( *fi));
 					break;
 			}
 		}

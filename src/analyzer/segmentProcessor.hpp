@@ -8,7 +8,6 @@
 #ifndef _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #define _STRUS_ANALYZER_SEGMENT_PROCESSOR_HPP_INCLUDED
 #include "featureConfigMap.hpp"
-#include "patternFeatureConfigMap.hpp"
 #include "searchIndexStructure.hpp"
 #include "bindTerm.hpp"
 #include "strus/analyzer/document.hpp"
@@ -50,7 +49,6 @@ class SegmentProcessor
 public:
 	SegmentProcessor(
 			const FeatureConfigMap& featureConfigMap_,
-			const PatternFeatureConfigMap& patternFeatureConfigMap_,
 			ErrorBufferInterface* errorhnd_);
 	~SegmentProcessor();
 
@@ -68,8 +66,6 @@ public:
 
 	void processConcatenated();
 	void eliminateCovered();
-
-	void processPatternMatchResult( const std::vector<BindTerm>& result);
 
 	/// \brief Fetch the currently processed document
 	analyzer::Document fetchDocument(
@@ -129,7 +125,6 @@ public:
 
 	const std::vector<BindTerm>& searchTerms() const	{return m_searchTerms;}
 	const std::vector<BindTerm>& forwardTerms() const	{return m_forwardTerms;}
-	const std::vector<BindTerm>& patternLexemTerms() const	{return m_patternLexemTerms;}
 
 private:
 	void processDocumentSegment( int featidx, std::size_t segmentpos, const char* elem, std::size_t elemsize, const std::vector<SegPosDef>& concatposmap);
@@ -165,13 +160,11 @@ private:
 
 private:
 	const FeatureConfigMap* m_featureConfigMap;
-	const PatternFeatureConfigMap* m_patternFeatureConfigMap;
 	ConcatenatedMap m_concatenatedMap;
 	std::vector<BindTerm> m_searchTerms;
 	std::vector<BindTerm> m_forwardTerms;
 	std::vector<BindTerm> m_metadataTerms;
 	std::vector<BindTerm> m_attributeTerms;
-	std::vector<BindTerm> m_patternLexemTerms;
 	ErrorBufferInterface* m_errorhnd;
 	DebugTraceContextInterface* m_debugtrace;
 };

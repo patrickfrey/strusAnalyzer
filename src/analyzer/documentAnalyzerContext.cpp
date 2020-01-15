@@ -49,9 +49,7 @@ static std::string contentCut( const char* str, std::size_t size, std::size_t le
 using namespace strus;
 
 DocumentAnalyzerContext::DocumentAnalyzerContext( const DocumentAnalyzerInstance* analyzer_, const analyzer::DocumentClass& dclass, ErrorBufferInterface* errorhnd_)
-	:m_segmentProcessor(analyzer_->featureConfigMap(),analyzer_->patternFeatureConfigMap(), errorhnd_)
-	,m_preProcPatternMatchContextMap(analyzer_->preProcPatternMatchConfigMap(), errorhnd_)
-	,m_postProcPatternMatchContextMap(analyzer_->postProcPatternMatchConfigMap(), errorhnd_)
+	:m_segmentProcessor(analyzer_->featureConfigMap(), errorhnd_)
 	,m_analyzer(analyzer_)
 	,m_segmenter(m_analyzer->segmenter()->createContext( dclass))
 	,m_segmenterstack()
@@ -115,41 +113,6 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 	m_segmentProcessor.processConcatenated();
 	m_segmentProcessor.eliminateCovered();
 
-	DEBUG_OPEN("patternmatch")
-	// fetch pre processing pattern outputs:
-	PreProcPatternMatchContextMap::iterator
-		vi = m_preProcPatternMatchContextMap.begin(),
-		ve = m_preProcPatternMatchContextMap.end();
-	for (; vi != ve; ++vi)
-	{
-		m_segmentProcessor.processPatternMatchResult( (*vi)->fetchResults());
-	}
-
-	// process post processing patterns:
-	PostProcPatternMatchContextMap::iterator
-		pi = m_postProcPatternMatchContextMap.begin(),
-		pe = m_postProcPatternMatchContextMap.end();
-	for (; pi != pe; ++pi)
-	{
-		std::vector<std::string> lexems = (*pi)->feeder()->lexemTypes();
-		std::vector<std::string>::const_iterator li, le = lexems.end();
-		for (li = lexems.begin(); li != le; ++li)
-		{
-			if (m_analyzer->searchIndexTermTypeSet().find(*li) != m_analyzer->searchIndexTermTypeSet().end()) break;
-		}
-		if (li != le) (*pi)->process( m_segmentProcessor.searchTerms());
-
-		for (li = lexems.begin(); li != le; ++li)
-		{
-			if (m_analyzer->forwardIndexTermTypeSet().find(*li) != m_analyzer->forwardIndexTermTypeSet().end()) break;
-		}
-		if (li != le) (*pi)->process( m_segmentProcessor.forwardTerms());
-
-		(*pi)->process( m_segmentProcessor.patternLexemTerms());
-		m_segmentProcessor.processPatternMatchResult( (*pi)->fetchResults());
-	}
-	DEBUG_CLOSE()
-
 	// create output (with real positions):
 	res = m_segmentProcessor.fetchDocument( m_analyzer->structureConfigList(), m_structures);
 	res.setSubDocumentTypeName( m_subdocTypeName);
@@ -159,16 +122,6 @@ void DocumentAnalyzerContext::completeDocumentProcessing( analyzer::Document& re
 
 	// Reset current document processing state:
 	m_segmentProcessor.clearTermMaps();
-	pi = m_postProcPatternMatchContextMap.begin();
-	for (; pi != pe; ++pi)
-	{
-		(*pi)->clear();
-	}
-	vi = m_preProcPatternMatchContextMap.begin();
-	for (; vi != ve; ++vi)
-	{
-		(*vi)->clear();
-	}
 	m_activeFields.clear();
 	m_structures.clear();
 }
@@ -766,33 +719,21 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					{
 						// Features:
 						++m_nof_segments;
-						if (featidx >= OfsPatternMatchSegment)
+						const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
+						if (feat.tokenizer()->concatBeforeTokenize())
 						{
-							DEBUG_OPEN( "pre-patternmatch");
-							PreProcPatternMatchContext& ppctx
-								= m_preProcPatternMatchContextMap.context( featidx - OfsPatternMatchSegment);
+							DEBUG_EVENT1( "concat-feat", "%s", feat.name().c_str());
+							// concat chunks that need to be concatenated before tokenization:
 							std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-							ppctx.process( rel_position, segsrc, segsrcsize);
-							DEBUG_CLOSE();
+							m_segmentProcessor.concatDocumentSegment(
+									featidx, rel_position, segsrc, segsrcsize);
 						}
 						else
 						{
-							const FeatureConfig& feat = m_analyzer->featureConfigMap().featureConfig( featidx);
-							if (feat.tokenizer()->concatBeforeTokenize())
-							{
-								DEBUG_EVENT1( "concat-feat", "%s", feat.name().c_str());
-								// concat chunks that need to be concatenated before tokenization:
-								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-								m_segmentProcessor.concatDocumentSegment(
-										featidx, rel_position, segsrc, segsrcsize);
-							}
-							else
-							{
-								DEBUG_EVENT1( "process-feat", "%s", feat.name().c_str());
-								std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
-								m_segmentProcessor.processDocumentSegment(
-										featidx, rel_position, segsrc, segsrcsize);
-							}
+							DEBUG_EVENT1( "process-feat", "%s", feat.name().c_str());
+							std::size_t rel_position = (std::size_t)(m_curr_position - m_start_position);
+							m_segmentProcessor.processDocumentSegment(
+									featidx, rel_position, segsrc, segsrcsize);
 						}
 					}
 				}

@@ -37,65 +37,6 @@ void QueryAnalyzerInstance::addElement(
 	CATCH_ERROR_MAP( _TXT("error adding feature: %s"), *m_errorhnd);
 }
 
-void QueryAnalyzerInstance::addPatternLexem(
-		const std::string& termtype,
-		const std::string& fieldtype,
-		TokenizerFunctionInstanceInterface* tokenizer,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		int priority)
-{
-	try
-	{
-		unsigned int featidx = m_featureConfigMap.defineFeature( FeatPatternLexem, termtype, fieldtype, tokenizer, normalizers, priority, analyzer::FeatureOptions());
-		m_fieldTypeFeatureMap.insert( FieldTypeFeatureDef( fieldtype, featidx));
-	}
-	CATCH_ERROR_MAP( _TXT("error adding meta data query element: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzerInstance::defineTokenPatternMatcher(
-		const std::string& patternTypeName,
-		PatternMatcherInstanceInterface* matcher,
-		PatternTermFeederInstanceInterface* feeder)
-{
-	try
-	{
-		(void)m_postProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, feeder, false);
-	}
-	CATCH_ERROR_MAP( _TXT("error defining token pattern match: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzerInstance::defineContentPatternMatcher(
-		const std::string& patternTypeName,
-		PatternMatcherInstanceInterface* matcher,
-		PatternLexerInstanceInterface* lexer,
-		const std::vector<std::string>& fieldTypeNames)
-{
-	try
-	{
-		unsigned int idx = m_preProcPatternMatchConfigMap.definePatternMatcher( patternTypeName, matcher, lexer, false);
-		std::vector<std::string>::const_iterator
-			si = fieldTypeNames.begin(), se = fieldTypeNames.end();
-		for (; si != se; ++si)
-		{
-			m_fieldTypePatternMap.insert( FieldTypeFeatureDef( *si, idx));
-		}
-	}
-	CATCH_ERROR_MAP( _TXT("error defining content pattern match: %s"), *m_errorhnd);
-}
-
-void QueryAnalyzerInstance::addElementFromPatternMatch(
-		const std::string& type,
-		const std::string& patternTypeName,
-		const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-		int priority)
-{
-	try
-	{
-		m_patternFeatureConfigMap.defineFeature( FeatSearchIndexTerm, type, patternTypeName, normalizers, priority, analyzer::FeatureOptions());
-	}
-	CATCH_ERROR_MAP( _TXT("error in define index feature from pattern match: %s"), *m_errorhnd);
-}
-
 std::vector<std::string> QueryAnalyzerInstance::queryTermTypes() const
 {
 	try
@@ -170,9 +111,6 @@ StructView QueryAnalyzerInstance::view() const
 					break;
 				case FeatSearchIndexTerm:
 					elements( getQueryElementView( *fi));
-					break;
-				case FeatPatternLexem:
-					patternLexems( getQueryElementView( *fi));
 					break;
 			}
 		}

@@ -10,7 +10,6 @@
 #ifndef _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_IMPLEMENTATION_HPP_INCLUDED
 #define _STRUS_ANALYZER_QUERY_ANALYZER_CONTEXT_IMPLEMENTATION_HPP_INCLUDED
 #include "strus/queryAnalyzerContextInterface.hpp"
-#include "patternMatchContextMap.hpp"
 #include "segmentProcessor.hpp"
 #include <vector>
 #include <string>

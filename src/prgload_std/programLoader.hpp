@@ -45,7 +45,7 @@ analyzer::DocumentClass parseDocumentClass(
  * \remark the include section must not have comments (includes must be declared before the first include)
  * \note The domain specific language has the following grammar:
  
-	AnalyzerProgram      : { ContentSection | DocumentSection | AggregatorSection | PatternMatchSection | FeatureSection }
+	AnalyzerProgram      : { ContentSection | DocumentSection | AggregatorSection | FeatureSection }
 	ContentSection       :- "[" "Content" "]" { ContentDecl ";" }
 	ContentDecl          :- DocumentClass ContentSelection
 	DocumentClass        :- # String: MIME Content Type Declaration
@@ -64,20 +64,10 @@ analyzer::DocumentClass parseDocumentClass(
 	FunctionParamList    :- FunctionParam { "," FunctionParam }
 	FunctionParam        :- Atomic value representing a parameter passed to the function
 
-	PatternMatchSection  :- "[" "PatternMatch" [ PatternMatchModuleId ] "]" { [ PrePatternMatchDecl | PostPatternMatchDecl } ";" }
-	PatternMatchModuleId :- # Identifier: Name of the module used for pattern matching, use standard module if not defined
-	PrePatternMatchDecl  :- PatternFeatureType "=" "{" SelectExprList "}" PatternFile
-	PatternFeatureType   :- # Identifier: Name of the feature that is produced by the pattern matcher
-	SelectExprList       :- # Abbrev XPath expression: Selection of the content that is used as input for the pre processing pattern matcher
-	PatternFile          :- # File name: Name of the file with the pattern matcher program to load
-	PostPatternMatchDecl :- PatternFeatureType "=" PatternFile
-
 	FeatureSection       :- "[" FeatureClassName "]" { FeatureDecl ";" }
-	FeatureClassName     :- # One of "ForwardIndex","SearchIndex","Attribute","MetaData","PatternLexem" defining the class of feature created
+	FeatureClassName     :- # One of "ForwardIndex","SearchIndex","Attribute","MetaData" defining the class of feature created
 	FeatureDecl          :- FeatureType "=" NormalizerDefList TokenizerDef SelectionDef
-	FeatureDecl          :- FeatureType "<-" PatternName NormalizerDefList
 	FeatureType          :- # Identifier: Type name of the feature produced
-	PatternName          :- # Identifier: Name of the pattern that is used as input passed to a sequence of normalizers to create the feature 
 	NormalizerDefList    :- NormalizerDef { ":" NormalizerDef }
 	NormalizerDef        :- FunctionDecl
 	TokenizerDef         :- FunctionDecl
@@ -177,25 +167,16 @@ bool loadDocumentAnalyzerMapFile(
  * \remark the include section must not have comments (includes must be declared before the first include)
  * \note The domain specific language has the following grammar:
  
-	AnalyzerProgram      : { PrioritySection | PatternMatchSection | QueryElementSection }
+	AnalyzerProgram      : { PrioritySection | QueryElementSection }
 
 	PrioritySection      :- "[" "Priority" "]" { PriorityDecl ";" }
 	PriorityDecl         :- FeatureType "=" Priority ";"
 	Priority             :- # Integer number
 
-	PatternMatchSection  :- "[" "PatternMatch" [ PatternMatchModuleId ] "]" { [ PrePatternMatchDecl | PostPatternMatchDecl } ";" }
-	PatternMatchModuleId :- # Identifier: Name of the module used for pattern matching, use standard module if not defined
-	PrePatternMatchDecl  :- PatternFeatureType "=" "{" FieldName {"," FieldName} "}" PatternFile
-	PatternFeatureType   :- # Identifier: Name of the feature that is produced by the pattern matcher
-	PatternFile          :- # File name: Name of the file with the pattern matcher program to load
-	PostPatternMatchDecl :- PatternFeatureType "=" PatternFile
-
 	QueryElementSection  :- "[" ElementClassName "]" { FeatureDecl ";" }
-	ElementClassName     :- # One of "Element","PatternLexem" defining the class of the element created
+	ElementClassName     :- # One of "Element" defining the class of the element created
 	FeatureDecl          :- FeatureType "=" NormalizerDefList TokenizerDef FieldName
-	FeatureDecl          :- FeatureType "<-" PatternName NormalizerDefList
 	FeatureType          :- # Identifier: Type name of the feature produced
-	PatternName          :- # Identifier: Name of the pattern that is used as input passed to a sequence of normalizers to create the feature 
 	NormalizerDefList    :- NormalizerDef { ":" NormalizerDef }
 	NormalizerDef        :- FunctionDecl
 	TokenizerDef         :- FunctionDecl

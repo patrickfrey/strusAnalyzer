@@ -30,10 +30,7 @@ enum {
 	MaxStructureElement=(SubDocumentEnd - OfsStructureElement - 1),
 	MaxFieldEventIdx=(MaxStructureElement/4),
 
-	OfsPatternMatchSegment=(1<<20),
-	MaxNofPatternMatchSegments=(StructureElement-OfsPatternMatchSegment-1),
-
-	EndOfFeatures=OfsPatternMatchSegment-1,
+	EndOfFeatures=StructureElement,
 	MaxNofFeatures=EndOfFeatures-1
 };
 

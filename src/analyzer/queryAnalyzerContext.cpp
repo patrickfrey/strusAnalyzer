@@ -440,12 +440,9 @@ static QueryTree buildQueryTree(
 
 std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFields() const
 {
-	typedef QueryAnalyzerInstance::FieldTypePatternMap FieldTypePatternMap;
 	typedef QueryAnalyzerInstance::FieldTypeFeatureMap FieldTypeFeatureMap;
 
-	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_analyzer->patternFeatureConfigMap(),m_errorhnd);
-	PreProcPatternMatchContextMap preProcPatternMatchContextMap( m_analyzer->preProcPatternMatchConfigMap(),m_errorhnd);
-	PostProcPatternMatchContextMap postProcPatternMatchContextMap( m_analyzer->postProcPatternMatchConfigMap(),m_errorhnd);
+	SegmentProcessor segmentProcessor( m_analyzer->featureConfigMap(), m_errorhnd);
 
 	std::vector<Field>::const_iterator fi = m_fields.begin(), fe = m_fields.end();
 	unsigned int fidx=0;
@@ -456,10 +453,7 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 		FieldTypeFeatureMap::const_iterator ti = range.first, te = range.second;
 		if (ti == te)
 		{
-			if (m_analyzer->fieldTypePatternMap().find( fi->fieldType) == m_analyzer->fieldTypePatternMap().end())
-			{
-				throw strus::runtime_error_ec( ErrorCodeUnknownIdentifier, _TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
-			}
+			throw strus::runtime_error_ec( ErrorCodeUnknownIdentifier, _TXT("analyzer query field '%s' is undefined"), fi->fieldType.c_str());
 		}
 		else
 		{
@@ -471,42 +465,6 @@ std::vector<SegmentProcessor::QueryElement> QueryAnalyzerContext::analyzeQueryFi
 			}
 		}
 	}
-	if (!m_analyzer->fieldTypePatternMap().empty()) for (fidx=0,fi=m_fields.begin(); fi != fe; ++fi,++fidx)
-	{
-		std::pair<FieldTypePatternMap::const_iterator,FieldTypePatternMap::const_iterator>
-			range = m_analyzer->fieldTypePatternMap().equal_range( fi->fieldType);
-		FieldTypePatternMap::const_iterator ti = range.first, te = range.second;
-		for (;ti != te; ++ti)
-		{
-			DEBUG_OPEN("pre-patternmatch")
-			PreProcPatternMatchContext& ppctx
-				= preProcPatternMatchContextMap.context( ti->second);
-			ppctx.process( fi->fieldNo/*segment pos = fieldNo*/, fi->content.c_str(), fi->content.size());
-			DEBUG_CLOSE()
-		}
-	}
-	DEBUG_OPEN("pre-patternmatch")
-	// fetch pre processing pattern outputs:
-	PreProcPatternMatchContextMap::iterator
-		vi = preProcPatternMatchContextMap.begin(),
-		ve = preProcPatternMatchContextMap.end();
-	for (; vi != ve; ++vi)
-	{
-		segmentProcessor.processPatternMatchResult( (*vi)->fetchResults());
-	}
-	DEBUG_CLOSE()
-	DEBUG_OPEN("post-patternmatch")
-	// process post processing patterns:
-	PostProcPatternMatchContextMap::iterator
-		pi = postProcPatternMatchContextMap.begin(),
-		pe = postProcPatternMatchContextMap.end();
-	for (; pi != pe; ++pi)
-	{
-		(*pi)->process( segmentProcessor.searchTerms());
-		(*pi)->process( segmentProcessor.patternLexemTerms());
-		segmentProcessor.processPatternMatchResult( (*pi)->fetchResults());
-	}
-	DEBUG_CLOSE()
 	return segmentProcessor.fetchQuery();
 }
 

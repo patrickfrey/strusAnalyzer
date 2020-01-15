@@ -7,8 +7,6 @@
  */
 /// \brief Standard program loader class of the analyzer (load program in a domain specific language)
 #include "programLoader.hpp"
-#include "patternMatchProgramParser.hpp"
-#include "strus/lib/pattern_serialize.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/queryAnalyzerInstanceInterface.hpp"
 #include "strus/documentAnalyzerInstanceInterface.hpp"
@@ -27,11 +25,6 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/aggregatorFunctionInterface.hpp"
 #include "strus/aggregatorFunctionInstanceInterface.hpp"
-#include "strus/patternTermFeederInterface.hpp"
-#include "strus/patternLexerInterface.hpp"
-#include "strus/patternLexerInstanceInterface.hpp"
-#include "strus/patternMatcherInterface.hpp"
-#include "strus/patternMatcherInstanceInterface.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include <vector>
@@ -119,14 +112,12 @@ enum DocumentFeatureClass
 	FeatSearchIndexTerm,
 	FeatForwardIndexTerm,
 	FeatMetaData,
-	FeatAttribute,
-	FeatPatternLexem
+	FeatAttribute
 };
 
 enum QueryElementClass
 {
-	QueryElementTerm,
-	QueryElementLexem
+	QueryElementTerm
 };
 
 static bool isEqual( const std::string& id, const char* idstr)
@@ -155,10 +146,6 @@ static bool getDocumentFeatureClassFromName( DocumentFeatureClass& result, const
 	{
 		result = FeatAttribute;
 	}
-	else if (isEqual( name, "PatternLexem"))
-	{
-		result = FeatPatternLexem;
-	}
 	else
 	{
 		return false;
@@ -171,10 +158,6 @@ static bool getQueryElementClassFromName( QueryElementClass& result, const std::
 	if (isEqual( name, "Element"))
 	{
 		result = QueryElementTerm;
-	}
-	else if (isEqual( name, "PatternLexem"))
-	{
-		result = QueryElementLexem;
 	}
 	else
 	{
@@ -463,104 +446,6 @@ struct FeatureDef
 	}
 };
 
-static void parseDocumentPatternFeatureDef(
-	ProgramLexer& lexer,
-	DocumentAnalyzerInstanceInterface& analyzer,
-	const TextProcessorInterface* textproc,
-	const std::string& featureName,
-	int priority,
-	DocumentFeatureClass featureClass)
-{
-	FeatureDef featuredef;
-
-	// [1] Parse pattern item name:
-	if (!lexer.current().isToken( TokIdentifier))
-	{
-		throw strus::runtime_error( _TXT("identifier expected in pattern matcher instead of %s inf feature definition after left arrow"), tokenName( lexer.current()));
-	}
-	std::string patternTypeName = lexer.current().value();
-	lexer.next();
-
-	// [2] Parse normalizer, if defined:
-	if (!lexer.current().isToken( TokSemiColon) && !lexer.current().isToken( TokOpenCurlyBracket))
-	{
-		featuredef.parseNormalizer( lexer, textproc);
-	}
-	// [3] Parse feature options, if defined:
-	analyzer::FeatureOptions featopt( parseFeatureOptions( lexer));
-
-	// [4] Define the feature:
-	switch (featureClass)
-	{
-		case FeatSearchIndexTerm:
-			analyzer.addSearchIndexFeatureFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer, priority, featopt);
-			break;
-
-		case FeatForwardIndexTerm:
-			analyzer.addForwardIndexFeatureFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer, priority, featopt);
-			break;
-
-		case FeatMetaData:
-			if (priority)
-			{
-				throw strus::runtime_error( _TXT("no priority expected for meta data feature"));
-			}
-			if (featopt.opt())
-			{
-				throw strus::runtime_error( _TXT("no feature options expected for meta data feature"));
-			}
-			analyzer.defineMetaDataFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer);
-			break;
-
-		case FeatAttribute:
-			if (priority)
-			{
-				throw strus::runtime_error( _TXT("no priority expected for attribute feature"));
-			}
-			if (featopt.opt())
-			{
-				throw strus::runtime_error( _TXT("no feature options expected for attribute feature"));
-			}
-			analyzer.defineAttributeFromPatternMatch( 
-				featureName, patternTypeName, featuredef.normalizer);
-			break;
-
-		case FeatPatternLexem:
-			throw std::runtime_error("cannot define pattern match lexem from pattern match result");
-	}
-	featuredef.release();
-}
-
-static void parseQueryPatternFeatureDef(
-	ProgramLexer& lexer,
-	QueryAnalyzerInstanceInterface& analyzer,
-	const TextProcessorInterface* textproc,
-	const std::string& featureName,
-	int priority)
-{
-	FeatureDef featuredef;
-
-	// [1] Parse pattern item name:
-	if (!lexer.current().isToken( TokIdentifier))
-	{
-		throw strus::runtime_error( _TXT("identifier expected in pattern matcher instead of %s inf feature definition after left arrow"), tokenName( lexer.current()));
-	}
-	std::string patternTypeName = lexer.current().value();
-	lexer.next();
-
-	// [2] Parse normalizer, if defined:
-	if (!lexer.current().isToken( TokSemiColon) && !lexer.current().isToken( TokOpenCurlyBracket))
-	{
-		featuredef.parseNormalizer( lexer, textproc);
-	}
-	// [3] Define the element:
-	analyzer.addElementFromPatternMatch( featureName, patternTypeName, featuredef.normalizer, priority);
-	featuredef.release();
-}
-
 static void parseDocumentFeatureDef(
 	ProgramLexer& lexer,
 	DocumentAnalyzerInstanceInterface& analyzer,
@@ -624,16 +509,6 @@ static void parseDocumentFeatureDef(
 				featureName, xpathexpr,
 				featuredef.tokenizer.get(), featuredef.normalizer);
 			break;
-
-		case FeatPatternLexem:
-			if (featopt.opt())
-			{
-				throw strus::runtime_error( _TXT("no feature options expected for pattern lexem"));
-			}
-			analyzer.addPatternLexem(
-				featureName, xpathexpr,
-				featuredef.tokenizer.get(), featuredef.normalizer, priority);
-			break;
 	}
 	featuredef.release();
 }
@@ -662,12 +537,6 @@ static void parseQueryElementDef(
 	{
 		case QueryElementTerm:
 			analyzer.addElement(
-				featureName, fieldname,
-				featuredef.tokenizer.get(), featuredef.normalizer, priority);
-			break;
-
-		case QueryElementLexem:
-			analyzer.addPatternLexem(
 				featureName, fieldname,
 				featuredef.tokenizer.get(), featuredef.normalizer, priority);
 			break;
@@ -713,160 +582,6 @@ static SectionHeader parseSectionHeader( ProgramLexer& lexer)
 		throw strus::runtime_error( _TXT("feature class identifier expected instead of %s after open square bracket '['"), tokenName( lexer.current()));
 	}
 	return rt;
-}
-
-
-static bool loadPatternMatcherProgramWithFeeder(
-		PatternTermFeederInstanceInterface* feeder,
-		PatternMatcherInstanceInterface* matcher,
-		const std::string& source,
-		ErrorBufferInterface* errorhnd)
-{
-	try
-	{
-		if (errorhnd->hasError()) throw std::runtime_error(_TXT("called load patter matcher program with error"));
-		if (isPatternSerializerContent( source, errorhnd))
-		{
-			return loadPatternMatcherFromSerialization( source, feeder, matcher, errorhnd);
-		}
-		else
-		{
-			PatternMatcherProgramParser program( feeder, matcher, errorhnd);
-			
-			if (!program.load( source)) throw std::runtime_error( errorhnd->fetchError());
-	
-			if (!program.compile())
-			{
-				errorhnd->explain(_TXT("failed to compile pattern match program for analyzer output: %s"));
-				return false;
-			}
-		}
-		return true;
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern match program with feeder: %s"), *errorhnd, false);
-}
-
-static bool loadPatternMatcherProgramWithLexer(
-		PatternLexerInstanceInterface* lexer,
-		PatternMatcherInstanceInterface* matcher,
-		const std::string& source,
-		ErrorBufferInterface* errorhnd)
-{
-	try
-	{
-		if (errorhnd->hasError()) throw std::runtime_error(_TXT("called load patter matcher program with error"));
-		if (isPatternSerializerContent( source, errorhnd))
-		{
-			return loadPatternMatcherFromSerialization( source, lexer, matcher, errorhnd);
-		}
-		else
-		{
-			PatternMatcherProgramParser program( lexer, matcher, errorhnd);
-			if (!program.load( source))
-			{
-				throw std::runtime_error( errorhnd->fetchError());
-			}
-			if (!program.compile())
-			{
-				errorhnd->explain(_TXT("failed to compile pattern match program: %s"));
-				return false;
-			}
-		}
-		return true;
-	}
-	CATCH_ERROR_MAP_RETURN( _TXT("failed to load pattern match program with lexer: %s"), *errorhnd, false);
-}
-
-template <class AnalyzerInstanceInterface>
-static void parseAnalyzerPatternMatchProgramDef(
-		ProgramLexer& lexer,
-		AnalyzerInstanceInterface& analyzer,
-		const TextProcessorInterface* textproc,
-		const std::string& patternModuleName,
-		const std::string& patternTypeName,
-		ErrorBufferInterface* errorhnd)
-{
-	// Parse selection expressions if defined in case of pre-processing pattern matching
-	std::vector<std::string> selectexprlist;
-	if (lexer.current().isToken(TokOpenCurlyBracket))
-	{
-		do  {
-			lexer.next();
-			selectexprlist.push_back( parseSelectorExpression( lexer));
-		} while (lexer.current().isToken(TokComma));
-		if (!lexer.current().isToken(TokCloseCurlyBracket))
-		{
-			throw strus::runtime_error( _TXT("expected close curly bracket '}' instead of %s at end of pattern lexer selection expressions"), tokenName( lexer.current()));
-		}
-		lexer.next();
-	}
-	// Read source:
-	std::vector<std::pair<std::string,std::string> > ptsources;
-	std::string filename = parseSelectorExpression( lexer);
-	std::string filepath = strus::isExplicitPath( filename) ? filename : textproc->getResourceFilePath( filename);
-	if (filepath.empty() && errorhnd->hasError())
-	{
-		throw strus::runtime_error(_TXT( "failed to evaluate pattern match file path '%s': %s"), filename.c_str(), errorhnd->fetchError());
-	}
-	std::string source;
-	unsigned int ec = strus::readFile( filepath, source);
-	if (ec)
-	{
-		throw strus::runtime_error(_TXT( "failed to read pattern match file '%s': %s"), filepath.c_str(), ::strerror(ec));
-	}
-	// Load the program:
-	if (selectexprlist.empty())
-	{
-		const PatternMatcherInterface* matcher = textproc->getPatternMatcher( patternModuleName);
-		const PatternTermFeederInterface* feeder = textproc->getPatternTermFeeder();
-		if (!feeder || !matcher)
-		{
-			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		strus::local_ptr<PatternTermFeederInstanceInterface> feederctx( feeder->createInstance());
-		strus::local_ptr<PatternMatcherInstanceInterface> matcherctx( matcher->createInstance());
-		if (!feederctx.get() || !matcherctx.get())
-		{
-			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		if (!loadPatternMatcherProgramWithFeeder( feederctx.get(), matcherctx.get(), source, errorhnd))
-		{
-			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		analyzer->defineTokenPatternMatcher( patternTypeName, matcherctx.get(), feederctx.get());
-		matcherctx.release();
-		feederctx.release();
-		if (errorhnd->hasError())
-		{
-			throw strus::runtime_error( _TXT("failed to create post proc pattern matching: %s"), errorhnd->fetchError());
-		}
-	}
-	else
-	{
-		const PatternLexerInterface* patternlexer = textproc->getPatternLexer( patternModuleName);
-		const PatternMatcherInterface* patternmatcher = textproc->getPatternMatcher( patternModuleName);
-		if (!patternlexer || !patternmatcher)
-		{
-			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		strus::local_ptr<PatternLexerInstanceInterface> lexerctx( patternlexer->createInstance());
-		strus::local_ptr<PatternMatcherInstanceInterface> matcherctx( patternmatcher->createInstance());
-		if (!lexerctx.get() || !matcherctx.get())
-		{
-			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		if (!loadPatternMatcherProgramWithLexer( lexerctx.get(), matcherctx.get(), source, errorhnd))
-		{
-			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
-		}
-		analyzer->defineContentPatternMatcher( patternTypeName, matcherctx.get(), lexerctx.get(), selectexprlist);
-		matcherctx.release();
-		lexerctx.release();
-		if (errorhnd->hasError())
-		{
-			throw strus::runtime_error( _TXT("failed to create pre proc pattern matching: %s"), errorhnd->fetchError());
-		}
-	}
 }
 
 static std::string parse_STRING( char const*& src)
@@ -1194,33 +909,6 @@ static void loadStructureSection( ProgramLexer& lexer, const SectionHeader& head
 	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
 }
 
-template <class AnalyzerInstanceInterface>
-static void loadPatternMatchSection( ProgramLexer& lexer, const SectionHeader& header, AnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
-{
-	std::string patternModuleName = header.arg.empty() ? std::string() : header.arg[0];
-	if (header.arg.size() > 2)
-	{
-		throw strus::runtime_error( _TXT("too many arguments in section %s definition"), header.name.c_str());
-	}
-	do
-	{
-		if (!lexer.current().isToken(TokIdentifier))
-		{
-			throw strus::runtime_error( _TXT("feature type name (identifier) expected at start of a %s declaration"), header.name.c_str());
-		}
-		std::string identifier = lexer.current().value();
-		if (!lexer.next().isToken(TokAssign)) throw strus::runtime_error( _TXT("expected assignment operator '=' instead of %s after identifier of sub document definition"), tokenName( lexer.current()));
-		lexer.next();
-		parseAnalyzerPatternMatchProgramDef( lexer, analyzer, textproc, patternModuleName, identifier, errorhnd);
-		if (!lexer.current().isToken( TokSemiColon))
-		{
-			throw strus::runtime_error( _TXT("semicolon ';' instead of %s expected at end of %s declaration"), tokenName( lexer.current()), header.name.c_str());
-		}
-		lexer.next();
-	}
-	while (!lexer.current().end() && !lexer.current().isToken( TokOpenSquareBracket));
-}
-
 static void loadFeatureSection( ProgramLexer& lexer, const DocumentFeatureClass& featclass, DocumentAnalyzerInstanceInterface* analyzer, const TextProcessorInterface* textproc, ErrorBufferInterface* errorhnd)
 {
 	do
@@ -1245,11 +933,6 @@ static void loadFeatureSection( ProgramLexer& lexer, const DocumentFeatureClass&
 		{
 			lexer.next();
 			parseDocumentFeatureDef( lexer, *analyzer, textproc, identifier, priority, featclass);
-		}
-		else if (lexer.current().isToken( TokLeftArrow))
-		{
-			lexer.next();
-			parseDocumentPatternFeatureDef( lexer, *analyzer, textproc, identifier, priority, featclass);
 		}
 		else
 		{
@@ -1288,12 +971,6 @@ static void loadQueryElementSection( ProgramLexer& lexer, const QueryElementClas
 		{
 			lexer.next();
 			parseQueryElementDef( lexer, *analyzer, textproc, identifier, priority, featclass);
-		}
-		else if (lexer.current().isToken( TokLeftArrow))
-		{
-			if (featclass != QueryElementTerm) throw strus::runtime_error(_TXT("pattern feature definitions ('<-') only allowed in \"SearchTerm\" section"));
-			lexer.next();
-			parseQueryPatternFeatureDef( lexer, *analyzer, textproc, identifier, priority);
 		}
 		else
 		{
@@ -1424,10 +1101,6 @@ bool strus::loadDocumentAnalyzerProgramSource( DocumentAnalyzerInstanceInterface
 			else if (isEqual( header.name, "Structure"))
 			{
 				loadStructureSection( lexer, header, analyzer, textproc, errorhnd);
-			}
-			else if (isEqual( header.name, "PatternMatch"))
-			{
-				loadPatternMatchSection( lexer, header, analyzer, textproc, errorhnd);
 			}
 			else
 			{
@@ -1581,26 +1254,19 @@ bool strus::loadQueryAnalyzerProgramSource( QueryAnalyzerInstanceInterface* anal
 			SectionHeader header = parseSectionHeader( lexer);
 			if (lexer.current().isToken( TokOpenSquareBracket) || lexer.current().isEof()) continue;
 
-			if (isEqual( header.name, "PatternMatch"))
+			if (!header.arg.empty())
 			{
-				loadPatternMatchSection( lexer, header, analyzer, textproc, errorhnd);
+				throw strus::runtime_error( _TXT("no arguments expected in section %s definition"), header.name.c_str());
+			}
+			QueryElementClass elemclass;
+			if (getQueryElementClassFromName( elemclass, header.name))
+			{
+				loadQueryElementSection( lexer, elemclass, analyzer, textproc, errorhnd);
 			}
 			else
 			{
-				if (!header.arg.empty())
-				{
-					throw strus::runtime_error( _TXT("no arguments expected in section %s definition"), header.name.c_str());
-				}
-				QueryElementClass elemclass;
-				if (getQueryElementClassFromName( elemclass, header.name))
-				{
-					loadQueryElementSection( lexer, elemclass, analyzer, textproc, errorhnd);
-				}
-				else
-				{
-					throw strus::runtime_error( _TXT("unknown query analyzer program section name '%s'"), header.name.c_str());
-					continue;
-				}
+				throw strus::runtime_error( _TXT("unknown query analyzer program section name '%s'"), header.name.c_str());
+				continue;
 			}
 		}
 		if (!lexer.current().end())

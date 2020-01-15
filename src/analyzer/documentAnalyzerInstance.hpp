@@ -17,8 +17,6 @@
 #include "private/aggregatorView.hpp"
 #include "private/documentAnalyzerView.hpp"
 #include "featureConfigMap.hpp"
-#include "patternFeatureConfigMap.hpp"
-#include "patternMatchConfigMap.hpp"
 #include "searchIndexStructure.hpp"
 #include <vector>
 #include <string>
@@ -103,48 +101,6 @@ public:
 			const std::string& selectexpr,
 			const analyzer::DocumentClass& documentClass);
 
-	virtual void addPatternLexem(
-			const std::string& termtype,
-			const std::string& selectexpr,
-			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			int priority);
-
-	virtual void defineTokenPatternMatcher(
-			const std::string& patternTypeName,
-			PatternMatcherInstanceInterface* matcher,
-			PatternTermFeederInstanceInterface* feeder);
-
-	virtual void defineContentPatternMatcher(
-			const std::string& patternTypeName,
-			PatternMatcherInstanceInterface* matcher,
-			PatternLexerInstanceInterface* lexer,
-			const std::vector<std::string>& selectexpr);
-
-	virtual void addSearchIndexFeatureFromPatternMatch(
-			const std::string& type,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			int priority,
-			const analyzer::FeatureOptions& options);
-
-	virtual void addForwardIndexFeatureFromPatternMatch(
-			const std::string& type,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			int priority,
-			const analyzer::FeatureOptions& options);
-
-	virtual void defineMetaDataFromPatternMatch(
-			const std::string& metaname,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
-
-	virtual void defineAttributeFromPatternMatch(
-			const std::string& attribname,
-			const std::string& patternTypeName,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers);
-	
 	virtual analyzer::Document analyze(
 			const std::string& content,
 			const analyzer::DocumentClass& dclass) const;
@@ -198,9 +154,6 @@ public:/*DocumentAnalyzerContext*/
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const std::vector<SeachIndexFieldConfig>& fieldConfigList() const		{return m_fieldConfigList;}
 	const std::vector<SeachIndexStructureConfig>& structureConfigList() const	{return m_structureConfigList;}
-	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
-	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
-	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
 	const TermTypeSet forwardIndexTermTypeSet() const				{return m_forwardIndexTermTypeSet;}
 	const TermTypeSet searchIndexTermTypeSet() const				{return m_searchIndexTermTypeSet;}
 	const std::vector<std::string>& subdoctypes() const				{return m_subdoctypear;}
@@ -221,9 +174,6 @@ private:
 	std::vector<SeachIndexStructureConfig> m_structureConfigList;
 	typedef std::map<std::string,int> StructureScopeMap;
 	StructureScopeMap m_structureScopeMap;
-	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
-	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
-	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	std::vector<std::string> m_subdoctypear;
 	std::vector<StatisticsConfig> m_statistics;
 	TermTypeSet m_forwardIndexTermTypeSet;

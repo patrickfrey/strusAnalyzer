@@ -23,10 +23,6 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/tokenizerFunctionInterface.hpp"
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
-#include "strus/patternTermFeederInterface.hpp"
-#include "strus/patternTermFeederInstanceInterface.hpp"
-#include "strus/patternMatcherInterface.hpp"
-#include "strus/patternMatcherInstanceInterface.hpp"
 #include "strus/analyzerObjectBuilderInterface.hpp"
 #include "strus/base/local_ptr.hpp"
 #include "strus/base/string_format.hpp"
@@ -51,119 +47,46 @@ struct BaseFeature
 	const char* name;
 	const char* tokenizer;
 	const char* normalizers[4];
+	int priority;
 };
 
-struct ConceptFeature
-{
-	const char* name;
-	const char* elements[10];
-};
+enum {NofBaseFeature=4};
 
 struct TestDescription
 {
 	const char* name;			//< name of the test
-	BaseFeature basefeat;			//< base feature
-	ConceptFeature conceptfeats[ 16];	//< {NULL,} terminated list of concept rules
+	BaseFeature basefeat[4];		//< base feature
 	const char* queryfields[16];		//< NULL terminated list of query fields
 	const char* expected;			//< result expected
 };
 
-static int lexemid( int conceptidx, int featidx)
-{
-	return ((conceptidx+1) * 100) + featidx + 1;
-}
-
-struct ConceptLexem
-{
-	int id;
-	const char* str;
-
-	ConceptLexem( int id_, const char* str_)
-		:id(id_),str(str_){}
-	ConceptLexem( const ConceptLexem& o)
-		:id(o.id),str(o.str){}
-};
-
-static std::vector<ConceptLexem> getConceptLexems( const TestDescription* descr)
-{
-	std::vector<ConceptLexem> rt;
-	const ConceptFeature* ci = descr->conceptfeats;
-	for (int cidx=0; ci->name; ++ci,++cidx)
-	{
-		const char* const* ei = ci->elements;
-		for (int eidx=0; *ei; ++ei,++eidx)
-		{
-			rt.push_back( ConceptLexem( lexemid(cidx,eidx), *ei));
-		}
-	}
-	return rt;
-}
-
 static void defineQueryAnalysis( const TestDescription* descr, strus::QueryAnalyzerInstanceInterface* analyzer, strus::TextProcessorInterface* textproc)
 {
 	// Define BaseFeature:
-	const strus::TokenizerFunctionInterface* tokenizer( textproc->getTokenizer( descr->basefeat.tokenizer));
-	if (!tokenizer) throw std::runtime_error( g_errorhnd->fetchError());
-	std::vector<const strus::NormalizerFunctionInterface*> normalizers;
-	const char* const* ni = descr->basefeat.normalizers;
-	for (; *ni; ++ni)
+	for (int fi=0; fi<NofBaseFeature && descr->basefeat[fi].name; ++fi)
 	{
-		const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( *ni);
-		normalizers.push_back( normalizer);
-	}
-	strus::TokenizerFunctionInstanceInterface* tinst = tokenizer->createInstance( std::vector<std::string>(), textproc);
-	if (!tinst) throw std::runtime_error( g_errorhnd->fetchError());
-
-	std::vector<strus::NormalizerFunctionInstanceInterface*> ninstar;
-	std::vector<const strus::NormalizerFunctionInterface*>::const_iterator zi = normalizers.begin(), ze = normalizers.end();
-	for (; zi != ze; ++zi)
-	{
-		strus::NormalizerFunctionInstanceInterface* ninst = (*zi)->createInstance( std::vector<std::string>(), textproc);
-		if (!ninst) throw std::runtime_error( g_errorhnd->fetchError());
-		ninstar.push_back( ninst);
-	}
-	analyzer->addElement( descr->basefeat.name, "text", tinst, ninstar, 0/*priority*/);
-
-	// Define ConceptFeatures:
-	strus::local_ptr<strus::PatternTermFeederInterface> termfeeder( strus::createPatternTermFeeder_default( g_errorhnd));
-	if (!termfeeder.get()) throw std::runtime_error( g_errorhnd->fetchError());
-	strus::local_ptr<strus::PatternTermFeederInstanceInterface> termfeederinst( termfeeder->createInstance());
-	if (!termfeederinst.get()) throw std::runtime_error( g_errorhnd->fetchError());
-	termfeederinst->defineLexem( 1, descr->basefeat.name);
-	std::vector<ConceptLexem> lexems = getConceptLexems( descr);
-	std::vector<ConceptLexem>::const_iterator li = lexems.begin(), le = lexems.end();
-	for (; li != le; ++li)
-	{
-		termfeederinst->defineSymbol( li->id, 1/*lexemid*/, li->str);
-	}
-	strus::local_ptr<strus::PatternMatcherInterface> matcher( strus::createPatternMatcher_test( g_errorhnd));
-	if (!matcher.get()) throw std::runtime_error( g_errorhnd->fetchError());
-	strus::local_ptr<strus::PatternMatcherInstanceInterface> matcherinst( matcher->createInstance());
-	if (!matcherinst.get()) throw std::runtime_error( g_errorhnd->fetchError());
-
-	ConceptFeature const* ci = descr->conceptfeats;
-	for (int cidx=0; ci->name; ++ci,++cidx)
-	{
-		const char* const* ei = ci->elements;
-		int eidx = 0;
-		for (; *ei; ++ei,++eidx)
+		const strus::TokenizerFunctionInterface* tokenizer( textproc->getTokenizer( descr->basefeat[fi].tokenizer));
+		if (!tokenizer) throw std::runtime_error( g_errorhnd->fetchError());
+		std::vector<const strus::NormalizerFunctionInterface*> normalizers;
+		const char* const* ni = descr->basefeat[fi].normalizers;
+		for (; *ni; ++ni)
 		{
-			unsigned int symid = termfeederinst->getSymbol( 1/*lexemid*/, *ei);
-			if (!symid) throw std::runtime_error("internal: unknown symbol");
-			matcherinst->pushTerm( symid);
+			const strus::NormalizerFunctionInterface* normalizer = textproc->getNormalizer( *ni);
+			normalizers.push_back( normalizer);
 		}
-		matcherinst->pushExpression( strus::PatternMatcherInstanceInterface::OpSequenceImm,  eidx, eidx+1, 0);
-		matcherinst->definePattern( ci->name, std::string()/*formatstring*/, true);
+		strus::TokenizerFunctionInstanceInterface* tinst = tokenizer->createInstance( std::vector<std::string>(), textproc);
+		if (!tinst) throw std::runtime_error( g_errorhnd->fetchError());
+	
+		std::vector<strus::NormalizerFunctionInstanceInterface*> ninstar;
+		std::vector<const strus::NormalizerFunctionInterface*>::const_iterator zi = normalizers.begin(), ze = normalizers.end();
+		for (; zi != ze; ++zi)
+		{
+			strus::NormalizerFunctionInstanceInterface* ninst = (*zi)->createInstance( std::vector<std::string>(), textproc);
+			if (!ninst) throw std::runtime_error( g_errorhnd->fetchError());
+			ninstar.push_back( ninst);
+		}
+		analyzer->addElement( descr->basefeat[fi].name, "text", tinst, ninstar, descr->basefeat[fi].priority);
 	}
-	if (!matcherinst->compile())
-	{
-		throw std::runtime_error( g_errorhnd->fetchError());
-	}
-	analyzer->defineTokenPatternMatcher( "pattern", matcherinst.get(), termfeederinst.get());
-	matcherinst.release();
-	termfeederinst.release();
-
-	analyzer->addElementFromPatternMatch( "pattern", "pattern", std::vector<strus::NormalizerFunctionInstanceInterface*>(), 1/*priority*/);
 }
 
 static std::string queryTermExpression_tostring( const strus::analyzer::QueryTermExpression* res)
@@ -232,54 +155,29 @@ static void runTest( const TestDescription* descr, strus::TextProcessorInterface
 
 static const TestDescription test1 = {
 	"1",
-	{"word","word",{"lc",0}},
-	{
-		{"bla_dup", {"bla","bla",0}},
-		{0}
-	},
+	{ {"word","word",{"lc",0},1/*priority*/}, {"word","word",{"uc",0},0/*priority*/}, {0}},
 	{"bla bla bla",0},
-	"pattern 'bla_dup' [2]\n"
-	"pattern 'bla_dup' [2]\n"
+	"word 'bla' [1]\n"
+	"word 'bla' [1]\n"
+	"word 'bla' [1]\n"
 };
 
 static const TestDescription test2 = {
 	"2",
-	{"word","word",{"lc",0}},
-	{
-		{"bla_dup", {"bla","bla",0}},
-		{0}
-	},
-	{"bla bla","bla",0},
-	"pattern 'bla_dup' [2]\n"
-	"word 'bla' [1]\n"
+	{ {"word","word",{"lc",0},0/*priority*/}, {"word","word",{"uc",0},1/*priority*/}, {0}},
+	{"bla bla",0},
+	"word 'BLA' [1]\n"
+	"word 'BLA' [1]\n"
 };
 
 static const TestDescription test3 = {
 	"3",
-	{"word","word",{"lc",0}},
-	{
-		{"bla_dup", {"bla","bla",0}},
-		{"hup_tri", {"hup","hup","hup",0}},
-		{0}
-	},
-	{"bli bla blu bla bla bla hup hup hup hup hup bla bli","bla bla","bla","hup hup bla hup",0},
-	"word 'bli' [1]\n"
+	{ {"word","word",{"lc",0},0/*priority*/}, {"word","word",{"uc",0},0/*priority*/}, {0}},
+	{"bla bla",0},
 	"word 'bla' [1]\n"
-	"word 'blu' [1]\n"
-	"pattern 'bla_dup' [2]\n"
-	"pattern 'bla_dup' [2]\n"
-	"pattern 'hup_tri' [3]\n"
-	"pattern 'hup_tri' [3]\n"
-	"pattern 'hup_tri' [3]\n"
 	"word 'bla' [1]\n"
-	"word 'bli' [1]\n"
-	"pattern 'bla_dup' [2]\n"
-	"word 'bla' [1]\n"
-	"word 'hup' [1]\n"
-	"word 'hup' [1]\n"
-	"word 'bla' [1]\n"
-	"word 'hup' [1]\n"
-	""
+	"word 'BLA' [1]\n"
+	"word 'BLA' [1]\n"
 };
 
 int main( int argc, const char* argv[])
@@ -298,7 +196,6 @@ int main( int argc, const char* argv[])
 			dbgtrace = strus::createDebugTrace_standard( 2);
 			if (!dbgtrace) throw std::bad_alloc();
 			dbgtrace->enable( "analyzer");
-			dbgtrace->enable( "pattern");
 		}
 		g_errorhnd = strus::createErrorBuffer_standard( 0, 2/*threads*/, dbgtrace);
 		if (!g_errorhnd) throw std::runtime_error("failed to create error buffer object");

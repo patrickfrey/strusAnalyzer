@@ -12,8 +12,6 @@
 #include "strus/tokenizerFunctionInstanceInterface.hpp"
 #include "strus/analyzer/token.hpp"
 #include "featureConfigMap.hpp"
-#include "patternFeatureConfigMap.hpp"
-#include "patternMatchConfigMap.hpp"
 #include <vector>
 #include <string>
 #include <utility>
@@ -32,9 +30,7 @@ class QueryAnalyzerInstance
 public:
 	explicit QueryAnalyzerInstance( ErrorBufferInterface* errorhnd)
 		:m_featureConfigMap()
-		,m_preProcPatternMatchConfigMap(),m_postProcPatternMatchConfigMap(),m_patternFeatureConfigMap()
 		,m_fieldTypeFeatureMap()
-		,m_fieldTypePatternMap()
 		,m_searchIndexTermTypeSet()
 		,m_errorhnd(errorhnd){}
 	virtual ~QueryAnalyzerInstance(){}
@@ -43,30 +39,6 @@ public:
 			const std::string& termtype,
 			const std::string& fieldtype,
 			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			int priority);
-
-	virtual void addPatternLexem(
-			const std::string& termtype,
-			const std::string& fieldtype,
-			TokenizerFunctionInstanceInterface* tokenizer,
-			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
-			int priority);
-
-	virtual void defineTokenPatternMatcher(
-			const std::string& patternTypeName,
-			PatternMatcherInstanceInterface* matcher,
-			PatternTermFeederInstanceInterface* feeder);
-
-	virtual void defineContentPatternMatcher(
-			const std::string& patternTypeName,
-			PatternMatcherInstanceInterface* matcher,
-			PatternLexerInstanceInterface* lexer,
-			const std::vector<std::string>& fieldTypeNames);
-
-	virtual void addElementFromPatternMatch(
-			const std::string& type,
-			const std::string& patternTypeName,
 			const std::vector<NormalizerFunctionInstanceInterface*>& normalizers,
 			int priority);
 
@@ -81,23 +53,14 @@ public:
 public:/*QueryAnalyzerContext*/
 	typedef std::pair<std::string,int> FieldTypeFeatureDef;
 	typedef std::multimap<std::string,int> FieldTypeFeatureMap;
-	typedef std::multimap<std::string,int> FieldTypePatternMap;
 	typedef std::set<std::string> TermTypeSet;
 
 	const FeatureConfigMap& featureConfigMap() const				{return m_featureConfigMap;}
 	const FieldTypeFeatureMap& fieldTypeFeatureMap() const				{return m_fieldTypeFeatureMap;}
-	const FieldTypePatternMap& fieldTypePatternMap() const				{return m_fieldTypePatternMap;}
-	const PreProcPatternMatchConfigMap& preProcPatternMatchConfigMap() const	{return m_preProcPatternMatchConfigMap;}
-	const PostProcPatternMatchConfigMap& postProcPatternMatchConfigMap() const	{return m_postProcPatternMatchConfigMap;}
-	const PatternFeatureConfigMap& patternFeatureConfigMap() const			{return m_patternFeatureConfigMap;}
 
 private:
 	FeatureConfigMap m_featureConfigMap;
-	PreProcPatternMatchConfigMap m_preProcPatternMatchConfigMap;
-	PostProcPatternMatchConfigMap m_postProcPatternMatchConfigMap;
-	PatternFeatureConfigMap m_patternFeatureConfigMap;
 	FieldTypeFeatureMap m_fieldTypeFeatureMap;
-	FieldTypePatternMap m_fieldTypePatternMap;
 	TermTypeSet m_searchIndexTermTypeSet;
 	ErrorBufferInterface* m_errorhnd;
 };
