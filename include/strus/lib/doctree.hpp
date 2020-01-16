@@ -137,7 +137,7 @@ typedef strus::Reference<DocTree> DocTreeRef;
 /// \param[in] srcsize size of the document to parse in bytes
 /// \param[in,out] errorhnd errorbuffer interface where to report errors
 /// \note the resulting document tree dismisses XML header elements and doctype attributes
-DocTree* createDocTree_xml( const char* encoding, char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd);
+DocTree* createDocTree_xml( const char* encoding, const char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd);
 
 /// \brief Output a document XML from a tree structure
 /// \param[out] where to print the output to

@@ -20,10 +20,12 @@
 
 static bool g_intl_initialized = false;
 
+#undef STRUS_LOWLEVEL_DEBUG
+
 using namespace strus;
 
 template <class CharsetEncoding>
-static DocTree* createDocTreeXML( const CharsetEncoding& charset, char* src, std::size_t srcsize)
+static DocTree* createDocTreeXML( const CharsetEncoding& charset, const char* src, std::size_t srcsize)
 {
 	std::vector<DocTreeRef> stk;
 	typedef textwolf::XMLScanner<
@@ -51,7 +53,12 @@ static DocTree* createDocTreeXML( const CharsetEncoding& charset, char* src, std
 			++itr;
 			const char* valstr = itr->content();
 			int valsize = itr->size();
-	
+
+#ifdef STRUS_LOWLEVEL_DEBUG
+			std::cerr << "INPUT "
+				  << XMLScanner::getElementTypeName( itr->type())
+				  << " [" << std::string( valstr, valsize) << "]" << std::endl;
+#endif
 			switch (itr->type())
 			{
 				case XMLScanner::None:
@@ -108,7 +115,14 @@ static DocTree* createDocTreeXML( const CharsetEncoding& charset, char* src, std
 					if (stk.empty()) throw strus::runtime_error( _TXT("syntax error at position %u: %s"), (unsigned int)xmlScanner.getTokenPosition(), _TXT("unexpected close tag"));
 					DocTreeRef node = stk.back();
 					stk.pop_back();
-					stk.back()->addChld( node);
+					if (stk.empty())
+					{
+						return node.release();
+					}
+					else
+					{
+						stk.back()->addChld( node);
+					}
 					break;
 				}
 				case XMLScanner::Content:
@@ -144,7 +158,7 @@ typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
 typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
 typedef textwolf::charset::IsoLatin IsoLatin;
 
-DLL_PUBLIC DocTree* strus::createDocTree_xml( const char* encoding, char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd)
+DLL_PUBLIC DocTree* strus::createDocTree_xml( const char* encoding, const char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd)
 {
 	try
 	{
