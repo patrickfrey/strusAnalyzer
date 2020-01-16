@@ -121,18 +121,31 @@ public:
 		{m_chld.push_back( nd);}
 
 private:
-	std::string m_name;
-	std::string m_value;
-	std::list<Attribute> m_attr;
-	std::list<strus::Reference<DocTree> > m_chld;
+	std::string m_name;				///... name of the tag or empty for a content node (content of a node that has sub nodes)
+	std::string m_value;				///... direct content of the node if without sub nodes
+	std::list<Attribute> m_attr;			///... list of attributes
+	std::list<strus::Reference<DocTree> > m_chld;	///... list of sub nodes
 };
 
+/// \brief Pointer to document tree or a node of a tree
 typedef strus::Reference<DocTree> DocTreeRef;
 
 /// \brief Get a document XML as tree structure without meta info
 /// \return the document content as tree
+/// \param[in] encoding character set encoding of the document to parse
+/// \param[in] src pointer to source of the document to parse
+/// \param[in] srcsize size of the document to parse in bytes
+/// \param[in,out] errorhnd errorbuffer interface where to report errors
 /// \note the resulting document tree dismisses XML header elements and doctype attributes
 DocTree* createDocTree_xml( const char* encoding, char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd);
+
+/// \brief Output a document XML from a tree structure
+/// \param[out] where to print the output to
+/// \param[in] encoding character set encoding of the document to print
+/// \param[in] tree the document to print
+/// \param[in,out] errorhnd errorbuffer interface where to report errors
+/// \return true on success, false on error
+bool printDocTree_xml( std::ostream& out, const char* encoding, const DocTree& tree, ErrorBufferInterface* errorhnd);
 
 }//namespace
 #endif

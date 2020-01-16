@@ -135,6 +135,15 @@ static DocTree* createDocTreeXML( const CharsetEncoding& charset, char* src, std
 	return stk.back().release();
 }
 
+typedef textwolf::charset::UTF8 UTF8;
+typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
+typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
+typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
+typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
+typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
+typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
+typedef textwolf::charset::IsoLatin IsoLatin;
+
 DLL_PUBLIC DocTree* strus::createDocTree_xml( const char* encoding, char* src, std::size_t srcsize, ErrorBufferInterface* errorhnd)
 {
 	try
@@ -144,14 +153,6 @@ DLL_PUBLIC DocTree* strus::createDocTree_xml( const char* encoding, char* src, s
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		typedef textwolf::charset::UTF8 UTF8;
-		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::BE> UTF16BE;
-		typedef textwolf::charset::UTF16<textwolf::charset::ByteOrder::LE> UTF16LE;
-		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::BE> UCS2BE;
-		typedef textwolf::charset::UCS2<textwolf::charset::ByteOrder::LE> UCS2LE;
-		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::BE> UCS4BE;
-		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
-		typedef textwolf::charset::IsoLatin IsoLatin;
 		unsigned char codepage = 1;
 	
 		if (!encoding || !encoding[0])
@@ -219,6 +220,194 @@ DLL_PUBLIC DocTree* strus::createDocTree_xml( const char* encoding, char* src, s
 		}
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to create '%s' document tree: %s"), "XML", *errorhnd, 0);
+}
+
+template <class CharsetEncoding>
+class TextwolfXmlPrinter
+{
+public:
+	TextwolfXmlPrinter( std::ostream& out_, const CharsetEncoding& charset_, const char* encoding_)
+		:m_xmlPrinter(charset_),m_out(&out_),m_encoding(encoding_){}
+
+	void printTree( const DocTree& tree)
+	{
+		start();
+		printNode( tree);
+	}
+
+private:
+	void start()
+	{
+		if (!m_xmlPrinter.printHeader( m_encoding, "yes", m_out))
+		{
+			throw std::runtime_error(_TXT("error printing XML header"));
+		}
+	}
+
+	void printNode( const DocTree& node)
+	{
+		if (node.name().empty())
+		{
+			printNodeContent( node);
+		}
+		else
+		{
+			printOpenTag( node.name(), node.attr());
+			printNodeContent( node);
+			printCloseTag();
+		}
+	}
+
+	void printNodeContent( const DocTree& node)
+	{
+		if (node.value().empty())
+		{
+			std::list<DocTreeRef>::const_iterator
+				ci = node.chld().begin(), ce = node.chld().end();
+			for (; ci != ce; ++ci)
+			{
+				printNode( **ci);
+			}
+		}
+		else
+		{
+			printContent( node.value());
+			if (!node.chld().empty())
+			{
+				throw std::runtime_error(_TXT("invalid tree: no sub nodes expected if content value defined"));
+			}
+		}
+	}
+
+	void printOpenTag( const std::string& tagname, const std::list<DocTree::Attribute> attributes)
+	{
+		if (!m_xmlPrinter.printOpenTag( tagname.c_str(), tagname.size(), m_out))
+		{
+			throw std::runtime_error(_TXT("error printing open tag"));
+		}
+		std::list<DocTree::Attribute>::const_iterator
+			ai = attributes.begin(), ae = attributes.end();
+		for (; ai != ae; ++ai)
+		{
+			if (!m_xmlPrinter.printAttribute( ai->name().c_str(), ai->name().size(), m_out))
+			{
+				throw std::runtime_error(_TXT("error printing attribute name"));
+			}
+			if (!m_xmlPrinter.printValue( ai->value().c_str(), ai->value().size(), m_out))
+			{
+				throw std::runtime_error(_TXT("error printing attribute value"));
+			}
+		}
+	}
+	void printCloseTag()
+	{
+		if (!m_xmlPrinter.printCloseTag( m_out))
+		{
+			throw std::runtime_error(_TXT("error printing close tag"));
+		}
+	}
+	void printContent( const std::string& value)
+	{
+		if (!m_xmlPrinter.printValue( value.c_str(), value.size(), m_out))
+		{
+			throw std::runtime_error(_TXT("error printing content value"));
+		}
+	}
+
+private:
+	typedef textwolf::XMLPrinter<CharsetEncoding, UTF8,textwolf::OstreamOutput> XMLPrinter;
+
+private:
+	XMLPrinter m_xmlPrinter;
+	textwolf::OstreamOutput m_out;
+	const char* m_encoding;
+};
+
+
+template <class CharsetEncoding>
+static void printDocTreeXML( std::ostream& out, const CharsetEncoding& charset, const char* encoding, const DocTree& tree, ErrorBufferInterface* errorhnd)
+{
+	TextwolfXmlPrinter<CharsetEncoding> printer( out, charset, encoding);
+	printer.printTree( tree);
+}
+
+DLL_PUBLIC bool strus::printDocTree_xml( std::ostream& out, const char* encoding, const DocTree& tree, ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		unsigned char codepage = 1;
+	
+		if (!encoding || !encoding[0])
+		{
+			printDocTreeXML( out, UTF8(), encoding, tree, errorhnd);
+		}
+		else
+		{
+			if (strus::caseInsensitiveStartsWith( encoding, "IsoLatin")
+			||  strus::caseInsensitiveStartsWith( encoding, "ISO-8859"))
+			{
+				char const* cc = encoding + 8;
+				if (*cc == '-')
+				{
+					++cc;
+					if (*cc >= '1' && *cc <= '9' && cc[1] == '\0')
+					{
+						codepage = *cc - '0';
+					}
+					else
+					{
+						throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), encoding);
+					}
+				}
+				printDocTreeXML( out, IsoLatin(codepage), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UTF-8"))
+			{
+				printDocTreeXML( out, UTF8(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UTF-16")
+			||       strus::caseInsensitiveEquals( encoding, "UTF-16BE"))
+			{
+				printDocTreeXML( out, UTF16BE(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UTF-16LE"))
+			{
+				printDocTreeXML( out, UTF16LE(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UCS-2")
+			||       strus::caseInsensitiveEquals( encoding, "UCS-2BE"))
+			{
+				printDocTreeXML( out, UCS2BE(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UCS-2LE"))
+			{
+				printDocTreeXML( out, UCS2LE(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UCS-4")
+			||       strus::caseInsensitiveEquals( encoding, "UCS-4BE")
+			||       strus::caseInsensitiveEquals( encoding, "UTF-32")
+			||       strus::caseInsensitiveEquals( encoding, "UTF-32BE"))
+			{
+				printDocTreeXML( out, UCS4BE(), encoding, tree, errorhnd);
+			}
+			else if (strus::caseInsensitiveEquals( encoding, "UCS-4LE")
+			||       strus::caseInsensitiveEquals( encoding, "UTF-32LE"))
+			{
+				printDocTreeXML( out, UCS4LE(), encoding, tree, errorhnd);
+			}
+			else
+			{
+				throw strus::runtime_error( _TXT("only support for UTF-8,UTF-16BE,UTF-16LE,UTF-32BE,UCS-4BE,UTF-32LE,UCS-4LE and ISO-8859 (code pages 1 to 9) as character set encoding"));
+			}
+		}
+		return true;
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("failed to print '%s' document tree: %s"), "XML", *errorhnd, false);
 }
 
 
