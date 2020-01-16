@@ -23,7 +23,6 @@
     stem = lc:convdia(en):stem(en) word /list/doc/embedded()/title//();
     stem = lc:convdia(en):stem(en) word /list/doc/embedded()/text//();
     tist = lc:convdia(en):stem(en) word /list/doc/title();
-    uwrd <- upcaseword uc:convdia(en);
 
 [ForwardIndex]
     orig = orig split /list/doc/text//();
@@ -34,6 +33,4 @@
     title_end = nextpos( tist);
     doclen = count( stem);
 
-[PatternMatch test]
-    upcaseword = { "/list/doc/text//()", "/list/doc/title//()" } "detect_upcase.rul";
 
