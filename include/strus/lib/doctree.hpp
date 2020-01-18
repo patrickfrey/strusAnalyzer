@@ -120,8 +120,8 @@ public:
 	void addChld( const strus::Reference<DocTree>& nd)
 		{m_chld.push_back( nd);}
 
-	typedef std::list<strus::Reference<DocTree> > chld_iterator;
-	typedef std::list<Attribute> attr_iterator;
+	typedef std::list<strus::Reference<DocTree> >::const_iterator chld_iterator;
+	typedef std::list<Attribute>::const_iterator attr_iterator;
 
 private:
 	std::string m_name;				///... name of the tag or empty for a content node (content of a node that has sub nodes)
