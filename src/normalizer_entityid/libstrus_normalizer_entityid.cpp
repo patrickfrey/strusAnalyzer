@@ -20,7 +20,7 @@ using namespace strus;
 
 #define NORMALIZER_NAME "entityid"
 
-static const char g_delimiters[] = "\"’`'?!/;:.,-— )([]{}<>_";
+static const char g_delimiters[] = "\"’`'?!/;:.,–-— )(+&%*#^[]{}<>_";
 static const char g_quotes[] = "\"'’`;.:";
 
 static bool isDelimiter( char const* ci, int clen)
