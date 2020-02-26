@@ -16,6 +16,7 @@
 #include "strus/lib/normalizer_trim.hpp"
 #include "strus/lib/normalizer_substrindex.hpp"
 #include "strus/lib/normalizer_entityid.hpp"
+#include "strus/lib/normalizer_decode.hpp"
 #include "strus/lib/tokenizer_punctuation.hpp"
 #include "strus/lib/tokenizer_word.hpp"
 #include "strus/lib/tokenizer_regex.hpp"
@@ -77,6 +78,18 @@ DLL_PUBLIC strus::TextProcessorInterface*
 		return 0;
 	}
 	rt->defineNormalizer( "charselect", nrm);
+	if (0==(nrm = createNormalizer_decode_xmlent( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "decode_xmlent", nrm);
+	if (0==(nrm = createNormalizer_decode_url( errorhnd)))
+	{
+		errorhnd->explain( _TXT("error creating text processor: %s"));
+		return 0;
+	}
+	rt->defineNormalizer( "decode_url", nrm);
 	if (0==(nrm = createNormalizer_date2int( errorhnd)))
 	{
 		errorhnd->explain( _TXT("error creating text processor: %s"));

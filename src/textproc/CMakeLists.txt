@@ -22,6 +22,7 @@ link_directories(
 	"${MAIN_SOURCE_DIR}/normalizer_dictmap"
 	"${MAIN_SOURCE_DIR}/normalizer_ngram"
 	"${MAIN_SOURCE_DIR}/normalizer_charconv"
+	"${MAIN_SOURCE_DIR}/normalizer_decode"
 	"${MAIN_SOURCE_DIR}/normalizer_dateconv"
 	"${MAIN_SOURCE_DIR}/normalizer_regex"
 	"${MAIN_SOURCE_DIR}/normalizer_wordjoin"
@@ -63,6 +64,7 @@ target_link_libraries(
 	strus_normalizer_snowball
 	strus_normalizer_dictmap
 	strus_normalizer_charconv
+	strus_normalizer_decode
 	strus_normalizer_ngram
 	strus_normalizer_dateconv
 	strus_normalizer_regex
