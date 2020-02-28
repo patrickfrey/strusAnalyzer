@@ -48,6 +48,8 @@ static const Test g_test[] =
 	{"substrindex","ABCDEFGHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "123456789"},
 	{"substrindex","ABCDEF5GHI", {"","A","B","C","D","E","F","G","H","I","J","K","L","M",0}, "1234565789"},
 	{"substrmap","ABCDEF5GHI", {"A=B,B=C,C=D,D=E,E=F,F=G", 0}, "BCDEFG5GHI"},
+	{"entityid","\"’`'?!/;:.,–-— )(+&%*#^[]{}<>_", {0}, "-"},
+	{"entityid","A\"BB’`'?!CC/;:.,–-D— )БВ(+&%*Ѝ#^[]E{}<>_F", {0}, "A-BB-CC-D-БВ-Ѝ-E-F"},
 	{0,0,{0},0}
 };
 

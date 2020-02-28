@@ -16,9 +16,9 @@ link_directories(
 	"${strusbase_LIBRARY_DIRS}"
 )
 
-add_cppcheck( testNormalizerSubStringIndex testNormalizerSubStringIndex.cpp )
+add_cppcheck( testNormalizerGeneral testNormalizerGeneral.cpp )
 
-add_executable( testNormalizerSubStringIndex testNormalizerSubStringIndex.cpp)
-target_link_libraries( testNormalizerSubStringIndex strus_error strus_filelocator strus_textproc ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
+add_executable( testNormalizerGeneral testNormalizerGeneral.cpp)
+target_link_libraries( testNormalizerGeneral strus_error strus_filelocator strus_textproc ${Boost_LIBRARIES} ${Intl_LIBRARIES} )
 
 
