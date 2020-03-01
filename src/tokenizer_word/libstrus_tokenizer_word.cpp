@@ -216,6 +216,21 @@ private:
 
 static bool g_intl_initialized = false;
 
+DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_queryfield( ErrorBufferInterface* errorhnd)
+{
+	try
+	{
+		static const TokenDelimiter delim = {"queryfield", &queryFieldDelimiter};
+		if (!g_intl_initialized)
+		{
+			strus::initMessageTextDomain();
+			g_intl_initialized = true;
+		}
+		return new SeparationTokenizerFunction( _TXT("Tokenizer splitting tokens by query field delimiters"), &delim, 0/*filter*/, errorhnd);
+	}
+	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' tokenizer: %s"), "queryfield", *errorhnd, 0);
+}
+
 DLL_PUBLIC TokenizerFunctionInterface* strus::createTokenizer_word( ErrorBufferInterface* errorhnd)
 {
 	try

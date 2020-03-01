@@ -19,6 +19,9 @@ class TokenizerFunctionInterface;
 /// \brief Forward declaration
 class ErrorBufferInterface;
 
+/// \brief Get the tokenizer type that creates the tokenization of fields in a query
+/// \return the tokenization function
+TokenizerFunctionInterface* createTokenizer_queryfield( ErrorBufferInterface* errorhnd);
 /// \brief Get the tokenizer type that creates the tokenization of words in the input
 /// \return the tokenization function
 TokenizerFunctionInterface* createTokenizer_word( ErrorBufferInterface* errorhnd);

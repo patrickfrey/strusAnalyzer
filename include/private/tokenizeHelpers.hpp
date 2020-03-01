@@ -59,6 +59,7 @@ struct SourceSpan
 
 SourceSpan getNextPosTaggingEntity( char const* src, int len, int& pos);
 
+bool queryFieldDelimiter( char const* si, const char* se);
 bool wordBoundaryDelimiter( char const* si, const char* se);
 bool whiteSpaceDelimiter( char const* si, const char* se);
 

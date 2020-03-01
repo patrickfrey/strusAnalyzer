@@ -13,6 +13,7 @@
 #include "strus/base/utf8.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
+#include "private/tokenizeHelpers.hpp"
 #include <string>
 #include <cstring>
 
@@ -20,29 +21,12 @@ using namespace strus;
 
 #define NORMALIZER_NAME "entityid"
 
-static const char g_delimiters[] = "\"’`'?!/;:.,–-— )(+&%*#^[]{}<>_";
 static const char g_quotes[] = "\"'’`;.:";
-
-static bool isDelimiter( char const* ci, int clen)
-{
-	const char* di = std::strchr( g_delimiters, *ci);
-	for (; di; di = std::strchr( di+clen, *ci))
-	{
-		if (0==std::memcmp( di, ci, clen)) return true;
-	}
-	return false;
-}
 
 static bool isQuote( char const* ci)
 {
 	return 0!=std::strchr( g_quotes, *ci);
 }
-
-static bool isSpace( char const* ci)
-{
-	return (unsigned char)*ci <= 32 || *ci == '_';
-}
-
 
 class EntityIdNormalizerInstance
 	:public NormalizerFunctionInstanceInterface
@@ -60,24 +44,24 @@ public:
 			std::string rt;
 			char const* si = src;
 			char const* se = src + srcsize;
-			for (;si < se && (isQuote( si) || isSpace(si)); si+=strus::utf8charlen(*si)){}
+			for (;si < se && (isQuote( si) || strus::whiteSpaceDelimiter(si,se)); si+=strus::utf8charlen(*si)){}
 			char const* pi = strus::utf8prev( se);
-			for (;si < se && (isQuote( pi) || isSpace(pi)); se=pi,pi=strus::utf8prev( se)){}
+			for (;si < se && (isQuote( pi) || strus::whiteSpaceDelimiter(pi,se)); se=pi,pi=strus::utf8prev( se)){}
 			const char* start = si;
 
 			int chrlen;
 			while (si < se)
 			{
 				chrlen = strus::utf8charlen(*si);
-				if (isSpace(si) || isDelimiter( si, chrlen))
+				if (strus::wordBoundaryDelimiter( si, se))
 				{
 					rt.append( start, si-start);
-					bool hasOnlySpace = isSpace(si);
+					bool hasOnlySpace = strus::whiteSpaceDelimiter(si,se);
 					for (si+=chrlen; si < se; si += chrlen)
 					{
 						chrlen = strus::utf8charlen(*si);
-						if (isSpace(si)) continue;
-						if (isDelimiter( si, chrlen))
+						if (strus::whiteSpaceDelimiter(si,se)) continue;
+						if (strus::wordBoundaryDelimiter( si, se))
 						{
 							hasOnlySpace = false;
 							continue;

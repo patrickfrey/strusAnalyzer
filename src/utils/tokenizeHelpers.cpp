@@ -27,6 +27,11 @@ CharTable::CharTable( const char* op)
 static const CharTable g_wordCharacter("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 static const UnicodeWordDelimiters g_unicodeWordDelimiters;
 
+bool strus::queryFieldDelimiter( char const* si, const char* se)
+{
+	return *si == '"' || *si == ';';
+}
+
 bool strus::wordBoundaryDelimiter( char const* si, const char* se)
 {
 	if ((unsigned char)*si <= 32)
