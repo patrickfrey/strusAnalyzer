@@ -31,6 +31,7 @@ TABLE of dashes declared as spaces in 'g_quotes':
 —	8212	2014	&mdash;	EM DASH
 ―	8213	2015	 	HORIZONTAL BAR
 •		2022	bullet
+…		2026	horizontal elipsis
 */
 
 static bool isQuote( char const* ci)
