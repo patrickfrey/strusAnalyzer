@@ -21,7 +21,7 @@ using namespace strus;
 
 #define NORMALIZER_NAME "entityid"
 
-static const char g_quotes[] = "\"'’`;.:―—–‒‑‐•";
+static const char g_quotes[] = "\"'’`;.:―—–‒‑‐•‥…‣․";
 /*
 TABLE of dashes declared as spaces in 'g_quotes':
 ‐	8208	2010	 	HYPHEN
@@ -32,6 +32,9 @@ TABLE of dashes declared as spaces in 'g_quotes':
 ―	8213	2015	 	HORIZONTAL BAR
 •		2022	bullet
 …		2026	horizontal elipsis
+‥		2025	horizontal elipsis
+․		2024	one dot leader
+‣		2023	triangular bullet
 */
 
 static bool isQuote( char const* ci)
