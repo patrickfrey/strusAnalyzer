@@ -28,7 +28,7 @@ static bool isQuote( char const* ci)
 	char const* ni = std::strchr( g_quotes, *ci);
 	unsigned char cl = strus::utf8charlen(*ci);
 	if (cl == 1) return ni != 0;
-	for (; ni; ni+=cl,ni = std::strchr( g_quotes, *ci))
+	for (; ni; ni+=cl,ni = std::strchr( ni, *ci))
 	{
 		if (0==std::memcmp( ci,ni,cl)) return true;
 	}
