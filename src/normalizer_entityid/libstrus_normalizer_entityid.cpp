@@ -11,6 +11,7 @@
 #include "strus/normalizerFunctionInstanceInterface.hpp"
 #include "strus/errorBufferInterface.hpp"
 #include "strus/base/utf8.hpp"
+#include "strus/constants.hpp"
 #include "private/internationalization.hpp"
 #include "private/errorUtils.hpp"
 #include "private/tokenizeHelpers.hpp"
@@ -21,21 +22,7 @@ using namespace strus;
 
 #define NORMALIZER_NAME "entityid"
 
-static const char g_quotes[] = "\"'’`;.:―—–‒‑‐•‥…‣․";
-/*
-TABLE of dashes declared as spaces in 'g_quotes':
-‐	8208	2010	 	HYPHEN
-‑	8209	2011	 	NON-BREAKING HYPHEN
-‒	8210	2012	 	FIGURE DASH
-–	8211	2013	&ndash;	EN DASH
-—	8212	2014	&mdash;	EM DASH
-―	8213	2015	 	HORIZONTAL BAR
-•		2022	bullet
-…		2026	horizontal elipsis
-‥		2025	horizontal elipsis
-․		2024	one dot leader
-‣		2023	triangular bullet
-*/
+static const char* g_quotes = strus::Constants::stripQuoteCharacters();
 
 static bool isQuote( char const* ci)
 {
