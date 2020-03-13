@@ -61,40 +61,6 @@ private:
 	int m_len;
 };
 
-
-/// \brief Structure describing a typed query term with a weight
-class WeightedQueryTerm
-	:public QueryTerm
-{
-public:
-	/// \brief Default constructor
-	WeightedQueryTerm()
-		:QueryTerm(),m_weight(0){}
-	/// \brief Copy constructor
-#if __cplusplus >= 201103L
-	WeightedQueryTerm( WeightedQueryTerm&& ) = default;
-	WeightedQueryTerm( const WeightedQueryTerm& ) = default;
-	WeightedQueryTerm& operator= ( WeightedQueryTerm&& ) = default;
-	WeightedQueryTerm& operator= ( const WeightedQueryTerm& ) = default;
-#else
-	WeightedQueryTerm( const WeightedQueryTerm& o)
-		:QueryTerm(o),m_weight(o.m_weight){}
-#endif
-	/// \brief Constructor
-	/// \param[in] t name of the term
-	/// \param[in] v value of the term
-	/// \param[in] l length of the term
-	WeightedQueryTerm( const std::string& t, const std::string& v, int l, double w)
-		:QueryTerm(t,v,l),m_weight(w){}
-
-	/// \brief Get the weight assigned to the term
-	/// \return the weight
-	double weight() const			{return m_weight;}
-
-private:
-	double m_weight;
-};
-
 }}//namespace
 #endif
 
