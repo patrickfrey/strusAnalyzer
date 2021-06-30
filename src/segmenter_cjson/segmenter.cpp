@@ -54,7 +54,7 @@ SegmenterContextInterface* JsonSegmenterInstance::createContext( const analyzer:
 		{
 			decoder.reset( utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new SegmenterContext( m_errorhnd, &m_automaton, decoder);
+		return new JsonSegmenterContext( m_errorhnd, &m_automaton, decoder);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }

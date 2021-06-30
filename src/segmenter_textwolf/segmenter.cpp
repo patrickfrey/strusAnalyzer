@@ -72,7 +72,7 @@ SegmenterContextInterface* TextwolfSegmenterInstance::createContext( const analy
 
 		if (dclass.encoding().empty())
 		{
-			return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
+			return new TextwolfSegmenterContext<UTF8>( m_errorhnd, &m_automaton);
 		}
 		else
 		{
@@ -92,41 +92,41 @@ SegmenterContextInterface* TextwolfSegmenterInstance::createContext( const analy
 						throw strus::runtime_error( _TXT("parse error in character set encoding: '%s'"), dclass.encoding().c_str());
 					}
 				}
-				return new SegmenterContext<IsoLatin>( m_errorhnd, &m_automaton, IsoLatin(codepage));
+				return new TextwolfSegmenterContext<IsoLatin>( m_errorhnd, &m_automaton, IsoLatin(codepage));
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-8"))
 			{
-				return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UTF8>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16BE"))
 			{
-				return new SegmenterContext<UTF16BE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UTF16BE>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UTF-16LE"))
 			{
-				return new SegmenterContext<UTF16LE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UTF16LE>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2BE"))
 			{
-				return new SegmenterContext<UCS2BE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UCS2BE>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-2LE"))
 			{
-				return new SegmenterContext<UCS2LE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UCS2LE>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4BE")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32BE"))
 			{
-				return new SegmenterContext<UCS4BE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UCS4BE>( m_errorhnd, &m_automaton);
 			}
 			else if (strus::caseInsensitiveEquals( dclass.encoding(), "UCS-4LE")
 			||       strus::caseInsensitiveEquals( dclass.encoding(), "UTF-32LE"))
 			{
-				return new SegmenterContext<UCS4LE>( m_errorhnd, &m_automaton);
+				return new TextwolfSegmenterContext<UCS4LE>( m_errorhnd, &m_automaton);
 			}
 			else
 			{

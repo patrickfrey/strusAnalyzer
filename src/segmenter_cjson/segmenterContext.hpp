@@ -19,11 +19,11 @@
 namespace strus
 {
 
-class SegmenterContext
+class JsonSegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const strus::Reference<strus::utils::TextEncoderBase>& encoder_)
+	explicit JsonSegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const strus::Reference<strus::utils::TextEncoderBase>& encoder_)
 		:m_automaton(automaton_)
 		,m_content()
 		,m_tree(0)
@@ -33,7 +33,7 @@ public:
 		,m_errorhnd(errorhnd)
 	{}
 
-	virtual ~SegmenterContext()
+	virtual ~JsonSegmenterContext()
 	{
 		if (m_tree) cJSON_Delete( m_tree);
 	}

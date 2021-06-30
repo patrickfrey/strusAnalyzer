@@ -17,7 +17,7 @@ using namespace strus;
 
 #define SEGMENTER_NAME "plain"
 
-void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
+void PlainSegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
 {
 	try
 	{
@@ -34,7 +34,7 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 	CATCH_ERROR_ARG1_MAP( _TXT("error in put input of %s segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
-bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
+bool PlainSegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 {
 	if (!m_eof) return false;
 	if (m_iditr == m_ids->end()) return false;

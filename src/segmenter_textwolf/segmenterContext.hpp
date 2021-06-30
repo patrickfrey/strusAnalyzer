@@ -27,11 +27,11 @@ namespace strus
 {
 
 template <class CharsetEncoding>
-class SegmenterContext
+class TextwolfSegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	SegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
+	TextwolfSegmenterContext( ErrorBufferInterface* errorhnd, const XPathAutomaton* automaton_, const CharsetEncoding& charset_=CharsetEncoding())
 		:m_automaton(automaton_)
 		,m_xpathselect(automaton_->createContext())
 		,m_srciter()
@@ -45,7 +45,7 @@ public:
 		,m_errorhnd(errorhnd)
 	{}
 
-	virtual ~SegmenterContext()
+	virtual ~TextwolfSegmenterContext()
 	{}
 
 	void initScanner( char const* src, std::size_t srcsize)

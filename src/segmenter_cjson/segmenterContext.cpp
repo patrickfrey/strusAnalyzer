@@ -22,7 +22,7 @@
 
 using namespace strus;
 
-void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
+void JsonSegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool eof)
 {
 	try
 	{
@@ -39,7 +39,7 @@ void SegmenterContext::putInput( const char* chunk, std::size_t chunksize, bool 
 	CATCH_ERROR_MAP( _TXT("error in put input of JSON segmenter: %s"), *m_errorhnd);
 }
 
-static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<SegmenterContext::Item>& resar, const cJSON* tree)
+static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<JsonSegmenterContext::Item>& resar, const cJSON* tree)
 {
 	if (!tree) return;
 
@@ -59,7 +59,7 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 		int segid;
 		while (xpathselect.getNext( segid))
 		{
-			resar.push_back( SegmenterContext::Item( segid, pos, ti->value, valuesize));
+			resar.push_back( JsonSegmenterContext::Item( segid, pos, ti->value, valuesize));
 		}
 		if (ti->type != textwolf::XMLScannerBase::CloseTag)
 		{
@@ -72,7 +72,7 @@ static void getSegmenterItems( const XPathAutomaton* automaton, std::vector<Segm
 	}
 }
 
-bool SegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
+bool JsonSegmenterContext::getNext( int& id, SegmenterPosition& pos, const char*& segment, std::size_t& segmentsize)
 {
 	try
 	{

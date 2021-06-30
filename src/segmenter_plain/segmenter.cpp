@@ -46,7 +46,7 @@ SegmenterContextInterface* PlainSegmenterInstance::createContext( const analyzer
 		{
 			decoder.reset( strus::utils::createTextDecoder( dclass.encoding().c_str()));
 		}
-		return new SegmenterContext( m_errorhnd, &m_segids, decoder);
+		return new PlainSegmenterContext( m_errorhnd, &m_segids, decoder);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }

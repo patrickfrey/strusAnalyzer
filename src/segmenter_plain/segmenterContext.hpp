@@ -18,11 +18,11 @@
 namespace strus
 {
 
-class SegmenterContext
+class PlainSegmenterContext
 	:public SegmenterContextInterface
 {
 public:
-	explicit SegmenterContext( ErrorBufferInterface* errorhnd, const std::set<int>* ids_, const strus::Reference<strus::utils::TextEncoderBase>& encoder_)
+	explicit PlainSegmenterContext( ErrorBufferInterface* errorhnd, const std::set<int>* ids_, const strus::Reference<strus::utils::TextEncoderBase>& encoder_)
 		:m_ids(ids_)
 		,m_content()
 		,m_eof(false)
@@ -31,7 +31,7 @@ public:
 		,m_errorhnd(errorhnd)
 	{}
 
-	virtual ~SegmenterContext()
+	virtual ~PlainSegmenterContext()
 	{}
 
 	virtual void putInput( const char* chunk, std::size_t chunksize, bool eof);
