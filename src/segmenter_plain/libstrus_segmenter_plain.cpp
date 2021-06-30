@@ -26,7 +26,7 @@ DLL_PUBLIC SegmenterInterface* strus::createSegmenter_plain( ErrorBufferInterfac
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new Segmenter( errorhnd);
+		return new PlainSegmenter( errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' segmenter: %s"), "plain", *errorhnd, 0);
 }

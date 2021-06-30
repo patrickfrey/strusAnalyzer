@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /// \brief Exported functions of the strus JSON segmenter library
+#include "segmenter.hpp"
 #include "strus/lib/segmenter_cjson.hpp"
 #include "strus/errorBufferInterface.hpp"
-#include "segmenter.hpp"
 #include "jsonParser.hpp"
 #include "strus/base/string_conv.hpp"
 #include "strus/base/local_ptr.hpp"
@@ -30,7 +30,7 @@ DLL_PUBLIC SegmenterInterface* strus::createSegmenter_cjson( ErrorBufferInterfac
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new Segmenter( errorhnd);
+		return new JsonSegmenter( errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' segmenter: %s"), "cjson", *errorhnd, 0);
 }

@@ -19,13 +19,13 @@ namespace strus
 /// \brief Forward declaration
 class ErrorBufferInterface;
 
-class SegmenterInstance
+class TextwolfSegmenterInstance
 	:public SegmenterInstanceInterface
 {
 public:
-	SegmenterInstance( ErrorBufferInterface* errorhnd)
+	TextwolfSegmenterInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
-	virtual ~SegmenterInstance(){}
+	virtual ~TextwolfSegmenterInstance(){}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
@@ -45,13 +45,13 @@ private:
 };
 
 
-class Segmenter
+class TextwolfSegmenter
 	:public SegmenterInterface
 {
 public:
-	explicit Segmenter( ErrorBufferInterface* errorhnd_)
+	explicit TextwolfSegmenter( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
-	virtual ~Segmenter(){}
+	virtual ~TextwolfSegmenter(){}
 
 	virtual const char* mimeType() const
 	{

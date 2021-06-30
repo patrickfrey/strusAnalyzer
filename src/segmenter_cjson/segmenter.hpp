@@ -22,13 +22,13 @@ class SegmenterContextInterface;
 /// \brief Forward declaration
 class SegmenterMarkupContextInterface;
 
-class SegmenterInstance
+class JsonSegmenterInstance
 	:public SegmenterInstanceInterface
 {
 public:
-	SegmenterInstance( ErrorBufferInterface* errorhnd)
+	JsonSegmenterInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
-	virtual ~SegmenterInstance(){}
+	virtual ~JsonSegmenterInstance(){}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
@@ -48,13 +48,13 @@ private:
 };
 
 
-class Segmenter
+class JsonSegmenter
 	:public SegmenterInterface
 {
 public:
-	explicit Segmenter( ErrorBufferInterface* errorhnd_)
+	explicit JsonSegmenter( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
-	virtual ~Segmenter(){}
+	virtual ~JsonSegmenter(){}
 
 	virtual const char* mimeType() const
 	{

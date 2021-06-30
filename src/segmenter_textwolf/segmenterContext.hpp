@@ -128,6 +128,7 @@ public:
 				++m_itr;
 
 				typename XMLScanner::ElementType et = m_itr->type();
+				/*[-]*/std::cerr << "+++ TOK " << XMLScanner::getElementTypeName( et) << " " << m_itr->content() << std::endl;
 				if (et == XMLScanner::ErrorOccurred)
 				{
 					const char* errstr = "";

@@ -26,7 +26,7 @@ DLL_PUBLIC SegmenterInterface* strus::createSegmenter_textwolf( ErrorBufferInter
 			strus::initMessageTextDomain();
 			g_intl_initialized = true;
 		}
-		return new Segmenter( errorhnd);
+		return new TextwolfSegmenter( errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("cannot create '%s' segmenter: %s"), "textwolf", *errorhnd, 0);
 }

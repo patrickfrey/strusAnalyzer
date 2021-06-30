@@ -19,7 +19,7 @@ using namespace strus;
 
 #define SEGMENTER_NAME "textwolf"
 
-StructView SegmenterInstance::view() const
+StructView TextwolfSegmenterInstance::view() const
 {
 	try
 	{
@@ -30,7 +30,7 @@ StructView SegmenterInstance::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
-void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
+void TextwolfSegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
 	try
 	{
@@ -46,7 +46,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 	CATCH_ERROR_ARG1_MAP( _TXT("error defining expression for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
-void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
+void TextwolfSegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
 	try
 	{
@@ -56,7 +56,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 }
 
 
-SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
+SegmenterContextInterface* TextwolfSegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -69,7 +69,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 		typedef textwolf::charset::UCS4<textwolf::charset::ByteOrder::LE> UCS4LE;
 		typedef textwolf::charset::IsoLatin IsoLatin;
 		unsigned char codepage = 1;
-	
+
 		if (dclass.encoding().empty())
 		{
 			return new SegmenterContext<UTF8>( m_errorhnd, &m_automaton);
@@ -137,7 +137,7 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter creating context: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
+SegmenterMarkupContextInterface* TextwolfSegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	try
 	{
@@ -218,17 +218,17 @@ SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const a
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error creating markup context for '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
+SegmenterInstanceInterface* TextwolfSegmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try
 	{
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-		return new SegmenterInstance( m_errorhnd);
+		return new TextwolfSegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-ContentIteratorInterface* Segmenter::createContentIterator(
+ContentIteratorInterface* TextwolfSegmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
 		const std::vector<std::string>& attributes,
@@ -319,7 +319,7 @@ ContentIteratorInterface* Segmenter::createContentIterator(
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter creating content iterator: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-StructView Segmenter::view() const
+StructView TextwolfSegmenter::view() const
 {
 	try
 	{

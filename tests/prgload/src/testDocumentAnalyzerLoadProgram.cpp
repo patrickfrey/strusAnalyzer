@@ -190,6 +190,7 @@ int main( int argc, const char* argv[])
 		if (!context.get()) throw std::runtime_error( "failed to create document analyzer context");
 
 		context->putInput( docContent.c_str(), docContent.size(), true/*EOF*/);
+		if (g_errorhnd->hasError()) throw std::runtime_error( "put input failed");
 		strus::analyzer::Document doc;
 		std::ostringstream out;
 		while (context->analyzeNext( doc))

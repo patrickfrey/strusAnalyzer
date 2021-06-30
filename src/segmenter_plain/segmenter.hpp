@@ -25,13 +25,13 @@ class SegmenterContextInterface;
 /// \brief Forward declaration
 class SegmenterMarkupContextInterface;
 
-class SegmenterInstance
+class PlainSegmenterInstance
 	:public SegmenterInstanceInterface
 {
 public:
-	SegmenterInstance( ErrorBufferInterface* errorhnd)
+	PlainSegmenterInstance( ErrorBufferInterface* errorhnd)
 		:m_errorhnd(errorhnd){}
-	virtual ~SegmenterInstance(){}
+	virtual ~PlainSegmenterInstance(){}
 
 	virtual void defineSelectorExpression( int id, const std::string& expression);
 	virtual void defineSubSection( int startId, int endId, const std::string& expression);
@@ -52,7 +52,7 @@ class ContentIterator
 	:public strus::ContentIteratorInterface
 {
 public:
-	ContentIterator( 
+	ContentIterator(
 			const char* content_,
 			std::size_t contentsize_,
 			const std::vector<std::string>& attributes,
@@ -84,13 +84,13 @@ private:
 };
 
 
-class Segmenter
+class PlainSegmenter
 	:public SegmenterInterface
 {
 public:
-	explicit Segmenter( ErrorBufferInterface* errorhnd_)
+	explicit PlainSegmenter( ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_){}
-	virtual ~Segmenter(){}
+	virtual ~PlainSegmenter(){}
 
 	virtual const char* mimeType() const
 	{

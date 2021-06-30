@@ -18,7 +18,7 @@ using namespace strus;
 
 #define SEGMENTER_NAME "cjson"
 
-void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
+void JsonSegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
 	try
 	{
@@ -35,7 +35,7 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 }
 
 
-void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
+void JsonSegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
 	try
 	{
@@ -45,7 +45,7 @@ void SegmenterInstance::defineSubSection( int startId, int endId, const std::str
 }
 
 
-SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
+SegmenterContextInterface* JsonSegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -59,13 +59,13 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
+SegmenterMarkupContextInterface* JsonSegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 
-StructView SegmenterInstance::view() const
+StructView JsonSegmenterInstance::view() const
 {
 	try
 	{
@@ -74,17 +74,17 @@ StructView SegmenterInstance::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
+SegmenterInstanceInterface* JsonSegmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try
 	{
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-		return new SegmenterInstance( m_errorhnd);
+		return new JsonSegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-StructView Segmenter::view() const
+StructView JsonSegmenter::view() const
 {
 	try
 	{
@@ -97,7 +97,7 @@ StructView Segmenter::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
-ContentIteratorInterface* Segmenter::createContentIterator(
+ContentIteratorInterface* JsonSegmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
 		const std::vector<std::string>& attributes,

@@ -17,7 +17,7 @@ using namespace strus;
 
 #define SEGMENTER_NAME "plain"
 
-void SegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
+void PlainSegmenterInstance::defineSelectorExpression( int id, const std::string& expression)
 {
 	try
 	{
@@ -31,13 +31,13 @@ void SegmenterInstance::defineSelectorExpression( int id, const std::string& exp
 }
 
 
-void SegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
+void PlainSegmenterInstance::defineSubSection( int startId, int endId, const std::string& expression)
 {
-	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("not implemented: '%s'"), "SegmenterInstance::defineSubSection");
+	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("not implemented: '%s'"), "PlainSegmenterInstance::defineSubSection");
 }
 
 
-SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
+SegmenterContextInterface* PlainSegmenterInstance::createContext( const analyzer::DocumentClass& dclass) const
 {
 	try
 	{
@@ -51,13 +51,13 @@ SegmenterContextInterface* SegmenterInstance::createContext( const analyzer::Doc
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-SegmenterMarkupContextInterface* SegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
+SegmenterMarkupContextInterface* PlainSegmenterInstance::createMarkupContext( const analyzer::DocumentClass& dclass, const std::string& content) const
 {
 	m_errorhnd->report( ErrorCodeNotImplemented, _TXT("document markup not implemented for '%s' segmenter"), SEGMENTER_NAME);
 	return 0;
 }
 
-StructView SegmenterInstance::view() const
+StructView PlainSegmenterInstance::view() const
 {
 	try
 	{
@@ -67,17 +67,17 @@ StructView SegmenterInstance::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
-SegmenterInstanceInterface* Segmenter::createInstance( const analyzer::SegmenterOptions& opts) const
+SegmenterInstanceInterface* PlainSegmenter::createInstance( const analyzer::SegmenterOptions& opts) const
 {
 	try
 	{
 		if (!opts.items().empty()) throw strus::runtime_error(_TXT("no options defined for segmenter '%s'"), SEGMENTER_NAME);
-		return new SegmenterInstance( m_errorhnd);
+		return new PlainSegmenterInstance( m_errorhnd);
 	}
 	CATCH_ERROR_ARG1_MAP_RETURN( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd, 0);
 }
 
-StructView Segmenter::view() const
+StructView PlainSegmenter::view() const
 {
 	try
 	{
@@ -90,7 +90,7 @@ StructView Segmenter::view() const
 	CATCH_ERROR_MAP_RETURN( _TXT("error in introspection: %s"), *m_errorhnd, StructView());
 }
 
-ContentIterator::ContentIterator( 
+ContentIterator::ContentIterator(
 		const char* content_,
 		std::size_t contentsize_,
 		const std::vector<std::string>& attributes_,
@@ -113,7 +113,7 @@ ContentIterator::ContentIterator(
 	CATCH_ERROR_ARG1_MAP( _TXT("error in '%s' segmenter: %s"), SEGMENTER_NAME, *m_errorhnd);
 }
 
-strus::ContentIteratorInterface* Segmenter::createContentIterator(
+strus::ContentIteratorInterface* PlainSegmenter::createContentIterator(
 		const char* content,
 		std::size_t contentsize,
 		const std::vector<std::string>& attributes,

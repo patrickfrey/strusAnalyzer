@@ -198,7 +198,7 @@ struct FieldArea
 		char const* hn = std::strchr( hi, FIELD_ID_SEPARATOR);
 		len = 0;
 
-		for (; hn && len < bufsize; 
+		for (; hn && len < bufsize;
 			hi=hn+1,hn = std::strchr( hi, FIELD_ID_SEPARATOR),++len)
 		{
 			buf[ len].hash
@@ -472,7 +472,7 @@ void DocumentAnalyzerContext::buildStructures( const std::vector<SearchIndexFiel
 					{
 						if (next_ai->positionRange.second <= ai->positionRange.first
 						&&  next_ai->matches( *ai))
-							
+
 						{
 							addStructureFieldCandidate( candidates, *next_ai);
 						}
@@ -561,7 +561,7 @@ void DocumentAnalyzerContext::collectIndexFields( int scopeIdx)
 			if (ai->end().defined())
 			{
 				selectedFields.push_back( *ai);
-	
+
 				const SeachIndexFieldConfig& config = m_analyzer->fieldConfigList()[ ai->configIdx()];
 				const std::vector<int>& headerRefs = config.headerStructureList();
 				std::vector<int>::const_iterator hi = headerRefs.begin(), he = headerRefs.end();
@@ -649,13 +649,13 @@ void DocumentAnalyzerContext::handleStructureEvent( int evhnd, const char* segsr
 
 bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 {
-	try 
+	try
 	{
 		doc.clear();
 		const char* segsrc = 0;
 		std::size_t segsrcsize = 0;
 		int featidx = 0;
-	
+
 		DEBUG_OPEN( "analyze");
 		for (;;)
 		{
@@ -742,6 +742,10 @@ bool DocumentAnalyzerContext::analyzeNext( analyzer::Document& doc)
 					std::string chunk( segsrc, segsrcsize);
 					throw strus::runtime_error( _TXT( "error in analyze when processing chunk (%s): %s"), chunk.c_str(), err.what());
 				}
+			}
+			if (m_errorhnd->hasError())
+			{
+				break;
 			}
 			if (m_segmenterstack.empty())
 			{
