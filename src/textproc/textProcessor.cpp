@@ -1053,8 +1053,6 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 {
 	try
 	{
-		/*[-]*/std::cerr << "++++ TextProcessor::getSegmenterByMimeType " << mimetype << std::endl;
-
 		std::map<std::string,SegmenterInterface*>::const_iterator
 			ti = m_mimeSegmenterMap.find( string_conv::tolower( mimetype));
 		if (ti == m_mimeSegmenterMap.end())
@@ -1077,7 +1075,6 @@ const SegmenterInterface* TextProcessor::getSegmenterByMimeType( const std::stri
 			}
 			return 0;
 		}
-		/*[-]*/std::cerr << "++++ Found " << ti->second->mimeType() << std::endl;
 		return ti->second;
 	}
 	catch (const std::bad_alloc&)
