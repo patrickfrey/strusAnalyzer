@@ -60,7 +60,7 @@ public:
 		if (subcontents_.defined()) StructView::operator()( "subcontent", subcontents_);
 		if (subdocuments_.defined()) StructView::operator()( "subdocument", subdocuments_);
 		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
-		if (aggregators_.defined()) StructView::operator()( "aggregator", aggregators_);
+		if (aggregators_.defined()) StructView::operator()( "aggregated_metadata", aggregators_);
 		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
 		if (lexems_.defined()) StructView::operator()( "lexem", lexems_);
 	}

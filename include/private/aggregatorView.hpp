@@ -28,7 +28,7 @@ public:
 	/// \param[in] function_ aggregating function
 	AggregatorView( const std::string& type_, const StructView& function_)
 	{
-		StructView::operator()( "type", type_)( "function", function_);
+		StructView::operator()( "type", type_)( "aggregator", function_);
 	}
 };
 

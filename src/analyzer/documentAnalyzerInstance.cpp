@@ -190,9 +190,9 @@ void DocumentAnalyzerInstance::addSearchIndexField(
 			scopeIdx = found->second;
 		}
 		// Define the field and its relations to structures referencing it:
-		m_fieldConfigList.push_back( 
+		m_fieldConfigList.push_back(
 			SeachIndexFieldConfig(
-				string_conv::tolower(name), 
+				string_conv::tolower(name),
 				scopeexpr, selectexpr, keyexpr, scopeIdx));
 		std::vector<SeachIndexStructureConfig>::const_iterator si = m_structureConfigList.begin(), se = m_structureConfigList.end();
 		for (int sidx=0; si != se; ++si,++sidx)
@@ -427,7 +427,7 @@ StructView DocumentAnalyzerInstance::view() const
 		{
 			subDocumentListView( di->first, di->second);
 		}
-		return analyzer::DocumentAnalyzerView( 
+		return analyzer::DocumentAnalyzerView(
 			segmenterView, subcontents, subDocumentListView,
 			attributes, metadata,
 			searchindex, forwardindex,
