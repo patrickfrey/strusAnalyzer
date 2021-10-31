@@ -275,6 +275,8 @@ private:
 	void operator=( const Deserializer&){}	//... non copyable
 };
 
+namespace serialize
+{
 
 class PatternTermFeederInstance :public PatternTermFeederInstanceInterface
 {
@@ -282,7 +284,7 @@ public:
 	PatternTermFeederInstance( const Reference<SerializerData>& serializerData_, ErrorBufferInterface* errorhnd_)
 		:m_errorhnd(errorhnd_),m_serializerData(serializerData_){}
 	virtual ~PatternTermFeederInstance(){}
-	
+
 	virtual void defineLexem(
 			unsigned int id,
 			const std::string& type)
@@ -834,6 +836,7 @@ private:
 	ErrorBufferInterface* m_errorhnd;
 	std::ostream* m_output;
 };
+}//namespace serialize
 
 
 DLL_PUBLIC PatternSerializer::~PatternSerializer()
@@ -855,7 +858,6 @@ DLL_PUBLIC bool PatternSerializer::close()
 	CATCH_ERROR_MAP_RETURN( _TXT("cannot close pattern serializer (and flush contents): %s"), *m_errorhnd, false);
 }
 
-
 DLL_PUBLIC PatternSerializer*
 	strus::createPatternSerializer(
 		const std::string& filename,
@@ -874,9 +876,9 @@ DLL_PUBLIC PatternSerializer*
 		{
 			case PatternMatcherWithLexer:
 			{
-				Reference<PatternLexerInstanceInterface> lexer( new PatternLexerInstance( serializerData, errorhnd));
+				Reference<PatternLexerInstanceInterface> lexer( new serialize::PatternLexerInstance( serializerData, errorhnd));
 				if (!lexer.get()) throw std::runtime_error( _TXT("failed to create pattern lexer instance for serialization"));
-				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstance( serializerData, errorhnd));
+				Reference<PatternMatcherInstanceInterface> matcher( new serialize::PatternMatcherInstance( serializerData, errorhnd));
 				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( serializerData.get(), lexer.release(), matcher.release(), errorhnd);
@@ -884,9 +886,9 @@ DLL_PUBLIC PatternSerializer*
 			break;
 			case PatternMatcherWithFeeder:
 			{
-				Reference<PatternTermFeederInstanceInterface> feeder( new PatternTermFeederInstance( serializerData, errorhnd));
+				Reference<PatternTermFeederInstanceInterface> feeder( new serialize::PatternTermFeederInstance( serializerData, errorhnd));
 				if (!feeder.get()) throw std::runtime_error( _TXT("failed to create pattern term feeder instance for serialization"));
-				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstance( serializerData, errorhnd));
+				Reference<PatternMatcherInstanceInterface> matcher( new serialize::PatternMatcherInstance( serializerData, errorhnd));
 				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( serializerData.get(), feeder.release(), matcher.release(), errorhnd);
@@ -915,9 +917,9 @@ DLL_PUBLIC PatternSerializer*
 		{
 			case PatternMatcherWithLexer:
 			{
-				Reference<PatternLexerInstanceInterface> lexer( new PatternLexerInstanceText( output, errorhnd));
+				Reference<PatternLexerInstanceInterface> lexer( new serialize::PatternLexerInstanceText( output, errorhnd));
 				if (!lexer.get()) throw std::runtime_error( _TXT("failed to create pattern lexer instance for serialization"));
-				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
+				Reference<PatternMatcherInstanceInterface> matcher( new serialize::PatternMatcherInstanceText( output, errorhnd));
 				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( 0 /*serializerData*/, lexer.release(), matcher.release(), errorhnd);
@@ -925,9 +927,9 @@ DLL_PUBLIC PatternSerializer*
 			break;
 			case PatternMatcherWithFeeder:
 			{
-				Reference<PatternTermFeederInstanceInterface> feeder( new PatternTermFeederInstanceText( output, errorhnd));
+				Reference<PatternTermFeederInstanceInterface> feeder( new serialize::PatternTermFeederInstanceText( output, errorhnd));
 				if (!feeder.get()) throw std::runtime_error( _TXT("failed to create pattern term feeder instance for serialization"));
-				Reference<PatternMatcherInstanceInterface> matcher( new PatternMatcherInstanceText( output, errorhnd));
+				Reference<PatternMatcherInstanceInterface> matcher( new serialize::PatternMatcherInstanceText( output, errorhnd));
 				if (!matcher.get()) throw std::runtime_error( _TXT("failed to create pattern matcher instance for serialization"));
 
 				return new PatternSerializer( 0 /*serializerData*/, feeder.release(), matcher.release(), errorhnd);
@@ -991,7 +993,7 @@ static void deserializeCommand(
 			unsigned int op_resultIndex = deserializer.readParam_uint();
 			unsigned int op_level = deserializer.readParam_uint();
 			analyzer::PositionBind op_posbind = (analyzer::PositionBind)deserializer.readParam_uint8();
-			
+
 			deserializer.endCall();
 			lexer->defineLexem( op_id, op_expression, op_resultIndex, op_level, op_posbind);
 			break;
@@ -1003,7 +1005,7 @@ static void deserializeCommand(
 			unsigned int op_id = deserializer.readParam_uint();
 			unsigned int op_lexemid = deserializer.readParam_uint();
 			std::string op_name = deserializer.readParam_string();
-			
+
 			deserializer.endCall();
 			lexer->defineSymbol( op_id, op_lexemid, op_name);
 			break;
